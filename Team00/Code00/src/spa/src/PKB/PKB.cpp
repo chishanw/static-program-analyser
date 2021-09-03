@@ -1,3 +1,5 @@
+#include "PKB.h"
+
 #include <stdio.h>
 
 #include <iostream>
@@ -6,9 +8,17 @@
 
 using namespace std;
 
-#include "PKB.h"
-#include "Common/TNode.h"
+PKB::PKB() { allStmtNo = SET_OF_STMT_NO(); }
 
-int PKB::setProcToAST(PROC p, TNode* r) { return 0; }
+bool PKB::addStatement(STMT_NO s) {
+    if (allStmtNo.count(s) > 0) {
+        return 0;
+    } else {
+        allStmtNo.insert(s);
+        return 1;
+    }
+}
 
-TNode* PKB::getRootAST(PROC p) { return nullptr; }
+LIST_STMT_NO PKB::getAllStatements() {
+    return LIST_STMT_NO(allStmtNo.begin(), allStmtNo.end());
+}

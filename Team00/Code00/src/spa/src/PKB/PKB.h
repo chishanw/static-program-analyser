@@ -3,19 +3,26 @@
 #include <stdio.h>
 
 #include <iostream>
+#include <set>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
+#include "FollowKB.h"
+
 using namespace std;
-typedef short PROC;
 
-class TNode;
-
-class VarTable;  // no need to #include "VarTable.h" as all I need is pointer
-
-class PKB {
+class PKB : public FollowKB {
  public:
-  static VarTable* varTable;
-  static int setProcToAST(PROC p, TNode* r);
-  static TNode* getRootAST(PROC p);
+    // Constructor
+    PKB();
+
+    // Methods
+    bool addStatement(STMT_NO s);
+    LIST_STMT_NO getAllStatements();  // ordered by insertion order
+
+ private:
+    // Members
+    SET_OF_STMT_NO allStmtNo;
 };
