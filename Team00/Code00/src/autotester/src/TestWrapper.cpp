@@ -1,5 +1,6 @@
 #include "TestWrapper.h"
 
+#include <Parser/Parser.h>
 #include <Parser/Tokenizer.h>
 
 #include <vector>
@@ -32,7 +33,15 @@ void TestWrapper::parse(std::string filename) {
   std::cout << std::endl;
 
   // then tokends will be passed to parser
-  // ...
+  ProgramAST* ast = Parser().Parse(tokens);
+  StmtAST* stmt = ast->ProcedureList[0]->StmtList[0];
+  cout << "Stmt No: " << stmt->StmtNo << endl;
+  if (AssignStmtAST* assign = dynamic_cast<AssignStmtAST*>(stmt)) {
+    cout << "Assignment statement, VarName: " << assign->VarName << endl;
+    cout << "Assignment statement, ExprAST in postfix form:" << endl;
+    ExprAST* expr = assign->Expr;
+    // cout << *expr << endl; // TODO(gf): seg fault
+  }
 
   // then ast will be passed to DE
   // ...

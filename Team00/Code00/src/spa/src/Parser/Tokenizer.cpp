@@ -14,13 +14,13 @@ set<char> Tokenizer::SPACE_SET = {' ', '\t', '\r', '\n'};
 set<char> Tokenizer::SINGLE_WIDTH_SYMBOL_SET = {
     '{', '}', '(', ')',       // brackets
     '+', '-', '*', '/', '%',  // arith
-    '!',                      // cond_expr
     ';',                      // semi colon
 };
 set<char> Tokenizer::DOUBLE_WIDTH_SYMBOL_SET = {
     '&',  // &&
     '|',  // ||
 
+    '!',  // !=
     '>',  // >=
     '<',  // <=
     '=',  // ==
@@ -122,14 +122,17 @@ string Tokenizer::specialSymbol(stringstream& ss) {
           // TODO(gf): raise exception
           cout << "following char must be the same as the 1st one, but it isn't"
                << endl;
+          exit(1);
         } else {
           char nextChar = ss.get();
           res.push_back(nextChar);
           return res;
         }
+        break;
 
       // category: following char could be =,
       // but doesn't have to be
+      case '!':  // !=
       case '>':  // >=
       case '<':  // <=
       case '=':  // ==
@@ -140,9 +143,12 @@ string Tokenizer::specialSymbol(stringstream& ss) {
           res.push_back(nextChar);
           return res;
         }
+        break;
+
       default:
         // TODO(gf): raise exception
         cout << "should not reach here" << endl;
+        exit(1);
     }
   }
 
