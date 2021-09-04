@@ -25,7 +25,15 @@ TestWrapper::TestWrapper() {
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
   // // parse program into tokens
-  std::vector<std::string> tokens = Tokenizer::TokenizeFile(filename);
+  std::string program =
+      "procedure Example {\n"
+      "  x = 1-2+3; }\n"
+      "\n";
+  std::vector<std::string> tokens = Tokenizer::TokenizeProgramString(program);
+
+  // // // parse program into tokens
+  // std::vector<std::string> tokens = Tokenizer::TokenizeFile(filename);
+
   std::cout << "Parsed tokens:" << std::endl;
   for (const std::string token : tokens) {
     std::cout << token << " ";
@@ -37,11 +45,34 @@ void TestWrapper::parse(std::string filename) {
   StmtAST* stmt = ast->ProcedureList[0]->StmtList[0];
   cout << "Stmt No: " << stmt->StmtNo << endl;
   if (AssignStmtAST* assign = dynamic_cast<AssignStmtAST*>(stmt)) {
-    cout << "Assignment statement, VarName: " << assign->VarName << endl;
-    cout << "Assignment statement, ExprAST in postfix form:" << endl;
-    ExprAST* expr = assign->Expr;
-    // cout << *expr << endl; // TODO(gf): seg fault
+    cout << assign->Expr->GetPatternStr() << endl;
+
+    // cout << assign->VarName << endl;
+    // ExprAST* expr123 = assign->Expr;
+    // ExprAST* expr12 = expr123->LeftNode;
+    // ExprAST* expr3 = expr123->RightNode;
+    // ExprAST* expr1 = expr12->LeftNode;
+    // ExprAST* expr2 = expr12->RightNode;
+
+    // cout << "123" << endl;
+    // cout << *expr123 << endl;
+    // cout << "12" << endl;
+    // cout << *expr12 << endl;
+    // cout << "3" << endl;
+    // cout << *expr3 << endl;
+    // cout << "1" << endl;
+    // cout << *expr1 << endl;
+    // cout << "2" << endl;
+    // cout << *expr2 << endl;
+
+    // if (FactorAST* f2 = dynamic_cast<FactorAST*>(expr2)) {
+    //   cout << f2->GetPatternStr() << endl;
+    //   cout << f2->ConstValue << endl;
+    // }
   }
+
+  cout << endl << "done" << endl;
+  exit(0);
 
   // then ast will be passed to DE
   // ...

@@ -2,42 +2,55 @@
 
 using namespace std;
 
-ostream& operator<<(ostream& out, ExprAST const& obj) {
-  // print expr in postfix form
-  if (obj.hasOnlyOneNode) {
-    FactorAST* castedLeftNode = dynamic_cast<FactorAST*>(obj.LeftNode);
+// print expr in postfix form
+string ExprAST::GetPatternStr() {
+  if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
+    cout << "casted to F*" << endl;
+    return f->GetPatternStr();
+  }
 
+  stringstream out;
+  if (hasOnlyOneNode) {
     out << "["
-        << "1NExprAST(" << &obj << ")"
-        << ", " << *castedLeftNode << ", " << obj.RightNode << ", " << obj.Sign
-        << "]";
+        << "1NExprAST(" << this << ")"
+        << ", " << this->LeftNode << ", " << this->RightNode << ", "
+        << this->Sign << "]";
   } else {
     out << "["
-        << "2NExprAST(" << &obj << ")"
-        << ", " << *(obj.LeftNode) << ", " << *(obj.RightNode) << ", "
-        << obj.Sign << "]";
+        << "2NExprAST(" << this << ")"
+        << ", " << this->LeftNode->GetPatternStr() << ", "
+        << this->RightNode->GetPatternStr() << ", " << this->Sign << "]";
   }
-  return out;
+  return out.str();
 }
 
-ostream& operator<<(ostream& out, FactorAST const& obj) {
-  if (obj.isVarName) {
+// ostream& operator<<(std::ostream& out, ExprAST const& obj) {
+//   return out << obj.GetPatternStr();
+// }
+
+string FactorAST::GetPatternStr() {
+  stringstream out;
+  if (isVarName) {
     out << "["
-        << "FactorAST(" << &obj << "): "
-        << "VarNmae(" << obj.VarName << ")"
+        << "FactorAST(" << this << "): "
+        << "VarNmae(" << VarName << ")"
         << "]";
-  } else if (obj.isConstValue) {
+  } else if (isConstValue) {
     out << "["
-        << "FactorAST(" << &obj << "): "
-        << "ConstValue(" << obj.ConstValue << ")"
+        << "FactorAST(" << this << "): "
+        << "ConstValue(" << ConstValue << ")"
         << "]";
-  } else if (obj.isExpr) {
+  } else if (isExpr) {
     out << "["
-        << "FactorAST(" << &obj << "): "
-        << " ( " << obj.Expr << " ) "
+        << "FactorAST(" << this << "): "
+        << " ( " << Expr << " ) "
         << "]";
   } else {
     Debug("FactorAST has wrong bool value");
   }
-  return out;
+  return out.str();
 }
+
+// ostream& operator<<(std::ostream& out, FactorAST const& obj) {
+//   return out << obj.GetPatternStr();
+// }

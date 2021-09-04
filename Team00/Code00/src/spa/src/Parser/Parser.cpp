@@ -146,7 +146,7 @@ ExprAST* Parser::expr() {
 
   // build ExprAST
   if (listSignAndTerm.empty()) {
-    return new ExprAST(exprAST);
+    return exprAST;
   }
   vector<pair<string, ExprAST*>>::iterator it = listSignAndTerm.begin();
   string sign = it->first;
@@ -186,7 +186,7 @@ ExprAST* Parser::term() {
 
   // build ExprAST
   if (listSignAndFactor.empty()) {
-    return new ExprAST(factorAST);
+    return factorAST;
   }
   vector<pair<string, FactorAST*>>::iterator it = listSignAndFactor.begin();
   string sign = it->first;

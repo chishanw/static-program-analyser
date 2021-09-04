@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -6,24 +7,6 @@
 
 typedef int STMT_NO;
 typedef std::string NAME;
-
-// class ExprAST;
-// class FactorAST : public ExprAST;
-// class RelExprAST;
-// class CondExprAST;
-// class StmtAST;
-// class ReadStmtAST : public StmtAST;
-// class PrintStmtAST : public StmtAST;
-// class CallStmtAST : public StmtAST;
-// class WhileStmtAST : public StmtAST;
-// class IfStmtAST : public StmtAST;
-// class AssignStmtAST : public StmtAST;
-// class ProcedureAST;
-// class ProgramAST;
-
-// class ExprAST;
-// class FactorAST : public ExprAST;
-// class FactorAST;
 
 class ExprAST {
  public:
@@ -34,19 +17,21 @@ class ExprAST {
   ExprAST() = default;  // default constructor for child class
 
   explicit ExprAST(ExprAST* leftNode)
-      : hasOnlyOneNode(true),
-        Sign(""),
-        LeftNode(leftNode),
-        RightNode(nullptr) {}
+      : hasOnlyOneNode(true), Sign(""), LeftNode(leftNode), RightNode(nullptr) {
+    std::cout << "1NExpr is called: " << leftNode << std::endl;
+  }
 
   ExprAST(std::string sign, ExprAST* leftNode, ExprAST* rightNode)
       : hasOnlyOneNode(false),
         Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode) {}
+        RightNode(rightNode) {
+    std::cout << "2NExpr is called: " << leftNode << std::endl;
+  }
 
   virtual ~ExprAST() {}
 
+  std::string GetPatternStr();
   bool HasOnlyOneNode() { return this->hasOnlyOneNode; }
 
   friend std::ostream& operator<<(std::ostream& out, ExprAST const& obj);
@@ -85,6 +70,7 @@ class FactorAST : public ExprAST {
         ConstValue(0),
         Expr(expr) {}
 
+  std::string GetPatternStr();
   bool IsVarName() { return this->isVarName; }
   bool IsConstValue() { return this->isConstValue; }
   bool IsExpr() { return this->isExpr; }
