@@ -2,7 +2,7 @@
 
 using namespace std;
 
-string ExprAST::GetPatternStr() {
+string ArithAST::GetPatternStr() {
   if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
     // cout << "casted to F*" << endl; // TODO(gf): clean up
     return f->GetPatternStr();
@@ -19,7 +19,7 @@ string ExprAST::GetPatternStr() {
   return out.str();
 }
 
-string ExprAST::GetDebugStr() {
+string ArithAST::GetDebugStr() {
   if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
     // cout << "casted to F*" << endl; // TODO(gf): clean up
     return f->GetDebugStr();
@@ -41,7 +41,7 @@ string ExprAST::GetDebugStr() {
   return out.str();
 }
 
-// ostream& operator<<(std::ostream& out, ExprAST const& obj) {
+// ostream& operator<<(std::ostream& out, ArithAST const& obj) {
 //   return out << obj.GetDebugStr();
 // }
 

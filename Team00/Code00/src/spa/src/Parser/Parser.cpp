@@ -131,7 +131,7 @@ IfStmtAST* Parser::ifStmt() {
 AssignStmtAST* Parser::assignStmt() {
   NAME varName = name();
   consumeToken("=");
-  ExprAST* exprAST = expr();
+  ArithAST* exprAST = expr();
   consumeToken(";");
   return new AssignStmtAST(this->prevStmtNo, varName, exprAST);
 }
@@ -140,74 +140,75 @@ AssignStmtAST* Parser::assignStmt() {
 //  expr
 // =======================================
 
-ExprAST* Parser::buildExprAST(
-    ExprAST* leftNode, vector<pair<string, ExprAST*>>& listSignAndTerm) const {
+ArithAST* Parser::buildExprAST(
+    ArithAST* leftNode,
+    vector<pair<string, ArithAST*>>& listSignAndTerm) const {
   if (listSignAndTerm.empty()) {
     return leftNode;
   }
 
-  for (vector<pair<string, ExprAST*>>::iterator it = listSignAndTerm.begin();
+  for (vector<pair<string, ArithAST*>>::iterator it = listSignAndTerm.begin();
        it != listSignAndTerm.end(); ++it) {
     string sign = it->first;
-    ExprAST* rightNode = it->second;
-    ExprAST* newNode = new ExprAST(sign, leftNode, rightNode);
+    ArithAST* rightNode = it->second;
+    ArithAST* newNode = new ArithAST(sign, leftNode, rightNode);
     leftNode = newNode;
   }
   return leftNode;
 }
 
-ExprAST* Parser::expr() {
-  ExprAST* leftNode = term();
-  vector<pair<string, ExprAST*>> listSignAndTerm = exprPrime();
+ArithAST* Parser::expr() {
+  ArithAST* leftNode = term();
+  vector<pair<string, ArithAST*>> listSignAndTerm = exprPrime();
   return buildExprAST(leftNode, listSignAndTerm);
 }
 
-vector<pair<string, ExprAST*>> Parser::exprPrime() {
+vector<pair<string, ArithAST*>> Parser::exprPrime() {
   if (expectToken("+")) {
     consumeToken("+");
-    ExprAST* exprAST = term();
-    vector<pair<string, ExprAST*>> rest = exprPrime();
+    ArithAST* exprAST = term();
+    vector<pair<string, ArithAST*>> rest = exprPrime();
     rest.insert(rest.begin(), make_pair("+", exprAST));
     return rest;
   } else if (expectToken("-")) {
     consumeToken("-");
-    ExprAST* exprAST = term();
-    vector<pair<string, ExprAST*>> rest = exprPrime();
+    ArithAST* exprAST = term();
+    vector<pair<string, ArithAST*>> rest = exprPrime();
     rest.insert(rest.begin(), make_pair("-", exprAST));
     return rest;
   } else {
-    vector<pair<string, ExprAST*>> res;
+    vector<pair<string, ArithAST*>> res;
     return res;
   }
 }
 
-ExprAST* Parser::term() {
-  ExprAST* leftNode = factor();
-  vector<pair<string, ExprAST*>> listSignAndFactor = termPrime();
+ArithAST* Parser::term() {
+  ArithAST* leftNode = factor();
+  vector<pair<string, ArithAST*>> listSignAndFactor = termPrime();
   return buildExprAST(leftNode, listSignAndFactor);
 }
 
-vector<pair<string, ExprAST*>> Parser::termPrime() {
+vector<pair<string, ArithAST*>> Parser::termPrime() {
   if (expectToken("*")) {
     consumeToken("*");
-    ExprAST* factorAST = factor();
-    vector<pair<string, ExprAST*>> rest = termPrime();
+    ArithAST* factorAST = factor();
+    vector<pair<string, ArithAST*>> rest = termPrime();
     rest.insert(rest.begin(), make_pair("*", factorAST));
     return rest;
   } else if (expectToken("/")) {
     consumeToken("/");
-    ExprAST* factorAST = factor();
-    vector<pair<string, ExprAST*>> rest = termPrime();
+    ArithAST* factorAST = factor();
+    vector<pair<string, ArithAST*>> rest = termPrime();
     rest.insert(rest.begin(), make_pair("/", factorAST));
     return rest;
   } else if (expectToken("%")) {
     consumeToken("%");
-    ExprAST* factorAST = factor();
-    vector<pair<string, ExprAST*>> rest = termPrime();
+    ArithAST* factorAST = factor();
+    vector<pair<string, ArithAST*>> rest = termPrime();
     rest.insert(rest.begin(), make_pair("%", factorAST));
     return rest;
   } else {
-    vector<pair<string, ExprAST*>> res;
+    vector<pair<string, ArithAST*>> res;
     return res;
   }
 }
@@ -215,7 +216,7 @@ vector<pair<string, ExprAST*>> Parser::termPrime() {
 FactorAST* Parser::factor() {
   if (expectToken("(")) {
     consumeToken("(");
-    ExprAST* exprAST = expr();
+    ArithAST* exprAST = expr();
     consumeToken(")");
     return new FactorAST(exprAST);
   } else if (isName()) {

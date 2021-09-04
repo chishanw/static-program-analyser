@@ -28,12 +28,12 @@ class Parser {
   AssignStmtAST* assignStmt();
 
   //  expr
-  ExprAST* buildExprAST(ExprAST* leftNode,
-                        std::vector<std::pair<std::string, ExprAST*>>&) const;
-  ExprAST* expr();
-  std::vector<std::pair<std::string, ExprAST*>> exprPrime();
-  ExprAST* term();
-  std::vector<std::pair<std::string, ExprAST*>> termPrime();
+  ArithAST* buildExprAST(ArithAST* leftNode,
+                         std::vector<std::pair<std::string, ArithAST*>>&) const;
+  ArithAST* expr();
+  std::vector<std::pair<std::string, ArithAST*>> exprPrime();
+  ArithAST* term();
+  std::vector<std::pair<std::string, ArithAST*>> termPrime();
   FactorAST* factor();
 
   //  cond expr
