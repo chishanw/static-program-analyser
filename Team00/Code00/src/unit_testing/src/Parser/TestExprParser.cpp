@@ -49,3 +49,17 @@ TEST_CASE("[ExprParser] all math operator") {
   REQUIRE(ra->VarName == "x12y");
   REQUIRE(ra->Expr->GetPatternStr() == "1-(2-3*4)/5%6+7");
 }
+
+TEST_CASE("[ExprParser] constants and varnames") {
+  string program =
+      "procedure Example {\n"
+      "  x12y = (c%1 -(2/b - 3 *4) / 5+a%6+7); }\n"
+      "\n";
+  ProgramAST* r = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+
+  AssignStmtAST* ra =
+      dynamic_cast<AssignStmtAST*>(r->ProcedureList[0]->StmtList[0]);
+  REQUIRE(r->ProcedureList[0]->StmtList[0]->StmtNo == 1);
+  REQUIRE(ra->VarName == "x12y");
+  REQUIRE(ra->Expr->GetPatternStr() == "(c%1-(2/b-3*4)/5+a%6+7)");
+}
