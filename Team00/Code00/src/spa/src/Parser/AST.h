@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -7,59 +8,46 @@
 typedef int STMT_NO;
 typedef std::string NAME;
 
-// class ExprAST;
-// class FactorAST : public ExprAST;
-// class RelExprAST;
-// class CondExprAST;
-// class StmtAST;
-// class ReadStmtAST : public StmtAST;
-// class PrintStmtAST : public StmtAST;
-// class CallStmtAST : public StmtAST;
-// class WhileStmtAST : public StmtAST;
-// class IfStmtAST : public StmtAST;
-// class AssignStmtAST : public StmtAST;
-// class ProcedureAST;
-// class ProgramAST;
-
-// class ExprAST;
-// class FactorAST : public ExprAST;
-// class FactorAST;
-
-class ExprAST {
+class ArithAST {
  public:
   std::string Sign;
-  ExprAST* LeftNode;
-  ExprAST* RightNode;
+  ArithAST* LeftNode;
+  ArithAST* RightNode;
 
-  ExprAST() = default;  // default constructor for child class
+  ArithAST() = default;  // default constructor for child class
 
-  explicit ExprAST(ExprAST* leftNode)
-      : hasOnlyOneNode(true),
-        Sign(""),
-        LeftNode(leftNode),
-        RightNode(nullptr) {}
+  explicit ArithAST(ArithAST* leftNode)
+      : hasOnlyOneNode(true), Sign(""), LeftNode(leftNode), RightNode(nullptr) {
+    // TODO(gf): clean up
+    // std::cout << "1N_Arith is called: " << leftNode << std::endl;
+  }
 
-  ExprAST(std::string sign, ExprAST* leftNode, ExprAST* rightNode)
+  ArithAST(std::string sign, ArithAST* leftNode, ArithAST* rightNode)
       : hasOnlyOneNode(false),
         Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode) {}
+        RightNode(rightNode) {
+    // TODO(gf): clean up
+    // std::cout << "2N_Arith is called: " << leftNode << std::endl;
+  }
 
-  virtual ~ExprAST() {}
+  virtual ~ArithAST() {}
 
   bool HasOnlyOneNode() { return this->hasOnlyOneNode; }
+  std::string GetPatternStr();
+  std::string GetDebugStr();
 
-  friend std::ostream& operator<<(std::ostream& out, ExprAST const& obj);
+  //   friend std::ostream& operator<<(std::ostream& out, ArithAST const& obj);
 
  private:
   bool hasOnlyOneNode;
 };
 
-class FactorAST : public ExprAST {
+class FactorAST : public ArithAST {
  public:
   NAME VarName;
   int ConstValue;
-  ExprAST* Expr;
+  ArithAST* Expr;
 
   explicit FactorAST(NAME varName)
       : isVarName(true),
@@ -77,7 +65,7 @@ class FactorAST : public ExprAST {
         ConstValue(constValue),
         Expr(nullptr) {}
 
-  explicit FactorAST(ExprAST* expr)
+  explicit FactorAST(ArithAST* expr)
       : isVarName(false),
         isConstValue(false),
         isExpr(true),
@@ -88,8 +76,10 @@ class FactorAST : public ExprAST {
   bool IsVarName() { return this->isVarName; }
   bool IsConstValue() { return this->isConstValue; }
   bool IsExpr() { return this->isExpr; }
+  std::string GetPatternStr();
+  std::string GetDebugStr();
 
-  friend std::ostream& operator<<(std::ostream& out, FactorAST const& obj);
+  //   friend std::ostream& operator<<(std::ostream& out, FactorAST const& obj);
 
  private:
   bool isVarName;
@@ -199,8 +189,8 @@ class IfStmtAST : public StmtAST {
 class AssignStmtAST : public StmtAST {
  public:
   NAME VarName;
-  ExprAST* Expr;
-  AssignStmtAST(STMT_NO stmtNo, NAME varName, ExprAST* expr)
+  ArithAST* Expr;
+  AssignStmtAST(STMT_NO stmtNo, NAME varName, ArithAST* expr)
       : StmtAST(stmtNo), VarName(varName), Expr(expr) {}
 };
 
