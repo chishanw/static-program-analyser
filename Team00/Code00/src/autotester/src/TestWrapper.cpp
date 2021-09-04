@@ -46,29 +46,7 @@ void TestWrapper::parse(std::string filename) {
   cout << "Stmt No: " << stmt->StmtNo << endl;
   if (AssignStmtAST* assign = dynamic_cast<AssignStmtAST*>(stmt)) {
     cout << assign->Expr->GetPatternStr() << endl;
-
-    // cout << assign->VarName << endl;
-    // ExprAST* expr123 = assign->Expr;
-    // ExprAST* expr12 = expr123->LeftNode;
-    // ExprAST* expr3 = expr123->RightNode;
-    // ExprAST* expr1 = expr12->LeftNode;
-    // ExprAST* expr2 = expr12->RightNode;
-
-    // cout << "123" << endl;
-    // cout << *expr123 << endl;
-    // cout << "12" << endl;
-    // cout << *expr12 << endl;
-    // cout << "3" << endl;
-    // cout << *expr3 << endl;
-    // cout << "1" << endl;
-    // cout << *expr1 << endl;
-    // cout << "2" << endl;
-    // cout << *expr2 << endl;
-
-    // if (FactorAST* f2 = dynamic_cast<FactorAST*>(expr2)) {
-    //   cout << f2->GetPatternStr() << endl;
-    //   cout << f2->ConstValue << endl;
-    // }
+    cout << assign->Expr->GetDebugStr() << endl;
   }
 
   cout << endl << "done" << endl;

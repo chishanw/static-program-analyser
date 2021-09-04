@@ -31,10 +31,11 @@ class ExprAST {
 
   virtual ~ExprAST() {}
 
-  std::string GetPatternStr();
   bool HasOnlyOneNode() { return this->hasOnlyOneNode; }
+  std::string GetPatternStr();
+  std::string GetDebugStr();
 
-  friend std::ostream& operator<<(std::ostream& out, ExprAST const& obj);
+  //   friend std::ostream& operator<<(std::ostream& out, ExprAST const& obj);
 
  private:
   bool hasOnlyOneNode;
@@ -70,12 +71,13 @@ class FactorAST : public ExprAST {
         ConstValue(0),
         Expr(expr) {}
 
-  std::string GetPatternStr();
   bool IsVarName() { return this->isVarName; }
   bool IsConstValue() { return this->isConstValue; }
   bool IsExpr() { return this->isExpr; }
+  std::string GetPatternStr();
+  std::string GetDebugStr();
 
-  friend std::ostream& operator<<(std::ostream& out, FactorAST const& obj);
+  //   friend std::ostream& operator<<(std::ostream& out, FactorAST const& obj);
 
  private:
   bool isVarName;
