@@ -24,33 +24,25 @@ TestWrapper::TestWrapper() {
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
-  // // parse program into tokens
-  std::string program =
-      "procedure Example {\n"
-      "  x = 1-2+3; }\n"
-      "\n";
-  std::vector<std::string> tokens = Tokenizer::TokenizeProgramString(program);
-
-  // // // parse program into tokens
-  // std::vector<std::string> tokens = Tokenizer::TokenizeFile(filename);
-
-  std::cout << "Parsed tokens:" << std::endl;
-  for (const std::string token : tokens) {
-    std::cout << token << " ";
+  // parse program into tokens
+  vector<string> tokens = Tokenizer::TokenizeFile(filename);
+  // TDOO(gf): rm later
+  cout << "Parsed tokens:" << endl;
+  for (const string token : tokens) {
+    cout << token << " ";
   }
-  std::cout << std::endl;
+  cout << endl;
 
   // then tokends will be passed to parser
   ProgramAST* ast = Parser().Parse(tokens);
+  // TDOO(gf): simple test, rm later
   StmtAST* stmt = ast->ProcedureList[0]->StmtList[0];
   cout << "Stmt No: " << stmt->StmtNo << endl;
   if (AssignStmtAST* assign = dynamic_cast<AssignStmtAST*>(stmt)) {
-    cout << assign->Expr->GetPatternStr() << endl;
-    cout << assign->Expr->GetDebugStr() << endl;
+    cout << "Assignment statement reconstructed: " << assign->VarName << "="
+         << assign->Expr->GetPatternStr() << endl;
+    cout << "Expr->GetDebugStr(): " << assign->Expr->GetDebugStr() << endl;
   }
-
-  cout << endl << "done" << endl;
-  exit(0);
 
   // then ast will be passed to DE
   // ...

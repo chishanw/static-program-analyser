@@ -18,7 +18,8 @@ class ExprAST {
 
   explicit ExprAST(ExprAST* leftNode)
       : hasOnlyOneNode(true), Sign(""), LeftNode(leftNode), RightNode(nullptr) {
-    std::cout << "1NExpr is called: " << leftNode << std::endl;
+    // TODO(gf): clean up
+    // std::cout << "1NExpr is called: " << leftNode << std::endl;
   }
 
   ExprAST(std::string sign, ExprAST* leftNode, ExprAST* rightNode)
@@ -26,7 +27,8 @@ class ExprAST {
         Sign(sign),
         LeftNode(leftNode),
         RightNode(rightNode) {
-    std::cout << "2NExpr is called: " << leftNode << std::endl;
+    // TODO(gf): clean up
+    // std::cout << "2NExpr is called: " << leftNode << std::endl;
   }
 
   virtual ~ExprAST() {}
