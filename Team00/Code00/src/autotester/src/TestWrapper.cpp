@@ -1,5 +1,6 @@
 #include "TestWrapper.h"
 
+#include <DesignExtractor/DesignExtractor.h>
 #include <Parser/Parser.h>
 #include <Parser/Tokenizer.h>
 
@@ -17,10 +18,7 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 volatile bool AbstractWrapper::GlobalStop = false;
 
 // a default constructor
-TestWrapper::TestWrapper() {
-  // create any objects here as instance variables of this class
-  // as well as any initialization required for your spa program
-}
+TestWrapper::TestWrapper() { pkb = new PKB(); }
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
@@ -34,18 +32,11 @@ void TestWrapper::parse(std::string filename) {
   cout << endl;
 
   // then tokends will be passed to parser
-  ProgramAST* ast = Parser().Parse(tokens);
-  // TDOO(gf): simple test, rm later
-  StmtAST* stmt = ast->ProcedureList[0]->StmtList[0];
-  cout << "Stmt No: " << stmt->StmtNo << endl;
-  if (AssignStmtAST* assign = dynamic_cast<AssignStmtAST*>(stmt)) {
-    cout << "Assignment statement reconstructed: " << assign->VarName << "="
-         << assign->Expr->GetPatternStr() << endl;
-    cout << "Expr->GetDebugStr(): " << assign->Expr->GetDebugStr() << endl;
-  }
+  const ProgramAST* programAST = Parser().Parse(tokens);
 
-  // then ast will be passed to DE
-  // ...
+  // then programAST will be passed to DE
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(programAST);
 }
 
 // method to evaluating a query

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -33,7 +35,8 @@ class ArithAST {
 
   virtual ~ArithAST() {}
 
-  bool HasOnlyOneNode() { return this->hasOnlyOneNode; }
+  bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
+  std::vector<std::string> GetAllPatternStr();
   std::string GetPatternStr();
   std::string GetDebugStr();
 
@@ -76,6 +79,7 @@ class FactorAST : public ArithAST {
   bool IsVarName() { return this->isVarName; }
   bool IsConstValue() { return this->isConstValue; }
   bool IsExpr() { return this->isExpr; }
+  std::vector<std::string> GetAllPatternStr();
   std::string GetPatternStr();
   std::string GetDebugStr();
 

@@ -1,6 +1,26 @@
 #include "AST.h"
 
+#include <algorithm>
+
 using namespace std;
+
+vector<string> ArithAST::GetAllPatternStr() {
+  vector<string> res;
+  if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
+    return f->GetAllPatternStr();
+  }
+
+  res.push_back(GetPatternStr());
+  if (LeftNode != nullptr) {
+    vector<string> resL = LeftNode->GetAllPatternStr();
+    copy(resL.begin(), resL.end(), back_inserter(res));
+  }
+  if (RightNode != nullptr) {
+    vector<string> resR = RightNode->GetAllPatternStr();
+    copy(resR.begin(), resR.end(), back_inserter(res));
+  }
+  return res;
+}
 
 string ArithAST::GetPatternStr() {
   if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
@@ -11,10 +31,9 @@ string ArithAST::GetPatternStr() {
   // no space between tokens
   stringstream out;
   if (hasOnlyOneNode) {
-    out << this->LeftNode->GetPatternStr();
+    out << LeftNode->GetPatternStr();
   } else {
-    out << this->LeftNode->GetPatternStr() << this->Sign
-        << this->RightNode->GetPatternStr();
+    out << LeftNode->GetPatternStr() << Sign << RightNode->GetPatternStr();
   }
   return out.str();
 }
@@ -29,14 +48,14 @@ string ArithAST::GetDebugStr() {
   stringstream out;
   if (hasOnlyOneNode) {
     out << "1NExprAST(" << this << "){"
-        << "sign: " << this->Sign << ", "
-        << "ln: " << this->LeftNode->GetDebugStr() << ", "
-        << "rn: " << this->RightNode << "}";
+        << "sign: " << Sign << ", "
+        << "ln: " << LeftNode->GetDebugStr() << ", "
+        << "rn: " << RightNode << "}";
   } else {
     out << "2NExprAST(" << this << "){"
-        << "sign: " << this->Sign << ", "
-        << "ln: " << this->LeftNode->GetDebugStr() << ", "
-        << "rn: " << this->RightNode->GetDebugStr() << "}";
+        << "sign: " << Sign << ", "
+        << "ln: " << LeftNode->GetDebugStr() << ", "
+        << "rn: " << RightNode->GetDebugStr() << "}";
   }
   return out.str();
 }
@@ -44,6 +63,20 @@ string ArithAST::GetDebugStr() {
 // ostream& operator<<(std::ostream& out, ArithAST const& obj) {
 //   return out << obj.GetDebugStr();
 // }
+
+vector<string> FactorAST::GetAllPatternStr() {
+  vector<string> res;
+  if (!isExpr) {
+    res.push_back(GetPatternStr());
+    return res;
+  }
+
+  // NOTE: itself must be in the 1st index in the res vector,
+  // cos DE expects the 1st string be the whole expr
+  res = Expr->GetAllPatternStr();
+  res.insert(res.begin(), GetPatternStr());
+  return res;
+}
 
 string FactorAST::GetPatternStr() {
   // no space between tokens
