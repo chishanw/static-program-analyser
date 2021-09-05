@@ -394,5 +394,5 @@ void Parser::errorExpected(string expected) {
   ss << "Expected: " << expected << ", but saw invalid token: " << token
      << endl;
   ss << "Parser exiting ..." << endl;
-  Debug(ss.str());
+  PrintErrorMsgAndExit(ss.str());
 }

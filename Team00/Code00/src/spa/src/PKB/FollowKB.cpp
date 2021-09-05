@@ -1,8 +1,7 @@
 #include "FollowKB.h"
 
-#include <stdio.h>
-
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -27,10 +26,13 @@ void FollowKB::setFollows(STMT_NO s1, STMT_NO s2) {
 
     // check if value for key s1 is s2
     if (getFollows(s1) != s2) {
-        // TODO(gf): do string formating and include value of s1 and s2
-        Debug(
-        "[debug][setFollows] value for key {s1} already exists"
-        " and it is not {s2}");
+        ostringstream s;
+        s << "[debug][setFollows] value for key "
+        << "{" << s1 << "}"
+        << " already exists"
+            " and it is not "
+        << "{" << s2 << "}";
+        PrintErrorMsgAndExit(s.str());
     }
 }
 

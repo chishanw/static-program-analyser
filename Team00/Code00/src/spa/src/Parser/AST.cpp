@@ -88,7 +88,7 @@ string FactorAST::GetPatternStr() {
   } else if (isExpr) {
     out << "(" << Expr->GetPatternStr() << ")";
   } else {
-    Debug("FactorAST has wrong bool value");
+    PrintErrorMsgAndExit("FactorAST has wrong bool value");
   }
   return out.str();
 }
@@ -106,7 +106,7 @@ string FactorAST::GetDebugStr() {
     out << "FactorAST(" << this << "){"
         << "Expr: " << Expr->GetDebugStr() << "}";
   } else {
-    Debug("FactorAST has wrong bool value");
+    PrintErrorMsgAndExit("FactorAST has wrong bool value");
   }
   return out.str();
 }

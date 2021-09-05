@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "Common/global.h"
+#include "Common/Global.h"
 
 typedef int STMT_NO;
 typedef std::string NAME;
