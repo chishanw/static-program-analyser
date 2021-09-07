@@ -346,11 +346,21 @@ void Parser::consumeToken(string toConsume) {
 
 void Parser::nextToken() {
   if (noMoreToken()) {
-    errorExpected("No more token to parse");
+    PrintErrorMsgAndExit("No more token to parse");
     return;
   }
+
   tokenIterator++;
-  token = *tokenIterator;
+
+  if (noMoreToken()) {
+    // special value to indicate there's no more token
+    // speical value should consist of invalid lexical tokens
+    // to safely differentiate it from valid ones
+    // i.e. mainly to prevent speical value to be interpreted as a Name
+    token = "END_OF_PROGRAM";
+  } else {
+    token = *tokenIterator;
+  }
 }
 
 bool Parser::noMoreToken() { return tokenIterator == tokens.end(); }

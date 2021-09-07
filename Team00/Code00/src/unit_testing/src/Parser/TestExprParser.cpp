@@ -13,7 +13,14 @@ TEST_CASE("[ExprParser] exactly 1 expr and 1 factor") {
       "procedure Example {\n"
       "  x = 1; }\n"
       "\n";
-  ProgramAST* r = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  vector<string> tokens = Tokenizer::TokenizeProgramString(program);
+  ProgramAST* r = Parser().Parse(tokens);
+
+  // ================================
+
+  vector<string> expectedTokens = {"procedure", "Example", "{", "x",
+                                   "=",         "1",       ";", "}"};
+  REQUIRE(tokens == expectedTokens);
 
   AssignStmtAST* ra =
       dynamic_cast<AssignStmtAST*>(r->ProcedureList[0]->StmtList[0]);
@@ -27,7 +34,15 @@ TEST_CASE("[ExprParser] doulbe layer expr") {
       "procedure Example {\n"
       "  x12y = 1 -2+ 3; }\n"
       "\n";
-  ProgramAST* r = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  vector<string> tokens = Tokenizer::TokenizeProgramString(program);
+  ProgramAST* r = Parser().Parse(tokens);
+
+  // ================================
+
+  vector<string> expectedTokens = {"procedure", "Example", "{", "x12y",
+                                   "=",         "1",       "-", "2",
+                                   "+",         "3",       ";", "}"};
+  REQUIRE(tokens == expectedTokens);
 
   AssignStmtAST* ra =
       dynamic_cast<AssignStmtAST*>(r->ProcedureList[0]->StmtList[0]);
@@ -41,7 +56,15 @@ TEST_CASE("[ExprParser] all math operator") {
       "procedure Example {\n"
       "  x12y = 1 -(2- 3 *4) / 5%6+7; }\n"
       "\n";
-  ProgramAST* r = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  vector<string> tokens = Tokenizer::TokenizeProgramString(program);
+  ProgramAST* r = Parser().Parse(tokens);
+
+  // ================================
+
+  vector<string> expectedTokens = {
+      "procedure", "Example", "{", "x12y", "=", "1", "-", "(", "2", "-", "3",
+      "*",         "4",       ")", "/",    "5", "%", "6", "+", "7", ";", "}"};
+  REQUIRE(tokens == expectedTokens);
 
   AssignStmtAST* ra =
       dynamic_cast<AssignStmtAST*>(r->ProcedureList[0]->StmtList[0]);
@@ -55,7 +78,16 @@ TEST_CASE("[ExprParser] constants and varnames") {
       "procedure Example {\n"
       "  x12y = (c%1 -(2/b - 3 *4) / 5+a%6+7); }\n"
       "\n";
-  ProgramAST* r = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  vector<string> tokens = Tokenizer::TokenizeProgramString(program);
+  ProgramAST* r = Parser().Parse(tokens);
+
+  // ================================
+
+  vector<string> expectedTokens = {
+      "procedure", "Example", "{", "x12y", "=", "(", "c", "%", "1", "-",
+      "(",         "2",       "/", "b",    "-", "3", "*", "4", ")", "/",
+      "5",         "+",       "a", "%",    "6", "+", "7", ")", ";", "}"};
+  REQUIRE(tokens == expectedTokens);
 
   AssignStmtAST* ra =
       dynamic_cast<AssignStmtAST*>(r->ProcedureList[0]->StmtList[0]);

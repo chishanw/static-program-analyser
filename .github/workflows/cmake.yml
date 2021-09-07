@@ -4,15 +4,44 @@ on: [push, pull_request]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Debug
+  BUILD_TYPE: Release
 
 jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  windows-build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build
+        shell: bash
+        run: |
+          cd Team00/Code00
+          mkdir build
+          cd build
+          cmake -A Win32 ..
+          cmake --build . --target unit_testing --config Release
+          cmake --build . --target integration_testing --config Release
+          cmake --build . --target autotester --config Release
+
+      - name: List Files in Release
+        working-directory: ./Team00/Code00/build/src/unit_testing/Release
+        run: ls
+
+      - name: Unit Test
+        working-directory: ./Team00/Code00/build/src/unit_testing/Release
+        run: ./unit_testing.exe -d yes
+
+      - name: Integration Test
+        working-directory: ./Team00/Code00/build/src/integration_testing/Release
+        run: ./integration_testing.exe -d yes
+
+  macos-build:
     runs-on: macos-latest
+    strategy:
+      fail-fast: true
 
     steps:
       - uses: actions/checkout@v2
@@ -31,8 +60,8 @@ jobs:
       - name: Unit & Integration Test
         working-directory: ./Team00/Code00/build/src/
         run: |
-          unit_testing/unit_testing -d yes --order lex
-          integration_testing/integration_testing -d yes --order lex
+          unit_testing/unit_testing -d yes
+          integration_testing/integration_testing -d yes
 
   cpplint:
     runs-on: ubuntu-latest
