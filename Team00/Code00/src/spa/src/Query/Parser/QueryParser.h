@@ -14,44 +14,40 @@
 enum RefType { STATEMENT_REF, ENTITY_REF };
 
 typedef std::unordered_map<std::string, query::DesignEntity> SynonymMap;
-typedef std::vector<qpp::QueryToken>::iterator tIterator;
 
 class QueryParser {
  public:
-  static std::tuple<SynonymMap, query::SelectClause> ParseQuery(
-      const std::string&);
+  QueryParser();
+  std::tuple<SynonymMap, query::SelectClause> Parse(const std::string&);
 
  private:
-  static bool hasNextToken(tIterator&, tIterator&);
-  static qpp::QueryToken consumeToken(tIterator&, tIterator&);
-  static std::optional<qpp::QueryToken> peekToken(tIterator&, tIterator&);
+  std::vector<qpp::QueryToken> tokens;
+  std::vector<qpp::QueryToken>::iterator it;
+  std::vector<qpp::QueryToken>::iterator endIt;
+  SynonymMap synonymMap;
 
-  static bool isDesignEntity(const std::string&);
+  bool hasNextToken();
+  qpp::QueryToken consumeToken();
+  std::optional<qpp::QueryToken> peekToken();
 
-  static std::string getName(tIterator&, tIterator&);
-  static char getCharSymbol(tIterator&, tIterator&);
-  static char getExactCharSymbol(tIterator&, tIterator&, const char&);
-  static query::DesignEntity getDesignEntity(tIterator&, tIterator&);
-  static std::string getKeyword(tIterator&, tIterator&);
-  static std::string getExactKeyword(tIterator&, tIterator&,
-                                     const std::string&);
+  bool isDesignEntity(const std::string&);
 
-  static query::DesignEntity getEntityFromSynonymName(const std::string&,
-                                                      const SynonymMap&);
-  static RefType getRefTypeFromEntity(const query::DesignEntity&);
-  static query::Param getStmtRefParam(tIterator&, tIterator&,
-                                      const SynonymMap&);
-  static query::Param getEntRefParam(tIterator&, tIterator&, const SynonymMap&);
-  static std::pair<RefType, query::Param> getEntOrStmtRefParam(
-      tIterator&, tIterator&, const SynonymMap&);
+  std::string getName();
+  char getCharSymbol();
+  char getExactCharSymbol(const char&);
+  query::DesignEntity getDesignEntity();
+  std::string getKeyword();
+  std::string getExactKeyword(const std::string&);
 
-  static SynonymMap parseSynonyms(tIterator&, tIterator&);
-  static query::SelectClause parseSelectClause(tIterator&, tIterator&,
-                                               const SynonymMap&);
-  static query::SuchThatClause parseSuchThatClause(tIterator&, tIterator&,
-                                                   const SynonymMap&);
-  static query::PatternClause parsePatternClause(
-      tIterator&, tIterator&,
-      const SynonymMap&);  // TODO(Beatrice): Implement parser for pattern
-                           // clause
+  query::DesignEntity getEntityFromSynonymName(const std::string&);
+  RefType getRefTypeFromEntity(const query::DesignEntity&);
+  query::Param getStmtRefParam();
+  query::Param getEntRefParam();
+  std::pair<RefType, query::Param> getEntOrStmtRefParam();
+
+  SynonymMap parseSynonyms();
+  query::SelectClause parseSelectClause();
+  query::SuchThatClause parseSuchThatClause();
+  query::PatternClause parsePatternClause();
+  // TODO(Beatrice): Implement parser for pattern clause
 };

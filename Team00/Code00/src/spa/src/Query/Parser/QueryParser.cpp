@@ -43,7 +43,7 @@ static const unordered_map<DesignEntity, RefType> designEntityToRefType = {
 };
 
 // ============ Helpers (Token) ============
-QueryToken QueryParser::consumeToken(tIterator& it, tIterator& endIt) {
+QueryToken QueryParser::consumeToken() {
   if (it == endIt) {
     throw runtime_error(
         "QueryParser expected another QueryToken but received None.");
@@ -53,12 +53,10 @@ QueryToken QueryParser::consumeToken(tIterator& it, tIterator& endIt) {
   return token;
 }
 
-bool QueryParser::hasNextToken(tIterator& it, tIterator& endIt) {
-  return it != endIt;
-}
+bool QueryParser::hasNextToken() { return it != endIt; }
 
-optional<QueryToken> QueryParser::peekToken(tIterator& it, tIterator& endIt) {
-  if (!hasNextToken(it, endIt)) {
+optional<QueryToken> QueryParser::peekToken() {
+  if (!hasNextToken()) {
     return nullopt;
   }
   return {*it};
@@ -70,16 +68,16 @@ bool QueryParser::isDesignEntity(const string& maybeEntity) {
 }
 
 // ============ Helpers (Getters and validation for Token) ============
-string QueryParser::getName(tIterator& it, tIterator& endIt) {
-  QueryToken t = consumeToken(it, endIt);
-  if (t.tokenType != TokenType::NAME) {
+string QueryParser::getName() {
+  QueryToken t = consumeToken();
+  if (t.tokenType != TokenType::NAME_OR_KEYWORD) {
     throw runtime_error("Invalid format. QueryParser expected NAME token.");
   }
   return t.value;
 }
 
-char QueryParser::getCharSymbol(tIterator& it, tIterator& endIt) {
-  QueryToken t = consumeToken(it, endIt);
+char QueryParser::getCharSymbol() {
+  QueryToken t = consumeToken();
   if (t.tokenType != TokenType::CHAR_SYMBOL) {
     throw runtime_error(
         "Invalid format. QueryParser expected CHAR_SYMBOL token.");
@@ -87,9 +85,8 @@ char QueryParser::getCharSymbol(tIterator& it, tIterator& endIt) {
   return t.value.at(0);
 }
 
-char QueryParser::getExactCharSymbol(tIterator& it, tIterator& endIt,
-                                     const char& charMatch) {
-  char charSymbol = getCharSymbol(it, endIt);
+char QueryParser::getExactCharSymbol(const char& charMatch) {
+  char charSymbol = getCharSymbol();
   if (charSymbol != charMatch) {
     throw runtime_error(
         "Invalid format. QueryParser expected a specific char token.");
@@ -97,8 +94,8 @@ char QueryParser::getExactCharSymbol(tIterator& it, tIterator& endIt,
   return charSymbol;
 }
 
-DesignEntity QueryParser::getDesignEntity(tIterator& it, tIterator& endIt) {
-  QueryToken t = consumeToken(it, endIt);
+DesignEntity QueryParser::getDesignEntity() {
+  QueryToken t = consumeToken();
   string keyword = t.value;
   if (!isDesignEntity(keyword)) {
     throw runtime_error(
@@ -107,17 +104,17 @@ DesignEntity QueryParser::getDesignEntity(tIterator& it, tIterator& endIt) {
   return keywordToDesignEntity.at(keyword);
 }
 
-string QueryParser::getKeyword(tIterator& it, tIterator& endIt) {
-  QueryToken t = consumeToken(it, endIt);
-  if (t.tokenType != TokenType::KEYWORD && t.tokenType != TokenType::NAME) {
+string QueryParser::getKeyword() {
+  QueryToken t = consumeToken();
+  if (t.tokenType != TokenType::KEYWORD &&
+      t.tokenType != TokenType::NAME_OR_KEYWORD) {
     throw runtime_error("Invalid format. QueryParser expects a keyword token.");
   }
   return t.value;
 }
 
-string QueryParser::getExactKeyword(tIterator& it, tIterator& endIt,
-                                    const string& keywordMatch) {
-  string keyword = getKeyword(it, endIt);
+string QueryParser::getExactKeyword(const string& keywordMatch) {
+  string keyword = getKeyword();
   if (keyword != keywordMatch) {
     throw runtime_error(
         "Invalid format. QueryParser expects a specific keyword token.");
@@ -126,8 +123,7 @@ string QueryParser::getExactKeyword(tIterator& it, tIterator& endIt,
 }
 
 // ============ Helpers (Getters for DesignEntity) ============
-DesignEntity QueryParser::getEntityFromSynonymName(
-    const string& name, const SynonymMap& synonymMap) {
+DesignEntity QueryParser::getEntityFromSynonymName(const string& name) {
   if (synonymMap.find(name) == synonymMap.end()) {
     throw runtime_error(
         "Invalid format. QueryParser expects a declared synonym name.");
@@ -144,9 +140,8 @@ RefType QueryParser::getRefTypeFromEntity(const DesignEntity& entity) {
 }
 
 // ============ Helpers (Getters for Param) ============
-Param QueryParser::getStmtRefParam(tIterator& it, tIterator& endIt,
-                                   const SynonymMap& synonymMap) {
-  QueryToken t = consumeToken(it, endIt);
+Param QueryParser::getStmtRefParam() {
+  QueryToken t = consumeToken();
   if (t.tokenType == TokenType::CHAR_SYMBOL && t.value.at(0) == '_') {
     return {ParamType::WILDCARD, t.value};
   }
@@ -155,12 +150,12 @@ Param QueryParser::getStmtRefParam(tIterator& it, tIterator& endIt,
     return {ParamType::LITERAL, t.value};
   }
 
-  if (t.tokenType == TokenType::NAME) {
+  if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
     // Get synonym name
     string synonymName = t.value;
 
     // Verify synonym is StmtRef type
-    DesignEntity entity = getEntityFromSynonymName(synonymName, synonymMap);
+    DesignEntity entity = getEntityFromSynonymName(synonymName);
     RefType refType = getRefTypeFromEntity(entity);
 
     if (refType == STATEMENT_REF) {
@@ -171,26 +166,25 @@ Param QueryParser::getStmtRefParam(tIterator& it, tIterator& endIt,
   throw runtime_error("Invalid format. QueryParser expected a valid STMT_REF");
 }
 
-Param QueryParser::getEntRefParam(tIterator& it, tIterator& endIt,
-                                  const SynonymMap& synonymMap) {
-  QueryToken t = consumeToken(it, endIt);
+Param QueryParser::getEntRefParam() {
+  QueryToken t = consumeToken();
   if (t.tokenType == TokenType::CHAR_SYMBOL && t.value.at(0) == '_') {
     return {ParamType::WILDCARD, t.value};
   }
 
   if (t.tokenType == TokenType::CHAR_SYMBOL && t.value.at(0) == '"') {
-    string ident = getName(it, endIt);
-    getExactCharSymbol(it, endIt, '"');
+    string ident = getName();
+    getExactCharSymbol('"');
 
     return {ParamType::LITERAL, ident};
   }
 
-  if (t.tokenType == TokenType::NAME) {
+  if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
     // Get synonym name
     string synonymName = t.value;
 
     // Verify synonym is EntRef type
-    DesignEntity entity = getEntityFromSynonymName(synonymName, synonymMap);
+    DesignEntity entity = getEntityFromSynonymName(synonymName);
     RefType refType = getRefTypeFromEntity(entity);
 
     if (refType == ENTITY_REF) {
@@ -201,9 +195,8 @@ Param QueryParser::getEntRefParam(tIterator& it, tIterator& endIt,
   throw runtime_error("Invalid format. QueryParser expected a valid ENT_REF");
 }
 
-pair<RefType, Param> QueryParser::getEntOrStmtRefParam(
-    tIterator& it, tIterator& endIt, const SynonymMap& synonymMap) {
-  QueryToken t = consumeToken(it, endIt);
+pair<RefType, Param> QueryParser::getEntOrStmtRefParam() {
+  QueryToken t = consumeToken();
   if (t.tokenType == TokenType::CHAR_SYMBOL && t.value.at(0) == '_') {
     throw runtime_error(
         "Invalid format. QueryParser expected a SYNONYM or LITERAL param type"
@@ -216,20 +209,20 @@ pair<RefType, Param> QueryParser::getEntOrStmtRefParam(
 
   if (t.tokenType == TokenType::CHAR_SYMBOL && t.value.at(0) == '"') {
     // Get IDENT
-    string ident = getName(it, endIt);
+    string ident = getName();
 
     // Verify closing quotations
-    getExactCharSymbol(it, endIt, '"');
+    getExactCharSymbol('"');
 
     return {RefType::ENTITY_REF, {ParamType::LITERAL, ident}};
   }
 
-  if (t.tokenType == TokenType::NAME) {
+  if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
     // Get synonym name
     string synonymName = t.value;
 
     // Get type of synonym
-    DesignEntity entity = getEntityFromSynonymName(synonymName, synonymMap);
+    DesignEntity entity = getEntityFromSynonymName(synonymName);
     RefType refType = getRefTypeFromEntity(entity);
 
     return {refType, {ParamType::SYNONYM, synonymName}};
@@ -240,32 +233,32 @@ pair<RefType, Param> QueryParser::getEntOrStmtRefParam(
 }
 
 // ============ Parsers ============
-SynonymMap QueryParser::parseSynonyms(tIterator& it, tIterator& endIt) {
+SynonymMap QueryParser::parseSynonyms() {
   SynonymMap synonyms;
 
   bool hasDeclaration = true;
   while (hasDeclaration) {
     // Parse design entity and synonym name
-    DesignEntity entity = getDesignEntity(it, endIt);
-    string name = getName(it, endIt);
+    DesignEntity entity = getDesignEntity();
+    string name = getName();
 
     // Populate synonym map
     synonyms[name] = entity;
 
     // Parse delimiter symbol
-    char symbol = getCharSymbol(it, endIt);
+    char symbol = getCharSymbol();
 
     // Parse any extra synonym names for the same design entity
     bool hasSynonymName = symbol == ',';
     while (hasSynonymName) {
       // Parse next synonym name for the same design entity
-      string nextName = getName(it, endIt);
+      string nextName = getName();
 
       // Populate synonym map
       synonyms[nextName] = entity;
 
       // Parse and update delimiter symbol
-      symbol = getCharSymbol(it, endIt);
+      symbol = getCharSymbol();
 
       hasSynonymName = symbol == ',';
     }
@@ -274,36 +267,34 @@ SynonymMap QueryParser::parseSynonyms(tIterator& it, tIterator& endIt) {
       throw runtime_error("Invalid format. QueryParser expected ; token");
     }
 
-    optional<QueryToken> maybeToken = peekToken(it, endIt);
+    optional<QueryToken> maybeToken = peekToken();
     hasDeclaration =
         maybeToken.has_value() && isDesignEntity(maybeToken.value().value);
   }
   return synonyms;
 }
 
-SelectClause QueryParser::parseSelectClause(tIterator& it, tIterator& endIt,
-                                            const SynonymMap& synonymMap) {
+SelectClause QueryParser::parseSelectClause() {
   // Verify select keyword is present
-  getExactKeyword(it, endIt, "Select");
+  getExactKeyword("Select");
 
   // Parse select selectSynonym
-  string sName = getName(it, endIt);
-  DesignEntity designEntity = getEntityFromSynonymName(sName, synonymMap);
+  string sName = getName();
+  DesignEntity designEntity = getEntityFromSynonymName(sName);
   Synonym selectSynonym = {designEntity, sName};
 
   // Parse clauses
   vector<SuchThatClause> suchThatClauses;
   vector<PatternClause> patternClauses;
 
-  bool hasNext = hasNextToken(it, endIt);
+  bool hasNext = hasNextToken();
 
   while (hasNext) {
-    string clauseKeyword = getKeyword(it, endIt);
+    string clauseKeyword = getKeyword();
 
     if (clauseKeyword == "such") {
-      string nextKeyword = getExactKeyword(it, endIt, "that");
-      SuchThatClause suchThatClause =
-          parseSuchThatClause(it, endIt, synonymMap);
+      string nextKeyword = getExactKeyword("that");
+      SuchThatClause suchThatClause = parseSuchThatClause();
       suchThatClauses.push_back(suchThatClause);
 
     } else if (clauseKeyword == "pattern") {
@@ -315,34 +306,33 @@ SelectClause QueryParser::parseSelectClause(tIterator& it, tIterator& endIt,
           " or PATTERN_KEYWORD token");
     }
 
-    hasNext = hasNextToken(it, endIt);
+    hasNext = hasNextToken();
   }
 
   return {selectSynonym, suchThatClauses, patternClauses};
 }
 
-SuchThatClause QueryParser::parseSuchThatClause(tIterator& it, tIterator& endIt,
-                                                const SynonymMap& synonymMap) {
-  string relationship = getKeyword(it, endIt);
+SuchThatClause QueryParser::parseSuchThatClause() {
+  string relationship = getKeyword();
   if (keywordToStmtRefRs.find(relationship) != keywordToStmtRefRs.end()) {
     RelationshipType type = keywordToStmtRefRs.at(relationship);
 
-    getExactCharSymbol(it, endIt, '(');
-    Param left = getStmtRefParam(it, endIt, synonymMap);
+    getExactCharSymbol('(');
+    Param left = getStmtRefParam();
 
-    getExactCharSymbol(it, endIt, ',');
-    Param right = getStmtRefParam(it, endIt, synonymMap);
+    getExactCharSymbol(',');
+    Param right = getStmtRefParam();
 
-    getExactCharSymbol(it, endIt, ')');
+    getExactCharSymbol(')');
 
     return {type, left, right};
   }
 
   if (relationship == "Uses") {
-    getExactCharSymbol(it, endIt, '(');
+    getExactCharSymbol('(');
 
     // Parse left parameter
-    pair<RefType, Param> left = getEntOrStmtRefParam(it, endIt, synonymMap);
+    pair<RefType, Param> left = getEntOrStmtRefParam();
     RelationshipType type;
     if (left.first == ENTITY_REF) {
       type = RelationshipType::USES_P;
@@ -352,21 +342,21 @@ SuchThatClause QueryParser::parseSuchThatClause(tIterator& it, tIterator& endIt,
       throw runtime_error("Invalid fist param ref.");
     }
 
-    getExactCharSymbol(it, endIt, ',');
+    getExactCharSymbol(',');
 
     // Parse right parameter
     // TODO(Beatrice): validate that entity is variable
-    Param right = getEntRefParam(it, endIt, synonymMap);
-    getExactCharSymbol(it, endIt, ')');
+    Param right = getEntRefParam();
+    getExactCharSymbol(')');
 
     return {type, left.second, right};
   }
 
   if (relationship == "Modifies") {
-    getExactCharSymbol(it, endIt, '(');
+    getExactCharSymbol('(');
 
     // Parse left parameter
-    pair<RefType, Param> left = getEntOrStmtRefParam(it, endIt, synonymMap);
+    pair<RefType, Param> left = getEntOrStmtRefParam();
     RelationshipType type;
     if (left.first == ENTITY_REF) {
       type = RelationshipType::MODIFIES_P;
@@ -376,12 +366,12 @@ SuchThatClause QueryParser::parseSuchThatClause(tIterator& it, tIterator& endIt,
       throw runtime_error("Invalid fist param ref.");
     }
 
-    getExactCharSymbol(it, endIt, ',');
+    getExactCharSymbol(',');
 
     // Parse right parameter
     // TODO(Beatrice): validate that entity is variable
-    Param right = getEntRefParam(it, endIt, synonymMap);
-    getExactCharSymbol(it, endIt, ')');
+    Param right = getEntRefParam();
+    getExactCharSymbol(')');
 
     return {type, left.second, right};
   }
@@ -390,19 +380,21 @@ SuchThatClause QueryParser::parseSuchThatClause(tIterator& it, tIterator& endIt,
 }
 
 // ============ MAIN ============
-tuple<SynonymMap, SelectClause> QueryParser::ParseQuery(const string& query) {
-  vector<QueryToken> tokens = QueryLexer::Tokenize(query);
+
+QueryParser::QueryParser() = default;
+
+tuple<SynonymMap, SelectClause> QueryParser::Parse(const string& query) {
+  tokens = QueryLexer().Tokenize(query);
+  it = tokens.begin();
+  endIt = tokens.end();
 
   PrintDebugMessage("Query tokens:");
   for (const QueryToken& t : tokens) {
     PrintDebugMessage("[" + to_string(t.tokenType) + "," + t.value + "]");
   }
 
-  auto it = tokens.begin();
-  auto endIt = tokens.end();
+  synonymMap = parseSynonyms();
+  SelectClause selectClause = parseSelectClause();
 
-  SynonymMap synonyms = parseSynonyms(it, endIt);
-  SelectClause selectClause = parseSelectClause(it, endIt, synonyms);
-
-  return {synonyms, selectClause};
+  return {synonymMap, selectClause};
 }

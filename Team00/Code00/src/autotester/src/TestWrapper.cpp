@@ -49,7 +49,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
   // ...code to evaluate query...
 
   try {
-    tuple<SynonymMap, SelectClause> parsedQuery = QueryParser::ParseQuery(query);
+    tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
 
     // TODO(Beatrice): Remove before submission
     PrintDebugMessage("PARSED SYNONYM MAP:");

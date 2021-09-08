@@ -3,7 +3,7 @@
 #include <string>
 
 namespace qpp {
-enum TokenType { NAME, KEYWORD, INTEGER, CHAR_SYMBOL };
+enum TokenType { NAME_OR_KEYWORD, KEYWORD, INTEGER, CHAR_SYMBOL };
 
 struct QueryToken {
   const TokenType tokenType;
