@@ -4,9 +4,29 @@
 
 using namespace std;
 
-vector<string> ArithAST::GetAllPatternStr() {
+vector<NAME> ArithAST::GetAllVarNames() const {
+  vector<NAME> res;
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
+    if (f->IsVarName()) {
+      res.push_back(f->VarName);
+    }
+    return res;
+  }
+
+  if (LeftNode != nullptr) {
+    vector<NAME> resL = LeftNode->GetAllVarNames();
+    copy(resL.begin(), resL.end(), back_inserter(res));
+  }
+  if (RightNode != nullptr) {
+    vector<NAME> resR = RightNode->GetAllVarNames();
+    copy(resR.begin(), resR.end(), back_inserter(res));
+  }
+  return res;
+}
+
+vector<string> ArithAST::GetAllPatternStr() const {
   vector<string> res;
-  if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
     return f->GetAllPatternStr();
   }
 
@@ -22,8 +42,8 @@ vector<string> ArithAST::GetAllPatternStr() {
   return res;
 }
 
-string ArithAST::GetPatternStr() {
-  if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
+string ArithAST::GetPatternStr() const {
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
     // cout << "casted to F*" << endl; // TODO(gf): clean up
     return f->GetPatternStr();
   }
@@ -38,8 +58,8 @@ string ArithAST::GetPatternStr() {
   return out.str();
 }
 
-string ArithAST::GetDebugStr() {
-  if (FactorAST* f = dynamic_cast<FactorAST*>(this)) {
+string ArithAST::GetDebugStr() const {
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
     // cout << "casted to F*" << endl; // TODO(gf): clean up
     return f->GetDebugStr();
   }
@@ -64,7 +84,7 @@ string ArithAST::GetDebugStr() {
 //   return out << obj.GetDebugStr();
 // }
 
-vector<string> FactorAST::GetAllPatternStr() {
+vector<string> FactorAST::GetAllPatternStr() const {
   vector<string> res;
   if (!isExpr) {
     res.push_back(GetPatternStr());
@@ -78,7 +98,7 @@ vector<string> FactorAST::GetAllPatternStr() {
   return res;
 }
 
-string FactorAST::GetPatternStr() {
+string FactorAST::GetPatternStr() const {
   // no space between tokens
   stringstream out;
   if (isVarName) {
@@ -93,7 +113,7 @@ string FactorAST::GetPatternStr() {
   return out.str();
 }
 
-string FactorAST::GetDebugStr() {
+string FactorAST::GetDebugStr() const {
   // format => FactorAST{addr: 0x11, sign: ..., ln: ..., rn: ...};
   stringstream out;
   if (isVarName) {
@@ -114,3 +134,28 @@ string FactorAST::GetDebugStr() {
 // ostream& operator<<(std::ostream& out, FactorAST const& obj) {
 //   return out << obj.GetDebugStr();
 // }
+
+vector<NAME> CondExprAST::GetAllVarNames() const {
+  if (hasOnlyOneRelExpr) {
+    return RelExpr->GetAllVarNames();
+  }
+  if (hasOnlyOneCondExpr) {
+    return LeftNode->GetAllVarNames();
+  }
+  // has two cond expr
+  vector<NAME> res = LeftNode->GetAllVarNames();
+  vector<NAME> resR = RightNode->GetAllVarNames();
+  copy(resR.begin(), resR.end(), back_inserter(res));
+  return res;
+}
+
+vector<NAME> RelExprAST::GetAllVarNames() const {
+  vector<NAME> res;
+  if (LeftNode->IsVarName()) {
+    res.push_back(LeftNode->VarName);
+  }
+  if (RightNode->IsVarName()) {
+    res.push_back(RightNode->VarName);
+  }
+  return res;
+}

@@ -12,11 +12,11 @@ typedef std::string NAME;
 
 class ArithAST {
  public:
-  std::string Sign;
-  ArithAST* LeftNode;
-  ArithAST* RightNode;
+  const std::string Sign;
+  const ArithAST* LeftNode;
+  const ArithAST* RightNode;
 
-  ArithAST() = default;  // default constructor for child class
+  ArithAST() : hasOnlyOneNode(false) {}  // default constructor for child class
 
   explicit ArithAST(ArithAST* leftNode)
       : hasOnlyOneNode(true), Sign(""), LeftNode(leftNode), RightNode(nullptr) {
@@ -36,21 +36,22 @@ class ArithAST {
   virtual ~ArithAST() {}
 
   bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
-  std::vector<std::string> GetAllPatternStr();
-  std::string GetPatternStr();
-  std::string GetDebugStr();
+  std::vector<NAME> GetAllVarNames() const;
+  std::vector<std::string> GetAllPatternStr() const;
+  std::string GetPatternStr() const;
+  std::string GetDebugStr() const;
 
   //   friend std::ostream& operator<<(std::ostream& out, ArithAST const& obj);
 
  private:
-  bool hasOnlyOneNode;
+  const bool hasOnlyOneNode;
 };
 
 class FactorAST : public ArithAST {
  public:
-  NAME VarName;
-  int ConstValue;
-  ArithAST* Expr;
+  const NAME VarName;
+  const int ConstValue;
+  const ArithAST* Expr;
 
   explicit FactorAST(NAME varName)
       : isVarName(true),
@@ -76,36 +77,39 @@ class FactorAST : public ArithAST {
         ConstValue(0),
         Expr(expr) {}
 
-  bool IsVarName() { return this->isVarName; }
-  bool IsConstValue() { return this->isConstValue; }
-  bool IsExpr() { return this->isExpr; }
-  std::vector<std::string> GetAllPatternStr();
-  std::string GetPatternStr();
-  std::string GetDebugStr();
+  bool IsVarName() const { return this->isVarName; }
+  bool IsConstValue() const { return this->isConstValue; }
+  bool IsExpr() const { return this->isExpr; }
+  std::vector<std::string> GetAllPatternStr() const;
+  std::string GetPatternStr() const;
+  std::string GetDebugStr() const;
 
   //   friend std::ostream& operator<<(std::ostream& out, FactorAST const& obj);
 
  private:
-  bool isVarName;
-  bool isConstValue;
-  bool isExpr;
+  const bool isVarName;
+  const bool isConstValue;
+  const bool isExpr;
 };
 
 class RelExprAST {
  public:
-  std::string Sign;
-  FactorAST* LeftNode;  // Factor and RelFactor are almost the same thing except
-  FactorAST* RightNode;  // for the bracket expr
+  const std::string Sign;
+  const FactorAST* LeftNode;   // Factor and RelFactor are almost the same thing
+  const FactorAST* RightNode;  // except for the bracket expr
+
   RelExprAST(std::string sign, FactorAST* leftNode, FactorAST* rightNode)
       : Sign(sign), LeftNode{leftNode}, RightNode{rightNode} {}
+
+  std::vector<NAME> GetAllVarNames() const;
 };
 
 class CondExprAST {
  public:
-  std::string Sign;
-  RelExprAST* RelExpr;
-  CondExprAST* LeftNode;
-  CondExprAST* RightNode;
+  const std::string Sign;
+  const RelExprAST* RelExpr;
+  const CondExprAST* LeftNode;
+  const CondExprAST* RightNode;
 
   explicit CondExprAST(RelExprAST* relExpr)
       : hasOnlyOneRelExpr(true),
@@ -130,17 +134,18 @@ class CondExprAST {
         LeftNode(leftNode),
         RightNode(rightNode) {}
 
-  bool HasOnlyOneRelExpr() { return this->hasOnlyOneRelExpr; }
-  bool HasOnlyOneCondExpr() { return this->hasOnlyOneCondExpr; }
+  bool HasOnlyOneRelExpr() const { return this->hasOnlyOneRelExpr; }
+  bool HasOnlyOneCondExpr() const { return this->hasOnlyOneCondExpr; }
+  std::vector<NAME> GetAllVarNames() const;
 
  private:
-  bool hasOnlyOneRelExpr;
-  bool hasOnlyOneCondExpr;
+  const bool hasOnlyOneRelExpr;
+  const bool hasOnlyOneCondExpr;
 };
 
 class StmtAST {
  public:
-  STMT_NO StmtNo;
+  const STMT_NO StmtNo;
   virtual ~StmtAST() {}
 
  protected:
@@ -149,29 +154,29 @@ class StmtAST {
 
 class ReadStmtAST : public StmtAST {
  public:
-  NAME VarName;
+  const NAME VarName;
   ReadStmtAST(STMT_NO stmtNo, NAME varName)
       : StmtAST(stmtNo), VarName(varName) {}
 };
 
 class PrintStmtAST : public StmtAST {
  public:
-  NAME VarName;
+  const NAME VarName;
   PrintStmtAST(STMT_NO stmtNo, NAME varName)
       : StmtAST(stmtNo), VarName(varName) {}
 };
 
 class CallStmtAST : public StmtAST {
  public:
-  NAME ProcName;
+  const NAME ProcName;
   CallStmtAST(STMT_NO stmtNo, NAME procName)
       : StmtAST(stmtNo), ProcName(procName) {}
 };
 
 class WhileStmtAST : public StmtAST {
  public:
-  CondExprAST* CondExpr;
-  std::vector<StmtAST*> StmtList;
+  const CondExprAST* CondExpr;
+  const std::vector<StmtAST*> StmtList;
   WhileStmtAST(STMT_NO stmtNo, CondExprAST* condExpr,
                std::vector<StmtAST*> stmtList)
       : StmtAST(stmtNo), CondExpr(condExpr), StmtList(stmtList) {}
@@ -179,9 +184,9 @@ class WhileStmtAST : public StmtAST {
 
 class IfStmtAST : public StmtAST {
  public:
-  CondExprAST* CondExpr;
-  std::vector<StmtAST*> ThenBlock;
-  std::vector<StmtAST*> ElseBlock;
+  const CondExprAST* CondExpr;
+  const std::vector<StmtAST*> ThenBlock;
+  const std::vector<StmtAST*> ElseBlock;
   IfStmtAST(STMT_NO stmtNo, CondExprAST* condExpr,
             std::vector<StmtAST*> thenBlock, std::vector<StmtAST*> elseBlock)
       : StmtAST(stmtNo),
@@ -192,23 +197,23 @@ class IfStmtAST : public StmtAST {
 
 class AssignStmtAST : public StmtAST {
  public:
-  NAME VarName;
-  ArithAST* Expr;
+  const NAME VarName;
+  const ArithAST* Expr;
   AssignStmtAST(STMT_NO stmtNo, NAME varName, ArithAST* expr)
       : StmtAST(stmtNo), VarName(varName), Expr(expr) {}
 };
 
 class ProcedureAST {
  public:
-  NAME ProcName;
-  std::vector<StmtAST*> StmtList;
+  const NAME ProcName;
+  const std::vector<StmtAST*> StmtList;
   ProcedureAST(NAME procName, std::vector<StmtAST*> stmtList)
       : ProcName(procName), StmtList(stmtList) {}
 };
 
 class ProgramAST {
  public:
-  std::vector<ProcedureAST*> ProcedureList;
+  const std::vector<ProcedureAST*> ProcedureList;
   explicit ProgramAST(std::vector<ProcedureAST*> procedureList)
       : ProcedureList(procedureList) {}
 };
