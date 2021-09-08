@@ -4,7 +4,11 @@ using namespace std;
 
 bool DEBUG_MODE = true;  // TODO(submission): change this
 
-void PrintErrorMsgAndExit(const string& msg) {
+// =======================================
+//  debug-mode-only methods
+// =======================================
+
+void DMOprintErrMsgAndExit(const string& msg) {
   if (!DEBUG_MODE) {
     return;
   }
@@ -12,10 +16,19 @@ void PrintErrorMsgAndExit(const string& msg) {
   exit(1);
 }
 
-void PrintDebugMessage(const string& msg) {
+void DMOprintInfoMsg(const string& msg) {
   if (!DEBUG_MODE) {
     return;
   }
 
   cout << msg << endl;
+}
+
+// =======================================
+//  normal methods
+// =======================================
+
+void PrintErrMsgAndExit(const string& msg) {
+  cout << msg << endl;
+  exit(0);
 }

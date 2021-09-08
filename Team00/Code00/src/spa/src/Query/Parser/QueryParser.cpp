@@ -388,9 +388,9 @@ tuple<SynonymMap, SelectClause> QueryParser::Parse(const string& query) {
   it = tokens.begin();
   endIt = tokens.end();
 
-  PrintDebugMessage("Query tokens:");
+  DMOprintInfoMsg("Query tokens:");
   for (const QueryToken& t : tokens) {
-    PrintDebugMessage("[" + to_string(t.tokenType) + "," + t.value + "]");
+    DMOprintInfoMsg("[" + to_string(t.tokenType) + "," + t.value + "]");
   }
 
   synonymMap = parseSynonyms();

@@ -3,5 +3,15 @@
 
 extern bool DEBUG_MODE;
 
-void PrintErrorMsgAndExit(const std::string&);
-void PrintDebugMessage(const std::string&);
+// =======================================
+//  debug-mode-only methods
+// =======================================
+
+void DMOprintErrMsgAndExit(const std::string&);
+void DMOprintInfoMsg(const std::string&);
+
+// =======================================
+//  normal methods
+// =======================================
+
+void PrintErrMsgAndExit(const std::string&);

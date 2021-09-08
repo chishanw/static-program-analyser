@@ -346,7 +346,7 @@ void Parser::consumeToken(string toConsume) {
 
 void Parser::nextToken() {
   if (noMoreToken()) {
-    PrintErrorMsgAndExit("No more token to parse");
+    DMOprintErrMsgAndExit("No more token to parse");
     return;
   }
 
@@ -404,5 +404,5 @@ void Parser::errorExpected(string expected) {
   ss << "Expected: " << expected << ", but saw invalid token: " << token
      << endl;
   ss << "Parser exiting ..." << endl;
-  PrintErrorMsgAndExit(ss.str());
+  DMOprintErrMsgAndExit(ss.str());
 }

@@ -52,29 +52,37 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
 
     // TODO(Beatrice): Remove before submission
-    PrintDebugMessage("PARSED SYNONYM MAP:");
+    DMOprintInfoMsg("PARSED SYNONYM MAP:");
     SynonymMap map = get<0>(parsedQuery);
-    for (auto& it: map) {
-      PrintDebugMessage(
-          "[" + it.first + "," + to_string(static_cast<std::underlying_type<DesignEntity>::type>(it.second)) + "]");
+    for (auto& it : map) {
+      DMOprintInfoMsg(
+          "[" + it.first + "," +
+              to_string(static_cast<std::underlying_type<DesignEntity>::type>(
+                            it.second)) +
+              "]");
     }
 
     SelectClause clause = get<1>(parsedQuery);
-    PrintDebugMessage("PARSED SELECT SYNONYM:");
-    PrintDebugMessage(clause.selectSynonym.name + "," +
-                      to_string(static_cast<std::underlying_type<DesignEntity>::type>(clause.selectSynonym.entity)));
+    DMOprintInfoMsg("PARSED SELECT SYNONYM:");
+    DMOprintInfoMsg(
+        clause.selectSynonym.name + "," +
+            to_string(static_cast<std::underlying_type<DesignEntity>::type>(
+                          clause.selectSynonym.entity)));
 
     SuchThatClause suchThatClause = clause.suchThatClauses.front();
-    PrintDebugMessage("FIRST PARSED SUCH_THAT CLAUSE: ");
+    DMOprintInfoMsg("FIRST PARSED SUCH_THAT CLAUSE: ");
     string clauseString =
-        "[" + to_string(static_cast<std::underlying_type<RelationshipType>::type>(suchThatClause.relationshipType)) +
-        ","
-        + "(" + to_string(static_cast<std::underlying_type<ParamType>::type>(suchThatClause.leftParam.type)) + "," +
-        suchThatClause.leftParam.value + "),"
-        + "(" + to_string(static_cast<std::underlying_type<ParamType>::type>(suchThatClause.rightParam.type)) + "," +
-        suchThatClause.rightParam.value + ")"
-        + "]";
-    PrintDebugMessage(clauseString);
+        "[" +
+        to_string(static_cast<std::underlying_type<RelationshipType>::type>(
+            suchThatClause.relationshipType)) +
+        "," + "(" +
+        to_string(static_cast<std::underlying_type<ParamType>::type>(
+            suchThatClause.leftParam.type)) +
+        "," + suchThatClause.leftParam.value + ")," + "(" +
+        to_string(static_cast<std::underlying_type<ParamType>::type>(
+            suchThatClause.rightParam.type)) +
+        "," + suchThatClause.rightParam.value + ")" + "]";
+    DMOprintInfoMsg(clauseString);
 
   } catch (const exception& ex) {
     cout << "Exception caught: " << ex.what() << "\n";
