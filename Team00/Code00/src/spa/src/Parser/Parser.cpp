@@ -344,6 +344,7 @@ void Parser::consumeToken(string toConsume) {
   nextToken();
 }
 
+// TODO(gf): fix parser / expr parser
 void Parser::nextToken() {
   if (noMoreToken()) {
     DMOprintErrMsgAndExit("No more token to parse");
