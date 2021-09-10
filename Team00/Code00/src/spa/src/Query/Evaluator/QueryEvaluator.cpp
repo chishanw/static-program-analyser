@@ -294,7 +294,7 @@ void QueryEvaluator::crossProduct(vector<vector<int>> incomingResult,
 vector<vector<int>> QueryEvaluator::evaluateRefSuchThat(RelationshipType type,
                                                         const Param& left,
                                                         const Param& right) {
-  vector<int> results = {};
+  unordered_set<int> results = {};
   switch (type) {
     case RelationshipType::FOLLOWS:
       results = followsEvaluator.evaluateStmtFollows(left, right);
@@ -358,11 +358,9 @@ bool QueryEvaluator::isRefClause(const Param& left, const Param& right) {
 unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(
     unordered_map<string, DesignEntity> allQuerySynonyms, string synonymName) {
   DesignEntity designEntity = allQuerySynonyms.find(synonymName)->second;
-  vector<int> results;
   switch (designEntity) {
     case DesignEntity::STATEMENT:
-      results = pkb->getAllStatements();
-      return unordered_set<int>(results.begin(), results.end());
+      return pkb->getAllStatements();
     default:
       cout << "Todo: READ, PRINT, CALL, WHILE, IF, ASSIGN, VARIABLE, "
               "CONSTANT, "

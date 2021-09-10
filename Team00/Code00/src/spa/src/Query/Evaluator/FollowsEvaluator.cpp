@@ -38,8 +38,8 @@ bool FollowsEvaluator::evaluateBoolFollows(const Param& left,
 }
 
 // synonym & literal
-vector<int> FollowsEvaluator::evaluateStmtFollows(const Param& left,
-                                                  const Param& right) {
+UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollows(const Param& left,
+                                                         const Param& right) {
   // if one literal + synonym - Follows(s, 2), Follows(1, s)
   ParamType leftType = left.type;
   ParamType rightType = right.type;
@@ -84,7 +84,6 @@ bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::LITERAL && rightType == ParamType::LITERAL) {
-    LIST_STMT_NO listOfStmts = pkb->getFollowsT(stoi(left.value));
     return pkb->isFollowsT(stoi(left.value), stoi(right.value));
   }
 
@@ -95,28 +94,26 @@ bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
   }
 
   if (leftType == ParamType::WILDCARD) {
-    LIST_STMT_NO listOfStmts = pkb->getFollowedTBy(stoi(right.value));
+    UNO_SET_OF_STMT_NO listOfStmts = pkb->getFollowedTBy(stoi(right.value));
     return !listOfStmts.empty();
   }
 
-  LIST_STMT_NO listOfStmts = pkb->getFollowsT(stoi(left.value));
+  UNO_SET_OF_STMT_NO listOfStmts = pkb->getFollowsT(stoi(left.value));
   return !listOfStmts.empty();
 }
 
 // synonym & literal
-vector<int> FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
-                                                   const Param& right) {
+UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
+                                                          const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
   if (leftType == ParamType::LITERAL) {
-    LIST_STMT_NO listOfStmts = pkb->getFollowsT(stoi(left.value));
-    return listOfStmts;
+    return pkb->getFollowsT(stoi(left.value));
   }
 
   // rightType == ParamType::LITERAL
-  LIST_STMT_NO listOfStmts = pkb->getFollowedTBy(stoi(right.value));
-  return listOfStmts;
+  return pkb->getFollowedTBy(stoi(right.value));
 }
 
 // synonym & wildcard - FollowsT(s, _) -> getAllFollowsTStmtPair()

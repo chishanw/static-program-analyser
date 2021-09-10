@@ -15,14 +15,14 @@ using namespace std;
 
 class PKB : public FollowKB {
  public:
-    // Constructor
-    PKB();
+  // Constructor
+  PKB();
 
-    // Methods
-    bool addStatement(STMT_NO s);
-    LIST_STMT_NO getAllStatements();  // ordered by insertion order
+  // Methods
+  bool addStatement(STMT_NO s);
+  UNO_SET_OF_STMT_NO getAllStatements();
 
  private:
-    // Members
-    SET_OF_STMT_NO allStmtNo;
+  // Members
+  UNO_SET_OF_STMT_NO allStmtNo;
 };

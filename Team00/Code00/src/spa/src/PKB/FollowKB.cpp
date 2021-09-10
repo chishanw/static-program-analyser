@@ -1,19 +1,19 @@
-#include "FollowKB.h"
-
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "FollowKB.h"
 #include "Common/Global.h"
 
 using namespace std;
 
 FollowKB::FollowKB() {
-  table = unordered_map<STMT_NO, STMT_NO>({{}});
-  invTable = unordered_map<STMT_NO, STMT_NO>({{}});
-  tableT = unordered_map<STMT_NO, UNO_SET_OF_STMT_NO>({{}});
-  invTableT = unordered_map<STMT_NO, UNO_SET_OF_STMT_NO>({{}});
+  table = unordered_map<STMT_NO, STMT_NO>({});
+  invTable = unordered_map<STMT_NO, STMT_NO>({});
+  tableT = unordered_map<STMT_NO, UNO_SET_OF_STMT_NO>({});
+  invTableT = unordered_map<STMT_NO, UNO_SET_OF_STMT_NO>({});
 }
 
 void FollowKB::setFollows(STMT_NO s1, STMT_NO s2) {
@@ -87,26 +87,45 @@ STMT_NO FollowKB::getFollowedBy(STMT_NO s2) {
   }
 }
 
-LIST_STMT_NO FollowKB::getFollowsT(STMT_NO s1) {
+UNO_SET_OF_STMT_NO FollowKB::getFollowsT(STMT_NO s1) {
   if (tableT.count(s1) == 0) {
-    // Return empty list
-    return LIST_STMT_NO({});
+    // Return empty set
+    return UNO_SET_OF_STMT_NO({});
   } else {
-    unordered_set<STMT_NO> set = tableT.at(s1);
-    LIST_STMT_NO followVector(set.begin(), set.end());
-
-    return followVector;
+    return tableT.at(s1);
   }
 }
 
-LIST_STMT_NO FollowKB::getFollowedTBy(STMT_NO s2) {
+UNO_SET_OF_STMT_NO FollowKB::getFollowedTBy(STMT_NO s2) {
   if (invTableT.count(s2) == 0) {
-    return LIST_STMT_NO({});
+    return UNO_SET_OF_STMT_NO({});
   } else {
-    // Return empty list
-    unordered_set<STMT_NO> set = invTableT.at(s2);
-    LIST_STMT_NO followVector(set.begin(), set.end());
-
-    return followVector;
+    // Return empty set
+    return invTableT.at(s2);
   }
+}
+
+vector<vector<STMT_NO>> FollowKB::getAllFollowsStmtPairs() {
+  // Iterate through all pairs
+  vector<vector<STMT_NO>> outputList({});
+
+  for (auto it = table.begin(); it != table.end(); ++it) {
+    outputList.push_back(vector({it->first, it->second}));
+  }
+
+  return outputList;
+}
+
+vector<pair<STMT_NO, vector<STMT_NO>>> FollowKB::getAllFollowsTStmtPairs() {
+  // Iterate through all pairs
+  vector<pair<STMT_NO, vector<STMT_NO>>> outputList({});
+
+  for (auto it = tableT.begin(); it != tableT.end(); it++) {
+    auto set = it->second;
+    auto innerList = vector(set.begin(), set.end());
+    auto element = pair(it->first, innerList);
+    outputList.push_back(element);
+  }
+
+  return outputList;
 }
