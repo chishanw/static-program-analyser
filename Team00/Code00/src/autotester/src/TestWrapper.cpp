@@ -4,8 +4,11 @@
 #include <DesignExtractor/DesignExtractor.h>
 #include <Parser/Parser.h>
 #include <Parser/Tokenizer.h>
+#include <Query/Evaluator/QueryEvaluator.h>
 #include <Query/Parser/QueryParser.h>
+#include <Query/Projector/ResultProjector.h>
 
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
@@ -57,17 +60,17 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     for (auto& it : map) {
       DMOprintInfoMsg(
           "[" + it.first + "," +
-              to_string(static_cast<std::underlying_type<DesignEntity>::type>(
-                            it.second)) +
-              "]");
+          to_string(static_cast<std::underlying_type<DesignEntity>::type>(
+              it.second)) +
+          "]");
     }
 
     SelectClause clause = get<1>(parsedQuery);
     DMOprintInfoMsg("PARSED SELECT SYNONYM:");
     DMOprintInfoMsg(
         clause.selectSynonym.name + "," +
-            to_string(static_cast<std::underlying_type<DesignEntity>::type>(
-                          clause.selectSynonym.entity)));
+        to_string(static_cast<std::underlying_type<DesignEntity>::type>(
+            clause.selectSynonym.entity)));
 
     SuchThatClause suchThatClause = clause.suchThatClauses.front();
     DMOprintInfoMsg("FIRST PARSED SUCH_THAT CLAUSE: ");
@@ -84,6 +87,11 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
         "," + suchThatClause.rightParam.value + ")" + "]";
     DMOprintInfoMsg(clauseString);
 
+    std::unordered_set<int> evaluatedResult = QueryEvaluator(pkb).evaluateQuery(
+        get<0>(parsedQuery), get<1>(parsedQuery));
+    DesignEntity selectSynDesignEntity = map.at(clause.selectSynonym.name);
+    results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
+                                                 evaluatedResult);
   } catch (const exception& ex) {
     cout << "Exception caught: " << ex.what() << "\n";
   }
