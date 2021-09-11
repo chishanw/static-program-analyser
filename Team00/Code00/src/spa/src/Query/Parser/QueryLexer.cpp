@@ -23,8 +23,10 @@ bool QueryLexer::isAllowedSymbol(char c) {
 bool QueryLexer::isStarSymbol(char c) { return c == '*'; }
 
 void QueryLexer::consumeWhitespace() {
-  while (isspace(peekChar().value())) {
+  optional<char> maybeNextChar = peekChar();
+  while (maybeNextChar.has_value() && isspace(maybeNextChar.value())) {
     consumeChar();
+    maybeNextChar = peekChar();
   }
 }
 
@@ -51,9 +53,9 @@ QueryToken QueryLexer::getNameOrKeyword() {
     char letter = consumeChar();
     nameOrKeyword.push_back(letter);
 
-    optional<char> nextChar = peekChar();
-    hasLetter = nextChar.has_value() &&
-                (isLetter(nextChar.value()) || isDigit(nextChar.value()));
+    optional<char> maybeNextChar = peekChar();
+    hasLetter = maybeNextChar.has_value() && (isLetter(maybeNextChar.value()) ||
+                                              isDigit(maybeNextChar.value()));
   }
 
   // Check if there is a keyword symbol like * at the end of a string
@@ -74,8 +76,8 @@ QueryToken QueryLexer::getInteger() {
     char digit = consumeChar();
     integer.push_back(digit);
 
-    optional<char> nextChar = peekChar();
-    hasDigit = nextChar.has_value() && isDigit(nextChar.value());
+    optional<char> maybeNextChar = peekChar();
+    hasDigit = maybeNextChar.has_value() && isDigit(maybeNextChar.value());
   }
   return {TokenType::INTEGER, integer};
 }
@@ -94,6 +96,10 @@ vector<QueryToken> QueryLexer::Tokenize(const string& in) {
   bool hasNextChar = peekChar().has_value();
   while (hasNextChar) {
     consumeWhitespace();
+    if (!peekChar().has_value()) {
+      break;
+    }
+
     char nextChar = peekChar().value();
 
     if (isAllowedSymbol(nextChar)) {
@@ -108,7 +114,7 @@ vector<QueryToken> QueryLexer::Tokenize(const string& in) {
     } else {
       std::cerr << "INVALID: " << nextChar
                 << endl;  // TODO(Beatrice): remove for submission
-      throw std::runtime_error("QueryLexer found an Invalid token");
+      throw std::runtime_error(INVALID_TOKEN_MSG);
     }
     hasNextChar = peekChar().has_value();
   }

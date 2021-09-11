@@ -10,8 +10,11 @@
 typedef std::basic_string<char>::const_iterator sIterator;
 class QueryLexer {
  public:
-  std::vector<qpp::QueryToken> Tokenize(const std::string&);
+  inline static const std::string INVALID_TOKEN_MSG =
+      "QueryLexer found an invalid token";
+
   QueryLexer();
+  std::vector<qpp::QueryToken> Tokenize(const std::string&);
 
  private:
   sIterator it;
