@@ -10,10 +10,11 @@
 #include <vector>
 
 #include "FollowKB.h"
+#include "ParentKB.h"
 
 using namespace std;
 
-class PKB : public FollowKB {
+class PKB : public FollowKB, public ParentKB {
  public:
   // Constructor
   PKB();
