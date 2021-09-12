@@ -5,29 +5,13 @@ using namespace std;
 TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   // Init
   PKB db = PKB();
-  UNO_SET_OF_STMT_NO expected({});
-  for (int i = 0; i < 1000; i++) {
-    db.addStmt(i);
-    expected.insert(i);
-  }
 
-  REQUIRE(db.getAllStmts() == expected);
-
-  REQUIRE(db.addReadStmt(1));
-  REQUIRE(db.addPrintStmt(2));
-  REQUIRE(db.addCallStmt(3));
-  REQUIRE(db.addWhileStmt(4));
-  REQUIRE(db.addIfStmt(5));
-  REQUIRE(db.addAssignStmt(6));
-
-  // Duplicate, return false
-  REQUIRE(!db.addReadStmt(1));
-  REQUIRE(!db.addPrintStmt(2));
-  REQUIRE(!db.addCallStmt(3));
-  REQUIRE(!db.addWhileStmt(4));
-  REQUIRE(!db.addIfStmt(5));
-  REQUIRE(!db.addAssignStmt(6));
-
+  db.addReadStmt(1);
+  db.addPrintStmt(2);
+  db.addCallStmt(3);
+  db.addWhileStmt(4);
+  db.addIfStmt(5);
+  db.addAssignStmt(6);
 
   // Boolean positive
   REQUIRE(db.isReadStmt(1));
@@ -46,6 +30,7 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   REQUIRE(!db.isAssignStmt(3));
 
   // Check if set is correct
+  REQUIRE(db.getAllStmts() == UNO_SET_OF_STMT_NO({1, 2, 3, 4, 5, 6}));
   REQUIRE(db.getAllReadStmts() == UNO_SET_OF_STMT_NO({1}));
   REQUIRE(db.getAllPrintStmts() == UNO_SET_OF_STMT_NO({2}));
   REQUIRE(db.getAllCallStmts() == UNO_SET_OF_STMT_NO({3}));
