@@ -155,7 +155,7 @@ Param QueryParser::getStmtRefParam() {
   }
 
   if (t.tokenType == TokenType::INTEGER) {
-    return {ParamType::LITERAL, t.value};
+    return {ParamType::INTEGER_LITERAL, t.value};
   }
 
   if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
@@ -184,7 +184,7 @@ Param QueryParser::getEntRefParam() {
     string ident = getName();
     getExactCharSymbol('"');
 
-    return {ParamType::LITERAL, ident};
+    return {ParamType::NAME_LITERAL, ident};
   }
 
   if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
@@ -212,7 +212,7 @@ pair<RefType, Param> QueryParser::getEntOrStmtRefParam() {
   }
 
   if (t.tokenType == TokenType::INTEGER) {
-    return {RefType::STATEMENT_REF, {ParamType::LITERAL, t.value}};
+    return {RefType::STATEMENT_REF, {ParamType::INTEGER_LITERAL, t.value}};
   }
 
   if (t.tokenType == TokenType::CHAR_SYMBOL && t.value.at(0) == '"') {
@@ -222,7 +222,7 @@ pair<RefType, Param> QueryParser::getEntOrStmtRefParam() {
     // Verify closing quotations
     getExactCharSymbol('"');
 
-    return {RefType::ENTITY_REF, {ParamType::LITERAL, ident}};
+    return {RefType::ENTITY_REF, {ParamType::NAME_LITERAL, ident}};
   }
 
   if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
@@ -297,16 +297,15 @@ SelectClause QueryParser::parseSelectClause() {
   Synonym selectSynonym = {designEntity, sName};
 
   // Parse clauses
-  vector<SuchThatClause> suchThatClauses;
-  vector<PatternClause> patternClauses;
+  vector<ConditionClause> conditionClauses;
 
   if (hasNextToken()) {
     string clauseKeyword = getKeyword();
 
     if (clauseKeyword == "such") {
       string nextKeyword = getExactKeyword("that");
-      SuchThatClause suchThatClause = parseSuchThatClause();
-      suchThatClauses.push_back(suchThatClause);
+      ConditionClause clause = parseSuchThatClause();
+      conditionClauses.push_back(clause);
 
       // if there is a pattern clause after a such that clause
       if (hasNextToken()) {
@@ -327,10 +326,10 @@ SelectClause QueryParser::parseSelectClause() {
     }
   }
 
-  return {selectSynonym, suchThatClauses, patternClauses};
+  return {selectSynonym, conditionClauses};
 }
 
-SuchThatClause QueryParser::parseSuchThatClause() {
+ConditionClause QueryParser::parseSuchThatClause() {
   string relationship = getKeyword();
   if (keywordToStmtRefRs.find(relationship) != keywordToStmtRefRs.end()) {
     RelationshipType type = keywordToStmtRefRs.at(relationship);
@@ -343,7 +342,8 @@ SuchThatClause QueryParser::parseSuchThatClause() {
 
     getExactCharSymbol(')');
 
-    return {type, left, right};
+    SuchThatClause stClause = {type, left, right};
+    return {stClause, {}, ConditionClauseType::SUCH_THAT};
   }
 
   if (relationship == "Uses") {
@@ -385,7 +385,8 @@ SuchThatClause QueryParser::parseSuchThatClause() {
     }
     getExactCharSymbol(')');
 
-    return {type, left, right};
+    SuchThatClause stClause = {type, left, right};
+    return {stClause, {}, ConditionClauseType::SUCH_THAT};
   }
 
   if (relationship == "Modifies") {
@@ -427,7 +428,8 @@ SuchThatClause QueryParser::parseSuchThatClause() {
     }
     getExactCharSymbol(')');
 
-    return {type, left, right};
+    SuchThatClause stClause = {type, left, right};
+    return {stClause, {}, ConditionClauseType::SUCH_THAT};
   }
 
   throw runtime_error("Invalid param format.");

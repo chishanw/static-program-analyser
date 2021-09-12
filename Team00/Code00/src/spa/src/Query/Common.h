@@ -30,7 +30,17 @@ enum class RelationshipType {
 
 enum class MatchType { EXACT, SUB_EXPRESSION };
 
-enum class ParamType { SYNONYM, LITERAL, WILDCARD };
+enum class ParamType {
+  SYNONYM,
+  INTEGER_LITERAL,
+  NAME_LITERAL,
+  WILDCARD
+};
+
+enum class ConditionClauseType {
+  SUCH_THAT,
+  PATTERN
+};
 
 struct Synonym {
   const DesignEntity entity;
@@ -55,9 +65,14 @@ struct PatternClause {
   const Param rightParam;
 };
 
+struct ConditionClause {
+  const SuchThatClause suchThatClause;
+  const PatternClause patternClause;
+  const ConditionClauseType conditionClauseType;
+};
+
 struct SelectClause {
   const Synonym selectSynonym;
-  const std::vector<SuchThatClause> suchThatClauses;
-  const std::vector<PatternClause> patternClauses;
+  const std::vector<ConditionClause> conditionClauses;
 };
 }  // namespace query

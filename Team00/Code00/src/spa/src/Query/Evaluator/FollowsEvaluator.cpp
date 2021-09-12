@@ -19,7 +19,8 @@ bool FollowsEvaluator::evaluateBoolFollows(const Param& left,
   // if both literal - Follows(1,2)
   // if one literal + underscore - Follows(_, 2), Follows(2, _)
   // if both underscore - Follows(_, _)
-  if (leftType == ParamType::LITERAL && rightType == ParamType::LITERAL) {
+  if (leftType == ParamType::INTEGER_LITERAL &&
+      rightType == ParamType::INTEGER_LITERAL) {
     STMT_NO s2 = pkb->getFollows(stoi(left.value));
     return s2 == stoi(right.value);
   }
@@ -44,7 +45,7 @@ UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollows(const Param& left,
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
-  if (leftType == ParamType::LITERAL) {
+  if (leftType == ParamType::INTEGER_LITERAL) {
     STMT_NO s2 = pkb->getFollows(stoi(left.value));
     if (s2 != -1) {
       return {s2};
@@ -83,7 +84,8 @@ bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
-  if (leftType == ParamType::LITERAL && rightType == ParamType::LITERAL) {
+  if (leftType == ParamType::INTEGER_LITERAL &&
+      rightType == ParamType::INTEGER_LITERAL) {
     return pkb->isFollowsT(stoi(left.value), stoi(right.value));
   }
 
@@ -108,7 +110,7 @@ UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
-  if (leftType == ParamType::LITERAL) {
+  if (leftType == ParamType::INTEGER_LITERAL) {
     return pkb->getFollowsT(stoi(left.value));
   }
 

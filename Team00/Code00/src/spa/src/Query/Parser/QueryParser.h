@@ -47,7 +47,7 @@ class QueryParser {
 
   SynonymMap parseSynonyms();
   query::SelectClause parseSelectClause();
-  query::SuchThatClause parseSuchThatClause();
-  query::PatternClause parsePatternClause();
+  query::ConditionClause parseSuchThatClause();
+  query::ConditionClause parsePatternClause();
   // TODO(Beatrice): Implement parser for pattern clause
 };

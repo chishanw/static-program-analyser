@@ -15,8 +15,8 @@ TEST_CASE("FollowsEvaluator: Follows") {
     pkb->setFollows(1, 2);
     FollowsEvaluator fe(pkb);
 
-    Param left = {ParamType::LITERAL, "1"};
-    Param right = {ParamType::LITERAL, "2"};
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
+    Param right = {ParamType::INTEGER_LITERAL, "2"};
     bool result = fe.evaluateBoolFollows(left, right);
     REQUIRE(result == true);
   }
@@ -25,7 +25,7 @@ TEST_CASE("FollowsEvaluator: Follows") {
     pkb->setFollows(1, 2);
     FollowsEvaluator fe(pkb);
 
-    Param left = {ParamType::LITERAL, "1"};
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::WILDCARD, "_"};
     bool result = fe.evaluateBoolFollows(left, right);
     REQUIRE(result == true);
@@ -35,7 +35,7 @@ TEST_CASE("FollowsEvaluator: Follows") {
     pkb->setFollows(1, 2);
     FollowsEvaluator fe(pkb);
 
-    Param left = {ParamType::LITERAL, "1"};
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
     UNO_SET_OF_STMT_NO result = fe.evaluateStmtFollows(left, right);
     REQUIRE(result == UNO_SET_OF_STMT_NO({2}));
@@ -49,8 +49,8 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
     pkb->addFollowsT(1, 2);
     FollowsEvaluator fe(pkb);
 
-    Param left = {ParamType::LITERAL, "1"};
-    Param right = {ParamType::LITERAL, "2"};
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
+    Param right = {ParamType::INTEGER_LITERAL, "2"};
     bool result = fe.evaluateBoolFollowsT(left, right);
     REQUIRE(result == true);
   }
@@ -59,7 +59,7 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
     pkb->addFollowsT(1, 2);
     FollowsEvaluator fe(pkb);
 
-    Param left = {ParamType::LITERAL, "1"};
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::WILDCARD, "_"};
     bool result = fe.evaluateBoolFollowsT(left, right);
     REQUIRE(result == true);
@@ -70,7 +70,7 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
     pkb->addFollowsT(1, 3);
     FollowsEvaluator fe(pkb);
 
-    Param left = {ParamType::LITERAL, "1"};
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
     UNO_SET_OF_STMT_NO result = fe.evaluateStmtFollowsT(left, right);
     REQUIRE(result == UNO_SET_OF_STMT_NO({2, 3}));

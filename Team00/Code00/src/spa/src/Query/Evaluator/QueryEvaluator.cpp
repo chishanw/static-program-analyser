@@ -24,11 +24,12 @@ QueryEvaluator::QueryEvaluator(PKB* pkb) : followsEvaluator(pkb) {
 unordered_set<int> QueryEvaluator::evaluateQuery(
     unordered_map<string, DesignEntity> querySynonymList, SelectClause select) {
   Synonym selectSynonym = select.selectSynonym;
-  vector<SuchThatClause> suchThatClauses = select.suchThatClauses;
-  vector<PatternClause> patternClauses = select.patternClauses;
+  vector<ConditionClause> conditionClauses = select.conditionClauses;
 
-  for (auto clause : select.suchThatClauses) {
-    evaluateSuchThatClause(clause);
+  for (auto clause : conditionClauses) {
+    if (clause.conditionClauseType == ConditionClauseType::SUCH_THAT) {
+      evaluateSuchThatClause(clause.suchThatClause);
+    }
 
     if (!areAllClausesTrue) {
       // early termination as soon as any clause is false
@@ -342,17 +343,22 @@ vector<vector<int>> QueryEvaluator::evaluateRefPairSuchThat(
 bool QueryEvaluator::isBoolClause(const Param& left, const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;
-  return (leftType == ParamType::LITERAL && rightType == ParamType::LITERAL) ||
-         (leftType == ParamType::LITERAL && rightType == ParamType::WILDCARD) ||
-         (leftType == ParamType::WILDCARD && rightType == ParamType::LITERAL) ||
+  return (leftType == ParamType::INTEGER_LITERAL &&
+          rightType == ParamType::INTEGER_LITERAL) ||
+         (leftType == ParamType::INTEGER_LITERAL &&
+          rightType == ParamType::WILDCARD) ||
+         (leftType == ParamType::WILDCARD &&
+          rightType == ParamType::INTEGER_LITERAL) ||
          (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD);
 }
 
 bool QueryEvaluator::isRefClause(const Param& left, const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;
-  return (leftType == ParamType::SYNONYM && rightType == ParamType::LITERAL) ||
-         (leftType == ParamType::LITERAL && rightType == ParamType::SYNONYM);
+  return (leftType == ParamType::SYNONYM &&
+          rightType == ParamType::INTEGER_LITERAL) ||
+         (leftType == ParamType::INTEGER_LITERAL &&
+          rightType == ParamType::SYNONYM);
 }
 
 unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(

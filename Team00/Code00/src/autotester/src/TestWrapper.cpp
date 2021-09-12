@@ -54,46 +54,17 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
   try {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
 
-    // TODO(Beatrice): Remove before submission
-    DMOprintInfoMsg("PARSED SYNONYM MAP:");
-    SynonymMap map = get<0>(parsedQuery);
-    for (auto& it : map) {
-      DMOprintInfoMsg(
-          "[" + it.first + "," +
-          to_string(static_cast<std::underlying_type<DesignEntity>::type>(
-              it.second)) +
-          "]");
-    }
-
-    SelectClause clause = get<1>(parsedQuery);
-    DMOprintInfoMsg("PARSED SELECT SYNONYM:");
-    DMOprintInfoMsg(
-        clause.selectSynonym.name + "," +
-        to_string(static_cast<std::underlying_type<DesignEntity>::type>(
-            clause.selectSynonym.entity)));
-
-    SuchThatClause suchThatClause = clause.suchThatClauses.front();
-    DMOprintInfoMsg("FIRST PARSED SUCH_THAT CLAUSE: ");
-    string clauseString =
-        "[" +
-        to_string(static_cast<std::underlying_type<RelationshipType>::type>(
-            suchThatClause.relationshipType)) +
-        "," + "(" +
-        to_string(static_cast<std::underlying_type<ParamType>::type>(
-            suchThatClause.leftParam.type)) +
-        "," + suchThatClause.leftParam.value + ")," + "(" +
-        to_string(static_cast<std::underlying_type<ParamType>::type>(
-            suchThatClause.rightParam.type)) +
-        "," + suchThatClause.rightParam.value + ")" + "]";
-    DMOprintInfoMsg(clauseString);
-
     std::unordered_set<int> evaluatedResult = QueryEvaluator(pkb).evaluateQuery(
         get<0>(parsedQuery), get<1>(parsedQuery));
+
+    SynonymMap map = get<0>(parsedQuery);
+    SelectClause clause = get<1>(parsedQuery);
     DesignEntity selectSynDesignEntity = map.at(clause.selectSynonym.name);
     results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
                                                  evaluatedResult);
   } catch (const exception& ex) {
     cout << "Exception caught: " << ex.what() << "\n";
+    return;
   }
 
   // store the answers to the query in the results list (it is initially empty)
