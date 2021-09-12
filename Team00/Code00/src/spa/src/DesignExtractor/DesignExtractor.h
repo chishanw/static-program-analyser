@@ -15,7 +15,8 @@ class DesignExtractor {
   PKB* pkb;
 
   void ExtractUsesRS(const ProgramAST*);
-  void ExtractUsesRSHelper(const vector<StmtAST*>);
+  std::vector<std::pair<STMT_NO, NAME>> ExtractUsesRSHelper(
+      const vector<StmtAST*>);
 
   void ExtractParent(const ProgramAST*);
   std::vector<std::pair<STMT_NO, STMT_NO>> ExtractParentHelper(

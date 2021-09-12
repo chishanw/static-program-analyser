@@ -55,6 +55,9 @@ TEST_CASE("[DE][Uses R/S] sample source") {
 
   SECTION("Uses R/S") {
     // TODO(gf): add tests once pkb is ready
+    // TODO(gf): Uses r/s result below does not contain the recursive ones in
+    // container stmt, case 3 of UseS
+
     // Uses r/s result: <4, i>
     // Uses r/s result: <5, x>
     // Uses r/s result: <6, x>

@@ -43,47 +43,82 @@ void DesignExtractor::ExtractUsesRS(const ProgramAST* programAST) {
   // Uses (c, v) is defined in the same way as Uses (p, v).
 
   // TODO(de): 4 and 5 is not included in iter1
+
+  vector<pair<STMT_NO, NAME>> result;
+
   for (auto procedure : programAST->ProcedureList) {
-    ExtractUsesRSHelper(procedure->StmtList);
+    result = ExtractUsesRSHelper(procedure->StmtList);
+
+    for (auto p : result) {
+      cout << "Uses r/s result: "
+           << "<" << p.first << ", " << p.second << ">" << endl;
+    }
   }
 }
 
-void DesignExtractor::ExtractUsesRSHelper(const vector<StmtAST*> stmtList) {
-  auto callPKB = [](STMT_NO stmtNo, NAME varName) {
-    // TODO(gf): rm prints and replace with pkb method calls
-    // pkb.setUsesS(stmtNo, varName);
-    cout << "Uses r/s result: "
-         << "<" << stmtNo << ", " << varName << ">" << endl;
-  };
-
-  auto callPKBforList = [](STMT_NO stmtNo, vector<NAME> varNames) {
-    // TODO(gf): rm prints and replace with pkb method calls
-    // pkb.setUsesS(stmtNo, varName);
-    for (auto varName : varNames) {
-      cout << "Uses r/s result: "
-           << "<" << stmtNo << ", " << varName << ">" << endl;
-    }
-  };
+vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
+    const vector<StmtAST*> stmtList) {
+  vector<pair<STMT_NO, NAME>> result;      // resultAtThisNestingLevel
+  vector<pair<STMT_NO, NAME>> resultNext;  // resultAtNextNestingLevel
 
   for (auto stmt : stmtList) {
     if (const AssignStmtAST* assignStmt =
             dynamic_cast<const AssignStmtAST*>(stmt)) {
-      callPKBforList(assignStmt->StmtNo, assignStmt->Expr->GetAllVarNames());
+      for (auto varName : assignStmt->Expr->GetAllVarNames()) {
+        result.push_back(make_pair(assignStmt->StmtNo, varName));
+      }
+
     } else if (const PrintStmtAST* printStmt =
                    dynamic_cast<const PrintStmtAST*>(stmt)) {
-      callPKB(printStmt->StmtNo, printStmt->VarName);
-    } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
-      callPKBforList(ifStmt->StmtNo, ifStmt->CondExpr->GetAllVarNames());
+      result.push_back(make_pair(printStmt->StmtNo, printStmt->VarName));
 
-      ExtractUsesRSHelper(ifStmt->ThenBlock);
-      ExtractUsesRSHelper(ifStmt->ElseBlock);
+    } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      unordered_set<NAME> uniqueAncestorVarNames;  // collate Ancestor VarNames
+
+      for (auto varName : ifStmt->CondExpr->GetAllVarNames()) {
+        result.push_back(make_pair(ifStmt->StmtNo, varName));
+      }
+
+      // then
+      resultNext = ExtractUsesRSHelper(ifStmt->ThenBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+      for (auto res : resultNext) {
+        uniqueAncestorVarNames.insert(res.second);
+      }
+
+      // else
+      resultNext = ExtractUsesRSHelper(ifStmt->ElseBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+      for (auto res : resultNext) {
+        uniqueAncestorVarNames.insert(res.second);
+      }
+
+      // insert Ancestor VarNames
+      for (auto ancestorVarName : uniqueAncestorVarNames) {
+        result.push_back(make_pair(ifStmt->StmtNo, ancestorVarName));
+      }
+
     } else if (const WhileStmtAST* whileStmt =
                    dynamic_cast<const WhileStmtAST*>(stmt)) {
-      callPKBforList(whileStmt->StmtNo, whileStmt->CondExpr->GetAllVarNames());
+      unordered_set<NAME> uniqueAncestorVarNames;  // collate Ancestor VarNames
 
-      ExtractUsesRSHelper(whileStmt->StmtList);
+      for (auto varName : whileStmt->CondExpr->GetAllVarNames()) {
+        result.push_back(make_pair(whileStmt->StmtNo, varName));
+      }
+
+      resultNext = ExtractUsesRSHelper(whileStmt->StmtList);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+      for (auto res : resultNext) {
+        uniqueAncestorVarNames.insert(res.second);
+      }
+      // insert Ancestor VarNames
+      for (auto ancestorVarName : uniqueAncestorVarNames) {
+        result.push_back(make_pair(whileStmt->StmtNo, ancestorVarName));
+      }
     }
   }
+
+  return result;
 }
 
 void DesignExtractor::ExtractParent(const ProgramAST* programAST) {
