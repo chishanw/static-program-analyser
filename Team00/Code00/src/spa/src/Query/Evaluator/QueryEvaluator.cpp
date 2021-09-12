@@ -366,7 +366,7 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(
   DesignEntity designEntity = allQuerySynonyms.find(synonymName)->second;
   switch (designEntity) {
     case DesignEntity::STATEMENT:
-      return pkb->getAllStatements();
+      return pkb->getAllStmts();
     default:
       cout << "Todo: READ, PRINT, CALL, WHILE, IF, ASSIGN, VARIABLE, "
               "CONSTANT, "

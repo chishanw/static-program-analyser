@@ -10,9 +10,9 @@ using namespace query;
 
 TEST_CASE("stmt s; Select s") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
 
   ResultProjector projector(pkb);
   list<string> result = projector.formatResults(DesignEntity::STATEMENT,
@@ -23,9 +23,9 @@ TEST_CASE("stmt s; Select s") {
 
 TEST_CASE("assign a; Select a") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
 
   ResultProjector projector(pkb);
   list<string> result =

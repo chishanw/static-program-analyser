@@ -10,9 +10,9 @@ using namespace query;
 
 TEST_CASE("Select s") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
 
   QueryEvaluator qe(pkb);
   unordered_map<string, DesignEntity> synonyms = {
@@ -28,10 +28,10 @@ TEST_CASE("Select s") {
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
-  pkb->addStatement(4);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addStmt(4);
   pkb->setFollows(1, 2);
   pkb->setFollows(2, 3);
   QueryEvaluator qe(pkb);
@@ -160,10 +160,10 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
-  pkb->addStatement(4);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addStmt(4);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
@@ -273,9 +273,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
   pkb->addFollowsT(1, 2);
   pkb->addFollowsT(1, 3);
   pkb->addFollowsT(2, 3);
@@ -390,9 +390,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
@@ -484,9 +484,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
   pkb->setFollows(1, 2);
   pkb->setFollows(2, 3);
   pkb->addFollowsT(1, 2);
@@ -692,9 +692,9 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: 2 Clauses - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStatement(1);
-  pkb->addStatement(2);
-  pkb->addStatement(3);
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
   pkb->setFollows(1, 2);
   pkb->setFollows(2, 3);
   QueryEvaluator qe(pkb);
