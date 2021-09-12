@@ -25,17 +25,19 @@ class ParentKB {
   void addParentT(STMT_NO s1, STMT_NO s2);
 
   // Methods for QE
+  bool isParent(STMT_NO s1, STMT_NO s2);
   bool isParentT(STMT_NO s1, STMT_NO s2);
-  STMT_NO getParent(STMT_NO s1);
-  STMT_NO getChildren(STMT_NO s2);
-  UNO_SET_OF_STMT_NO getParentsT(STMT_NO s1);
-  UNO_SET_OF_STMT_NO getChildrenT(STMT_NO s2);
-  std::vector<LIST_STMT_NO> getAllParentsStmtPairs();
+  UNO_SET_OF_STMT_NO getChildren(STMT_NO s1);
+  STMT_NO getParent(STMT_NO s2);
+  UNO_SET_OF_STMT_NO getChildrenT(STMT_NO s1);
+  UNO_SET_OF_STMT_NO getParentsT(STMT_NO s2);
+  std::vector<std::pair<STMT_NO, LIST_STMT_NO>> getAllParentsStmtPairs();
   std::vector<std::pair<STMT_NO, LIST_STMT_NO>> getAllParentsTStmtPairs();
 
  private:
   // Parent Tables
-  std::unordered_map<STMT_NO, STMT_NO> table;
+  // Each children can only have 1 immediate parent
+  std::unordered_map<STMT_NO, UNO_SET_OF_STMT_NO> table;
   std::unordered_map<STMT_NO, STMT_NO> invTable;
   std::unordered_map<STMT_NO, UNO_SET_OF_STMT_NO> tableT;
   std::unordered_map<STMT_NO, UNO_SET_OF_STMT_NO> invTableT;
