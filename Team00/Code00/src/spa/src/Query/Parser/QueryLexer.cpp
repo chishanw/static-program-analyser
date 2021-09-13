@@ -112,8 +112,7 @@ vector<QueryToken> QueryLexer::Tokenize(const string& in) {
       tokens.push_back(getInteger());
 
     } else {
-      std::cerr << "INVALID: " << nextChar
-                << endl;  // TODO(Beatrice): remove for submission
+      std::cerr << "INVALID: " << nextChar << endl;
       throw std::runtime_error(INVALID_TOKEN_MSG);
     }
     hasNextChar = peekChar().has_value();
