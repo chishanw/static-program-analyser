@@ -26,9 +26,7 @@ bool FollowsEvaluator::evaluateBoolFollows(const Param& left,
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    // todo after pkb implements necessary methods
-    // return !getAllStmtPairs().empty();
-    return true;
+    return !(pkb->getAllFollowsStmtPairs()).empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
@@ -68,15 +66,22 @@ UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollows(const Param& left,
 vector<vector<int>> FollowsEvaluator::evaluateStmtPairFollows(
     const Param& left, const Param& right) {
   if (left.type == ParamType::WILDCARD) {
-    // return pkb->getAllFollowsStatementPairs(); and extract out right param
-    return {{2}, {3}};
+    vector<LIST_STMT_NO> results = pkb->getAllFollowsStmtPairs();
+    vector<vector<int>> formattedResults = {};
+    for (LIST_STMT_NO result : results) {
+      formattedResults.push_back({result.back()});
+    }
+    return formattedResults;
   }
   if (right.type == ParamType::WILDCARD) {
-    // return pkb->getAllFollowsStatementPairs(); and extract out left param
-    return {{1}, {2}};
+    vector<LIST_STMT_NO> results = pkb->getAllFollowsStmtPairs();
+    vector<vector<int>> formattedResults = {};
+    for (LIST_STMT_NO result : results) {
+      formattedResults.push_back({result.front()});
+    }
+    return formattedResults;
   }
-  // return pkb->getAllFollowsStatementPairs();
-  return {{1, 2}, {2, 3}};
+  return pkb->getAllFollowsStmtPairs();
 }
 
 bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
@@ -90,9 +95,7 @@ bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    // todo after pkb implements necessary methods
-    // return !getAllStmtPairs().empty();
-    return true;
+    return !(pkb->getAllFollowsTStmtPairs()).empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
@@ -122,6 +125,5 @@ UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
 // synonym & synonym -> getAllFollowsTStmtPair()
 vector<pair<int, vector<int>>> FollowsEvaluator::evaluateStmtPairFollowsT(
     const Param& left, const Param& right) {
-  // return pkb->getAllFollowsTStatementPairs();
-  return {{1, {2, 3}}, {2, {3}}};
+  return pkb->getAllFollowsTStmtPairs();
 }

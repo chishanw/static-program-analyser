@@ -10,6 +10,8 @@ using namespace query;
 
 TEST_CASE("FollowsEvaluator: Follows") {
   PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
 
   SECTION("Select s such that Follows(1, 2)") {
     pkb->setFollows(1, 2);
@@ -44,6 +46,9 @@ TEST_CASE("FollowsEvaluator: Follows") {
 
 TEST_CASE("FollowsEvaluator: FollowsT") {
   PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
 
   SECTION("Select s such that FollowsT(1, 2)") {
     pkb->addFollowsT(1, 2);

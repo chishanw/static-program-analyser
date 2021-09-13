@@ -3,10 +3,12 @@
 #include <PKB/PKB.h>
 #include <Query/Common.h>
 #include <Query/Evaluator/FollowsEvaluator.h>
+#include <Query/Evaluator/ParentEvaluator.h>
 
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 class QueryEvaluator {
@@ -19,21 +21,12 @@ class QueryEvaluator {
  private:
   PKB* pkb;
   FollowsEvaluator followsEvaluator;
+  ParentEvaluator parentEvaluator;
 
   bool areAllClausesTrue;
   std::vector<std::unordered_map<std::string, int>> queryResults;
   std::vector<std::unordered_map<std::string, int>> currentQueryResults;
   std::unordered_set<std::string> queryResultsSynonyms;
-
-  // helper methods
-  bool isBoolClause(const query::Param& left, const query::Param& right);
-  bool isRefClause(const query::Param& left, const query::Param& right);
-  std::unordered_set<int> getAllValuesOfSynonym(
-      std::unordered_map<std::string, query::DesignEntity> allQuerySynonyms,
-      std::string synonymName);
-  std::unordered_set<int> getSelectSynonymFinalResults(
-      std::unordered_map<std::string, query::DesignEntity> allQuerySynonyms,
-      string synonymName);
 
   // methods to build queryResults
   void initializeQueryResults(std::vector<std::vector<int>> incomingResults,
@@ -52,11 +45,22 @@ class QueryEvaluator {
   void evaluateSuchThatClause(query::SuchThatClause);
   void evaluateFollowsClause(query::SuchThatClause);
   void evaluateFollowsTClause(query::SuchThatClause);
+  void evaluateParentClause(query::SuchThatClause);
+  void evaluateParentTClause(query::SuchThatClause);
 
-  std::vector<std::vector<int>> evaluateRefSuchThat(
-      query::RelationshipType relationshipType, const query::Param& left,
-      const query::Param& right);
-  std::vector<std::vector<int>> evaluateRefPairSuchThat(
-      query::RelationshipType relationshipType, const query::Param& left,
-      const query::Param& right);
+  // helper methods
+  bool isBoolClause(const query::Param& left, const query::Param& right);
+  bool isRefClause(const query::Param& left, const query::Param& right);
+
+  std::vector<std::vector<int>> formatRefResults(
+      std::unordered_set<int> results);
+  std::vector<std::vector<int>> formatRefPairResults(
+      std::vector<std::pair<int, std::vector<int>>> results);
+
+  std::unordered_set<int> getAllValuesOfSynonym(
+      std::unordered_map<std::string, query::DesignEntity> allQuerySynonyms,
+      std::string synonymName);
+  std::unordered_set<int> getSelectSynonymFinalResults(
+      std::unordered_map<std::string, query::DesignEntity> allQuerySynonyms,
+      string synonymName);
 };
