@@ -23,7 +23,9 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
 }
 
 unordered_set<int> QueryEvaluator::evaluateQuery(
-    unordered_map<string, DesignEntity> querySynonymList, SelectClause select) {
+    unordered_map<string, DesignEntity> synonymMap, SelectClause select) {
+  this->synonymMap = synonymMap;
+
   Synonym selectSynonym = select.selectSynonym;
   vector<ConditionClause> conditionClauses = select.conditionClauses;
 
@@ -38,7 +40,7 @@ unordered_set<int> QueryEvaluator::evaluateQuery(
     }
   }
 
-  return getSelectSynonymFinalResults(querySynonymList, selectSynonym.name);
+  return getSelectSynonymFinalResults(selectSynonym.name);
 }
 
 void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
@@ -93,10 +95,12 @@ void QueryEvaluator::evaluateFollowsClause(SuchThatClause clause) {
     return;
   }
 
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
-    initializeQueryResults(incomingResults, left, right);
+    initializeQueryResults(filteredIncomingResults, left, right);
   } else {
-    addIncomingResult(incomingResults, left, right);
+    addIncomingResults(filteredIncomingResults, left, right);
   }
 }
 
@@ -128,10 +132,12 @@ void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
     return;
   }
 
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
-    initializeQueryResults(incomingResults, left, right);
+    initializeQueryResults(filteredIncomingResults, left, right);
   } else {
-    addIncomingResult(incomingResults, left, right);
+    addIncomingResults(filteredIncomingResults, left, right);
   }
 }
 
@@ -163,10 +169,12 @@ void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
     return;
   }
 
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
-    initializeQueryResults(incomingResults, left, right);
+    initializeQueryResults(filteredIncomingResults, left, right);
   } else {
-    addIncomingResult(incomingResults, left, right);
+    addIncomingResults(filteredIncomingResults, left, right);
   }
 }
 
@@ -198,10 +206,12 @@ void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
     return;
   }
 
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
-    initializeQueryResults(incomingResults, left, right);
+    initializeQueryResults(filteredIncomingResults, left, right);
   } else {
-    addIncomingResult(incomingResults, left, right);
+    addIncomingResults(filteredIncomingResults, left, right);
   }
 }
 
@@ -231,23 +241,62 @@ void QueryEvaluator::initializeQueryResults(vector<vector<int>> incomingResults,
   }
 }
 
-void QueryEvaluator::addIncomingResult(vector<vector<int>> incomingResults,
-                                       const Param& left, const Param& right) {
-  vector<string> incomingResultsSynonyms = {};
+vector<vector<int>> QueryEvaluator::filterIncomingResults(
+    vector<vector<int>> incomingResults, const Param& left,
+    const Param& right) {
+  vector<vector<int>> filteredResults = {};
+
+  if ((left.type == ParamType::SYNONYM) && (right.type == ParamType::SYNONYM)) {
+    for (vector<int> incomingResult : incomingResults) {
+      bool isLeftSynCorrectDesignEntity = checkIsCorrectDesignEntity(
+          incomingResult.front(), synonymMap[left.value]);
+      bool isRightSynCorrectDesignEntity = checkIsCorrectDesignEntity(
+          incomingResult.back(), synonymMap[right.value]);
+      if (isLeftSynCorrectDesignEntity && isRightSynCorrectDesignEntity) {
+        filteredResults.push_back(incomingResult);
+      }
+    }
+    return filteredResults;
+  }
+
+  if (left.type == ParamType::SYNONYM) {
+    for (vector<int> incomingResult : incomingResults) {
+      bool isLeftSynCorrectDesignEntity = checkIsCorrectDesignEntity(
+          incomingResult.front(), synonymMap[left.value]);
+      if (isLeftSynCorrectDesignEntity) {
+        filteredResults.push_back(incomingResult);
+      }
+    }
+    return filteredResults;
+  }
+
+  // right.type == ParamType::SYNONYM
+  for (vector<int> incomingResult : incomingResults) {
+    bool isRightSynCorrectDesignEntity = checkIsCorrectDesignEntity(
+        incomingResult.front(), synonymMap[right.value]);
+    if (isRightSynCorrectDesignEntity) {
+      filteredResults.push_back(incomingResult);
+    }
+  }
+  return filteredResults;
+}
+
+void QueryEvaluator::addIncomingResults(vector<vector<int>> incomingResults,
+                                        const Param& left, const Param& right) {
   bool isLeftParamSynonym = false;
   bool isRightParamSynonym = false;
   bool isLeftSynInQueryResults = false;
   bool isRightSynInQueryResults = false;
 
   if (left.type == ParamType::SYNONYM) {
-    incomingResultsSynonyms.push_back(left.value);
     isLeftParamSynonym = true;
-    isLeftSynInQueryResults = queryResultsSynonyms.count(left.value) > 0;
+    isLeftSynInQueryResults =
+        queryResultsSynonyms.find(left.value) != queryResultsSynonyms.end();
   }
   if (right.type == ParamType::SYNONYM) {
-    incomingResultsSynonyms.push_back(right.value);
     isRightParamSynonym = true;
-    isRightSynInQueryResults = queryResultsSynonyms.count(right.value) > 0;
+    isRightSynInQueryResults =
+        queryResultsSynonyms.find(right.value) != queryResultsSynonyms.end();
   }
 
   if (isLeftParamSynonym && isRightParamSynonym) {
@@ -279,7 +328,7 @@ void QueryEvaluator::addIncomingResult(vector<vector<int>> incomingResults,
     // both wild cards, do nothing, whether incomingResults is empty is alr
     // checked before calling this method
     if (incomingResults.empty()) {
-      DMOprintErrMsgAndExit("[QE][addIncomingResult] shouldn't reach here");
+      DMOprintErrMsgAndExit("[QE][addIncomingResults] shouldn't reach here");
     }
   }
 }
@@ -329,7 +378,7 @@ void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
         int value = incomingResult[j];
         string synonymName = incomingResultsSynonyms[j];
 
-        if (queryResult.count(synonymName) > 0) {
+        if (queryResult.find(synonymName) != queryResult.end()) {
           if (queryResult[synonymName] != value) {
             isValidQueryResult = false;
             break;
@@ -416,31 +465,60 @@ vector<vector<int>> QueryEvaluator::formatRefPairResults(
   return formattedResults;
 }
 
-unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(
-    unordered_map<string, DesignEntity> allQuerySynonyms, string synonymName) {
-  DesignEntity designEntity = allQuerySynonyms.find(synonymName)->second;
+unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
+  DesignEntity designEntity = synonymMap.find(synonymName)->second;
   switch (designEntity) {
     case DesignEntity::STATEMENT:
       return pkb->getAllStmts();
+    case DesignEntity::READ:
+      return pkb->getAllReadStmts();
+    case DesignEntity::PRINT:
+      return pkb->getAllPrintStmts();
+    case DesignEntity::CALL:
+      return pkb->getAllCallStmts();
+    case DesignEntity::WHILE:
+      return pkb->getAllWhileStmts();
+    case DesignEntity::IF:
+      return pkb->getAllIfStmts();
+    case DesignEntity::ASSIGN:
+      return pkb->getAllAssignStmts();
     default:
-      cout << "Todo: READ, PRINT, CALL, WHILE, IF, ASSIGN, VARIABLE, "
-              "CONSTANT, "
-              "PROCEDURE\n";
+      cout << "Todo: VARIABLE, CONSTANT, PROCEDURE\n";
       return {};
   }
 }
 
 unordered_set<int> QueryEvaluator::getSelectSynonymFinalResults(
-    unordered_map<string, DesignEntity> allQuerySynonyms, string synonymName) {
-  if (queryResultsSynonyms.count(synonymName) < 1) {
-    return getAllValuesOfSynonym(allQuerySynonyms, synonymName);
+    string synonymName) {
+  if (queryResultsSynonyms.find(synonymName) == queryResultsSynonyms.end()) {
+    return getAllValuesOfSynonym(synonymName);
   }
   unordered_set<int> results = {};
   // after iter 1 should be selecting from queryResults
   for (unordered_map<string, int> res : currentQueryResults) {
-    if (res.count(synonymName) > 0) {
+    if (res.find(synonymName) != res.end()) {
       results.insert(res[synonymName]);
     }
   }
   return results;
+}
+
+bool QueryEvaluator::checkIsCorrectDesignEntity(int result,
+                                                DesignEntity designEntity) {
+  switch (designEntity) {
+    case DesignEntity::READ:
+      return pkb->isReadStmt(result);
+    case DesignEntity::PRINT:
+      return pkb->isPrintStmt(result);
+    case DesignEntity::CALL:
+      return pkb->isCallStmt(result);
+    case DesignEntity::WHILE:
+      return pkb->isWhileStmt(result);
+    case DesignEntity::IF:
+      return pkb->isIfStmt(result);
+    case DesignEntity::ASSIGN:
+      return pkb->isAssignStmt(result);
+    default:
+      return true;
+  }
 }

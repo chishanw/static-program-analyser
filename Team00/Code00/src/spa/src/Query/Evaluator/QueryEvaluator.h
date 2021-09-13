@@ -15,11 +15,12 @@ class QueryEvaluator {
  public:
   explicit QueryEvaluator(PKB*);
   std::unordered_set<int> evaluateQuery(
-      std::unordered_map<string, query::DesignEntity> synonyms,
+      std::unordered_map<string, query::DesignEntity> synonymMap,
       query::SelectClause select);
 
  private:
   PKB* pkb;
+  std::unordered_map<std::string, query::DesignEntity> synonymMap;
   FollowsEvaluator followsEvaluator;
   ParentEvaluator parentEvaluator;
 
@@ -29,11 +30,14 @@ class QueryEvaluator {
   std::unordered_set<std::string> queryResultsSynonyms;
 
   // methods to build queryResults
+  std::vector<std::vector<int>> filterIncomingResults(
+      std::vector<std::vector<int>> incomingResults, const query::Param& left,
+      const query::Param& right);
   void initializeQueryResults(std::vector<std::vector<int>> incomingResults,
                               const query::Param& left,
                               const query::Param& right);
-  void addIncomingResult(std::vector<std::vector<int>> incomingResults,
-                         const query::Param& left, const query::Param& right);
+  void addIncomingResults(std::vector<std::vector<int>> incomingResults,
+                          const query::Param& left, const query::Param& right);
   void filter(std::vector<std::vector<int>> incomingResults,
               std::vector<string> incomingResultsSynonyms);
   void innerJoin(std::vector<std::vector<int>> incomingResults,
@@ -57,10 +61,9 @@ class QueryEvaluator {
   std::vector<std::vector<int>> formatRefPairResults(
       std::vector<std::pair<int, std::vector<int>>> results);
 
-  std::unordered_set<int> getAllValuesOfSynonym(
-      std::unordered_map<std::string, query::DesignEntity> allQuerySynonyms,
-      std::string synonymName);
-  std::unordered_set<int> getSelectSynonymFinalResults(
-      std::unordered_map<std::string, query::DesignEntity> allQuerySynonyms,
-      string synonymName);
+  std::unordered_set<int> getAllValuesOfSynonym(std::string synonymName);
+  std::unordered_set<int> getSelectSynonymFinalResults(string synonymName);
+
+  bool checkIsCorrectDesignEntity(int stmtNum,
+                                  query::DesignEntity designEntity);
 };

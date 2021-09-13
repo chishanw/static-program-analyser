@@ -1118,3 +1118,218 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Falsy Values") {
     REQUIRE(results == unordered_set<int>({}));
   }
 }
+
+TEST_CASE("QueryEvaluator: 1 Clause, Different Design Entities") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i < 8; i++) {
+    pkb->addStmt(i);
+    if (i != 7) {
+      pkb->setFollows(i, i + 1);
+    }
+  }
+  pkb->addReadStmt(1);
+  pkb->addPrintStmt(2);
+  pkb->addCallStmt(3);
+  pkb->addWhileStmt(4);
+  pkb->addIfStmt(5);
+  pkb->addAssignStmt(6);
+  pkb->addAssignStmt(7);
+  pkb->setParent(4, 5);
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"rd", DesignEntity::READ},
+      {"pr", DesignEntity::PRINT},    {"cll", DesignEntity::CALL},
+      {"w", DesignEntity::WHILE},     {"ifs", DesignEntity::IF},
+      {"a", DesignEntity::ASSIGN}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym rd = {DesignEntity::READ, "rd"};
+  Synonym pr = {DesignEntity::PRINT, "pr"};
+  Synonym cll = {DesignEntity::CALL, "cll"};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  vector<ConditionClause> conditionClauses = {};
+
+  // CHECK SELECTION OF INDIVIDUAL STMT TYPES
+  SECTION("stmt s; Select s such that Follows(s, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("read rd; Select rd such that Follows(rd, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "rd"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {rd, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("print pr; Select pr such that Follows(pr, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "pr"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {pr, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({2}));
+  }
+
+  SECTION("call cll; Select cll such that Follows(cll, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "cll"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {cll, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("while w; Select w such that Follows(w, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "w"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {w, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({4}));
+  }
+
+  SECTION("if ifs; Select ifs such that Follows(ifs, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "ifs"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {ifs, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({5}));
+  }
+
+  SECTION("assign a; Select a such that Follows(a, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "a"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({6}));
+  }
+
+  // CHECK COMBINATIONS OF PARAM STMT TYPES
+  SECTION("read rd; Select rd such that Follows(rd, 2)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "rd"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {rd, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("print pr; Select cll such that Follows(1, pr)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::SYNONYM, "pr"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {pr, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({2}));
+  }
+
+  SECTION("read rd; print pr; Select rd such that Follows(rd, pr)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "rd"},
+                                     {ParamType::SYNONYM, "pr"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {rd, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("assign a; Select a such that Follows(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({6, 7}));
+  }
+
+  SECTION("while w; Select w such that Parent(w, 5)") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT,
+                                     {ParamType::SYNONYM, "w"},
+                                     {ParamType::INTEGER_LITERAL, "5"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {w, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({4}));
+  }
+
+  SECTION("if ifs; Select ifs such that Parent(4, ifs)") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT,
+                                     {ParamType::INTEGER_LITERAL, "4"},
+                                     {ParamType::SYNONYM, "ifs"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {ifs, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({5}));
+  }
+
+  SECTION("while w; if ifs; Select w such that Parent(w, ifs)") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT,
+                                     {ParamType::SYNONYM, "w"},
+                                     {ParamType::SYNONYM, "ifs"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {w, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({4}));
+  }
+
+  SECTION("call cll; Select cll such that Parent(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {cll, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+}
