@@ -5,24 +5,24 @@
 using namespace std;
 
 VarTable::VarTable() {
-  varNameAsKey = unordered_map<string, VarIdx>({});
+  varNameAsKey = unordered_map<string, VAR_IDX>({});
   idxAsKey = vector<string>({});
 }
 
-VarIdx VarTable::insertVar(string varName) {
+VAR_IDX VarTable::insertVar(string varName) {
   try {  // check if variable already exists in table
-    VarIdx index = varNameAsKey.at(varName);
+    VAR_IDX index = varNameAsKey.at(varName);
     return index;
   }
   catch (const out_of_range& e) {  // new variable
-    VarIdx newIndex = getSize();
+    VAR_IDX newIndex = getSize();
     varNameAsKey.insert({varName, newIndex});
     idxAsKey.push_back(varName);
     return newIndex;
   }
 }
 
-string VarTable::getVarName(VarIdx index) {
+string VarTable::getVarName(VAR_IDX index) {
   try {
     return idxAsKey.at(index);
   }
@@ -31,13 +31,21 @@ string VarTable::getVarName(VarIdx index) {
   }
 }
 
-VarIdx VarTable::getVarIndex(string varName) {
+VAR_IDX VarTable::getVarIndex(string varName) {
   try {
     return varNameAsKey.at(varName);
   }
   catch (const out_of_range& e) {
     return -1;
   }
+}
+
+unordered_set<VAR_IDX> VarTable::getAllVariables() {
+  unordered_set<VAR_IDX> result({});
+  for (int i = 0; i < getSize(); i++) {
+    result.insert(i);
+  }
+  return result;
 }
 
 int VarTable::getSize() {

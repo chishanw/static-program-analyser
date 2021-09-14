@@ -5,19 +5,21 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
-typedef int VarIdx;
+typedef int VAR_IDX;
 
 class VarTable {
  public:
   VarTable();
 
-  VarIdx insertVar(std::string varName);
-  std::string getVarName(VarIdx index);
-  VarIdx getVarIndex(std::string varName);
+  VAR_IDX insertVar(std::string varName);
+  std::string getVarName(VAR_IDX index);
+  VAR_IDX getVarIndex(std::string varName);
+  std::unordered_set<VAR_IDX> getAllVariables();
  private:
-  std::unordered_map<std::string, VarIdx> varNameAsKey;
+  std::unordered_map<std::string, VAR_IDX> varNameAsKey;
   std::vector<std::string> idxAsKey;
   int getSize();  // tbh no clue why this was included in the API...
 };

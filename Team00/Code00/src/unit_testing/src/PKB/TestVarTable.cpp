@@ -22,4 +22,8 @@ TEST_CASE("VARTABLE") {
   REQUIRE(test.getVarIndex("a") == 0);
   // retrieve with invalid index
   REQUIRE(test.getVarIndex("c") == -1);
+
+  // test new method
+  unordered_set<VAR_IDX> answer({ 0, 1 });
+  REQUIRE(test.getAllVariables() == answer);
 }
