@@ -16,6 +16,7 @@ PKB::PKB() {
   allWhileStmtNo = UNO_SET_OF_STMT_NO();
   allIfStmtNo = UNO_SET_OF_STMT_NO();
   allAssignStmtNo = UNO_SET_OF_STMT_NO();
+  allConstants = unordered_set<int>();
 }
 
 void PKB::addStmt(STMT_NO s) {
@@ -80,6 +81,14 @@ void PKB::addAssignStmt(STMT_NO s) {
   allAssignStmtNo.insert(s);
 }
 
+void PKB::addConstant(int constant) {
+  if (allConstants.count(constant) > 0) {
+    return;
+  }
+
+  allConstants.insert(constant);
+}
+
 UNO_SET_OF_STMT_NO PKB::getAllStmts() { return allStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllReadStmts() { return allReadStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllPrintStmts() { return allPrintStmtNo; }
@@ -87,6 +96,7 @@ UNO_SET_OF_STMT_NO PKB::getAllCallStmts() { return allCallStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllWhileStmts() { return allWhileStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllIfStmts() { return allIfStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllAssignStmts() { return allAssignStmtNo; }
+unordered_set<int> PKB::getAllConstants() { return allConstants; }
 
 bool PKB::isReadStmt(int s) { return allReadStmtNo.count(s) > 0; }
 bool PKB::isPrintStmt(int s) { return allPrintStmtNo.count(s) > 0; }
@@ -195,3 +205,16 @@ unordered_set<STMT_NO> PKB::getUsesS(VAR_NAME v) {
 vector<pair<STMT_NO, vector<VAR_IDX>>> PKB::getAllUsesSPairs() {
   return usesKB.getAllUsesSPairs();
 }
+
+// Table API
+void PKB::addProcedure(string procName) { procTable.insertProc(procName); }
+string PKB::getProcName(PROC_IDX procIdx) {
+  return procTable.getProcName(procIdx);
+}
+unordered_set<PROC_IDX> PKB::getAllProcedures() { return procTable
+  .getAllProcedures(); }
+string PKB::getVarName(VAR_IDX varIdx) {
+    return varTable.getVarName(varIdx);
+}
+unordered_set<VAR_IDX> PKB::getAllVariables() { return varTable
+  .getAllVariables(); }

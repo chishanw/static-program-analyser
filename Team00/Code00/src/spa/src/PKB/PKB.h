@@ -12,9 +12,10 @@
 
 #include "FollowKB.h"
 #include "ParentKB.h"
-#include "VarTable.h"
 #include "ModifiesKB.h"
 #include "UsesKB.h"
+#include "VarTable.h"
+#include "ProcTable.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ class PKB {
   void addWhileStmt(STMT_NO s);
   void addIfStmt(STMT_NO s);
   void addAssignStmt(STMT_NO s);
+  void addConstant(int constant);
 
   UNO_SET_OF_STMT_NO getAllStmts();
   UNO_SET_OF_STMT_NO getAllReadStmts();
@@ -39,6 +41,7 @@ class PKB {
   UNO_SET_OF_STMT_NO getAllWhileStmts();
   UNO_SET_OF_STMT_NO getAllIfStmts();
   UNO_SET_OF_STMT_NO getAllAssignStmts();
+  std::unordered_set<int> getAllConstants();
 
   bool isReadStmt(int s);
   bool isPrintStmt(int s);
@@ -86,9 +89,17 @@ class PKB {
   std::unordered_set<STMT_NO> getUsesS(VAR_NAME v);
   std::vector<std::pair<STMT_NO, std::vector<VAR_IDX>>> getAllUsesSPairs();
 
+  // Table API
+  void addProcedure(string procName);
+  std::string getProcName(PROC_IDX procIdx);
+  std::unordered_set<PROC_IDX> getAllProcedures();
+  std::string getVarName(VAR_IDX varIdx);
+  std::unordered_set<VAR_IDX> getAllVariables();
+
  private:
   // Design Abstractions
   VarTable varTable;
+  ProcTable procTable;
   FollowKB followKB;
   ParentKB parentKB;
   ModifiesKB modifiesKB = ModifiesKB(&varTable);
@@ -101,4 +112,5 @@ class PKB {
   UNO_SET_OF_STMT_NO allWhileStmtNo;
   UNO_SET_OF_STMT_NO allIfStmtNo;
   UNO_SET_OF_STMT_NO allAssignStmtNo;
+  std::unordered_set<int> allConstants;
 };

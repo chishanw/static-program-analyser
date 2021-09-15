@@ -79,3 +79,48 @@ TEST_CASE("PKB_FOLLOW_API_TEST") {
     REQUIRE(db.getFollowsT(s1) == expected);
   }
 }
+
+TEST_CASE("PKB_CONSTANTS_TEST") {
+  PKB db = PKB();
+  REQUIRE(db.getAllConstants() == unordered_set<int>());
+
+  db.addConstant(1);
+  db.addConstant(2);
+  db.addConstant(3);
+  REQUIRE(db.getAllConstants() == unordered_set<int>({ 1, 2, 3 }));
+
+  // duplicate insert
+  db.addConstant(2);
+  REQUIRE(db.getAllConstants() == unordered_set<int>({ 1, 2, 3 }));
+}
+
+TEST_CASE("PKB_TABLES_TEST") {
+  PKB db = PKB();
+
+  // invalid queries when empty
+  REQUIRE(db.getProcName(1) == "");
+  REQUIRE(db.getAllProcedures() == unordered_set<int>());
+  REQUIRE(db.getVarName(1) == "");
+  REQUIRE(db.getAllVariables() == unordered_set<int>());
+
+  db.addProcedure("ComputeCentroid");
+  db.addProcedure("main");
+  db.addUsesS(1, "a");
+  db.addUsesS(2, "b");
+
+  // valid queries
+  unordered_set<int> answer({ 0, 1 });
+  REQUIRE(db.getProcName(0) == "ComputeCentroid");
+  REQUIRE(db.getAllProcedures() == answer);
+  REQUIRE(db.getVarName(1) == "b");
+  REQUIRE(db.getAllVariables() == answer);
+
+  // duplicate entries
+  db.addProcedure("main");
+  db.addUsesS(1, "a");
+
+  REQUIRE(db.getProcName(1) == "main");
+  REQUIRE(db.getAllProcedures() == answer);
+  REQUIRE(db.getVarName(0) == "a");
+  REQUIRE(db.getAllVariables() == answer);
+}
