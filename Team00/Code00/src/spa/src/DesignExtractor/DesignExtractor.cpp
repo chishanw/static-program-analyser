@@ -19,7 +19,11 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractParent(programAST);
   ExtractParentTrans(programAST);
 
+  ExtractFollows(programAST);
+  ExtractFollowsTrans(programAST);
+
   ExtractUsesRS(programAST);
+  ExtractModifies(programAST);
   // ... other subroutines to extract other r/s go here too
 }
 
@@ -73,7 +77,7 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
       result.push_back(make_pair(printStmt->StmtNo, printStmt->VarName));
 
     } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
-      unordered_set<NAME> uniqueAncestorVarNames;  // collate Ancestor VarNames
+      unordered_set<NAME> uniqueDescendantVarNames;
 
       for (auto varName : ifStmt->CondExpr->GetAllVarNames()) {
         result.push_back(make_pair(ifStmt->StmtNo, varName));
@@ -83,24 +87,24 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
       resultNext = ExtractUsesRSHelper(ifStmt->ThenBlock);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
-        uniqueAncestorVarNames.insert(res.second);
+        uniqueDescendantVarNames.insert(res.second);
       }
 
       // else
       resultNext = ExtractUsesRSHelper(ifStmt->ElseBlock);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
-        uniqueAncestorVarNames.insert(res.second);
+        uniqueDescendantVarNames.insert(res.second);
       }
 
-      // insert Ancestor VarNames
-      for (auto ancestorVarName : uniqueAncestorVarNames) {
-        result.push_back(make_pair(ifStmt->StmtNo, ancestorVarName));
+      // insert Descendant VarNames
+      for (auto descendantVarName : uniqueDescendantVarNames) {
+        result.push_back(make_pair(ifStmt->StmtNo, descendantVarName));
       }
 
     } else if (const WhileStmtAST* whileStmt =
                    dynamic_cast<const WhileStmtAST*>(stmt)) {
-      unordered_set<NAME> uniqueAncestorVarNames;  // collate Ancestor VarNames
+      unordered_set<NAME> uniqueDescendantVarNames;
 
       for (auto varName : whileStmt->CondExpr->GetAllVarNames()) {
         result.push_back(make_pair(whileStmt->StmtNo, varName));
@@ -109,11 +113,77 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
       resultNext = ExtractUsesRSHelper(whileStmt->StmtList);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
-        uniqueAncestorVarNames.insert(res.second);
+        uniqueDescendantVarNames.insert(res.second);
       }
-      // insert Ancestor VarNames
-      for (auto ancestorVarName : uniqueAncestorVarNames) {
-        result.push_back(make_pair(whileStmt->StmtNo, ancestorVarName));
+      // insert Descendant VarNames
+      for (auto descendantVarName : uniqueDescendantVarNames) {
+        result.push_back(make_pair(whileStmt->StmtNo, descendantVarName));
+      }
+    }
+  }
+
+  return result;
+}
+
+void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
+  vector<pair<STMT_NO, NAME>> result;
+  for (auto procedure : programAST->ProcedureList) {
+    result = ExtractModifiesHelper(procedure->StmtList);
+    for (auto p : result) {
+      pkb->addModifiesS(p.first, p.second);
+    }
+  }
+}
+
+vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractModifiesHelper(
+    const vector<StmtAST*> stmtList) {
+  vector<pair<STMT_NO, NAME>> result;
+  vector<pair<STMT_NO, NAME>> resultNext;
+
+  for (auto stmt : stmtList) {
+    // procedure and call not included in iteration 1
+    if (const AssignStmtAST* assignStmt =
+            dynamic_cast<const AssignStmtAST*>(stmt)) {
+      result.push_back(make_pair(assignStmt->StmtNo, assignStmt->VarName));
+    } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      unordered_set<NAME> uniqueDescendantVarNames;
+
+      // then
+      resultNext = ExtractModifiesHelper(ifStmt->ThenBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+      for (auto res : resultNext) {
+        uniqueDescendantVarNames.insert(res.second);
+      }
+
+      // else
+      resultNext = ExtractModifiesHelper(ifStmt->ElseBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+      for (auto res : resultNext) {
+        uniqueDescendantVarNames.insert(res.second);
+      }
+
+      // insert descendant var names
+      for (auto descendantVarName : uniqueDescendantVarNames) {
+        result.push_back(make_pair(ifStmt->StmtNo, descendantVarName));
+      }
+    } else if (const WhileStmtAST* whileStmt =
+                   dynamic_cast<const WhileStmtAST*>(stmt)) {
+      unordered_set<NAME> uniqueDescendantVarNames;
+
+      resultNext = ExtractModifiesHelper(whileStmt->StmtList);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+      for (auto res : resultNext) {
+        uniqueDescendantVarNames.insert(res.second);
+      }
+      // insert descendant VarNames
+      for (auto descendantVarName : uniqueDescendantVarNames) {
+        result.push_back(make_pair(whileStmt->StmtNo, descendantVarName));
+      }
+
+    } else if (const ReadStmtAST* readStmt =
+                   dynamic_cast<const ReadStmtAST*>(stmt)) {
+      for (auto varName : assignStmt->Expr->GetAllPatternStr()) {
+        result.push_back(make_pair(assignStmt->StmtNo, varName));
       }
     }
   }
@@ -181,12 +251,12 @@ void DesignExtractor::ExtractParentTrans(const ProgramAST* programAST) {
 
 vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractParentTransHelper(
     const STMT_NO parentStmtNo, const vector<StmtAST*> stmtList) {
-  vector<pair<STMT_NO, STMT_NO>> result;         // resultAtThisNestingLevel
-  vector<pair<STMT_NO, STMT_NO>> resultNext;     // resultAtNextNestingLevel
-  unordered_set<STMT_NO> uniqueAncestorStmtNos;  // collate Ancestor StmtNos
+  vector<pair<STMT_NO, STMT_NO>> result;           // resultAtThisNestingLevel
+  vector<pair<STMT_NO, STMT_NO>> resultNext;       // resultAtNextNestingLevel
+  unordered_set<STMT_NO> uniqueDescendantStmtNos;  // collate descendant StmtNos
 
   for (const StmtAST* stmt : stmtList) {
-    uniqueAncestorStmtNos.insert(stmt->StmtNo);
+    uniqueDescendantStmtNos.insert(stmt->StmtNo);
 
     if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       resultNext = ExtractParentTransHelper(ifStmt->StmtNo, ifStmt->ThenBlock);
@@ -194,15 +264,15 @@ vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractParentTransHelper(
       for (auto res : resultNext) {
         // res.first not only include the current StmtNo (ifStmt->StmtNo), but
         // also parent StmtNo from deeper level
-        uniqueAncestorStmtNos.insert(res.first);
-        uniqueAncestorStmtNos.insert(res.second);
+        uniqueDescendantStmtNos.insert(res.first);
+        uniqueDescendantStmtNos.insert(res.second);
       }
 
       resultNext = ExtractParentTransHelper(ifStmt->StmtNo, ifStmt->ElseBlock);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
-        uniqueAncestorStmtNos.insert(res.first);
-        uniqueAncestorStmtNos.insert(res.second);
+        uniqueDescendantStmtNos.insert(res.first);
+        uniqueDescendantStmtNos.insert(res.second);
       }
 
     } else if (const WhileStmtAST* whileStmt =
@@ -211,16 +281,94 @@ vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractParentTransHelper(
           ExtractParentTransHelper(whileStmt->StmtNo, whileStmt->StmtList);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
-        uniqueAncestorStmtNos.insert(res.first);
-        uniqueAncestorStmtNos.insert(res.second);
+        uniqueDescendantStmtNos.insert(res.first);
+        uniqueDescendantStmtNos.insert(res.second);
       }
     }
   }
 
   // -1 is a special value, see ExtractParent method comment
   if (parentStmtNo != -1) {
+    for (auto descendantStmtNo : uniqueDescendantStmtNos) {
+      result.push_back(make_pair(parentStmtNo, descendantStmtNo));
+    }
+  }
+
+  return result;
+}
+
+void DesignExtractor::ExtractFollows(const ProgramAST* programAST) {
+  // must be at the same nesting level and in the same stmtLst
+  for (auto procedure : programAST->ProcedureList) {
+    auto result = ExtractFollowsHelper(procedure->StmtList);
+    for (auto p : result) pkb->setFollows(p.first, p.second);
+  }
+}
+
+vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractFollowsHelper(
+    const vector<StmtAST*> stmtList) {
+  vector<pair<STMT_NO, STMT_NO>> result;
+  vector<pair<STMT_NO, STMT_NO>> resultNext;
+  // at the start of each stmtList, the first stmt cannot follow anything,
+  // so prevStmt is set to null
+  StmtAST* prevStmt = NULL;
+  StmtAST* currStmt;
+
+  for (StmtAST* stmt : stmtList) {
+    currStmt = stmt;
+    // must be at the same nesting level!
+    if (prevStmt != NULL) {
+      result.push_back(make_pair(prevStmt->StmtNo, currStmt->StmtNo));
+    }
+
+    if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      resultNext = ExtractFollowsHelper(ifStmt->ThenBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+
+      resultNext = ExtractFollowsHelper(ifStmt->ElseBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+    } else if (const WhileStmtAST* whileStmt =
+                   dynamic_cast<const WhileStmtAST*>(stmt)) {
+      resultNext = ExtractFollowsHelper(whileStmt->StmtList);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+    }
+
+    prevStmt = stmt;
+  }
+
+  return result;
+}
+
+void DesignExtractor::ExtractFollowsTrans(const ProgramAST* programAST) {
+  for (auto procedure : programAST->ProcedureList) {
+    auto result = ExtractFollowsTransHelper(procedure->StmtList);
+    for (auto p : result) pkb->addFollowsT(p.first, p.second);
+  }
+}
+
+vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractFollowsTransHelper(
+    const vector<StmtAST*> stmtList) {
+  vector<pair<STMT_NO, STMT_NO>> result;
+  vector<pair<STMT_NO, STMT_NO>> resultNext;
+  unordered_set<STMT_NO> uniqueAncestorStmtNos;
+
+  for (StmtAST* stmt : stmtList) {
     for (auto ancestorStmtNo : uniqueAncestorStmtNos) {
-      result.push_back(make_pair(parentStmtNo, ancestorStmtNo));
+      result.push_back(make_pair(ancestorStmtNo, stmt->StmtNo));
+    }
+
+    uniqueAncestorStmtNos.insert(stmt->StmtNo);
+
+    if (IfStmtAST* ifStmt = dynamic_cast<IfStmtAST*>(stmt)) {
+      resultNext = ExtractFollowsTransHelper(ifStmt->ThenBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+
+      resultNext = ExtractFollowsTransHelper(ifStmt->ElseBlock);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+    } else if (const WhileStmtAST* whileStmt =
+                   dynamic_cast<const WhileStmtAST*>(stmt)) {
+      resultNext = ExtractFollowsTransHelper(whileStmt->StmtList);
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
     }
   }
 
