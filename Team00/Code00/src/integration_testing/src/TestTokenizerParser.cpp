@@ -6,6 +6,7 @@
 #include "catch.hpp"
 
 using namespace std;
+using namespace Catch;
 
 TEST_CASE("Tokenizer Parser Integration Test 1") {
   string program =
@@ -47,4 +48,43 @@ TEST_CASE("Tokenizer Parser Integration Test 2") {
 
   // expr
   REQUIRE(ra->Expr->GetPatternStr() == "1-2+3");
+}
+
+TEST_CASE("Parser Exception Test") {
+  SECTION("No closing }") {
+    string program =
+        "procedure Example {\n"
+        "  x = 2;\n"
+        "  z = 3;\n";
+
+    REQUIRE_THROWS_WITH(
+        Parser().Parse(Tokenizer::TokenizeProgramString(program)),
+        StartsWith("[Parser] Expected token "));
+  }
+}
+
+// TODO(gf): disable this after iter1
+TEST_CASE("Parser Exception Test (Iter1 ONLY)") {
+  SECTION("> 1 procedures}") {
+    string program =
+        "procedure One {}\n"
+        "procedure Two {}\n";
+
+    REQUIRE_THROWS_WITH(
+        Parser(true).Parse(Tokenizer::TokenizeProgramString(program)),
+        Equals("[Parser] No more than 1 procedure is allowed in a SIMPLE "
+               "program in iteration 1."));
+  }
+
+  SECTION("call stmt}") {
+    string program =
+        "procedure One {"
+        "call Two;"
+        "}\n";
+
+    REQUIRE_THROWS_WITH(
+        Parser(true).Parse(Tokenizer::TokenizeProgramString(program)),
+        Equals("[Parser] Call Stmt is NOT allowed in a SIMPLE program in "
+               "iteration 1."));
+  }
 }

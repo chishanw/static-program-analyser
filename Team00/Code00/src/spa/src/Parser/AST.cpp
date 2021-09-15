@@ -1,6 +1,7 @@
 #include "AST.h"
 
 #include <algorithm>
+#include <unordered_set>
 
 using namespace std;
 
@@ -20,6 +21,24 @@ vector<NAME> ArithAST::GetAllVarNames() const {
   if (RightNode != nullptr) {
     vector<NAME> resR = RightNode->GetAllVarNames();
     copy(resR.begin(), resR.end(), back_inserter(res));
+  }
+  return res;
+}
+
+unordered_set<int> ArithAST::GetAllConsts() const {
+  unordered_set<int> res;
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
+    if (f->IsConstValue()) {
+      res.insert(f->ConstValue);
+    }
+    return res;
+  }
+
+  if (LeftNode != nullptr) {
+    res.merge(LeftNode->GetAllConsts());
+  }
+  if (RightNode != nullptr) {
+    res.merge(RightNode->GetAllConsts());
   }
   return res;
 }
@@ -44,7 +63,6 @@ vector<string> ArithAST::GetAllPatternStr() const {
 
 string ArithAST::GetPatternStr() const {
   if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    // cout << "casted to F*" << endl; // TODO(gf): clean up
     return f->GetPatternStr();
   }
 
@@ -60,7 +78,6 @@ string ArithAST::GetPatternStr() const {
 
 string ArithAST::GetDebugStr() const {
   if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    // cout << "casted to F*" << endl; // TODO(gf): clean up
     return f->GetDebugStr();
   }
 
@@ -79,10 +96,6 @@ string ArithAST::GetDebugStr() const {
   }
   return out.str();
 }
-
-// ostream& operator<<(std::ostream& out, ArithAST const& obj) {
-//   return out << obj.GetDebugStr();
-// }
 
 vector<string> FactorAST::GetAllPatternStr() const {
   vector<string> res;
@@ -131,10 +144,6 @@ string FactorAST::GetDebugStr() const {
   return out.str();
 }
 
-// ostream& operator<<(std::ostream& out, FactorAST const& obj) {
-//   return out << obj.GetDebugStr();
-// }
-
 vector<NAME> CondExprAST::GetAllVarNames() const {
   if (hasOnlyOneRelExpr) {
     return RelExpr->GetAllVarNames();
@@ -149,6 +158,20 @@ vector<NAME> CondExprAST::GetAllVarNames() const {
   return res;
 }
 
+unordered_set<int> CondExprAST::GetAllConsts() const {
+  if (hasOnlyOneRelExpr) {
+    return RelExpr->GetAllConsts();
+  }
+  if (hasOnlyOneCondExpr) {
+    return LeftNode->GetAllConsts();
+  }
+  // has two cond expr
+  unordered_set<int> res = LeftNode->GetAllConsts();
+  unordered_set<int> resR = RightNode->GetAllConsts();
+  res.merge(resR);
+  return res;
+}
+
 vector<NAME> RelExprAST::GetAllVarNames() const {
   vector<NAME> res;
   if (LeftNode->IsVarName()) {
@@ -156,6 +179,17 @@ vector<NAME> RelExprAST::GetAllVarNames() const {
   }
   if (RightNode->IsVarName()) {
     res.push_back(RightNode->VarName);
+  }
+  return res;
+}
+
+unordered_set<int> RelExprAST::GetAllConsts() const {
+  unordered_set<int> res;
+  if (LeftNode->IsVarName()) {
+    res.insert(LeftNode->ConstValue);
+  }
+  if (RightNode->IsVarName()) {
+    res.insert(RightNode->ConstValue);
   }
   return res;
 }

@@ -1,6 +1,6 @@
 #include "Tokenizer.h"
 
-#include <stdio.h>
+#include <Common/Global.h>
 
 #include <fstream>
 #include <iostream>
@@ -10,7 +10,6 @@
 
 using namespace std;
 
-set<char> Tokenizer::SPACE_SET = {' ', '\t', '\r', '\n'};
 set<char> Tokenizer::SINGLE_WIDTH_SYMBOL_SET = {
     '{', '}', '(', ')',       // brackets
     '+', '-', '*', '/', '%',  // arith
@@ -33,14 +32,16 @@ vector<string> Tokenizer::TokenizeProgramString(string program) {
 }
 
 vector<string> Tokenizer::TokenizeFile(string filename) {
-  cout << "File to parse: " << filename << endl;
+  DMOprintInfoMsg("File to parse: " + filename + "\n");
+
   ifstream fh(filename);
   stringstream ss;
   if (fh) {
     ss << fh.rdbuf();
     fh.close();
   } else {
-    // TODO(gf): raise exception
+    throw runtime_error("[Tokenizer] Failed to open SIMPLE program file: " +
+                        filename);
   }
   return tokenize(ss);
 }
@@ -49,7 +50,7 @@ vector<string> Tokenizer::tokenize(stringstream& ss) {
   vector<string> tokens;
 
   while (true) {
-    while (isSpace(ss.peek())) ss.get();
+    while (isspace(ss.peek())) ss.get();
 
     if (ss.peek() == EOF) {
       break;
@@ -60,15 +61,13 @@ vector<string> Tokenizer::tokenize(stringstream& ss) {
     } else if (isSpecialSymbol(ss.peek())) {
       tokens.push_back(specialSymbol(ss));
     } else {
-      // TODO(gf): raise exception
-      cout << "Unrecognized token: " << ss.get() << endl;
+      throw runtime_error("[Tokenizer] Unrecognized token: " +
+                          string(1, ss.get()));
     }
   }
 
   return tokens;
 }
-
-bool Tokenizer::isSpace(char c) { return SPACE_SET.find(c) != SPACE_SET.end(); }
 
 bool Tokenizer::isDigit(char c) { return '0' <= c && c <= '9'; }
 
@@ -119,10 +118,11 @@ string Tokenizer::specialSymbol(stringstream& ss) {
       case '&':  // &&
       case '|':  // ||
         if (ss.peek() != firstChar) {
-          // TODO(gf): raise exception
-          cout << "following char must be the same as the 1st one, but it isn't"
-               << endl;
-          exit(1);
+          stringstream exMsg;
+          exMsg << "[Tokenizer] Expected next char to be '" << firstChar
+                << "' but encoutered '" << static_cast<char>(ss.peek()) << "'";
+          throw runtime_error(exMsg.str());
+
         } else {
           char nextChar = ss.get();
           res.push_back(nextChar);
@@ -146,9 +146,15 @@ string Tokenizer::specialSymbol(stringstream& ss) {
         break;
 
       default:
-        // TODO(gf): raise exception
-        cout << "should not reach here" << endl;
-        exit(1);
+        DMOprintErrMsgAndExit(
+            "[Tokenizer] reach switch case default branch that shouldn't be "
+            "reached");
+
+        stringstream exMsg;
+        exMsg << "[Tokenizer] Expected conditional expression symbols but "
+                 "encoutered '"
+              << firstChar << "'";
+        throw runtime_error(exMsg.str());
     }
   }
 

@@ -1,4 +1,5 @@
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -13,6 +14,9 @@ class DesignExtractor {
 
  private:
   PKB* pkb;
+
+  void ExtractProcAndStmt(const ProgramAST*);
+  void ExtractProcAndStmtHelper(const vector<StmtAST*>);
 
   void ExtractUsesRS(const ProgramAST*);
   std::vector<std::pair<STMT_NO, NAME>> ExtractUsesRSHelper(
@@ -39,4 +43,7 @@ class DesignExtractor {
 
   void ExtractExprPatterns(const ProgramAST*);
   void ExtractExprPatternsHelper(const std::vector<StmtAST*>);
+
+  void ExtractConst(const ProgramAST*);
+  unordered_set<int> ExtractConstHelper(const std::vector<StmtAST*>);
 };

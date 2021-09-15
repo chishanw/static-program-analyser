@@ -1,7 +1,5 @@
 #include "DesignExtractor/DesignExtractor.h"
 
-#include <stdio.h>
-
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -14,7 +12,11 @@ using namespace std;
 DesignExtractor::DesignExtractor(PKB* pkb) { this->pkb = pkb; }
 
 void DesignExtractor::Extract(const ProgramAST* programAST) {
+  ExtractProcAndStmt(programAST);
+
   ExtractExprPatterns(programAST);
+
+  ExtractConst(programAST);
 
   ExtractParent(programAST);
   ExtractParentTrans(programAST);
@@ -25,6 +27,44 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractUsesRS(programAST);
   ExtractModifies(programAST);
   // ... other subroutines to extract other r/s go here too
+}
+
+void DesignExtractor::ExtractProcAndStmt(const ProgramAST* programAST) {
+  for (auto procedure : programAST->ProcedureList) {
+    // TODO(gf): when pkb is ready
+    // pkb.addProcedure(procedure->ProcName);
+
+    ExtractProcAndStmtHelper(procedure->StmtList);
+  }
+}
+
+void DesignExtractor::ExtractProcAndStmtHelper(
+    const vector<StmtAST*> stmtList) {
+  for (auto stmt : stmtList) {
+    if (dynamic_cast<const ReadStmtAST*>(stmt)) {
+      pkb->addReadStmt(stmt->StmtNo);
+    } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
+      pkb->addPrintStmt(stmt->StmtNo);
+    } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
+      pkb->addCallStmt(stmt->StmtNo);
+    } else if (const WhileStmtAST* whileStmt =
+                   dynamic_cast<const WhileStmtAST*>(stmt)) {
+      pkb->addWhileStmt(stmt->StmtNo);
+
+      ExtractProcAndStmtHelper(whileStmt->StmtList);
+    } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      pkb->addIfStmt(stmt->StmtNo);
+
+      ExtractProcAndStmtHelper(ifStmt->ThenBlock);
+      ExtractProcAndStmtHelper(ifStmt->ElseBlock);
+    } else if (dynamic_cast<const AssignStmtAST*>(stmt)) {
+      pkb->addAssignStmt(stmt->StmtNo);
+    } else {
+      DMOprintErrMsgAndExit(
+          "[DE][ExtractProcAndStmtHelper] shouldn't reach here.");
+      return;
+    }
+  }
 }
 
 void DesignExtractor::ExtractUsesRS(const ProgramAST* programAST) {
@@ -53,10 +93,7 @@ void DesignExtractor::ExtractUsesRS(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
     result = ExtractUsesRSHelper(procedure->StmtList);
 
-    for (auto p : result) {
-      cout << "Uses r/s result: "
-           << "<" << p.first << ", " << p.second << ">" << endl;
-    }
+    for (auto p : result) pkb->addUsesS(p.first, p.second);
   }
 }
 
@@ -200,11 +237,7 @@ void DesignExtractor::ExtractParent(const ProgramAST* programAST) {
     // parent, did this to minize duplicate code and improve code readability
     auto result = ExtractParentHelper(-1, procedure->StmtList);
 
-    // TODO(gf): rm prints and replace with pkb method calls
-    // pkb.setParent(parentStmtNo, childStmtNo);
-    for (auto p : result)
-      cout << "Parent r/s result: "
-           << "<" << p.first << ", " << p.second << ">" << endl;
+    for (auto p : result) pkb->setParent(p.first, p.second);
   }
 }
 
@@ -241,11 +274,7 @@ void DesignExtractor::ExtractParentTrans(const ProgramAST* programAST) {
     // parent, did this to minize duplicate code and improve code readability
     auto result = ExtractParentTransHelper(-1, procedure->StmtList);
 
-    // TODO(gf): rm prints and replace with pkb method calls
-    // pkb.setParent(parentStmtNo, childStmtNo);
-    for (auto p : result)
-      cout << "Parent* r/s result: "
-           << "<" << p.first << ", " << p.second << ">" << endl;
+    for (auto p : result) pkb->addParentT(p.first, p.second);
   }
 }
 
@@ -391,16 +420,14 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
 
       string wholeExpr = strs[0];
       // TODO(gf): rm prints and replace with pkb method calls
-      cout << "Assign stmt: "
-           << "[" << varName << "=" << wholeExpr << ";"
-           << "]" << endl;
-      cout << "Var name: " << varName << endl;
-      cout << "Extracted " << strs.size() << " expressions:" << endl;
-      cout << "Whole expr: " << wholeExpr << endl;
+      DMOprintInfoMsg("Assign stmt: [" + varName + "=" + wholeExpr + ";" + "]");
+      DMOprintInfoMsg("Var name: " + varName);
+      DMOprintInfoMsg("Extracted " + string(1, strs.size()) + " expressions:");
+      DMOprintInfoMsg("Whole expr: " + wholeExpr);
       // pkb.addExpr(varName, wholeExpr);
       for (auto it = strs.begin(); it != strs.end(); ++it) {
         // pkb.addSubExpr(varName, *it);
-        cout << "Sub expr: " << *it << endl;
+        DMOprintInfoMsg("Sub expr: " + *it);
       }
     } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       ExtractExprPatternsHelper(ifStmt->ThenBlock);
@@ -410,4 +437,40 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
       ExtractExprPatternsHelper(whileStmt->StmtList);
     }
   }
+}
+
+void DesignExtractor::ExtractConst(const ProgramAST* programAST) {
+  unordered_set<int> res;
+
+  for (auto procedure : programAST->ProcedureList) {
+    res.merge(ExtractConstHelper(procedure->StmtList));
+  }
+
+  for (auto constant : res) {
+    // TODO(gf): when pkb is ready
+    // pkb->addConst(constant);
+    DMOprintInfoMsg("const: " + to_string(constant));
+  }
+}
+
+unordered_set<int> DesignExtractor::ExtractConstHelper(
+    vector<StmtAST*> stmtList) {
+  unordered_set<int> res;
+
+  for (auto stmt : stmtList) {
+    if (const WhileStmtAST* whileStmt =
+            dynamic_cast<const WhileStmtAST*>(stmt)) {
+      res.merge(whileStmt->CondExpr->GetAllConsts());
+      res.merge(ExtractConstHelper(whileStmt->StmtList));
+    } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      res.merge(ifStmt->CondExpr->GetAllConsts());
+      res.merge(ExtractConstHelper(ifStmt->ThenBlock));
+      res.merge(ExtractConstHelper(ifStmt->ElseBlock));
+    } else if (const AssignStmtAST* assignStmt =
+                   dynamic_cast<const AssignStmtAST*>(stmt)) {
+      res.merge(assignStmt->Expr->GetAllConsts());
+    }
+  }
+
+  return res;
 }

@@ -5,6 +5,7 @@
 #include "catch.hpp"
 
 using namespace std;
+using namespace Catch;
 
 TEST_CASE("[Tokenizer] Whole Program Test") {
   string program =
@@ -88,4 +89,31 @@ TEST_CASE("[Tokenizer] Double Width Symbol Test") {
   vector<string> expectedTokens = {
       "&&", "||", ">=", "<=", "==", "!=", "=", "==", "="};
   REQUIRE(Tokenizer::TokenizeProgramString(program) == expectedTokens);
+}
+
+TEST_CASE("[Tokenizer] All kinds of whitespaces test") {
+  string program = "\f \n \r \t \t \v a";
+  vector<string> expectedTokens = {"a"};
+  REQUIRE(Tokenizer::TokenizeProgramString(program) == expectedTokens);
+}
+
+TEST_CASE("[Tokenizer] Exception Test") {
+  SECTION("Invalid character") {
+    string program = "`";
+
+    REQUIRE_THROWS_WITH(Tokenizer::TokenizeProgramString(program),
+                        StartsWith("[Tokenizer] Unrecognized token:"));
+  }
+
+  SECTION("Invalid DoubleWidthSymbol") {
+    string program =
+        "procedure Example {\n"
+        "  if (x |& 1) then {\n"
+        "  z = 3; } else {\n"
+        "  i = 5;}\n"
+        "  }\n";
+
+    REQUIRE_THROWS_WITH(Tokenizer::TokenizeProgramString(program),
+                        StartsWith("[Tokenizer] Expected next char to be"));
+  }
 }

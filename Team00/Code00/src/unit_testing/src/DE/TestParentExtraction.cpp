@@ -53,48 +53,46 @@ TEST_CASE("[DE][Parent(*) R/S] sample source") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  // TODO(gf): add tests once pkb is ready
-
   SECTION("Parent R/S") {
-    // Parent r/s result: <4, 5>
-    // Parent r/s result: <4, 6>
-    // Parent r/s result: <6, 7>
-    // Parent r/s result: <6, 8>
-    // Parent r/s result: <4, 9>
-    // Parent r/s result: <4, 10>
-    // Parent r/s result: <4, 11>
-    // Parent r/s result: <13, 14>
-    // Parent r/s result: <14, 15>
-    // Parent r/s result: <14, 16>
-    // Parent r/s result: <14, 17>
-    // Parent r/s result: <13, 18>
-    // Parent r/s result: <13, 19>
-    // Parent r/s result: <13, 20>
-    // Parent r/s result: <22, 23>
-    // Parent r/s result: <22, 24>
+    REQUIRE(pkb->getParent(1) == -1);
+    REQUIRE(pkb->getParent(2) == -1);
+    REQUIRE(pkb->getParent(3) == -1);
+    REQUIRE(pkb->getParent(4) == -1);
+    REQUIRE(pkb->isParent(4, 5));
+    REQUIRE(pkb->isParent(4, 6));
+    REQUIRE(pkb->isParent(6, 7));
+    REQUIRE(pkb->isParent(6, 8));
+    REQUIRE(pkb->isParent(4, 9));
+    REQUIRE(pkb->isParent(4, 10));
+    REQUIRE(pkb->isParent(4, 11));
+    REQUIRE(pkb->getParent(12) == -1);
+    REQUIRE(pkb->getParent(13) == -1);
+    REQUIRE(pkb->isParent(13, 14));
+    REQUIRE(pkb->isParent(14, 15));
+    REQUIRE(pkb->isParent(14, 16));
+    REQUIRE(pkb->isParent(14, 17));
+    REQUIRE(pkb->isParent(13, 18));
+    REQUIRE(pkb->isParent(13, 19));
+    REQUIRE(pkb->isParent(13, 20));
+    REQUIRE(pkb->getParent(21) == -1);
+    REQUIRE(pkb->getParent(22) == -1);
+    REQUIRE(pkb->isParent(22, 23));
+    REQUIRE(pkb->isParent(22, 24));
+    REQUIRE(pkb->getParent(25) == -1);  // out of bound test, last stmt is #24
+    REQUIRE(pkb->getParent(30) == -1);  // out of bound test, last stmt is #24
   }
 
   SECTION("Parent* R/S") {
-    // Parent* r/s result: <6, 7>
-    // Parent* r/s result: <6, 8>
-    // Parent* r/s result: <4, 5>
-    // Parent* r/s result: <4, 6>
-    // Parent* r/s result: <4, 7>
-    // Parent* r/s result: <4, 8>
-    // Parent* r/s result: <4, 9>
-    // Parent* r/s result: <4, 10>
-    // Parent* r/s result: <4, 11>
-    // Parent* r/s result: <14, 15>
-    // Parent* r/s result: <14, 16>
-    // Parent* r/s result: <14, 17>
-    // Parent* r/s result: <13, 14>
-    // Parent* r/s result: <13, 15>
-    // Parent* r/s result: <13, 16>
-    // Parent* r/s result: <13, 17>
-    // Parent* r/s result: <13, 18>
-    // Parent* r/s result: <13, 19>
-    // Parent* r/s result: <13, 20>
-    // Parent* r/s result: <22, 23>
-    // Parent* r/s result: <22, 24>
+    REQUIRE(pkb->getChildrenT(4) ==
+            UNO_SET_OF_STMT_NO({5, 6, 7, 8, 9, 10, 11}));
+
+    REQUIRE(pkb->getChildrenT(6) == UNO_SET_OF_STMT_NO({7, 8}));
+
+    REQUIRE(pkb->getChildrenT(13) ==
+            UNO_SET_OF_STMT_NO({14, 15, 16, 17, 18, 19, 20}));
+
+    REQUIRE(pkb->getChildrenT(14) == UNO_SET_OF_STMT_NO({15, 16, 17}));
+
+    REQUIRE(pkb->getChildrenT(22) == UNO_SET_OF_STMT_NO({23, 24}));
   }
 }

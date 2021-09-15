@@ -7,9 +7,14 @@
 
 class Parser {
  public:
+  Parser();
+  explicit Parser(bool);
+
   ProgramAST* Parse(std::vector<std::string>);
 
  private:
+  const bool enableIter1restriction;
+
   std::vector<std::string> tokens;
   std::vector<std::string>::iterator tokenIterator;
   std::string token;

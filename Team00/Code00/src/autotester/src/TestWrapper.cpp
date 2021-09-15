@@ -25,31 +25,37 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 volatile bool AbstractWrapper::GlobalStop = false;
 
 // a default constructor
-TestWrapper::TestWrapper() { pkb = new PKB(); }
+TestWrapper::TestWrapper() {
+  pkb = new PKB();
+  this->OurOwnGlobalStop = false;
+}
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
-  // parse program into tokens
-  vector<string> tokens = Tokenizer::TokenizeFile(filename);
-  // TDOO(gf): rm later
-  cout << "Parsed tokens:" << endl;
-  for (const string token : tokens) {
-    cout << token << " ";
+  try {
+    // parse program into tokens
+    vector<string> tokens = Tokenizer::TokenizeFile(filename);
+
+    // then tokends will be passed to parser
+    const bool enableIter1restriction = true;
+    const ProgramAST* programAST = Parser(enableIter1restriction).Parse(tokens);
+
+    // then programAST will be passed to DE
+    DesignExtractor de = DesignExtractor(pkb);
+    de.Extract(programAST);
+
+  } catch (const exception& ex) {
+    cout << "Exception caught: " << ex.what() << endl;
+    OurOwnGlobalStop = true;
+    return;
   }
-  cout << endl;
-
-  // then tokends will be passed to parser
-  const ProgramAST* programAST = Parser().Parse(tokens);
-
-  // then programAST will be passed to DE
-  DesignExtractor de = DesignExtractor(pkb);
-  de.Extract(programAST);
 }
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
-  // call your evaluator to evaluate the query here
-  // ...code to evaluate query...
+  if (OurOwnGlobalStop || GlobalStop) {
+    return;  // only true when parse() encounter exceptions or TLE
+  }
 
   try {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
@@ -63,10 +69,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
                                                  evaluatedResult);
   } catch (const exception& ex) {
-    cout << "Exception caught: " << ex.what() << "\n";
+    cout << "Exception caught: " << ex.what() << endl;
     return;
   }
-
-  // store the answers to the query in the results list (it is initially empty)
-  // each result must be a string.
 }

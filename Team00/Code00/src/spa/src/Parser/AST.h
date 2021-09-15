@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "Common/Global.h"
@@ -37,11 +38,10 @@ class ArithAST {
 
   bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
   std::vector<NAME> GetAllVarNames() const;
+  std::unordered_set<int> GetAllConsts() const;
   std::vector<std::string> GetAllPatternStr() const;
   std::string GetPatternStr() const;
   std::string GetDebugStr() const;
-
-  //   friend std::ostream& operator<<(std::ostream& out, ArithAST const& obj);
 
  private:
   const bool hasOnlyOneNode;
@@ -84,8 +84,6 @@ class FactorAST : public ArithAST {
   std::string GetPatternStr() const;
   std::string GetDebugStr() const;
 
-  //   friend std::ostream& operator<<(std::ostream& out, FactorAST const& obj);
-
  private:
   const bool isVarName;
   const bool isConstValue;
@@ -102,6 +100,7 @@ class RelExprAST {
       : Sign(sign), LeftNode{leftNode}, RightNode{rightNode} {}
 
   std::vector<NAME> GetAllVarNames() const;
+  std::unordered_set<int> GetAllConsts() const;
 };
 
 class CondExprAST {
@@ -137,6 +136,7 @@ class CondExprAST {
   bool HasOnlyOneRelExpr() const { return this->hasOnlyOneRelExpr; }
   bool HasOnlyOneCondExpr() const { return this->hasOnlyOneCondExpr; }
   std::vector<NAME> GetAllVarNames() const;
+  std::unordered_set<int> GetAllConsts() const;
 
  private:
   const bool hasOnlyOneRelExpr;

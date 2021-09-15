@@ -1,5 +1,7 @@
 #include "Parser.h"
 
+#include <Common/Global.h>
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -7,6 +9,11 @@
 #include <vector>
 
 using namespace std;
+
+Parser::Parser() : enableIter1restriction(false) {}
+
+Parser::Parser(bool enableIter1restriction)
+    : enableIter1restriction(enableIter1restriction) {}
 
 ProgramAST* Parser::Parse(std::vector<std::string> tokens) {
   if (tokens.empty()) {
@@ -30,6 +37,14 @@ ProgramAST* Parser::program() {
     ProcedureAST* procedureAST = procedure();
     procedures.push_back(procedureAST);
   }
+
+  // TODO(gf): rm this after iter1
+  if (enableIter1restriction && procedures.size() > 1) {
+    throw runtime_error(
+        "[Parser] No more than 1 procedure is allowed in a SIMPLE program in "
+        "iteration 1.");
+  }
+
   ProgramAST* temp = new ProgramAST(procedures);
   return temp;
 }
@@ -85,6 +100,13 @@ PrintStmtAST* Parser::printStmt() {
 }
 
 CallStmtAST* Parser::callStmt() {
+  // TODO(gf): rm this after iter1
+  if (enableIter1restriction) {
+    throw runtime_error(
+        "[Parser] Call Stmt is NOT allowed in a SIMPLE program in "
+        "iteration 1.");
+  }
+
   consumeToken("call");
   NAME procName = name();
   consumeToken(";");
@@ -344,10 +366,10 @@ void Parser::consumeToken(string toConsume) {
   nextToken();
 }
 
-// TODO(gf): fix parser / expr parser
 void Parser::nextToken() {
   if (noMoreToken()) {
-    DMOprintErrMsgAndExit("No more token to parse");
+    DMOprintErrMsgAndExit(
+        "[Parser] no more token to parse but nextToken() was called");
     return;
   }
 
@@ -358,7 +380,7 @@ void Parser::nextToken() {
     // speical value should consist of invalid lexical tokens
     // to safely differentiate it from valid ones
     // i.e. mainly to prevent speical value to be interpreted as a Name
-    token = "END_OF_PROGRAM";
+    token = "_END_OF_PROGRAM_";
   } else {
     token = *tokenIterator;
   }
@@ -401,9 +423,8 @@ int Parser::stringToInt(string s) {
 }
 
 void Parser::errorExpected(string expected) {
-  stringstream ss;
-  ss << "Expected: " << expected << ", but saw invalid token: " << token
-     << endl;
-  ss << "Parser exiting ..." << endl;
-  DMOprintErrMsgAndExit(ss.str());
+  stringstream exMsg;
+  exMsg << "[Parser] Expected token '" << expected
+        << "' but encoutered token: '" << token << "'";
+  throw runtime_error(exMsg.str());
 }

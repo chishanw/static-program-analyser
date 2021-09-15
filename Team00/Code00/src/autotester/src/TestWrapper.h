@@ -12,6 +12,7 @@
 class TestWrapper : public AbstractWrapper {
  private:
   PKB* pkb;
+  bool OurOwnGlobalStop;
 
  public:
   // default constructor

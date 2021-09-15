@@ -54,34 +54,43 @@ TEST_CASE("[DE][Uses R/S] sample source") {
   de.Extract(ast);
 
   SECTION("Uses R/S") {
-    // TODO(gf): add tests once pkb is ready
-    // TODO(gf): Uses r/s result below does not contain the recursive ones in
-    // container stmt, case 3 of UseS
+    REQUIRE(pkb->isUsesS(4, "i"));  // container stmt from 4 - 11
+    REQUIRE(pkb->isUsesS(4, "x"));
+    REQUIRE(pkb->isUsesS(4, "z"));
+    REQUIRE(pkb->isUsesS(5, "x"));
+    REQUIRE(pkb->isUsesS(6, "x"));  // container stmt from 6 - 8
+    REQUIRE(pkb->isUsesS(6, "z"));
+    REQUIRE(pkb->isUsesS(7, "x"));
+    REQUIRE(pkb->isUsesS(8, "z"));
+    REQUIRE(pkb->isUsesS(8, "x"));
+    REQUIRE(pkb->isUsesS(9, "z"));
+    REQUIRE(pkb->isUsesS(9, "x"));
+    REQUIRE(pkb->isUsesS(9, "i"));
+    REQUIRE(pkb->isUsesS(11, "i"));
 
-    // Uses r/s result: <4, i>
-    // Uses r/s result: <5, x>
-    // Uses r/s result: <6, x>
-    // Uses r/s result: <7, x>
-    // Uses r/s result: <8, z>
-    // Uses r/s result: <8, x>
-    // Uses r/s result: <9, z>
-    // Uses r/s result: <9, x>
-    // Uses r/s result: <9, i>
-    // Uses r/s result: <11, i>
-    // Uses r/s result: <13, x>
-    // Uses r/s result: <14, i>
-    // Uses r/s result: <15, z>
-    // Uses r/s result: <15, y>
-    // Uses r/s result: <17, i>
-    // Uses r/s result: <18, x>
-    // Uses r/s result: <19, x>
-    // Uses r/s result: <19, z>
-    // Uses r/s result: <21, z>
-    // Uses r/s result: <21, x>
-    // Uses r/s result: <21, i>
-    // Uses r/s result: <22, x>
-    // Uses r/s result: <23, x>
-    // Uses r/s result: <24, z>
-    // Uses r/s result: <24, x>
+    REQUIRE(pkb->isUsesS(13, "x"));  // container stmt from 13 - 20
+    REQUIRE(pkb->isUsesS(13, "i"));
+    REQUIRE(pkb->isUsesS(13, "z"));
+    REQUIRE(pkb->isUsesS(13, "y"));
+
+    REQUIRE(pkb->isUsesS(14, "i"));  // container stmt from 14 - 17
+    REQUIRE(pkb->isUsesS(14, "z"));
+    REQUIRE(pkb->isUsesS(14, "y"));
+    REQUIRE(pkb->isUsesS(15, "z"));
+    REQUIRE(pkb->isUsesS(15, "y"));
+    REQUIRE(pkb->isUsesS(17, "i"));
+
+    REQUIRE(pkb->isUsesS(18, "x"));
+    REQUIRE(pkb->isUsesS(19, "x"));
+    REQUIRE(pkb->isUsesS(19, "z"));
+    REQUIRE(pkb->isUsesS(21, "z"));
+    REQUIRE(pkb->isUsesS(21, "x"));
+    REQUIRE(pkb->isUsesS(21, "i"));
+
+    REQUIRE(pkb->isUsesS(22, "x"));  // container stmt from 22 - 24
+    REQUIRE(pkb->isUsesS(22, "z"));
+    REQUIRE(pkb->isUsesS(23, "x"));
+    REQUIRE(pkb->isUsesS(24, "z"));
+    REQUIRE(pkb->isUsesS(24, "x"));
   }
 }
