@@ -7,12 +7,13 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include "FollowKB.h"
-#include "ParentKB.h"
 #include "ModifiesKB.h"
+#include "ParentKB.h"
+#include "PatternKB.h"
 #include "UsesKB.h"
 #include "VarTable.h"
 #include "ProcTable.h"
@@ -23,6 +24,7 @@ class PKB {
  public:
   // Constructor
   PKB();
+  VarTable varTable;
 
   // Methods
   void addStmt(STMT_NO s);
@@ -89,6 +91,22 @@ class PKB {
   std::unordered_set<STMT_NO> getUsesS(VAR_NAME v);
   std::vector<std::pair<STMT_NO, std::vector<VAR_IDX>>> getAllUsesSPairs();
 
+  // Pattern API
+  void addAssignPttFullExpr(STMT_NO s, std::string var, std::string expr);
+  void addAssignPttSubExpr(STMT_NO s, std::string var, std::string expr);
+  std::unordered_set<int> getAssignForFullExpr(std::string expr);
+  std::unordered_set<int> getAssignForSubExpr(std::string expr);
+  std::unordered_set<int> getAssignForVarAndFullExpr(std::string varName,
+                                                     std::string subExpr);
+  std::unordered_set<int> getAssignForVarAndSubExpr(std::string varName,
+                                                    std::string expr);
+
+  std::vector<std::vector<int>> getAssignVarPairsForFullExpr(std::string expr);
+  std::vector<std::vector<int>> getAssignVarPairsForSubExpr(
+      std::string subExpr);
+  std::unordered_set<int> getAssignForVar(std::string varName);
+  std::vector<std::vector<int>> getAssignVarPairs();
+
   // Table API
   void addProcedure(string procName);
   std::string getProcName(PROC_IDX procIdx);
@@ -98,12 +116,12 @@ class PKB {
 
  private:
   // Design Abstractions
-  VarTable varTable;
   ProcTable procTable;
   FollowKB followKB;
   ParentKB parentKB;
   ModifiesKB modifiesKB = ModifiesKB(&varTable);
   UsesKB usesKB = UsesKB(&varTable);
+  PatternKB patternKB = PatternKB(&varTable);
 
   // Members
   UNO_SET_OF_STMT_NO allReadStmtNo;

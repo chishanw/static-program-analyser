@@ -206,6 +206,39 @@ vector<pair<STMT_NO, vector<VAR_IDX>>> PKB::getAllUsesSPairs() {
   return usesKB.getAllUsesSPairs();
 }
 
+// Pattern API
+void PKB::addAssignPttFullExpr(STMT_NO s, string var, string expr) {
+  patternKB.addAssignPttFullExpr(s, var, expr);
+}
+void PKB::addAssignPttSubExpr(STMT_NO s, string var, string expr) {
+  patternKB.addAssignPttSubExpr(s, var, expr);
+}
+unordered_set<int> PKB::getAssignForFullExpr(string expr) {
+  return patternKB.getAssignForFullExpr(expr);
+}
+unordered_set<int> PKB::getAssignForSubExpr(string expr) {
+  return patternKB.getAssignForSubExpr(expr);
+}
+unordered_set<int> PKB::getAssignForVarAndFullExpr(string varName,
+                                                   string expr) {
+  return patternKB.getAssignForVarAndFullExpr(varName, expr);
+}
+unordered_set<int> PKB::getAssignForVarAndSubExpr(string varName,
+                                                  string subExpr) {
+  return patternKB.getAssignForVarAndSubExpr(varName, subExpr);
+}
+vector<vector<int>> PKB::getAssignVarPairsForFullExpr(string expr) {
+  return patternKB.getAssignVarPairsForFullExpr(expr);
+}
+vector<vector<int>> PKB::getAssignVarPairsForSubExpr(string subExpr) {
+  return patternKB.getAssignVarPairsForSubExpr(subExpr);
+}
+unordered_set<int> PKB::getAssignForVar(string varName) {
+  return patternKB.getAssignForVar(varName);
+}
+vector<vector<int>> PKB::getAssignVarPairs() {
+  return patternKB.getAssignVarPairs();
+}
 // Table API
 void PKB::addProcedure(string procName) { procTable.insertProc(procName); }
 string PKB::getProcName(PROC_IDX procIdx) {
@@ -217,4 +250,5 @@ string PKB::getVarName(VAR_IDX varIdx) {
     return varTable.getVarName(varIdx);
 }
 unordered_set<VAR_IDX> PKB::getAllVariables() { return varTable
-  .getAllVariables(); }
+  .getAllVariables();
+}
