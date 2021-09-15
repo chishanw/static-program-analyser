@@ -856,6 +856,577 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
   }
 }
 
+TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addUsesS(1, "x");
+  pkb->addUsesS(1, "y");
+  pkb->addUsesS(2, "z");
+  QueryEvaluator qe(pkb);
+
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int zVarIdx = 2;
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s such that UsesS(1, 'x')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v such that UsesS(1, 'x')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+
+  SECTION("Select s such that UsesS(1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v such that UsesS(1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+
+  SECTION("Select s such that UsesS(s, 'x')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select v such that UsesS(s, 'x')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+
+  SECTION("Select s such that UsesS(s, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select v such that UsesS(s, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+
+  SECTION("Select s such that UsesS(s, v)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select v such that UsesS(s, v)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s such that UsesS(3, 'x')") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(3, 'x')") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(3, _)") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(3, _)") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(s, 'x')") {
+    pkb->addUsesS(1, "y");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(s, 'x')") {
+    pkb->addUsesS(1, "y");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(s, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(s, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(s, v)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(s, v)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addModifiesS(1, "x");
+  pkb->addModifiesS(1, "y");
+  pkb->addModifiesS(2, "z");
+  QueryEvaluator qe(pkb);
+
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int zVarIdx = 2;
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s such that UsesS(1, 'x')") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v such that UsesS(1, 'x')") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+
+  SECTION("Select s such that UsesS(1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v such that UsesS(1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+
+  SECTION("Select s such that UsesS(s, v)") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select v such that UsesS(s, v)") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int zVarIdx = 2;
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s such that UsesS(3, 'x')") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(3, 'x')") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(3, _)") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(3, _)") {
+    pkb->addUsesS(1, "x");
+    pkb->addUsesS(1, "y");
+    pkb->addUsesS(2, "z");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(s, 'x')") {
+    pkb->addUsesS(1, "y");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(s, 'x')") {
+    pkb->addUsesS(1, "y");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(s, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(s, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that UsesS(s, v)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v such that UsesS(s, v)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
 TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->addStmt(1);

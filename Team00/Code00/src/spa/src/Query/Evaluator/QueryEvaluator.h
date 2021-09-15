@@ -3,7 +3,9 @@
 #include <PKB/PKB.h>
 #include <Query/Common.h>
 #include <Query/Evaluator/FollowsEvaluator.h>
+#include <Query/Evaluator/ModifiesEvaluator.h>
 #include <Query/Evaluator/ParentEvaluator.h>
+#include <Query/Evaluator/UsesEvaluator.h>
 
 #include <string>
 #include <unordered_map>
@@ -23,6 +25,8 @@ class QueryEvaluator {
   std::unordered_map<std::string, query::DesignEntity> synonymMap;
   FollowsEvaluator followsEvaluator;
   ParentEvaluator parentEvaluator;
+  UsesEvaluator usesEvaluator;
+  ModifiesEvaluator modifiesEvaluator;
 
   bool areAllClausesTrue;
   std::vector<std::unordered_map<std::string, int>> queryResults;
@@ -51,6 +55,8 @@ class QueryEvaluator {
   void evaluateFollowsTClause(query::SuchThatClause);
   void evaluateParentClause(query::SuchThatClause);
   void evaluateParentTClause(query::SuchThatClause);
+  void evaluateUsesSClause(query::SuchThatClause);
+  void evaluateModifiesSClause(query::SuchThatClause);
 
   // helper methods
   bool isBoolClause(const query::Param& left, const query::Param& right);
