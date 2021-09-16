@@ -409,48 +409,24 @@ query::ConditionClause QueryParser::parsePatternClause() {
 }
 
 query::PatternExpr QueryParser::parsePatternExpr() {
-  MatchType matchType;
-  string expr;
-  char symbol = getCharSymbol();
-  switch (symbol) {
-    case '"': {  // expr is ["FACTOR"]
-      QueryToken exprToken = consumeToken();
-      // if expr is not IDENT or literal, throw error
-      if (exprToken.tokenType != TokenType::NAME_OR_KEYWORD &&
-          exprToken.tokenType != TokenType::INTEGER) {
-        throw runtime_error(INVALID_P_EXPR_CHARA_MSG);
-      }
-      getExactCharSymbol('"');
-      matchType = MatchType::EXACT;
-      expr = exprToken.value;
-      break;
-    }
-    case '_': {
-      // expr is [_]
-      if (peekToken().has_value() && peekToken().value().value == ")") {
-        matchType = MatchType::ANY;
-        expr = "_";
-        break;
-      }
+  getExactCharSymbol('_');
 
-      // expr is [_"FACTOR"_]
-      getExactCharSymbol('"');
-      QueryToken exprToken = consumeToken();
-      // if expr is not IDENT or literal, throw error
-      if (exprToken.tokenType != TokenType::NAME_OR_KEYWORD &&
-          exprToken.tokenType != TokenType::INTEGER) {
-        throw runtime_error(INVALID_P_EXPR_CHARA_MSG);
-      }
-      getExactCharSymbol('"');
-      getExactCharSymbol('_');
-      matchType = MatchType::SUB_EXPRESSION;
-      expr = exprToken.value;
-      break;
-    }
-    default:
-      throw runtime_error(INVALID_P_EXPR_CHARA_MSG);
+  // expr is [_]
+  if (peekToken().has_value() && peekToken().value().value == ")") {
+    return {MatchType::ANY, "_"};
   }
-  return {matchType, expr};
+
+  // expr is [_"FACTOR"_]
+  getExactCharSymbol('"');
+  QueryToken exprToken = consumeToken();
+  // if expr is not IDENT or literal, throw error
+  if (exprToken.tokenType != TokenType::NAME_OR_KEYWORD &&
+      exprToken.tokenType != TokenType::INTEGER) {
+    throw runtime_error(INVALID_P_EXPR_CHARA_MSG);
+  }
+  getExactCharSymbol('"');
+  getExactCharSymbol('_');
+  return {MatchType::SUB_EXPRESSION, exprToken.value};
 }
 
 // ============ MAIN ============
@@ -462,8 +438,7 @@ tuple<SynonymMap, SelectClause> QueryParser::Parse(const string& query) {
   it = tokens.begin();
   endIt = tokens.end();
 
-  // TODO(Beatrice): Remove before submission
-  DMOprintInfoMsg("Query tokens:");
+  DMOprintInfoMsg("Query tokens:");  // For debugging purposes
   for (const QueryToken& t : tokens) {
     DMOprintInfoMsg("[" + to_string(t.tokenType) + "," + t.value + "]");
   }
