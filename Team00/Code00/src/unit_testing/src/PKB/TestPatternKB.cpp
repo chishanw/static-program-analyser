@@ -2,6 +2,7 @@
 #include "catch.hpp"
 
 using namespace std;
+using namespace Catch;
 
 TEST_CASE("FULL_PATTERN") {
   /*
@@ -37,10 +38,10 @@ TEST_CASE("FULL_PATTERN") {
   REQUIRE(db.getAssignForVar("v") == unordered_set({3, 4}));
 
   // a(v, _)  = return all pairs for filtering (s, varidx), etc etc
-  REQUIRE_THAT(db.getAssignVarPairs(),
-               Catch::Matchers::UnorderedEquals(vector<vector<int>>(
-                   {vector<int>({1, yIdx}), vector<int>({2, yIdx}),
-                    vector<int>({3, vIdx}), vector<int>({4, vIdx})})));
+  REQUIRE_THAT(db.getAssignVarPairs(), VectorContains(vector<int>({1, yIdx})));
+  REQUIRE_THAT(db.getAssignVarPairs(), VectorContains(vector<int>({2, yIdx})));
+  REQUIRE_THAT(db.getAssignVarPairs(), VectorContains(vector<int>({3, vIdx})));
+  REQUIRE_THAT(db.getAssignVarPairs(), VectorContains(vector<int>({4, vIdx})));
 }
 
 TEST_CASE("SUB_PATTERN") {

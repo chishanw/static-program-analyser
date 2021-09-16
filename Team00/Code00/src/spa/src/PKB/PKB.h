@@ -14,9 +14,9 @@
 #include "ModifiesKB.h"
 #include "ParentKB.h"
 #include "PatternKB.h"
+#include "ProcTable.h"
 #include "UsesKB.h"
 #include "VarTable.h"
-#include "ProcTable.h"
 
 using namespace std;
 
@@ -25,6 +25,7 @@ class PKB {
   // Constructor
   PKB();
   VarTable varTable;
+  ProcTable procTable;
 
   // Methods
   void addStmt(STMT_NO s);
@@ -116,7 +117,6 @@ class PKB {
 
  private:
   // Design Abstractions
-  ProcTable procTable;
   FollowKB followKB;
   ParentKB parentKB;
   ModifiesKB modifiesKB = ModifiesKB(&varTable);

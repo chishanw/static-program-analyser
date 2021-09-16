@@ -70,13 +70,16 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
                 {1, 2, 3, 5, 7, 8, 9, 11, 15, 17, 18, 19, 20, 21, 23, 24}));
   }
 
-  // TODO(gf): when pkb is ready
-  //   SECTION("Procedures") {
-  //     REQUIRE_THAT(pkb->getAllProcedures(),
-  //                  UnorderedEquals(vector<string>{"Example", "p", "q"}));
-  //   }
+  SECTION("Procedures") {
+    int exampleIdx = pkb->procTable.getProcIndex("Example");
+    int pIdx = pkb->procTable.getProcIndex("p");
+    int qIdx = pkb->procTable.getProcIndex("q");
 
-  // SECTION("Consts") {
-  //   REQUIRE(pkb->getAllConsts() == UNO_SET_OF_STMT_NO({0, 1, 2, 3, 5}));
-  // }
+    REQUIRE(pkb->getAllProcedures() ==
+            UNO_SET_OF_STMT_NO{exampleIdx, pIdx, qIdx});
+  }
+
+  SECTION("Consts") {
+    REQUIRE(pkb->getAllConstants() == UNO_SET_OF_STMT_NO({0, 1, 2, 3, 5}));
+  }
 }

@@ -31,8 +31,7 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
 
 void DesignExtractor::ExtractProcAndStmt(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
-    // TODO(gf): when pkb is ready
-    // pkb.addProcedure(procedure->ProcName);
+    pkb->addProcedure(procedure->ProcName);
 
     ExtractProcAndStmtHelper(procedure->StmtList);
   }
@@ -418,16 +417,10 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
       string varName = assignStmt->VarName;
       vector<string> strs = expr->GetAllPatternStr();
 
-      string wholeExpr = strs[0];
-      // TODO(gf): rm prints and replace with pkb method calls
-      DMOprintInfoMsg("Assign stmt: [" + varName + "=" + wholeExpr + ";" + "]");
-      DMOprintInfoMsg("Var name: " + varName);
-      DMOprintInfoMsg("Extracted " + string(1, strs.size()) + " expressions:");
-      DMOprintInfoMsg("Whole expr: " + wholeExpr);
-      // pkb.addExpr(varName, wholeExpr);
+      string fullExpr = strs[0];
+      pkb->addAssignPttFullExpr(stmt->StmtNo, varName, fullExpr);
       for (auto it = strs.begin(); it != strs.end(); ++it) {
-        // pkb.addSubExpr(varName, *it);
-        DMOprintInfoMsg("Sub expr: " + *it);
+        pkb->addAssignPttSubExpr(stmt->StmtNo, varName, *it);
       }
     } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       ExtractExprPatternsHelper(ifStmt->ThenBlock);
@@ -447,8 +440,7 @@ void DesignExtractor::ExtractConst(const ProgramAST* programAST) {
   }
 
   for (auto constant : res) {
-    // TODO(gf): when pkb is ready
-    // pkb->addConst(constant);
+    pkb->addConstant(constant);
     DMOprintInfoMsg("const: " + to_string(constant));
   }
 }
