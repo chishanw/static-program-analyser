@@ -54,6 +54,7 @@ void TestWrapper::parse(std::string filename) {
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
   if (OurOwnGlobalStop || GlobalStop) {
+    results = {};
     return;  // only true when parse() encounter exceptions or TLE
   }
 
@@ -69,6 +70,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
                                                  evaluatedResult);
   } catch (const exception& ex) {
+    results = {};
     cout << "Exception caught: " << ex.what() << endl;
     return;
   }

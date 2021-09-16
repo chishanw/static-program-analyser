@@ -149,7 +149,9 @@ query::Param QueryParser::getRefParam() {
 SynonymMap QueryParser::parseSynonyms() {
   SynonymMap synonyms;
 
-  bool hasDeclaration = true;
+  optional<QueryToken> maybeToken = peekToken();
+  bool hasDeclaration =
+      maybeToken.has_value() && isDesignEntity(maybeToken.value().value);
   while (hasDeclaration) {
     // Parse design entity and synonym name
     DesignEntity entity = getDesignEntity();
@@ -185,9 +187,9 @@ SynonymMap QueryParser::parseSynonyms() {
       throw runtime_error(INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
     }
 
-    optional<QueryToken> maybeToken = peekToken();
-    hasDeclaration =
-        maybeToken.has_value() && isDesignEntity(maybeToken.value().value);
+    optional<QueryToken> maybeNextToken = peekToken();
+    hasDeclaration = maybeNextToken.has_value() &&
+                     isDesignEntity(maybeNextToken.value().value);
   }
   return synonyms;
 }
