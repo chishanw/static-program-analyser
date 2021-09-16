@@ -21,7 +21,7 @@ void DMOprintInfoMsg(const string& msg) {
     return;
   }
 
-  cout << msg << endl;
+  cout << "[INFO]: " << msg << endl;
 }
 
 // =======================================

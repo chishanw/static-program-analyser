@@ -439,7 +439,6 @@ void DesignExtractor::ExtractConst(const ProgramAST* programAST) {
 
   for (auto constant : res) {
     pkb->addConstant(constant);
-    DMOprintInfoMsg("const: " + to_string(constant));
   }
 }
 

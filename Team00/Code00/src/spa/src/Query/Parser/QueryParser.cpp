@@ -438,11 +438,6 @@ tuple<SynonymMap, SelectClause> QueryParser::Parse(const string& query) {
   it = tokens.begin();
   endIt = tokens.end();
 
-  DMOprintInfoMsg("Query tokens:");  // For debugging purposes
-  for (const QueryToken& t : tokens) {
-    DMOprintInfoMsg("[" + to_string(t.tokenType) + "," + t.value + "]");
-  }
-
   synonymMap = parseSynonyms();
   SelectClause selectClause = parseSelectClause();
 

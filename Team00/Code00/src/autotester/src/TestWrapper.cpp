@@ -39,12 +39,15 @@ void TestWrapper::parse(std::string filename) {
     // then tokends will be passed to parser
     const bool enableIter1restriction = true;
     const ProgramAST* programAST = Parser(enableIter1restriction).Parse(tokens);
+    DMOprintInfoMsg("SIMPLE Parser was successful");
 
     // then programAST will be passed to DE
     DesignExtractor de = DesignExtractor(pkb);
     de.Extract(programAST);
+    DMOprintInfoMsg("Design Extractor was successful");
 
   } catch (const exception& ex) {
+    DMOprintInfoMsg("TestWrapper parse() caught an exception");
     cout << "Exception caught: " << ex.what() << endl;
     OurOwnGlobalStop = true;
     return;
@@ -54,22 +57,28 @@ void TestWrapper::parse(std::string filename) {
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
   if (OurOwnGlobalStop || GlobalStop) {
+    DMOprintInfoMsg("TestWrapper evaluate()'s GlobalStop is TRUE");
     results = {};
     return;  // only true when parse() encounter exceptions or TLE
   }
 
   try {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
+    DMOprintInfoMsg("Query Parser was successful");
 
     std::unordered_set<int> evaluatedResult = QueryEvaluator(pkb).evaluateQuery(
         get<0>(parsedQuery), get<1>(parsedQuery));
+    DMOprintInfoMsg("Query Evaluator was successful");
 
     SynonymMap map = get<0>(parsedQuery);
     SelectClause clause = get<1>(parsedQuery);
     DesignEntity selectSynDesignEntity = map.at(clause.selectSynonym.name);
     results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
                                                  evaluatedResult);
+    DMOprintInfoMsg("Query Result Projector was successful");
+
   } catch (const exception& ex) {
+    DMOprintInfoMsg("TestWrapper evaluate() caught an exception");
     results = {};
     cout << "Exception caught: " << ex.what() << endl;
     return;
