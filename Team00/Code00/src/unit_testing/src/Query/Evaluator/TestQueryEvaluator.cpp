@@ -8,22 +8,78 @@
 
 using namespace query;
 
-TEST_CASE("Select s") {
-  PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+TEST_CASE("Select all design entities") {
+  SECTION("stmt s; Select s") {
+    PKB* pkb = new PKB();
+    pkb->addStmt(1);
+    pkb->addStmt(2);
+    pkb->addStmt(3);
 
-  QueryEvaluator qe(pkb);
-  unordered_map<string, DesignEntity> synonyms = {
-      {"s", DesignEntity::STATEMENT}};
+    QueryEvaluator qe(pkb);
+    unordered_map<string, DesignEntity> synonyms = {
+        {"s", DesignEntity::STATEMENT}};
 
-  Synonym s = {DesignEntity::STATEMENT, "s"};
-  vector<ConditionClause> conditionClauses = {};
+    Synonym s = {DesignEntity::STATEMENT, "s"};
+    vector<ConditionClause> conditionClauses = {};
 
-  SelectClause select = {s, conditionClauses};
-  unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-  REQUIRE(result == unordered_set<int>({1, 2, 3}));
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("procedure p; Select p") {
+    PKB* pkb = new PKB();
+    int aIdx = pkb->procTable.insertProc("procA");
+    int bIdx = pkb->procTable.insertProc("procB");
+    int cIdx = pkb->procTable.insertProc("procC");
+
+    QueryEvaluator qe(pkb);
+    unordered_map<string, DesignEntity> synonyms = {
+        {"p", DesignEntity::PROCEDURE}};
+
+    Synonym p = {DesignEntity::PROCEDURE, "p"};
+    vector<ConditionClause> conditionClauses = {};
+
+    SelectClause select = {p, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>({aIdx, bIdx, cIdx}));
+  }
+
+  SECTION("variable v; Select v") {
+    PKB* pkb = new PKB();
+    int xIdx = pkb->varTable.insertVar("x");
+    int yIdx = pkb->varTable.insertVar("y");
+    int zIdx = pkb->varTable.insertVar("z");
+
+    QueryEvaluator qe(pkb);
+    unordered_map<string, DesignEntity> synonyms = {
+        {"v", DesignEntity::VARIABLE}};
+
+    Synonym v = {DesignEntity::VARIABLE, "v"};
+    vector<ConditionClause> conditionClauses = {};
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>({xIdx, yIdx, zIdx}));
+  }
+
+  SECTION("constant c; Select c") {
+    PKB* pkb = new PKB();
+    pkb->addConstant(1);
+    pkb->addConstant(3);
+    pkb->addConstant(5);
+
+    QueryEvaluator qe(pkb);
+    unordered_map<string, DesignEntity> synonyms = {
+        {"c", DesignEntity::CONSTANT}};
+
+    Synonym c = {DesignEntity::CONSTANT, "c"};
+    vector<ConditionClause> conditionClauses = {};
+
+    SelectClause select = {c, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>({1, 3, 5}));
+  }
 }
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
@@ -2083,7 +2139,7 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
     REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
   }
 
-    SECTION("Select s1 such that Follows(1, 2) pattern a (v, '_')") {
+  SECTION("Select s1 such that Follows(1, 2) pattern a (v, '_')") {
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
@@ -2152,7 +2208,7 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   }
 
   // USES_S + PATTERN
-    SECTION("Select s1 such that UsesS(3, 'w') pattern a ('x', 'w')") {
+  SECTION("Select s1 such that UsesS(3, 'w') pattern a ('x', 'w')") {
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "w"}};
@@ -2305,7 +2361,7 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
     REQUIRE(results == unordered_set<int>({3}));
   }
 
-    SECTION("Select s1 such that UsesS(3, 'w') pattern a (v, '_')") {
+  SECTION("Select s1 such that UsesS(3, 'w') pattern a (v, '_')") {
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "w"}};

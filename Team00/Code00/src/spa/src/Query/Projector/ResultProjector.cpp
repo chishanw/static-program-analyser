@@ -14,22 +14,18 @@ list<string> ResultProjector::formatResults(DesignEntity designEntity,
   switch (designEntity) {
     case DesignEntity::VARIABLE:
       for (int varIdx : results) {
-        // pkb->getVarName(varIdx)
-      }
-      return formattedResults;
-    case DesignEntity::CONSTANT:
-      for (int constIdx : results) {
-        // pkb->getConstValue(constIdx) or sth
+        formattedResults.push_back(pkb->getVarName(varIdx));
       }
       return formattedResults;
     case DesignEntity::PROCEDURE:
       for (int procIdx : results) {
-        // pkb->getProcName(procIdx)
+        formattedResults.push_back(pkb->getProcName(procIdx));
       }
       return formattedResults;
     default:
-      for (int stmtNum : results) {
-        formattedResults.push_back(to_string(stmtNum));
+      // all statement types and constants
+      for (int num : results) {
+        formattedResults.push_back(to_string(num));
       }
       return formattedResults;
   }

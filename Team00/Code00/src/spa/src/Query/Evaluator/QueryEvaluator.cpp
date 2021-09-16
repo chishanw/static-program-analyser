@@ -612,8 +612,13 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
       return pkb->getAllAssignStmts();
     case DesignEntity::VARIABLE:
       return pkb->getAllVariables();
+    case DesignEntity::PROCEDURE:
+      return pkb->getAllProcedures();
+    case DesignEntity::CONSTANT:
+      return pkb->getAllConstants();
     default:
-      cout << "Todo: CONSTANT, PROCEDURE\n";
+      DMOprintErrMsgAndExit(
+          "[QE][getAllValuesOfSynonyms] invalid design entity");
       return {};
   }
 }
