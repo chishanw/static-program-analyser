@@ -17,7 +17,8 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
     : followsEvaluator(pkb),
       parentEvaluator(pkb),
       usesEvaluator(pkb),
-      modifiesEvaluator(pkb) {
+      modifiesEvaluator(pkb),
+      patternEvaluator(pkb) {
   this->pkb = pkb;
   areAllClausesTrue = true;
   queryResults = {};
@@ -35,6 +36,8 @@ unordered_set<int> QueryEvaluator::evaluateQuery(
   for (auto clause : conditionClauses) {
     if (clause.conditionClauseType == ConditionClauseType::SUCH_THAT) {
       evaluateSuchThatClause(clause.suchThatClause);
+    } else {
+      evaluatePatternClause(clause.patternClause);
     }
 
     if (!areAllClausesTrue) {
@@ -298,6 +301,40 @@ void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
     addIncomingResults(filteredIncomingResults, left, right);
+  }
+}
+
+void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
+  Synonym matchSynonym = clause.matchSynonym;
+  Param varParam = clause.leftParam;
+  PatternExpr patternExpr = clause.patternExpr;
+
+  vector<vector<int>> incomingResults;
+
+  if (varParam.type == ParamType::NAME_LITERAL ||
+      varParam.type == ParamType::WILDCARD) {
+    incomingResults = formatRefResults(
+        patternEvaluator.evaluateAssignPattern(varParam, patternExpr));
+  } else {
+    // synonym
+    incomingResults =
+        patternEvaluator.evaluateAssignPairPattern(varParam, patternExpr);
+  }
+
+  if (incomingResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
+
+  Param assignSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
+
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, assignSynonymParam, varParam);
+  if (currentQueryResults.empty()) {
+    initializeQueryResults(filteredIncomingResults, assignSynonymParam,
+                           varParam);
+  } else {
+    addIncomingResults(filteredIncomingResults, assignSynonymParam, varParam);
   }
 }
 

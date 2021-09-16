@@ -5,6 +5,7 @@
 #include <Query/Evaluator/FollowsEvaluator.h>
 #include <Query/Evaluator/ModifiesEvaluator.h>
 #include <Query/Evaluator/ParentEvaluator.h>
+#include <Query/Evaluator/PatternEvaluator.h>
 #include <Query/Evaluator/UsesEvaluator.h>
 
 #include <string>
@@ -27,6 +28,7 @@ class QueryEvaluator {
   ParentEvaluator parentEvaluator;
   UsesEvaluator usesEvaluator;
   ModifiesEvaluator modifiesEvaluator;
+  PatternEvaluator patternEvaluator;
 
   bool areAllClausesTrue;
   std::vector<std::unordered_map<std::string, int>> queryResults;
@@ -57,6 +59,8 @@ class QueryEvaluator {
   void evaluateParentTClause(query::SuchThatClause);
   void evaluateUsesSClause(query::SuchThatClause);
   void evaluateModifiesSClause(query::SuchThatClause);
+
+  void evaluatePatternClause(query::PatternClause);
 
   // helper methods
   bool isBoolClause(const query::Param& left, const query::Param& right);

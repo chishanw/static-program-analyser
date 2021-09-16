@@ -1427,6 +1427,936 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   }
 }
 
+TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addAssignStmt(1);
+  pkb->addAssignStmt(2);
+  pkb->addAssignStmt(3);
+
+  pkb->addAssignPttFullExpr(1, "x", "w");
+  pkb->addAssignPttSubExpr(1, "x", "w");
+
+  pkb->addAssignPttFullExpr(2, "y", "w");
+  pkb->addAssignPttSubExpr(2, "y", "w");
+
+  pkb->addAssignPttFullExpr(3, "z", "1");
+  pkb->addAssignPttSubExpr(3, "z", "1");
+
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int zVarIdx = 2;
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"a", DesignEntity::ASSIGN}, {"v", DesignEntity::VARIABLE}};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select a pattern a ('x', 'w')") {
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a pattern a ('x', _'w'_)") {
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a pattern a ('x', _)") {
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a pattern a (_, 'w')") {
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select a pattern a (_, _'w'_)") {
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select a pattern a (_, _)") {
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select a pattern a (v, 'w')") {
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select a pattern a (v, _'w'_)") {
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select a pattern a (v, _)") {
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v pattern a (v, 'w')") {
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx}));
+  }
+
+  SECTION("Select a pattern a (v, _'w'_)") {
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx}));
+  }
+
+  SECTION("Select v pattern a (v, _)") {
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
+  PKB* pkb = new PKB();
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"a", DesignEntity::ASSIGN}, {"v", DesignEntity::VARIABLE}};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select a pattern a ('x', 'w')") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttFullExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a ('x', _'w'_)") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttSubExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a ('x', _)") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttFullExpr(1, "y", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (_, 'w')") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttFullExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (_, _'w'_)") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttSubExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (_, _)") {
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (v, 'w')") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttFullExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (v, _'w'_)") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttSubExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (v, _)") {
+    pkb->addAssignStmt(1);
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v pattern a (v, 'w')") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttFullExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select a pattern a (v, _'w'_)") {
+    pkb->addAssignStmt(1);
+    pkb->addAssignPttSubExpr(1, "x", "www");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v pattern a (v, _)") {
+    pkb->addAssignStmt(1);
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addStmt(4);
+  pkb->addAssignStmt(3);
+  pkb->addAssignStmt(4);
+
+  pkb->setFollows(1, 2);
+  pkb->setParent(2, 3);
+  pkb->addModifiesS(3, "x");
+  pkb->addAssignPttFullExpr(3, "x", "w");
+  pkb->addAssignPttFullExpr(4, "y", "1");
+  pkb->addUsesS(3, "w");
+
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int wVarIdx = 2;
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"a", DesignEntity::ASSIGN},
+      {"v", DesignEntity::VARIABLE}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  // Test Filter Algo - Subset of 1 Synonym
+  SECTION("Select a such that Parent(s1, a) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "a"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  // Test Filter Algo - Subset of 2 Synonyms
+  SECTION("Select a such that ModifiesS(a, v) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "a"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  // Test Inner Join Algo - 1 Overlapping Synonym
+  SECTION("Select v such that ModifiesS(s, v) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "v"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx}));
+  }
+
+  // Test Cross Product Algo - No Overlapping Synonyms
+  SECTION("Select s1 such that Follows(s1, s2) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  // FOLLOWS + PATTERN
+  SECTION("Select s1 such that Follows(1, 2) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(s, 2) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a such that Follows(s, 2) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::SYNONYM, "s1"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select s1 such that Follows(_, _) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(1, 2) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(s1, 2) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a such that Follows(s, 2) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::SYNONYM, "s1"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select s1 such that Follows(_, _) pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(1, 2) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(s1, 2) pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a such that Follows(s1, 2) pattern a ('_', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select s1 such that Follows(_, _) pattern a ('_, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+    SECTION("Select s1 such that Follows(1, 2) pattern a (v, '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(s1, 2) pattern a (v, '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Select a such that Follows(s1, 2) pattern a ('_', '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3, 4}));
+  }
+
+  SECTION("Select s1 such that Follows(_, _) pattern a ('_, '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  // USES_S + PATTERN
+    SECTION("Select s1 such that UsesS(3, 'w') pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that UseS(s1, 'w') pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select a such that UsesS(s1, 'w') pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select s1 such that UsesS(3, 'w') pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that UsesS(s1, 'w') pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select a such that UsesS(s1, 'w') pattern a ('x', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select s1 such that UsesS(3, 'w') pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that UsesS(s1, 'w') pattern a (v, 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select a such that UsesS(s1, 'w') pattern a ('_', 'w')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+    SECTION("Select s1 such that UsesS(3, 'w') pattern a (v, '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 such that UsesS(s1, 'w') pattern a (v, '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  SECTION("Select a such that UsesS(s1, 'w') pattern a ('_', '_')") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::NAME_LITERAL, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({3, 4}));
+  }
+}
+
 TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->addStmt(1);
