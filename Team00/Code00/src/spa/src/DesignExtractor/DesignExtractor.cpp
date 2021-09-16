@@ -218,9 +218,7 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractModifiesHelper(
 
     } else if (const ReadStmtAST* readStmt =
                    dynamic_cast<const ReadStmtAST*>(stmt)) {
-      for (auto varName : assignStmt->Expr->GetAllPatternStr()) {
-        result.push_back(make_pair(assignStmt->StmtNo, varName));
-      }
+      result.push_back(make_pair(readStmt->StmtNo, readStmt->VarName));
     }
   }
 
