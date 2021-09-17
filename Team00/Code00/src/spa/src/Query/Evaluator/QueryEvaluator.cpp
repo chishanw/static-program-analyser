@@ -1,5 +1,7 @@
 #include "QueryEvaluator.h"
 
+#include <../../autotester/src/AbstractWrapper.h>
+
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -43,6 +45,12 @@ unordered_set<int> QueryEvaluator::evaluateQuery(
     if (!areAllClausesTrue) {
       // early termination as soon as any clause is false
       return {};
+    }
+
+    if (AbstractWrapper::GlobalStop) {
+      // check if TLE after each clause evaluation
+      // return whatever results we can
+      return getSelectSynonymFinalResults(selectSynonym.name);
     }
   }
 
