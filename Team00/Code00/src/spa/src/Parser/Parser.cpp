@@ -17,6 +17,9 @@ Parser::Parser(bool enableIter1restriction)
 
 ProgramAST* Parser::Parse(std::vector<std::string> tokens) {
   if (tokens.empty()) {
+    throw runtime_error(
+        "[Parser] a SIMPLE program must have at least 1 procedure.");
+
     vector<ProcedureAST*> emptyList;
     return new ProgramAST(emptyList);
   }
@@ -36,11 +39,6 @@ ProgramAST* Parser::program() {
   while (!noMoreToken()) {
     ProcedureAST* procedureAST = procedure();
     procedures.push_back(procedureAST);
-  }
-
-  if (procedures.size() == 0) {
-    throw runtime_error(
-        "[Parser] a SIMPLE program must have at least 1 procedure.");
   }
 
   // TODO(gf): rm this after iter1

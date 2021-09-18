@@ -8,6 +8,97 @@
 
 using namespace std;
 
+TEST_CASE("[Parser] semantic errors") {
+  SECTION("<1 procedure") {
+    string program = "    ";
+    REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+  }
+
+  SECTION("<1 stmt in procedure stmtLst") {
+    string program =
+        "procedure Exmaple {"
+        ""
+        "}";
+
+    REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+  }
+
+  SECTION("<1 stmt in whileStmt stmtLst") {
+    string program =
+        "procedure Exmaple {"
+        "  while (a>1) {"
+        "               "
+        "  }"
+        "}";
+
+    REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+  }
+
+  SECTION("<1 stmt in ifStmt stmtLst") {
+    SECTION("<1 stmt in ifStmt stmtLst then block") {
+      string program =
+          "procedure Exmaple {    "
+          "  if (a>1) then {      "
+          "                       "
+          "  } else {             "
+          "    a = 1;             "
+          "  }                    "
+          "}                      ";
+      REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+    }
+
+    SECTION("<1 stmt in ifStmt stmtLst else block") {
+      string program =
+          "procedure Exmaple {    "
+          "  if (a>1) then {      "
+          "    a = 1;             "
+          "  } else {             "
+          "                       "
+          "  }                    "
+          "}                      ";
+      REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+    }
+
+    SECTION("<1 stmt in ifStmt stmtLst both block") {
+      string program =
+          "procedure Exmaple {    "
+          "  if (a>1) then {      "
+          "                       "
+          "  } else {             "
+          "                       "
+          "  }                    "
+          "}                      ";
+      REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+    }
+  }
+}
+
+TEST_CASE("[Parser] parsing INTEGER") {
+  SECTION("big number") {
+    string program =
+        "procedure p {"
+        "    p = 1234567890123456789012345678901234567890123456789012345678; "
+        "}";
+    REQUIRE_NOTHROW(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+  }
+
+  SECTION("number has > 1 digit and it starts with 0") {
+    string program =
+        "procedure p {"
+        "    p = 01234; "
+        "}";
+    REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+  }
+
+  SECTION("number has only 1 digit and it starts with 0") {
+    string program =
+        "procedure p {"
+        "    p = 0; "
+        "}";
+    REQUIRE_NOTHROW(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+  }
+}
+
 TEST_CASE("[Parser] cond_expr tests") {
   // =============================
   // Cases that should throw
@@ -67,14 +158,6 @@ TEST_CASE("[Parser] cond_expr tests") {
           "}   \n";
       REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
     }
-
-    SECTION("number has > 1 digit and it starts with 0") {
-      string program =
-          "procedure p {"
-          "    p = 01234; "
-          "}";
-      REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
-    }
   }
 
   // =============================
@@ -124,24 +207,6 @@ TEST_CASE("[Parser] cond_expr tests") {
           "        a = p * 3;   \n"
           "    }   \n"
           "}   \n";
-      REQUIRE_NOTHROW(
-          Parser().Parse(Tokenizer::TokenizeProgramString(program)));
-    }
-
-    SECTION("big number") {
-      string program =
-          "procedure p {"
-          "    p = 1234567890123456789012345678901234567890123456789012345678; "
-          "}";
-      REQUIRE_NOTHROW(
-          Parser().Parse(Tokenizer::TokenizeProgramString(program)));
-    }
-
-    SECTION("number has only 1 digit and it starts with 0") {
-      string program =
-          "procedure p {"
-          "    p = 0; "
-          "}";
       REQUIRE_NOTHROW(
           Parser().Parse(Tokenizer::TokenizeProgramString(program)));
     }
