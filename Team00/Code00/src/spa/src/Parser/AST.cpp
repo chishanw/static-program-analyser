@@ -5,77 +5,78 @@
 
 using namespace std;
 
-vector<NAME> ArithAST::GetAllVarNames() const {
-  vector<NAME> res;
+// ==================
+// GetFullExprPatternStr
+// ==================
+string ArithAST::GetFullExprPatternStr() const {
   if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    if (f->IsVarName()) {
-      res.push_back(f->VarName);
-    }
-    return res;
-  }
-
-  if (LeftNode != nullptr) {
-    vector<NAME> resL = LeftNode->GetAllVarNames();
-    copy(resL.begin(), resL.end(), back_inserter(res));
-  }
-  if (RightNode != nullptr) {
-    vector<NAME> resR = RightNode->GetAllVarNames();
-    copy(resR.begin(), resR.end(), back_inserter(res));
-  }
-  return res;
-}
-
-unordered_set<int> ArithAST::GetAllConsts() const {
-  unordered_set<int> res;
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    if (f->IsConstValue()) {
-      res.insert(f->ConstValue);
-    }
-    return res;
-  }
-
-  if (LeftNode != nullptr) {
-    res.merge(LeftNode->GetAllConsts());
-  }
-  if (RightNode != nullptr) {
-    res.merge(RightNode->GetAllConsts());
-  }
-  return res;
-}
-
-vector<string> ArithAST::GetAllPatternStr() const {
-  vector<string> res;
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetAllPatternStr();
-  }
-
-  res.push_back(GetPatternStr());
-  if (LeftNode != nullptr) {
-    vector<string> resL = LeftNode->GetAllPatternStr();
-    copy(resL.begin(), resL.end(), back_inserter(res));
-  }
-  if (RightNode != nullptr) {
-    vector<string> resR = RightNode->GetAllPatternStr();
-    copy(resR.begin(), resR.end(), back_inserter(res));
-  }
-  return res;
-}
-
-string ArithAST::GetPatternStr() const {
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetPatternStr();
+    return f->GetFullExprPatternStr();
   }
 
   // no space between tokens
   stringstream out;
   if (hasOnlyOneNode) {
-    out << LeftNode->GetPatternStr();
+    out << LeftNode->GetFullExprPatternStr();
   } else {
-    out << LeftNode->GetPatternStr() << Sign << RightNode->GetPatternStr();
+    out << LeftNode->GetFullExprPatternStr() << Sign
+        << RightNode->GetFullExprPatternStr();
   }
   return out.str();
 }
 
+string FactorAST::GetFullExprPatternStr() const {
+  // no space between tokens
+  stringstream out;
+  if (isVarName) {
+    out << VarName;
+  } else if (isConstValue) {
+    out << ConstValue;
+  } else if (isExpr) {
+    out << "(" << Expr->GetFullExprPatternStr() << ")";
+  } else {
+    DMOprintErrMsgAndExit("FactorAST has wrong bool value");
+  }
+  return out.str();
+}
+
+// ==================
+// GetSubExprPatternStrs
+// ==================
+vector<string> ArithAST::GetSubExprPatternStrs() const {
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
+    return f->GetSubExprPatternStrs();
+  }
+
+  vector<string> res;
+  res.push_back(GetFullExprPatternStr());
+  if (LeftNode != nullptr) {
+    vector<string> resL = LeftNode->GetSubExprPatternStrs();
+    copy(resL.begin(), resL.end(), back_inserter(res));
+  }
+  if (RightNode != nullptr) {
+    vector<string> resR = RightNode->GetSubExprPatternStrs();
+    copy(resR.begin(), resR.end(), back_inserter(res));
+  }
+  return res;
+}
+
+vector<string> FactorAST::GetSubExprPatternStrs() const {
+  vector<string> res;
+  if (!isExpr) {
+    res.push_back(GetFullExprPatternStr());
+    return res;
+  }
+
+  // NOTE: itself must be in the 1st index in the res vector,
+  // cos DE expects the 1st string be the whole expr
+  res = Expr->GetSubExprPatternStrs();
+  res.insert(res.begin(), GetFullExprPatternStr());
+  return res;
+}
+
+// ==================
+// GetDebugStr
+// ==================
 string ArithAST::GetDebugStr() const {
   if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
     return f->GetDebugStr();
@@ -93,35 +94,6 @@ string ArithAST::GetDebugStr() const {
         << "sign: " << Sign << ", "
         << "ln: " << LeftNode->GetDebugStr() << ", "
         << "rn: " << RightNode->GetDebugStr() << "}";
-  }
-  return out.str();
-}
-
-vector<string> FactorAST::GetAllPatternStr() const {
-  vector<string> res;
-  if (!isExpr) {
-    res.push_back(GetPatternStr());
-    return res;
-  }
-
-  // NOTE: itself must be in the 1st index in the res vector,
-  // cos DE expects the 1st string be the whole expr
-  res = Expr->GetAllPatternStr();
-  res.insert(res.begin(), GetPatternStr());
-  return res;
-}
-
-string FactorAST::GetPatternStr() const {
-  // no space between tokens
-  stringstream out;
-  if (isVarName) {
-    out << VarName;
-  } else if (isConstValue) {
-    out << ConstValue;
-  } else if (isExpr) {
-    out << "(" << Expr->GetPatternStr() << ")";
-  } else {
-    DMOprintErrMsgAndExit("FactorAST has wrong bool value");
   }
   return out.str();
 }
@@ -144,17 +116,75 @@ string FactorAST::GetDebugStr() const {
   return out.str();
 }
 
-vector<NAME> CondExprAST::GetAllVarNames() const {
+// ==================
+// GetAllVarNames
+// ==================
+unordered_set<NAME> ArithAST::GetAllVarNames() const {
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
+    return f->GetAllVarNames();
+  }
+
+  unordered_set<NAME> res;
+  if (LeftNode != nullptr) {
+    res.merge(LeftNode->GetAllVarNames());
+  }
+  if (RightNode != nullptr) {
+    res.merge(RightNode->GetAllVarNames());
+  }
+  return res;
+}
+
+unordered_set<NAME> CondExprAST::GetAllVarNames() const {
   if (hasOnlyOneRelExpr) {
     return RelExpr->GetAllVarNames();
   }
   if (hasOnlyOneCondExpr) {
     return LeftNode->GetAllVarNames();
   }
+
   // has two cond expr
-  vector<NAME> res = LeftNode->GetAllVarNames();
-  vector<NAME> resR = RightNode->GetAllVarNames();
-  copy(resR.begin(), resR.end(), back_inserter(res));
+  unordered_set<NAME> res = LeftNode->GetAllVarNames();
+  res.merge(RightNode->GetAllVarNames());
+  return res;
+}
+
+unordered_set<NAME> RelExprAST::GetAllVarNames() const {
+  unordered_set<NAME> res;
+  res.merge(LeftNode->GetAllVarNames());
+  res.merge(RightNode->GetAllVarNames());
+  return res;
+}
+
+unordered_set<NAME> FactorAST::GetAllVarNames() const {
+  if (isVarName) {
+    return {this->VarName};
+  } else if (isConstValue) {
+    return {};
+  } else if (isExpr) {
+    const ArithAST* expr = this->Expr;
+    const ArithAST* temp = dynamic_cast<const ArithAST*>(this->Expr);
+    return temp->GetAllVarNames();
+  } else {
+    DMOprintErrMsgAndExit("[AST][GetAllVarNames] shouldn't reach here");
+    return {};
+  }
+}
+
+// ==================
+// GetAllConsts
+// ==================
+unordered_set<int> ArithAST::GetAllConsts() const {
+  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
+    return f->GetAllConsts();
+  }
+
+  unordered_set<int> res;
+  if (LeftNode != nullptr) {
+    res.merge(LeftNode->GetAllConsts());
+  }
+  if (RightNode != nullptr) {
+    res.merge(RightNode->GetAllConsts());
+  }
   return res;
 }
 
@@ -172,24 +202,22 @@ unordered_set<int> CondExprAST::GetAllConsts() const {
   return res;
 }
 
-vector<NAME> RelExprAST::GetAllVarNames() const {
-  vector<NAME> res;
-  if (LeftNode->IsVarName()) {
-    res.push_back(LeftNode->VarName);
-  }
-  if (RightNode->IsVarName()) {
-    res.push_back(RightNode->VarName);
-  }
+unordered_set<int> RelExprAST::GetAllConsts() const {
+  unordered_set<int> res;
+  res.merge(LeftNode->GetAllConsts());
+  res.merge(RightNode->GetAllConsts());
   return res;
 }
 
-unordered_set<int> RelExprAST::GetAllConsts() const {
-  unordered_set<int> res;
-  if (LeftNode->IsVarName()) {
-    res.insert(LeftNode->ConstValue);
+unordered_set<int> FactorAST::GetAllConsts() const {
+  if (isVarName) {
+    return {};
+  } else if (isConstValue) {
+    return {this->ConstValue};
+  } else if (isExpr) {
+    return this->Expr->GetAllConsts();
+  } else {
+    DMOprintErrMsgAndExit("[AST][GetAllConsts] shouldn't reach here");
+    return {};
   }
-  if (RightNode->IsVarName()) {
-    res.insert(RightNode->ConstValue);
-  }
-  return res;
 }

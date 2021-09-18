@@ -1,0 +1,23 @@
+procedure DoubleNestedIfAtBottom {
+    read a;
+    read b;
+    if (a > b) then {
+        x = 2;
+        z = 3;
+        i = 5;
+        if ((x + z + i) > a) then {
+            print a;
+        } else {    
+            print b;
+        }
+    } else {
+        c = a * b;
+        d = 20;
+        if (c >= d) then {
+            print c;
+        } else {
+            e = 2 * a * b + 7;
+            print e;
+        }
+    }
+}

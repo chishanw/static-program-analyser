@@ -1,0 +1,595 @@
+1 - FollowsT test, integer and stmt
+stmt s;
+Select s such that Follows* (5, s)
+6, 7, 11, 15, 16
+5000
+2 - FollowsT test, integer and read
+read r;
+Select r such that Follows* (1, r)
+2, 3
+5000
+3 - FollowsT test, integer and print
+print pn;
+Select pn such that Follows* (5, pn)
+16
+5000
+4 - FollowsT test, integer and while
+while w;
+Select w such that Follows* (5, w)
+7
+5000
+5 - FollowsT test, integer and if
+if i;
+Select i such that Follows* (5, i)
+11
+5000
+6 - FollowsT test, integer and assign
+assign a;
+Select a such that Follows* (5, a)
+6, 15
+5000
+7 - FollowsT test, integer and variable
+variable v;
+Select v such that Follows* (5, v)
+none
+5000
+8 - FollowsT test, integer and constant
+constant c;
+Select c such that Follows* (5, c)
+none
+5000
+9 - FollowsT test, integer and procedure
+procedure p;
+Select p such that Follows* (5, p)
+none
+5000
+10 - FollowsT test, integer and integer
+stmt s;
+Select s such that Follows* (5, 5)
+none
+5000
+11 - FollowsT test, integer and wildcard
+stmt s;
+Select s such that Follows* (5, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+12 - FollowsT test, stmt and stmt
+stmt s;
+Select s such that Follows* (s, s)
+none
+5000
+13 - FollowsT test, stmt and read
+stmt s; read r;
+Select s such that Follows* (s, r)
+1, 2
+5000
+14 - FollowsT test, stmt and read
+stmt s; read r;
+Select r such that Follows* (s, r)
+2, 3
+5000
+15 - FollowsT test, stmt and print
+stmt s; print pn;
+Select s such that Follows* (s, pn)
+1, 2, 3, 4, 5, 6, 7, 11, 15
+5000
+16 - FollowsT test, stmt and print
+stmt s; print pn;
+Select pn such that Follows* (s, pn)
+16
+5000
+17 - FollowsT test, stmt and while
+stmt s; while w;
+Select s such that Follows* (s, w)
+1, 2, 3, 4, 5, 6
+5000
+18 - FollowsT test, stmt and while
+stmt s; while w;
+Select w such that Follows* (s, w)
+7
+5000
+19 - FollowsT test, stmt and if
+stmt s; if i;
+Select s such that Follows* (s, i)
+1, 2, 3, 4, 5, 6, 7
+5000
+20 - FollowsT test, stmt and if
+stmt s; if i;
+Select i such that Follows* (s, i)
+11
+5000
+21 - FollowsT test, stmt and assign
+stmt s; assign a;
+Select s such that Follows* (s, a)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13
+5000
+22 - FollowsT test, stmt and assign
+stmt s; assign a;
+Select a such that Follows* (s, a)
+4, 5, 6, 9, 10, 14, 15
+5000
+23 - FollowsT test, stmt and variable
+stmt s; variable v;
+Select s such that Follows* (s, v)
+none
+5000
+24 - FollowsT test, stmt and constant
+stmt s; constant c;
+Select s such that Follows* (s, c)
+none
+5000
+25 - FollowsT test, stmt and procedure
+stmt s; procedure p;
+Select s such that Follows* (s, p)
+none
+5000
+26 - FollowsT test, read and stmt
+read r; stmt s;
+Select r such that Follows* (r, s)
+1, 2, 3
+5000
+27 - FollowsT test, read and stmt
+read r; stmt s;
+Select s such that Follows* (r, s)
+2, 3, 4, 5, 6, 7, 11, 15, 16
+5000
+28 - FollowsT test, read and read
+read r;
+Select r such that Follows* (r, r)
+none
+5000
+29 - FollowsT test, read and print
+read r; print pn;
+Select r such that Follows* (r, pn)
+1, 2, 3
+5000
+30 - FollowsT test, read and print
+read r; print pn;
+Select pn such that Follows* (r, pn)
+16
+5000
+31 - FollowsT test, read and while
+read r; while w;
+Select r such that Follows* (r, w)
+1, 2, 3
+5000
+32 - FollowsT test, read and while
+read r; while w;
+Select w such that Follows* (r, w)
+7
+5000
+33 - FollowsT test, read and if
+read r; if i;
+Select r such that Follows* (r, i)
+1, 2, 3
+5000
+34 - FollowsT test, read and if
+read r; if i;
+Select i such that Follows* (r, i)
+11
+5000
+35 - FollowsT test, read and assign
+read r; assign a;
+Select r such that Follows* (r, a)
+1, 2, 3
+5000
+36 - FollowsT test, read and assign
+read r; assign a;
+Select a such that Follows* (r, a)
+4, 5, 6, 15
+5000
+37 - FollowsT test, read and variable
+read r; variable v;
+Select r such that Follows* (r, v)
+none
+5000
+38 - FollowsT test, read and constant
+read r; constant c;
+Select r such that Follows* (r, c)
+none
+5000
+39 - FollowsT test, read and procedure
+read r; procedure p;
+Select r such that Follows* (r, p)
+none
+5000
+40 - FollowsT test, print and stmt
+print pn; stmt s;
+Select pn such that Follows* (pn, s)
+none
+5000
+41 - FollowsT test, print and read
+print pn; read r;
+Select pn such that Follows* (pn, r)
+none
+5000
+42 - FollowsT test, print and print
+print pn;
+Select pn such that Follows* (pn, pn)
+none
+5000
+43 - FollowsT test, print and while
+print pn; while w;
+Select pn such that Follows* (pn, w)
+none
+5000
+44 - FollowsT test, print and assign
+print pn; assign a;
+Select pn such that Follows* (pn, a)
+none
+5000
+45 - FollowsT test, print and variable
+print pn; variable v;
+Select pn such that Follows* (pn, v)
+none
+5000
+46 - FollowsT test, print and constant
+print pn; constant c;
+Select pn such that Follows* (pn, c)
+none
+5000
+47 - FollowsT test, print and procedure
+print pn; procedure p;
+Select pn such that Follows* (pn, p)
+none
+5000
+48 - FollowsT test, while and stmt
+while w; stmt s;
+Select w such that Follows* (w, s)
+7
+5000
+49 - FollowsT test, while and stmt
+while w; stmt s;
+Select s such that Follows* (w, s)
+11, 15, 16
+5000
+50 - FollowsT test, while and read
+while w; read r;
+Select w such that Follows* (w, r)
+none
+5000
+51 - FollowsT test, while and print
+while w; print pn;
+Select w such that Follows* (w, pn)
+7
+5000
+52 - FollowsT test, while and print
+while w; print pn;
+Select pn such that Follows* (w, pn)
+16
+5000
+53 - FollowsT test, while and while
+while w;
+Select w such that Follows* (w, w)
+none
+5000
+54 - FollowsT test, while and if
+while w; if i;
+Select w such that Follows* (w, i)
+7
+5000
+55 - FollowsT test, while and if
+while w; if i;
+Select i such that Follows* (w, i)
+11
+5000
+56 - FollowsT test, while and assign
+while w; assign a;
+Select a such that Follows* (w, a)
+15
+5000
+57 - FollowsT test, while and assign
+while w; assign a;
+Select w such that Follows* (w, a)
+7
+5000
+58 - FollowsT test, while and variable
+while w; variable v
+Select w such that Follows* (w, v)
+none
+5000
+59 - FollowsT test, while and constant
+while w; constant c;
+Select w such that Follows* (w, c)
+none
+5000
+60 - FollowsT test, while and print
+while w; print pn;
+Select w such that Follows* (w, pn)
+7
+5000
+61 - FollowsT test, if and stmt
+stmt s; if i;
+Select i such that Follows* (i, s)
+11
+5000
+62 - FollowsT test, if and stmt
+stmt s; if i;
+Select s such that Follows* (i, s)
+15, 16
+5000
+63 - FollowsT test, if and read
+if i; read r;
+Select i such that Follows* (i, r)
+none
+5000
+64 - FollowsT test, if and print
+if i; print pn;
+Select pn such that Follows* (i, pn)
+16
+5000
+65 - FollowsT test, if and while
+if i; while w;
+Select i such that Follows* (i, w)
+none
+5000
+66 - FollowsT test, if and if
+if i;
+Select i such that Follows* (i, i)
+none
+5000
+67 - FollowsT test, if and assign
+assign a; if i;
+Select i such that Follows* (i, a)
+11
+5000
+68 - FollowsT test, if and assign
+assign a; if i;
+Select a such that Follows* (i, a)
+15
+5000
+69 - FollowsT test, if and variable
+assign a; variable v;
+Select i such that Follows* (i, v)
+none
+5000
+70 - FollowsT test, if and constant
+assign a; constant c;
+Select i such that Follows* (i, c)
+none
+5000
+71 - FollowsT test, if and procedure
+assign a; procedure p;
+Select i such that Follows* (i, p)
+none
+5000
+72 - FollowsT test, assign and stmt
+assign a; stmt s;
+Select a such that Follows* (a, s)
+4, 5, 6, 8, 9, 13, 15
+5000
+73 - FollowsT test, assign and stmt
+assign a; stmt s;
+Select s such that Follows* (a, s)
+5, 6, 7, 9, 10, 11, 14, 15, 16
+5000
+74 - FollowsT test, assign and read
+assign a; read r;
+Select a such that Follows* (a, r)
+none
+5000
+75 - FollowsT test, assign and print
+assign a; print pn;
+Select a such that Follows* (a, pn)
+4, 5, 6, 15
+5000
+76 - FollowsT test, assign and while
+assign a; while w;
+Select a such that Follows* (a, w)
+4, 5, 6
+5000
+77 - FollowsT test, assign and while
+assign a; while w;
+Select w such that Follows* (a, w)
+7
+5000
+78 - FollowsT test, assign and if
+assign a; if i;
+Select a such that Follows* (a, i)
+4, 5, 6
+5000
+79 - FollowsT test, assign and if
+assign a; if i;
+Select i such that Follows* (a, i)
+11
+5000
+80 - FollowsT test, assign and variable
+assign a; variable v;
+Select a such that Follows* (a, v)
+none
+5000
+81 - FollowsT test, assign and constant
+assign a; constant c;
+Select a such that Follows* (a, c)
+none
+5000
+82 - FollowsT test, assign and procedure
+assign a; procedure p;
+Select a such that Follows* (a, p)
+none
+5000
+83 - FollowsT test, stmt and integer
+stmt s;
+Select s such that Follows* (s, 10)
+8, 9
+5000
+84 - FollowsT test, read and integer
+read r;
+Select r such that Follows* (r, 11)
+1, 2, 3
+5000
+85 - FollowsT test, print and integer
+print pn;
+Select pn such that Follows* (pn, 10)
+none
+5000
+86 - FollowsT test, while and integer
+while w;
+Select w such that Follows* (w, 15)
+7
+5000
+87 - FollowsT test, if and integer
+if i;
+Select i such that Follows* (i, 16)
+11
+5000
+88 - FollowsT test, assign and integer
+assign a;
+Select a such that Follows* (a, 6)
+4, 5
+5000
+89 - FollowsT test, variable and integer
+variable v;
+Select v such that Follows* (v, 10)
+none
+5000
+90 - FollowsT test, constant and integer
+constant c;
+Select c such that Follows* (c, 10)
+none
+5000
+91 - FollowsT test, procedure and integer
+procedure p;
+Select p such that Follows* (p, 10)
+none
+5000
+92 - FollowsT test, stmt and wildcard
+stmt s;
+Select s such that Follows* (s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15
+5000
+93 - FollowsT test, read and wildcard
+read r;
+Select r such that Follows* (r, _)
+1, 2, 3
+5000
+94 - FollowsT test, print and wildcard
+print pn;
+Select pn such that Follows* (pn, _)
+none
+5000
+95 - FollowsT test, while and wildcard
+while w;
+Select w such that Follows* (w, _)
+7
+5000
+96 - FollowsT test, if and wildcard
+if i;
+Select i such that Follows* (i, _)
+11
+5000
+97 - FollowsT test, assign and wildcard
+assign a;
+Select a such that Follows* (a, _)
+4, 5, 6, 8, 9, 13, 15
+5000
+98 - FollowsT test, variable and wildcard
+variable v;
+Select v such that Follows* (v, _)
+none
+5000
+99 - FollowsT test, constant and wildcard
+constant c;
+Select c such that Follows* (c, _)
+none
+5000
+100 - FollowsT test, procedure and wildcard
+procedure p;
+Select p such that Follows* (p, _)
+none
+5000
+101 - FollowsT test, wildcard and stmt
+stmt s;
+Select s such that Follows* (_, s)
+2, 3, 4, 5, 6, 7, 9, 10, 11, 14, 15, 16
+5000
+102 - FollowsT test, wildcard and read
+read r;
+Select r such that Follows* (_, r)
+2, 3
+5000
+103 - FollowsT test, wildcard and print
+print pn;
+Select pn such that Follows* (_, pn)
+16
+5000
+104 - FollowsT test, wildcard and while
+while w;
+Select w such that Follows* (_, w)
+7
+5000
+105 - FollowsT test, wildcard and if
+if i;
+Select i such that Follows* (_, i)
+11
+5000
+106 - FollowsT test, wildcard and assign
+assign a;
+Select a such that Follows* (_, a)
+4, 5, 6, 9, 10, 14, 15
+5000
+107 - FollowsT test, wildcard and variable
+variable v;
+Select v such that Follows* (_, v)
+none
+5000
+108 - FollowsT test, wildcard and constant
+constant c;
+Select c such that Follows* (_, c)
+none
+5000
+109 - FollowsT test, wildcard and procedure
+procedure p;
+Select a such that Follows* (_, p)
+none
+5000
+110 - FollowsT test, wildcard and integer
+stmt s;
+Select s such that Follows* (_, 4)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+111 - FollowsT test, wildcard and wildcard
+stmt s;
+Select s such that Follows* (_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+107 - FollowsT test, same type but diff synonym
+stmt s1, s2;
+Select s1 such that Follows*(s1, s2)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15
+5000
+108 - FollowsT test, same type but diff synonym
+read r1, r2;
+Select r2 such that Follows*(r1, r2)
+2, 3
+5000
+109 - FollowsT test, same type but diff synonym
+print p1, p2;
+Select p2 such that Follows*(p1, p2)
+none
+5000
+110 - FollowsT test, same type but diff synonym
+while w1, w2;
+Select w1 such that Follows*(w1, w2)
+none
+5000
+111 - FollowsT test, same type but diff synonym
+if i1, i2;
+Select i1 such that Follows*(i1, i2)
+none
+5000
+112 - FollowsT test, same type but diff synonym
+assign a1, a2;
+Select a1 such that Follows*(a1, a2)
+4, 5, 6, 8, 9, 13
+5000
+113 - FollowsT test, same type but diff synonym
+constant c1, c2;
+Select c1 such that Follows*(c1, c2)
+none
+5000
+114 - FollowsT test, same type but diff synonym
+variable v1, v2;
+Select v1 such that Follows*(v1, v2)
+none
+5000

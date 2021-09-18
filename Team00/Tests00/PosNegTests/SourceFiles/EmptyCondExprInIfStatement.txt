@@ -1,0 +1,8 @@
+procedure computeCentroid {
+    x = 1;
+    if ( ) then {
+        y = 1;
+    } else {
+        z = 1;
+    }
+}

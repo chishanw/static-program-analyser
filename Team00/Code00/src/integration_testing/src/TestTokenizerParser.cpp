@@ -26,7 +26,7 @@ TEST_CASE("Tokenizer Parser Integration Test 1") {
   REQUIRE(ra->VarName == "x");
 
   // expr
-  REQUIRE(ra->Expr->GetPatternStr() == "1");
+  REQUIRE(ra->Expr->GetFullExprPatternStr() == "1");
 }
 
 TEST_CASE("Tokenizer Parser Integration Test 2") {
@@ -47,7 +47,7 @@ TEST_CASE("Tokenizer Parser Integration Test 2") {
   REQUIRE(ra->VarName == "x");
 
   // expr
-  REQUIRE(ra->Expr->GetPatternStr() == "1-2+3");
+  REQUIRE(ra->Expr->GetFullExprPatternStr() == "1-2+3");
 }
 
 TEST_CASE("Parser Exception Test") {
@@ -67,8 +67,12 @@ TEST_CASE("Parser Exception Test") {
 TEST_CASE("Parser Exception Test (Iter1 ONLY)") {
   SECTION("> 1 procedures}") {
     string program =
-        "procedure One {}\n"
-        "procedure Two {}\n";
+        "procedure One {"
+        "  a = 1;   "
+        "}"
+        "procedure Two {"
+        "  b = 2;  "
+        "}";
 
     REQUIRE_THROWS_WITH(
         Parser(true).Parse(Tokenizer::TokenizeProgramString(program)),

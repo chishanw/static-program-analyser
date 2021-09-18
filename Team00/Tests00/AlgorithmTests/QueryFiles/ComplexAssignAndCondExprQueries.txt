@@ -1,0 +1,65 @@
+1 - Return all statements
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+5000
+2 - Return all ifs
+if i;
+Select i
+7, 11
+5000
+3 - Return all assignments
+assign a;
+Select a
+1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 13
+5000
+4 - Return all variables
+variable v;
+Select v
+p, a, b, x, y, pattern, w
+5000
+5 - Follows test
+stmt s;
+Select s such that Follows(7, s)
+11
+5000
+6 - FollowsT test, integer and synonym
+stmt s;
+Select s such that Follows* (6, s)
+7, 11
+5000
+7 - Parent test
+stmt s;
+Select s such that Parent (s, 8)
+7
+5000
+8 - ParentT test
+stmt s;
+Select s such that Parent* (s, 8)
+7
+5000
+9 - Uses test
+variable v; stmt s;
+Select v such that Uses(7, v)
+b, y, x, p
+5000
+10 - Modifies test
+variable v; if i;
+Select v such that Modifies(11, v)
+p, a
+5000
+11 - Pattern test
+assign a; variable v;
+Select a pattern a (v, _"0"_)
+10
+5000
+12 - Complex pattern test with synonym
+assign a; variable v;
+Select a pattern a (v, _"p"_)
+2, 3, 4, 6, 9, 13
+5000
+13 - Complex pattern test with literal value
+assign a; variable v;
+Select a pattern a ("pattern", _"p"_)
+3
+5000

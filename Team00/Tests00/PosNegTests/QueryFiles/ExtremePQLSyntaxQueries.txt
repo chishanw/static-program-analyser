@@ -1,0 +1,80 @@
+1 - Return all statements, case sensitivity of synonym
+stmt S;
+Select s
+none
+5000
+2 - Return all whiles, misspelled keyword
+wheil w;
+Select w
+none
+5000
+3 - Return all ifs, long synonym
+if helloworldx3;
+Select helloworldx3
+8
+5000
+4 - Return all assignments, case sensitivity of Select
+assign a;
+select a
+none
+5000
+5 - Follows test, misspelled keyword
+stmt s;
+Select s such that Follow(4, s)
+none
+5000
+6 - FollowsT test, integer and synonym, case sensitive 'such that'
+stmt s; 
+Select s sUcH tHat Follows* (4, s)
+none
+5000
+7 - Parent test, case sensitive keyword
+stmt s;
+Select s such that parent (s, 11)
+none
+5000
+8 - ParentT test, misspelled 'such that'
+stmt s;
+Select s suc that Parent* (s, 5)
+none
+5000
+9 - Uses test, whitespace with a mixture of tabs and spaces, or no spaces
+stmt s;
+Select              s     such              that Uses(    s,"cenX"       ) 
+4, 6, 8, 10, 12
+5000
+10 - Modifies test
+stmt s;
+Select s such that Modifies(s, "cenY")
+3, 4, 7, 8, 11
+5000
+11 - Pattern test, whitespace between the variable and the underlines
+assign a; variable v;
+Select a pattern a (v, _    "0"_)
+1, 2, 3
+5000
+12 - Pattern test, missing underlines
+assign a; variable v;
+Select a pattern a (v, "0"_)
+none
+5000
+13 - Pattern test, missing inverted commas
+assign a; variable v;
+Select a pattern a (v, _0_)
+none
+5000
+14 - Pattern test, synonym for pattern not 'assign', should still return w
+while w; variable v;
+Select w pattern w (v, _"0"_)
+none
+5000
+15 - Multiple clause with Follows, pattern, valid such that but invalid pattern
+stmt s; variable v; assign a;
+Select a such that Follows (s, a) pattern a (v, "1")
+none
+5000
+16 - Multiple clause with Parent, pattern, invalid such that but valid pattern
+if i; variable v; assign a;
+Select a such that Pa (i, a) pattern a (v, _"1"_)
+none
+5000

@@ -1,0 +1,15 @@
+1 - Return all variables
+variable v;
+Select v
+count, cenX, cenY, x, y, Count, flag, normSq
+5000
+2 - Uses test
+variable v;
+Select v such that Uses(4, v)
+x, y, count, cenX, cenY
+5000
+3 - Modifies test
+variable v;
+Select v such that Modifies(4, v)
+Count, cenX, cenY
+5000

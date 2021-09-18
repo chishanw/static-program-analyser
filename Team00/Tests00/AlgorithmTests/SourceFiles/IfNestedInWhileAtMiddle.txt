@@ -1,0 +1,18 @@
+procedure IfNestedInWhileAtMiddle {
+    read a;
+    read b;
+    while (a > b) {
+        x = 100;
+        print x;
+        if (x > a) then {
+            z = 3;
+            x = x + z;
+        } else {
+            z = 2;
+            x = x + z;
+        }
+        b = b + 1;
+        a = a - 1;
+        x = x - 3;
+    }
+}

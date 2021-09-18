@@ -1,0 +1,10 @@
+procedure OneWhile {
+    x = 2;
+    z = 3;
+    i = 5;
+    while ((i + k) != 0) {
+        x = x - 1;
+        z = z + x + i;
+        i = i - 1;
+    }
+}

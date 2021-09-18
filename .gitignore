@@ -1,3 +1,5 @@
+# Ignore xml output folder
+**/XmlFiles/
 
 # Created by https://www.toptal.com/developers/gitignore/api/qt,qtcreator,linux,windows,macos,visualstudio,visualstudiocode,clion,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=qt,qtcreator,linux,windows,macos,visualstudio,visualstudiocode,clion,c++

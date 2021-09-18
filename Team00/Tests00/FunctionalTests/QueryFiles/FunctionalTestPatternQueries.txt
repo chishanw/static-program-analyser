@@ -1,0 +1,45 @@
+64 - Pattern test, synonym and integer
+assign a; variable v;
+Select a pattern a (v, _"0"_)
+4, 5, 6
+5000
+65 - Pattern test, synonym and variable name
+assign a; variable v;
+Select a pattern a (v, _"count"_)
+8, 13, 14
+5000
+66 - Pattern test, synonym and unspecified
+assign a; variable v;
+Select a pattern a (v, _)
+4, 5, 6, 8, 9, 10, 12, 13, 14, 15
+5000
+67 - Pattern test, ident and variable name
+assign a;
+Select a pattern a ("normSq", _"count"_)
+none
+5000
+68 - Pattern test, ident and integer
+assign a;
+Select a pattern a ("flag", _"1"_)
+12
+5000
+69 - Pattern test, ident and unspecified
+assign a;
+Select a pattern a ("cenX", _)
+5, 9, 13
+5000
+70 - Pattern test, unspecified and variable name
+assign a;
+Select a pattern a (_, _"cenX"_)
+9, 13, 15
+5000 
+71 - Pattern test, unspecified and integer
+assign a;
+Select a pattern a (_, _"0"_)
+4, 5, 6
+5000
+72 - Pattern test, unspecified and unspecified
+assign a;
+Select a pattern a (_, _)
+4, 5, 6, 8, 9, 10, 12, 13, 14, 15
+5000

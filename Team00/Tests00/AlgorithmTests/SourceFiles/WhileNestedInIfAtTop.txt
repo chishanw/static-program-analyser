@@ -1,0 +1,19 @@
+procedure WhileNestedInIfAtTop {
+    if (a > b) then {
+        while (x > a) {
+            z = 3;
+            a = x + z;
+        } 
+        x = x + 1;
+        print x;
+    } else {
+        while (c >= d) {
+            c = c - d;
+            e = 2 * a * b;
+        } 
+        print e;
+        print c;
+    }
+    print a;
+    print b;
+}

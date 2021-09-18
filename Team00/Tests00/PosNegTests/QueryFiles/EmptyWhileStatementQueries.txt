@@ -1,0 +1,55 @@
+1 - Return all statements
+stmt s;
+Select s
+none
+5000
+2 - Return all whiles
+while w;
+Select w
+none
+5000
+3 - Return all ifs
+if i;
+Select i
+none
+5000
+4 - Return all assignments
+assign a;
+Select a
+none
+5000
+5 - Return all variables
+variable v;
+Select v
+none
+5000
+6 - Follows test
+stmt s;
+Select s such that Follows(4, s)
+none
+5000
+7 - FollowsT test, integer and synonym
+stmt s;
+Select s such that Follows* (4, s)
+none
+5000
+8 - Parent test
+stmt s;
+Select s such that Parent (s, 5)
+none
+5000
+9 - ParentT test
+stmt s;
+Select s such that Parent* (s, 6)
+none
+5000
+10 - Uses test
+stmt s; variable v;
+Select s such that Uses(s, v)
+none
+5000
+11 - Modifies test
+stmt s;
+Select s such that Modifies(4, "cenY")
+none
+5000

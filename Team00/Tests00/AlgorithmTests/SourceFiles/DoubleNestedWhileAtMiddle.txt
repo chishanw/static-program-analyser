@@ -1,0 +1,15 @@
+procedure DoubleNestedWhileAtMiddle {
+    read a;
+    read b;
+    while (a > b) {
+        x = 100;
+        print x;
+        while (x > a) {
+            z = 3;
+            x = x + z;
+        }
+        b = b + 1;
+        a = a - 1;
+        x = x - 3;
+    }
+}

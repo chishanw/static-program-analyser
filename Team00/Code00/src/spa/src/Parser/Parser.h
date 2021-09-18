@@ -44,6 +44,7 @@ class Parser {
   //  cond expr
   CondExprAST* condExpr();
   RelExprAST* relExpr();
+  FactorAST* relFactor();
 
   //  name & number methods
   NAME name();
@@ -58,6 +59,7 @@ class Parser {
   bool isName();
   bool isNumber();
   bool isNumber(std::string);
+  bool isRelExprInParens();
   int stringToInt(std::string);
   void errorExpected(std::string);
 };

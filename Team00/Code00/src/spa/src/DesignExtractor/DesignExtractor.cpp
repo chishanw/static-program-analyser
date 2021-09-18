@@ -413,7 +413,7 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
             dynamic_cast<const AssignStmtAST*>(stmt)) {
       const ArithAST* expr = assignStmt->Expr;
       string varName = assignStmt->VarName;
-      vector<string> strs = expr->GetAllPatternStr();
+      vector<string> strs = expr->GetSubExprPatternStrs();
 
       string fullExpr = strs[0];
       pkb->addAssignPttFullExpr(stmt->StmtNo, varName, fullExpr);

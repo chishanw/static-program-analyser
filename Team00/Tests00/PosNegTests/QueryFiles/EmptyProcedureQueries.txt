@@ -1,0 +1,10 @@
+1 - Return all statements
+stmt s;
+Select s
+none
+5000
+2 - Return all procedures
+procedure p;
+Select p
+none
+5000

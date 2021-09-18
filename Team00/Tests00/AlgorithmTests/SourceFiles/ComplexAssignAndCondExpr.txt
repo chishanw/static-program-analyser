@@ -1,0 +1,19 @@
+procedure ComplexAssignment {
+    p = 4;
+    a = p * 2;
+    pattern = p * a * a + p * 4 + p * w;
+    b = p % 2 + a / 8;
+    x = 10;
+    y = (x + p) - pattern;
+    if ((b >= 0) && ((y < 0) || (x != 10))) then {
+        x = 20;
+        b = b * p;
+    } else {
+        x = 0;
+    }
+    if ((!(p == 4)) || (a == (p * 2))) then {
+        p = a * 2;
+    } else {
+        a = p * 3;
+    }
+}

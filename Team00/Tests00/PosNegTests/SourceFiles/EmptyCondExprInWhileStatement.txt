@@ -1,0 +1,6 @@
+procedure computeCentroid {
+    y = 1;
+    while ( ) {
+        x = 1;
+    }
+}

@@ -32,7 +32,7 @@ vector<string> Tokenizer::TokenizeProgramString(string program) {
 }
 
 vector<string> Tokenizer::TokenizeFile(string filename) {
-  DMOprintInfoMsg("File to parse: " + filename + "\n");
+  DMOprintInfoMsg("File to parse: " + filename);
 
   ifstream fh(filename);
   stringstream ss;

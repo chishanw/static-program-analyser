@@ -90,10 +90,18 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
   pkb->addStmt(4);
   pkb->setFollows(1, 2);
   pkb->setFollows(2, 3);
+  pkb->addFollowsT(1, 2);
+  pkb->addFollowsT(2, 3);
+  pkb->addFollowsT(1, 3);
+  pkb->addReadStmt(1);
+  pkb->addReadStmt(2);
+
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
-      {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"r", DesignEntity::READ}};
   Synonym s1 = {DesignEntity::STATEMENT, "s1"};
   Synonym s2 = {DesignEntity::STATEMENT, "s2"};
   vector<ConditionClause> conditionClauses = {};
@@ -158,6 +166,30 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     REQUIRE(result == unordered_set<int>({1, 2}));
   }
 
+  SECTION("Select s1 such that Follows(_, s1)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s1"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s1, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>({2, 3}));
+  }
+
+  SECTION("Select s2 such that FollowsT(_, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s2, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>({2, 3}));
+  }
+
   SECTION("Select s1 such that Follows(s1, s2)") {
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
                                      {ParamType::SYNONYM, "s1"},
@@ -191,6 +223,18 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     SelectClause select = {s1, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
     REQUIRE(result == unordered_set<int>{1, 2, 3, 4});
+  }
+
+  SECTION("Select r such that FollowsT(_, r)") {
+    Synonym r = {DesignEntity::READ, "r"};
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "r"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+    SelectClause select = {r, conditionClauses};
+    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
+    REQUIRE(result == unordered_set<int>{2});
   }
 }
 
@@ -2888,5 +2932,101 @@ TEST_CASE("QueryEvaluator: 1 Clause, Different Design Entities") {
     SelectClause select = {cll, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({3}));
+  }
+}
+
+TEST_CASE("Test clauses with same synonym for both params") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addStmt(4);
+  pkb->addAssignStmt(3);
+  pkb->addAssignStmt(4);
+  pkb->setFollows(1, 2);
+  pkb->setFollows(3, 4);
+  pkb->addFollowsT(1, 2);
+  pkb->addFollowsT(3, 4);
+  pkb->setParent(2, 3);
+  pkb->addParentT(2, 3);
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"a", DesignEntity::ASSIGN}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("stmt s; Select s such that Follows(s, s)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "s"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("stmt s; Select s such that FollowsT(s, s)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "s"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("assign a; Select a such that Follows(a, a)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "a"},
+                                     {ParamType::SYNONYM, "a"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("stmt s; Select s such that Follows(s, s)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "s"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("stmt s; Select s such that Parent(s, s)") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "s"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("stmt s; Select s such that ParentT(s, s)") {
+    SuchThatClause suchThatClause = {RelationshipType::PARENT_T,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::SYNONYM, "s"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {s, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 }

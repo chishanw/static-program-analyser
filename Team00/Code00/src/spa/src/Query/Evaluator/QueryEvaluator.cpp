@@ -112,13 +112,14 @@ void QueryEvaluator::evaluateFollowsClause(SuchThatClause clause) {
     incomingResults = followsEvaluator.evaluateStmtPairFollows(left, right);
   }
 
-  if (incomingResults.empty()) {
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
     return;
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
@@ -149,13 +150,14 @@ void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
         followsEvaluator.evaluateStmtPairFollowsT(left, right));
   }
 
-  if (incomingResults.empty()) {
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
     return;
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
@@ -186,13 +188,14 @@ void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
         parentEvaluator.evaluateStmtPairParent(left, right));
   }
 
-  if (incomingResults.empty()) {
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
     return;
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
@@ -223,13 +226,14 @@ void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
         parentEvaluator.evaluateStmtPairParentT(left, right));
   }
 
-  if (incomingResults.empty()) {
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
     return;
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
@@ -261,13 +265,14 @@ void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
         formatRefPairResults(usesEvaluator.evaluatePairUsesS(left, right));
   }
 
-  if (incomingResults.empty()) {
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
     return;
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
@@ -298,13 +303,14 @@ void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
         modifiesEvaluator.evaluatePairModifiesS(left, right));
   }
 
-  if (incomingResults.empty()) {
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
     return;
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, left, right);
   } else {
@@ -329,15 +335,16 @@ void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
         patternEvaluator.evaluateAssignPairPattern(varParam, patternExpr);
   }
 
-  if (incomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
   Param assignSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
 
   vector<vector<int>> filteredIncomingResults =
       filterIncomingResults(incomingResults, assignSynonymParam, varParam);
+
+  if (filteredIncomingResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
+
   if (currentQueryResults.empty()) {
     initializeQueryResults(filteredIncomingResults, assignSynonymParam,
                            varParam);
@@ -349,25 +356,29 @@ void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
 void QueryEvaluator::initializeQueryResults(vector<vector<int>> incomingResults,
                                             const Param& left,
                                             const Param& right) {
-  vector<string> incomingResultsSynonyms = {};
-  if (left.type == ParamType::SYNONYM) {
-    incomingResultsSynonyms.push_back(left.value);
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
     queryResultsSynonyms.insert(left.value);
-  }
-  if (right.type == ParamType::SYNONYM) {
-    incomingResultsSynonyms.push_back(right.value);
     queryResultsSynonyms.insert(right.value);
-  }
-  if (incomingResultsSynonyms.size() == 2) {
+
     for (vector<int> incomingResult : incomingResults) {
       currentQueryResults.push_back(
-          {{incomingResultsSynonyms[0], incomingResult[0]},
-           {incomingResultsSynonyms[1], incomingResult[1]}});
+          {{left.value, incomingResult[0]}, {right.value, incomingResult[1]}});
+    }
+  } else if (left.type == ParamType::SYNONYM) {
+    queryResultsSynonyms.insert(left.value);
+
+    for (vector<int> incomingResult : incomingResults) {
+      currentQueryResults.push_back({{left.value, incomingResult[0]}});
     }
   } else {
+    queryResultsSynonyms.insert(right.value);
+
     for (vector<int> incomingResult : incomingResults) {
-      currentQueryResults.push_back(
-          {{incomingResultsSynonyms[0], incomingResult[0]}});
+      if (incomingResult.size() == 1) {
+        currentQueryResults.push_back({{right.value, incomingResult[0]}});
+      } else {
+        currentQueryResults.push_back({{right.value, incomingResult[1]}});
+      }
     }
   }
 }
@@ -375,19 +386,32 @@ void QueryEvaluator::initializeQueryResults(vector<vector<int>> incomingResults,
 vector<vector<int>> QueryEvaluator::filterIncomingResults(
     vector<vector<int>> incomingResults, const Param& left,
     const Param& right) {
-  vector<vector<int>> filteredResults = {};
+  vector<vector<int>> finalResults = {};
 
   if ((left.type == ParamType::SYNONYM) && (right.type == ParamType::SYNONYM)) {
-    for (vector<int> incomingResult : incomingResults) {
+    vector<vector<int>> filteredResults = {};
+
+    // if both params of a clause are the same synonym
+    if (left.value == right.value) {
+      for (vector<int> incomingResult : incomingResults) {
+        if (incomingResult[0] == incomingResult[1]) {
+          filteredResults.push_back(incomingResult);
+        }
+      }
+    } else {
+      filteredResults = incomingResults;
+    }
+
+    for (vector<int> incomingResult : filteredResults) {
       bool isLeftSynCorrectDesignEntity = checkIsCorrectDesignEntity(
           incomingResult.front(), synonymMap[left.value]);
       bool isRightSynCorrectDesignEntity = checkIsCorrectDesignEntity(
           incomingResult.back(), synonymMap[right.value]);
       if (isLeftSynCorrectDesignEntity && isRightSynCorrectDesignEntity) {
-        filteredResults.push_back(incomingResult);
+        finalResults.push_back(incomingResult);
       }
     }
-    return filteredResults;
+    return finalResults;
   }
 
   if (left.type == ParamType::SYNONYM) {
@@ -395,21 +419,21 @@ vector<vector<int>> QueryEvaluator::filterIncomingResults(
       bool isLeftSynCorrectDesignEntity = checkIsCorrectDesignEntity(
           incomingResult.front(), synonymMap[left.value]);
       if (isLeftSynCorrectDesignEntity) {
-        filteredResults.push_back(incomingResult);
+        finalResults.push_back(incomingResult);
       }
     }
-    return filteredResults;
+    return finalResults;
   }
 
   // right.type == ParamType::SYNONYM
   for (vector<int> incomingResult : incomingResults) {
     bool isRightSynCorrectDesignEntity = checkIsCorrectDesignEntity(
-        incomingResult.front(), synonymMap[right.value]);
+        incomingResult.back(), synonymMap[right.value]);
     if (isRightSynCorrectDesignEntity) {
-      filteredResults.push_back(incomingResult);
+      finalResults.push_back(incomingResult);
     }
   }
-  return filteredResults;
+  return finalResults;
 }
 
 void QueryEvaluator::addIncomingResults(vector<vector<int>> incomingResults,

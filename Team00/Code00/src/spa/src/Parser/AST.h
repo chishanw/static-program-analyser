@@ -37,10 +37,10 @@ class ArithAST {
   virtual ~ArithAST() {}
 
   bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
-  std::vector<NAME> GetAllVarNames() const;
+  std::unordered_set<NAME> GetAllVarNames() const;
   std::unordered_set<int> GetAllConsts() const;
-  std::vector<std::string> GetAllPatternStr() const;
-  std::string GetPatternStr() const;
+  std::vector<std::string> GetSubExprPatternStrs() const;
+  std::string GetFullExprPatternStr() const;
   std::string GetDebugStr() const;
 
  private:
@@ -80,8 +80,10 @@ class FactorAST : public ArithAST {
   bool IsVarName() const { return this->isVarName; }
   bool IsConstValue() const { return this->isConstValue; }
   bool IsExpr() const { return this->isExpr; }
-  std::vector<std::string> GetAllPatternStr() const;
-  std::string GetPatternStr() const;
+  std::unordered_set<std::string> GetAllVarNames() const;
+  std::unordered_set<int> GetAllConsts() const;
+  std::vector<std::string> GetSubExprPatternStrs() const;
+  std::string GetFullExprPatternStr() const;
   std::string GetDebugStr() const;
 
  private:
@@ -99,7 +101,7 @@ class RelExprAST {
   RelExprAST(std::string sign, FactorAST* leftNode, FactorAST* rightNode)
       : Sign(sign), LeftNode{leftNode}, RightNode{rightNode} {}
 
-  std::vector<NAME> GetAllVarNames() const;
+  std::unordered_set<NAME> GetAllVarNames() const;
   std::unordered_set<int> GetAllConsts() const;
 };
 
@@ -135,7 +137,7 @@ class CondExprAST {
 
   bool HasOnlyOneRelExpr() const { return this->hasOnlyOneRelExpr; }
   bool HasOnlyOneCondExpr() const { return this->hasOnlyOneCondExpr; }
-  std::vector<NAME> GetAllVarNames() const;
+  std::unordered_set<NAME> GetAllVarNames() const;
   std::unordered_set<int> GetAllConsts() const;
 
  private:

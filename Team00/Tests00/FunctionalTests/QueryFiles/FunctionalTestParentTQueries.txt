@@ -1,0 +1,330 @@
+1 - ParentT test, integer and stmt
+stmt s;
+Select s such that Parent* (7, s)
+8, 9, 10
+5000
+2 - ParentT test, integer and read
+read r;
+Select a such that Parent* (7, r)
+none
+5000
+3 - ParentT test, integer and print pn
+print pn;
+Select pn such that Parent* (7, pn)
+none
+5000
+4 - ParentT test, integer and while
+while w;
+Select a such that Parent* (7, w)
+none
+5000
+5 - ParentT test, integer and if
+if i;
+Select i such that Parent* (7, i)
+none
+5000
+6 - ParentT test, integer and assign
+assign a;
+Select a such that Parent* (11, a)
+12, 13, 14
+5000
+7 - ParentT test, integer and variable 
+variable v;
+Select v such that Parent* (7, v)
+none
+5000
+8 - ParentT test, integer and constant 
+constant c;
+Select c such that Parent* (7, c)
+none
+5000
+9 - ParentT test, integer and procedure
+procedure p;
+Select p such that Parent* (7, p)
+none
+5000
+10 - ParentT test, integer and integer
+assign a;
+Select a such that Parent* (1, 5)
+none
+5000
+11 - ParentT test, integer and wildcard
+assign a;
+Select a such that Parent* (1, _)
+none
+5000
+12 - ParentT test, stmt and read
+stmt s, read r
+Select s such that Parent* (s, r)
+none
+5000
+13 - ParentT test, stmt and print
+stmt s, print pn
+Select s such that Parent* (s, pn)
+none
+5000
+14 - ParentT test, stmt and while
+stmt s; while w;
+Select s such that Parent* (s, w)
+none
+5000
+15 - ParentT test, stmt and if
+stmt s; if i;
+Select s such that Parent* (s, i)
+none
+5000
+16 - ParentT test, stmt and assign
+stmt s; assign a;
+Select s such that Parent* (s, a)
+7, 11
+5000
+17 - ParentT test, stmt and assign
+stmt s; assign a;
+Select a such that Parent* (s, a)
+8, 9, 10, 12, 13, 14
+5000
+18 - ParentT test, stmt and variable v
+stmt s; variable v;
+Select s such that Parent* (s, v)
+none
+5000
+19 - ParentT test, stmt and constant
+stmt s; constant c;
+Select s such that Parent* (s, c)
+none
+5000
+20 - ParentT test, stmt and procedure
+stmt s; procedure p;
+Select s such that Parent* (s, p)
+none
+5000
+21 - ParentT test, while and stmt
+stmt s; while w;
+Select w such that Parent* (w, s)
+7
+5000
+22 - ParentT test, while and stmt
+stmt s; while w;
+Select s such that Parent* (w, s)
+8, 9, 10
+5000
+23 - ParentT test, while and read
+read r; while w;
+Select w such that Parent* (w, r)
+none
+5000
+24 - ParentT test, while and print
+print pn; while w;
+Select w such that Parent* (w, pn)
+none
+5000
+25 - ParentT test, while and if
+if i; while w;
+Select w such that Parent* (w, i)
+none
+5000
+26 - ParentT test, while and assign
+assign a; while w;
+Select w such that Parent* (w, a)
+7
+5000
+27 - ParentT test, while and assign
+assign a; while w;
+Select a such that Parent* (w, a)
+8, 9, 10
+5000
+28 - ParentT test, while and variable
+variable v; while w;
+Select w such that Parent* (w, r)
+none
+5000
+29 - ParentT test, while and constant
+constant c; while w;
+Select w such that Parent* (w, c)
+none
+5000
+30 - ParentT test, while and procedure
+procedure p; while w;
+Select w such that Parent* (w, p)
+none
+5000
+31 - ParentT test, if and stmt
+stmt s; if i;
+Select i such that Parent* (i, s)
+11
+5000
+32 - ParentT test, if and read
+if i; read r;
+Select i such that Parent* (i, r)
+none
+5000
+33 - ParentT test, if and print
+if i, print pn;
+Select i such that Parent* (i, pn)
+none
+5000
+34 - ParentT test, if and if
+if i;
+Select i such that Parent* (i, i)
+none
+5000
+35 - ParentT test, if and while
+if i; while w
+Select i such that Parent* (i, w)
+none
+5000
+36 - ParentT test, if and constant
+if i; constant c
+Select i such that Parent* (i, c)
+none
+5000
+37 - ParentT test, if and variable
+if i; variable v
+Select i such that Parent* (i, v)
+none
+5000
+38 - ParentT test, if and procedure
+if i; procedure p
+Select i such that Parent* (i, p)
+none
+5000
+39 - ParentT test, if and assign
+assign a; if i;
+Select a such that Parent* (i, a)
+12, 13, 14
+5000
+40 - ParentT test, stmt and integer
+stmt s;
+Select s such that Parent* (s, 10)
+7
+5000
+41 - ParentT test, while and integer
+while w;
+Select w such that Parent* (w, 10)
+7
+5000
+41 - ParentT test, if and integer
+if i;
+Select i such that Parent* (i, 12)
+11
+5000
+42 - ParentT test, stmt and wildcard
+stmt s;
+Select s such that Parent* (s, _)
+7, 11
+5000
+43 - ParentT test, while and wildcard
+while w;
+Select w such that Parent* (w, _)
+7
+5000
+44 - ParentT test, if and wildcard
+if i;
+Select i such that Parent* (i, _)
+11
+5000
+45 - ParentT test, assign and wildcard
+assign a;
+Select a such that Parent*(a, _)
+none
+5000
+46 - ParentT test, constant and wildcard
+constant c;
+Select c such that Parent*(c, _)
+none
+5000
+47 - ParentT test, variable and wildcard
+variable v;
+Select pn such that Parent*(v, _)
+none
+5000
+48 - ParentT test, procedure and wildcard
+procedure p;
+Select p such that Parent*(p, _)
+none
+5000
+49 - ParentT test, synonym and wildcard
+stmt s; while w;
+Select s such that Parent* (w, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+50 - ParentT test, wildcard and stmt
+stmt s;
+Select s such that Parent* (_, s)
+8, 9, 10, 12, 13, 14
+5000
+51 - ParentT test, wildcard and read
+read r;
+Select s such that Parent* (_, r)
+none
+5000
+52 - ParentT test, wildcard and print pn
+print pn;
+Select pn such that Parent* (_, pn)
+none
+5000
+53 - ParentT test, wildcard and while
+while w;
+Select w such that Parent* (_, w)
+none
+5000
+54 - ParentT test, wildcard and if
+if i;
+Select w such that Parent* (_, i)
+none
+5000
+55 - ParentT test, wildcard and assign a
+assign a;
+Select a such that Parent* (_, a)
+8, 9, 10, 12, 13, 14
+5000
+56 - ParentT test, wildcard and integer
+stmt s;
+Select s such that Parent* (_, 6)
+none
+5000
+57 - ParentT test, wildcard and wildcard
+stmt s;
+Select s such that Parent* (_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+107 - ParentT test, same type but diff synonym
+stmt s1, s2;
+Select s1 such that Parent*(s1, s2)
+7, 11
+5000
+108 - ParentT test, same type but diff synonym
+read r1, r2;
+Select r2 such that Parent*(r1, r2)
+none
+5000
+109 - ParentT test, same type but diff synonym
+print p1, p2;
+Select p2 such that Parent*(p1, p2)
+none
+5000
+110 - ParentT test, same type but diff synonym
+while w1, w2;
+Select w1 such that Parent*(w1, w2)
+none
+5000
+111 - ParentT test, same type but diff synonym
+if i1, i2;
+Select i1 such that Parent*(i1, i2)
+none
+5000
+112 - ParentT test, same type but diff synonym
+assign a1, a2;
+Select a1 such that Parent*(a1, a2)
+none
+5000
+113 - ParentT test, same type but diff synonym
+constant c1, c2;
+Select c1 such that Parent*(c1, c2)
+none
+5000
+114 - ParentT test, same type but diff synonym
+variable v1, v2;
+Select v1 such that Parent*(v1, v2)
+none
+5000

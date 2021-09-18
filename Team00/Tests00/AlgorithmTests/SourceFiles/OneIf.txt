@@ -1,0 +1,7 @@
+procedure OneIf {
+    if ((x + k) == 1) then  {
+        z = 1;
+    } else {
+        x = z + x;
+    }
+}

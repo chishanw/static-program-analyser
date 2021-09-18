@@ -1,0 +1,115 @@
+1 - Return all statements
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+5000
+2 - Return all reads
+read r;
+Select r
+none
+5000
+3 - Return all prints
+print pn;
+Select pn
+8, 13, 14, 17, 18
+5000
+4 - Return all whiles
+while w;
+Select w
+none
+5000
+5 - Return all ifs
+if i;
+Select i
+1, 2, 9
+5000
+6 - Return all assignments
+assign a;
+Select a
+3, 4, 5, 6, 7, 10, 11, 12, 15, 16
+5000
+7 - Return all variables
+variable v;
+Select v
+a, b, x, z, i, c, d, e
+5000
+8 - Follows test
+stmt s;
+Select s such that Follows(1, s)
+15
+5000
+9 - FollowsT test, integer and synonym
+stmt s;
+Select s such that Follows* (2, s)
+7, 8
+5000
+10 - Parent test
+stmt s;
+Select s such that Parent (s, 3)
+2
+5000
+11 - ParentT test
+stmt s;
+Select s such that Parent* (s, 3)
+1, 2
+5000
+12 - ParentT test
+stmt s;
+Select s such that Parent* (s, 11)
+1, 9
+5000
+13 - Uses test
+stmt s;
+Select s such that Uses(s, "x")
+1, 2, 4, 6, 7, 8
+5000
+14 - Modifies test
+stmt s;
+Select s such that Modifies(s, "x")
+1, 2, 4, 6, 7
+5000
+15 - Pattern test
+assign a; variable v;
+Select a pattern a (v, _"x"_)
+4, 6, 7
+5000
+16 - Multiple clause with Follows, pattern
+stmt s; variable v; assign a;
+Select a such that Follows (s, a) pattern a (v, _"100"_)
+7
+5000
+17 - Multiple clause with FollowsT, pattern
+assign a; variable v; stmt s;
+Select a such that Follows* (s, a) pattern a (v, _"5"_)
+6, 16
+5000
+18 - Multiple clause with Parent, pattern
+if i; variable v; assign a;
+Select a such that Parent (i, a) pattern a (v, _"x"_)
+4, 6, 7
+5000
+19 - Multiple clause with ParentT, pattern
+assign a; variable v; stmt s;
+Select a such that Parent* (s, a) pattern a (v, _"5"_)
+5, 6
+5000
+20 - Multiple clause with Uses, pattern
+assign a; variable v;
+Select a such that Uses (a, v) pattern a (v, _"c"_)
+10, 11
+5000
+21 - Multiple clause with Modifies, pattern
+assign a; variable v;
+Select a such that Modifies (a, v) pattern a (v, _"d"_)
+10, 11
+5000
+24 - Parent test, same type diff synonyms
+if i1, i2;
+Select i1 such that Parent(i1, i2)
+1
+5000
+25 - Parent test, same type diff synonyms
+if i1, i2;
+Select i2 such that Parent(i1, i2)
+2, 9
+5000

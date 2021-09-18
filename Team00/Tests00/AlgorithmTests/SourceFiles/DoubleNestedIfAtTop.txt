@@ -1,0 +1,26 @@
+procedure DoubleNestedIfAtTop {
+    if (a > b) then {
+        if (x > a) then {
+            z = 3;
+            x = x + z;
+        } else {    
+            i = 5;
+            x = x + 5;
+        }
+        x = x + 100;
+        print x;
+    } else {
+        if (c >= d) then {
+            c = c - d;
+        } else {
+            c = c + d;
+        }
+        e = 2 * a * b;
+        print e;
+        print c;
+    }
+    a = a * 4;
+    b = b * 2 + 5;
+    print a;
+    print b;
+}

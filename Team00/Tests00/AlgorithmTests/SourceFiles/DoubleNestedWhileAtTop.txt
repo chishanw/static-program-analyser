@@ -1,0 +1,16 @@
+procedure DoubleNestedWhileAtTop {
+    while (a > b) {
+        while (x > a) {
+            x = x - 1;
+            print x;
+        } 
+        a = a - 1;
+        print a;
+        b = b * x;
+        print b;
+    }
+    a = a * 4;
+    b = b * 2;
+    print a;
+    print b;
+}

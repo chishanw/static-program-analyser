@@ -38,6 +38,11 @@ ProgramAST* Parser::program() {
     procedures.push_back(procedureAST);
   }
 
+  if (procedures.size() == 0) {
+    throw runtime_error(
+        "[Parser] a SIMPLE program must have at least 1 procedure.");
+  }
+
   // TODO(gf): rm this after iter1
   if (enableIter1restriction && procedures.size() > 1) {
     throw runtime_error(
@@ -64,6 +69,11 @@ vector<StmtAST*> Parser::stmtLst() {
     StmtAST* stmtAST = stmt();
     stmtList.push_back(stmtAST);
   }
+
+  if (stmtList.size() == 0) {
+    throw runtime_error("[Parser] a stmtLst must have at least 1 stmt.");
+  }
+
   return stmtList;
 }
 
@@ -176,6 +186,7 @@ ArithAST* Parser::buildExprAST(
     ArithAST* newNode = new ArithAST(sign, leftNode, rightNode);
     leftNode = newNode;
   }
+
   return leftNode;
 }
 
@@ -270,7 +281,18 @@ CondExprAST* Parser::condExpr() {
     consumeToken(")");
     return new CondExprAST("!", left);
 
-  } else if (expectToken("(")) {
+  } else if (expectToken("(") && isRelExprInParens()) {
+    // open paren could be the starting of either cond_expr or rel_factor
+    //
+    // if it is a rel_expr until the close paren, then this is either
+    // ( (cond_expr) && (cond_expr) )
+    // or
+    // ( (cond_expr) || (cond_expr) )
+    //
+    // otherwise it is an expr in parens, and this is the case
+    // ( rel_expr )
+    // e.g. ((x + z + i) > a)
+
     consumeToken("(");
     CondExprAST* left = condExpr();
     consumeToken(")");
@@ -302,7 +324,7 @@ RelExprAST* Parser::relExpr() {
   // cases:
   // >= <= == !=
   // > <
-  FactorAST* left = factor();
+  FactorAST* left = relFactor();
 
   string sign;
   if (expectToken(">=")) {
@@ -318,14 +340,21 @@ RelExprAST* Parser::relExpr() {
   } else if (expectToken("<")) {
     sign = "<";
   } else {
-    expectToken("any one of '>= <= == != > <'");
+    errorExpected("any one of '>= <= == != > <'");
     FactorAST* emptyAST = new FactorAST(nullptr);
     return new RelExprAST("", emptyAST, emptyAST);
   }
 
   consumeToken(sign);
-  FactorAST* right = factor();
+  FactorAST* right = relFactor();
   return new RelExprAST(sign, left, right);
+}
+
+FactorAST* Parser::relFactor() {
+  // the only diff between relFactor() and factor() is that relFactor() don't
+  // consume open and close paren
+  ArithAST* exprAST = expr();
+  return new FactorAST(exprAST);
 }
 
 // =======================================
@@ -391,29 +420,61 @@ bool Parser::noMoreToken() { return tokenIterator == tokens.end(); }
 void Parser::incrementStmtNo() { this->prevStmtNo++; }
 
 bool Parser::isName() {
+  if (token.size() == 0) {
+    return false;
+  }
   char c = token[0];
   return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
 }
 
-bool Parser::isNumber() { return isNumber(token); }
-
-bool Parser::isNumber(string s) {  // can't believe how ugly this is ...
-  string reversed = string(s.rbegin(), s.rend());
-  bool forward = true;
-  bool backward = true;
-  int i;
-
-  try {
-    i = stoi(s);
-  } catch (...) {
-    forward = false;
+bool Parser::isNumber() {
+  // assumes that tokenizer works properly, then only a Number can start with a
+  // digit, and has only digits
+  if (token.size() == 0) {
+    return false;
   }
-  try {
-    i = stoi(reversed);
-  } catch (...) {
-    backward = false;
+  char c = token[0];
+  return '0' <= c && c <= '9';  // '0' in ascii is 48 and '9' is 57
+}
+
+bool Parser::isRelExprInParens() {
+  // when this fucn is called, the current token should be "("
+  if (token != "(") {
+    DMOprintErrMsgAndExit(
+        "[Parser] isRelExprInParens() asserts token to be ( but got " + token);
+    return false;
   }
-  return forward && backward;
+
+  auto tokenIteratorCopy = tokenIterator;
+  int numOutstandingOpenParen = 0;
+
+  while (tokenIteratorCopy != tokens.end()) {
+    if (*tokenIteratorCopy == "(") {
+      numOutstandingOpenParen++;
+      tokenIteratorCopy++;
+    } else if (*tokenIteratorCopy == ")") {
+      numOutstandingOpenParen--;
+      if (numOutstandingOpenParen == 0) return false;
+      tokenIteratorCopy++;
+    } else if (*tokenIteratorCopy == ">=") {
+      return true;
+    } else if (*tokenIteratorCopy == "<=") {
+      return true;
+    } else if (*tokenIteratorCopy == "==") {
+      return true;
+    } else if (*tokenIteratorCopy == "!=") {
+      return true;
+    } else if (*tokenIteratorCopy == ">") {
+      return true;
+    } else if (*tokenIteratorCopy == "<") {
+      return true;
+    } else {
+      tokenIteratorCopy++;
+    }
+  }
+
+  // consume all tokens and did not find comparison operators
+  return false;
 }
 
 int Parser::stringToInt(string s) {

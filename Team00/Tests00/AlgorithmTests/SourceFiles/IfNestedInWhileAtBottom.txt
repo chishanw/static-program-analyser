@@ -1,0 +1,20 @@
+procedure IfNestedInWhileAtBottom {
+    read a;
+    read b;
+    while (a > b) {
+        x = 2;
+        z = 3;
+        i = 5;
+        if ((x + z + i) > a) then {
+            print a;
+            a = a - 1;
+            x = x - 2;
+            z = z -3;
+        } else {
+            a = a + 1;
+            x = x + 2;
+            z = z + 3;
+            print a; 
+        }
+    }
+}
