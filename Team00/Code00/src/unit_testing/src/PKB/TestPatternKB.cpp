@@ -27,8 +27,8 @@ TEST_CASE("FULL_PATTERN") {
   REQUIRE(db.getAssignForVarAndFullExpr("y", "x+1") == unordered_set({1, 2}));
 
   // a (v, "x+1") = { {1, index(y)}, {2, index(y)}, {3, index(v)} }
-  int yIdx = db.varTable.getVarIndex("y");
-  int vIdx = db.varTable.getVarIndex("v");
+  int yIdx = db.getVarIndex("y");
+  int vIdx = db.getVarIndex("v");
   REQUIRE(db.getAssignVarPairsForFullExpr("x+1") ==
           vector({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
                   vector<int>({3, vIdx})}));
@@ -84,8 +84,8 @@ TEST_CASE("SUB_PATTERN") {
   REQUIRE(db.getAssignForVarAndSubExpr("y", "x") == unordered_set({1, 2}));
 
   // a (v, "x+1") = { {1, index(y)}, {2, index(y)}, {3, index(v)} }
-  int yIdx = db.varTable.getVarIndex("y");
-  int vIdx = db.varTable.getVarIndex("v");
+  int yIdx = db.getVarIndex("y");
+  int vIdx = db.getVarIndex("v");
   REQUIRE(db.getAssignVarPairsForSubExpr("x+1") ==
           vector({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
                   vector<int>({3, vIdx})}));

@@ -1,0 +1,5 @@
+1 - Return all constants
+constant c;
+Select c
+none
+5000

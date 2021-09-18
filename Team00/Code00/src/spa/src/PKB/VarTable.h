@@ -21,5 +21,5 @@ class VarTable {
  private:
   std::unordered_map<std::string, VAR_IDX> varNameAsKey;
   std::vector<std::string> idxAsKey;
-  int getSize();  // tbh no clue why this was included in the API...
+  int getSize();
 };

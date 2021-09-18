@@ -45,5 +45,6 @@ class DesignExtractor {
   void ExtractExprPatternsHelper(const std::vector<StmtAST*>);
 
   void ExtractConst(const ProgramAST*);
-  unordered_set<int> ExtractConstHelper(const std::vector<StmtAST*>);
+  std::unordered_set<std::string> ExtractConstHelper(
+      const std::vector<StmtAST*>);
 };

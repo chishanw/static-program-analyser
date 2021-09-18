@@ -71,7 +71,20 @@ QueryToken QueryLexer::getNameOrKeyword() {
 
 QueryToken QueryLexer::getInteger() {
   string integer;
-  bool hasDigit = true;
+  // get first digit
+  char firstDigit = consumeChar();
+  integer.push_back(firstDigit);
+
+  // validate that the first digit is not a 0 if there are subsequent digits
+  bool isFirstDigitZero = firstDigit == '0';
+  optional<char> maybeNextChar = peekChar();
+  bool hasDigit = maybeNextChar.has_value() && isDigit(maybeNextChar.value());
+  if (hasDigit && isFirstDigitZero) {
+    throw runtime_error(INVALID_INTEGER_START_ZERO_MSG);
+  }
+
+  // otherwise, first digit is not 0
+  // subsequent digits are concatenated to the integer
   while (hasDigit) {
     char digit = consumeChar();
     integer.push_back(digit);
@@ -112,7 +125,6 @@ vector<QueryToken> QueryLexer::Tokenize(const string& in) {
       tokens.push_back(getInteger());
 
     } else {
-      std::cerr << "INVALID: " << nextChar << endl;
       throw std::runtime_error(INVALID_TOKEN_MSG);
     }
     hasNextChar = peekChar().has_value();

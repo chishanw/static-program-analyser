@@ -17,6 +17,7 @@
 #include "ProcTable.h"
 #include "UsesKB.h"
 #include "VarTable.h"
+#include "ConstTable.h"
 
 using namespace std;
 
@@ -24,8 +25,6 @@ class PKB {
  public:
   // Constructor
   PKB();
-  VarTable varTable;
-  ProcTable procTable;
 
   // Methods
   void addStmt(STMT_NO s);
@@ -35,7 +34,6 @@ class PKB {
   void addWhileStmt(STMT_NO s);
   void addIfStmt(STMT_NO s);
   void addAssignStmt(STMT_NO s);
-  void addConstant(int constant);
 
   UNO_SET_OF_STMT_NO getAllStmts();
   UNO_SET_OF_STMT_NO getAllReadStmts();
@@ -44,7 +42,6 @@ class PKB {
   UNO_SET_OF_STMT_NO getAllWhileStmts();
   UNO_SET_OF_STMT_NO getAllIfStmts();
   UNO_SET_OF_STMT_NO getAllAssignStmts();
-  std::unordered_set<int> getAllConstants();
 
   bool isReadStmt(int s);
   bool isPrintStmt(int s);
@@ -109,11 +106,21 @@ class PKB {
   std::vector<std::vector<int>> getAssignVarPairs();
 
   // Table API
-  void addProcedure(string procName);
+  CONST_IDX insertConst(string constant);
+  std::string getConst(CONST_IDX index);
+  CONST_IDX getConstIndex(std::string constant);
+  std::unordered_set<CONST_IDX> getAllConstants();
+  PROC_IDX insertProcedure(string procName);
   std::string getProcName(PROC_IDX procIdx);
+  PROC_IDX getProcIndex(std::string procName);
   std::unordered_set<PROC_IDX> getAllProcedures();
   std::string getVarName(VAR_IDX varIdx);
+  VAR_IDX getVarIndex(std::string varName);
   std::unordered_set<VAR_IDX> getAllVariables();
+
+  // Table API for tests
+  PROC_IDX insertProc(string procName);
+  VAR_IDX insertVar(string varName);
 
  private:
   // Design Abstractions
@@ -130,5 +137,7 @@ class PKB {
   UNO_SET_OF_STMT_NO allWhileStmtNo;
   UNO_SET_OF_STMT_NO allIfStmtNo;
   UNO_SET_OF_STMT_NO allAssignStmtNo;
-  std::unordered_set<int> allConstants;
+  VarTable varTable;
+  ProcTable procTable;
+  ConstTable constTable;
 };

@@ -84,14 +84,14 @@ TEST_CASE("PKB_CONSTANTS_TEST") {
   PKB db = PKB();
   REQUIRE(db.getAllConstants() == unordered_set<int>());
 
-  db.addConstant(1);
-  db.addConstant(2);
-  db.addConstant(3);
-  REQUIRE(db.getAllConstants() == unordered_set<int>({ 1, 2, 3 }));
+  db.insertConst("1");
+  db.insertConst("2");
+  db.insertConst("3");
+  REQUIRE(db.getAllConstants() == unordered_set<CONST_IDX>({ 0, 1, 2 }));
 
   // duplicate insert
-  db.addConstant(2);
-  REQUIRE(db.getAllConstants() == unordered_set<int>({ 1, 2, 3 }));
+  db.insertConst("2");
+  REQUIRE(db.getAllConstants() == unordered_set<CONST_IDX>({ 0, 1, 2 }));
 }
 
 TEST_CASE("PKB_TABLES_TEST") {
@@ -103,8 +103,8 @@ TEST_CASE("PKB_TABLES_TEST") {
   REQUIRE(db.getVarName(1) == "");
   REQUIRE(db.getAllVariables() == unordered_set<int>());
 
-  db.addProcedure("ComputeCentroid");
-  db.addProcedure("main");
+  db.insertProc("ComputeCentroid");
+  db.insertProc("main");
   db.addUsesS(1, "a");
   db.addUsesS(2, "b");
 
@@ -116,7 +116,7 @@ TEST_CASE("PKB_TABLES_TEST") {
   REQUIRE(db.getAllVariables() == answer);
 
   // duplicate entries
-  db.addProcedure("main");
+  db.insertProc("main");
   db.addUsesS(1, "a");
 
   REQUIRE(db.getProcName(1) == "main");

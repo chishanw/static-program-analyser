@@ -256,8 +256,8 @@ FactorAST* Parser::factor() {
     NAME varName = name();
     return new FactorAST(varName);
   } else if (isNumber()) {
-    int constValue = number();
-    return new FactorAST(constValue);
+    string constValue = number();
+    return new FactorAST(constValue, true);
   } else {
     errorExpected("Left_Paren or Name or Number");
     return new FactorAST("dummy_value");  // won't reach this line
@@ -371,14 +371,14 @@ NAME Parser::name() {
   return ret;
 }
 
-int Parser::number() {
+string Parser::number() {
   if (!isNumber()) {
     errorExpected("number");
     return 0;
   }
   string currToken = token;
   nextToken();
-  return stringToInt(currToken);
+  return currToken;
 }
 
 // =======================================
@@ -430,11 +430,17 @@ bool Parser::isName() {
 bool Parser::isNumber() {
   // assumes that tokenizer works properly, then only a Number can start with a
   // digit, and has only digits
-  if (token.size() == 0) {
-    return false;
+  switch (token.size()) {
+    case 0:
+      return false;
+    case 1:
+      return '0' <= token[0] &&
+             token[0] <= '9';  // '0' in ascii is 48 and '9' is 57
+    default:
+      // if constant has more than 1 digit, the 1st digit cannot be 0
+      return '1' <= token[0] &&
+             token[0] <= '9';  // '1' in ascii is 49 and '9' is 57
   }
-  char c = token[0];
-  return '0' <= c && c <= '9';  // '0' in ascii is 48 and '9' is 57
 }
 
 bool Parser::isRelExprInParens() {
@@ -475,12 +481,6 @@ bool Parser::isRelExprInParens() {
 
   // consume all tokens and did not find comparison operators
   return false;
-}
-
-int Parser::stringToInt(string s) {
-  int i;
-  i = stoi(s);
-  return i;
 }
 
 void Parser::errorExpected(string expected) {

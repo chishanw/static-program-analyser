@@ -16,7 +16,6 @@ PKB::PKB() {
   allWhileStmtNo = UNO_SET_OF_STMT_NO();
   allIfStmtNo = UNO_SET_OF_STMT_NO();
   allAssignStmtNo = UNO_SET_OF_STMT_NO();
-  allConstants = unordered_set<int>();
 }
 
 void PKB::addStmt(STMT_NO s) {
@@ -81,14 +80,6 @@ void PKB::addAssignStmt(STMT_NO s) {
   allAssignStmtNo.insert(s);
 }
 
-void PKB::addConstant(int constant) {
-  if (allConstants.count(constant) > 0) {
-    return;
-  }
-
-  allConstants.insert(constant);
-}
-
 UNO_SET_OF_STMT_NO PKB::getAllStmts() { return allStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllReadStmts() { return allReadStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllPrintStmts() { return allPrintStmtNo; }
@@ -96,7 +87,6 @@ UNO_SET_OF_STMT_NO PKB::getAllCallStmts() { return allCallStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllWhileStmts() { return allWhileStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllIfStmts() { return allIfStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllAssignStmts() { return allAssignStmtNo; }
-unordered_set<int> PKB::getAllConstants() { return allConstants; }
 
 bool PKB::isReadStmt(int s) { return allReadStmtNo.count(s) > 0; }
 bool PKB::isPrintStmt(int s) { return allPrintStmtNo.count(s) > 0; }
@@ -240,14 +230,37 @@ vector<vector<int>> PKB::getAssignVarPairs() {
   return patternKB.getAssignVarPairs();
 }
 // Table API
-void PKB::addProcedure(string procName) { procTable.insertProc(procName); }
+CONST_IDX PKB::insertConst(string constant) {
+  return constTable.insertConst(constant);
+}
+string PKB::getConst(CONST_IDX constIdx) {
+  return constTable.getConst(constIdx);
+}
+CONST_IDX PKB::getConstIndex(std::string constant) {
+  return constTable.getConstIndex(constant);
+}
+unordered_set<CONST_IDX> PKB::getAllConstants() {
+  return constTable.getAllConstants();
+}
+PROC_IDX PKB::insertProc(string procName) {
+  return procTable.insertProc(procName);
+}
 string PKB::getProcName(PROC_IDX procIdx) {
   return procTable.getProcName(procIdx);
 }
+PROC_IDX PKB::getProcIndex(std::string procName) {
+  return procTable.getProcIndex(procName);
+}
 unordered_set<PROC_IDX> PKB::getAllProcedures() { return procTable
   .getAllProcedures(); }
+VAR_IDX PKB::insertVar(string varName) {
+  return varTable.insertVar(varName);
+}
 string PKB::getVarName(VAR_IDX varIdx) {
-    return varTable.getVarName(varIdx);
+  return varTable.getVarName(varIdx);
+}
+VAR_IDX PKB::getVarIndex(std::string varName) {
+  return varTable.getVarIndex(varName);
 }
 unordered_set<VAR_IDX> PKB::getAllVariables() { return varTable
   .getAllVariables();

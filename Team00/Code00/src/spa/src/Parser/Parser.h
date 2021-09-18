@@ -48,7 +48,7 @@ class Parser {
 
   //  name & number methods
   NAME name();
-  int number();
+  std::string number();
 
   // utility methods
   bool expectToken(std::string);
@@ -58,8 +58,6 @@ class Parser {
   void incrementStmtNo();
   bool isName();
   bool isNumber();
-  bool isNumber(std::string);
   bool isRelExprInParens();
-  int stringToInt(std::string);
   void errorExpected(std::string);
 };

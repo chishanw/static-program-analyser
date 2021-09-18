@@ -38,7 +38,7 @@ class ArithAST {
 
   bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
   std::unordered_set<NAME> GetAllVarNames() const;
-  std::unordered_set<int> GetAllConsts() const;
+  std::unordered_set<std::string> GetAllConsts() const;
   std::vector<std::string> GetSubExprPatternStrs() const;
   std::string GetFullExprPatternStr() const;
   std::string GetDebugStr() const;
@@ -50,7 +50,7 @@ class ArithAST {
 class FactorAST : public ArithAST {
  public:
   const NAME VarName;
-  const int ConstValue;
+  const std::string ConstValue;
   const ArithAST* Expr;
 
   explicit FactorAST(NAME varName)
@@ -58,10 +58,10 @@ class FactorAST : public ArithAST {
         isConstValue(false),
         isExpr(false),
         VarName(varName),
-        ConstValue(0),
+        ConstValue(""),
         Expr(nullptr) {}
 
-  explicit FactorAST(int constValue)
+  explicit FactorAST(std::string constValue, bool isConstant)
       : isVarName(false),
         isConstValue(true),
         isExpr(false),
@@ -74,14 +74,14 @@ class FactorAST : public ArithAST {
         isConstValue(false),
         isExpr(true),
         VarName(""),
-        ConstValue(0),
+        ConstValue(""),
         Expr(expr) {}
 
   bool IsVarName() const { return this->isVarName; }
   bool IsConstValue() const { return this->isConstValue; }
   bool IsExpr() const { return this->isExpr; }
   std::unordered_set<std::string> GetAllVarNames() const;
-  std::unordered_set<int> GetAllConsts() const;
+  std::unordered_set<std::string> GetAllConsts() const;
   std::vector<std::string> GetSubExprPatternStrs() const;
   std::string GetFullExprPatternStr() const;
   std::string GetDebugStr() const;
@@ -102,7 +102,7 @@ class RelExprAST {
       : Sign(sign), LeftNode{leftNode}, RightNode{rightNode} {}
 
   std::unordered_set<NAME> GetAllVarNames() const;
-  std::unordered_set<int> GetAllConsts() const;
+  std::unordered_set<std::string> GetAllConsts() const;
 };
 
 class CondExprAST {
@@ -138,7 +138,7 @@ class CondExprAST {
   bool HasOnlyOneRelExpr() const { return this->hasOnlyOneRelExpr; }
   bool HasOnlyOneCondExpr() const { return this->hasOnlyOneCondExpr; }
   std::unordered_set<NAME> GetAllVarNames() const;
-  std::unordered_set<int> GetAllConsts() const;
+  std::unordered_set<std::string> GetAllConsts() const;
 
  private:
   const bool hasOnlyOneRelExpr;

@@ -67,6 +67,14 @@ TEST_CASE("[Parser] cond_expr tests") {
           "}   \n";
       REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
     }
+
+    SECTION("number has > 1 digit and it starts with 0") {
+      string program =
+          "procedure p {"
+          "    p = 01234; "
+          "}";
+      REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+    }
   }
 
   // =============================
@@ -120,18 +128,22 @@ TEST_CASE("[Parser] cond_expr tests") {
           Parser().Parse(Tokenizer::TokenizeProgramString(program)));
     }
 
-    // TODO(gf): uncomment this
-    // SECTION("constant overflow") {
-    //   string program =
-    //       "procedure p {"
-    //       "    p = 1234567890123456789012345678; "
-    //       "}";
-    //   REQUIRE_NOTHROW(
-    //       Parser().Parse(Tokenizer::TokenizeProgramString(program)));
-    // }
+    SECTION("big number") {
+      string program =
+          "procedure p {"
+          "    p = 1234567890123456789012345678901234567890123456789012345678; "
+          "}";
+      REQUIRE_NOTHROW(
+          Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+    }
 
-    // TODO(gf): add test case for
-    // Constants are sequences of digits.If more than one digit, the first digit
-    // cannot be 0
+    SECTION("number has only 1 digit and it starts with 0") {
+      string program =
+          "procedure p {"
+          "    p = 0; "
+          "}";
+      REQUIRE_NOTHROW(
+          Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+    }
   }
 }

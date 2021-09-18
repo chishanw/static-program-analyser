@@ -12,6 +12,9 @@ class QueryLexer {
  public:
   inline static const std::string INVALID_TOKEN_MSG =
       "QueryLexer found an invalid token";
+  inline static const std::string INVALID_INTEGER_START_ZERO_MSG =
+      "QueryLexer expected a multiple digit integer to start with"
+      " a non zero digit";
 
   QueryLexer();
   std::vector<qpp::QueryToken> Tokenize(const std::string&);

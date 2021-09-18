@@ -91,8 +91,6 @@ def main():
                 max_time_taken = max(max_time_taken, this_max_time_taken)
                 min_time_taken = min(min_time_taken, this_min_time_taken)
 
-                print()
-
     if number_queries:
         avg_time_taken = total_time_taken / number_queries
 

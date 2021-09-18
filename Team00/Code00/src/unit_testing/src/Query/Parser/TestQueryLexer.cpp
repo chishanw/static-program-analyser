@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// ===================== Testing synonym declarations =====================
+
 TEST_CASE("Query with valid synonym types are tokenized successfully") {
   string validQuery =
       "stmt s, s1, s2; read r; print p; while w; if i; assign a; variable v; "
@@ -61,6 +63,8 @@ TEST_CASE("Query with valid synonym types are tokenized successfully") {
 
   REQUIRE(actualTokens == expectedTokens);
 }
+
+// ============================ Testing such that ===========================
 
 TEST_CASE(
     "Query with valid such that clauses for different relationships are "
@@ -237,6 +241,8 @@ TEST_CASE(
   REQUIRE(actualTokens == expectedTokens);
 }
 
+// ============================ Testing pattern ===========================
+
 TEST_CASE("Query with valid pattern clauses are tokenized correctly") {
   string validQuery =
       "assign a; variable v;"
@@ -301,6 +307,8 @@ TEST_CASE("Query with valid pattern clauses are tokenized correctly") {
   REQUIRE(actualTokens == expectedTokens);
 }
 
+// ============================ Testing multi-clause ===========================
+
 TEST_CASE(
     "Query with valid such that clause and pattern clause are tokenized "
     "correctly") {
@@ -339,6 +347,8 @@ TEST_CASE(
 
   REQUIRE(actualTokens == expectedTokens);
 }
+
+// ============================ Testing whitespace ===========================
 
 TEST_CASE(
     "Whitespaces between different tokens for such that clause are ignored") {
@@ -421,6 +431,8 @@ TEST_CASE("Whitespaces in one keyword is tokenized into separate tokens") {
   REQUIRE(actualTokens == expectedTokens);
 }
 
+// ============================ Testing keywords ===========================
+
 TEST_CASE("Tokenization of Follows * and Follows* should be different") {
   string validFollows = "Follows*";
   string invalidFollows = "Follows *";
@@ -438,4 +450,66 @@ TEST_CASE("Query with invalid character throws") {
 
   REQUIRE_THROWS_WITH(QueryLexer().Tokenize(invalidQuery),
                       QueryLexer::INVALID_TOKEN_MSG);
+}
+
+// ============================ Testing integer ===========================
+
+TEST_CASE("Large integer is parsed successfully") {
+  string validQuery = "assign a;"
+                      "Select a such that Follows(1, 2200000000)";
+
+  vector<qpp::QueryToken> expectedTokens = {
+      {qpp::TokenType::NAME_OR_KEYWORD, "assign"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "2200000000"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"}
+  };
+
+  vector<qpp::QueryToken> actualTokens =
+      QueryLexer().Tokenize(validQuery);
+
+  REQUIRE(actualTokens == expectedTokens);
+}
+
+TEST_CASE("Zero value integer is parsed successfully") {
+  string validQuery = "assign a;"
+                      "Select a such that Follows(1, 0)";
+
+  vector<qpp::QueryToken> expectedTokens = {
+      {qpp::TokenType::NAME_OR_KEYWORD, "assign"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "0"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"}
+  };
+
+  vector<qpp::QueryToken> actualTokens =
+      QueryLexer().Tokenize(validQuery);
+
+  REQUIRE(actualTokens == expectedTokens);
+}
+
+TEST_CASE("Query with invalid integer throws") {
+  string invalidQuery = "assign a;"
+                        "Select a such that Follows(0123, 4567)";
+
+  REQUIRE_THROWS_WITH(QueryLexer().Tokenize(invalidQuery),
+                      QueryLexer::INVALID_INTEGER_START_ZERO_MSG);
 }

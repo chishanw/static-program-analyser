@@ -53,10 +53,10 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
   de.Extract(ast);
 
   SECTION("Iter 1 test (only var and const)") {
-    int xIdx = pkb->varTable.getVarIndex("x");
-    int yIdx = pkb->varTable.getVarIndex("y");
-    int zIdx = pkb->varTable.getVarIndex("z");
-    int iIdx = pkb->varTable.getVarIndex("i");
+    int xIdx = pkb->getVarIndex("x");
+    int yIdx = pkb->getVarIndex("y");
+    int zIdx = pkb->getVarIndex("z");
+    int iIdx = pkb->getVarIndex("i");
 
     // ===============
     // full expr

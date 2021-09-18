@@ -29,9 +29,9 @@ TEST_CASE("Select all design entities") {
 
   SECTION("procedure p; Select p") {
     PKB* pkb = new PKB();
-    int aIdx = pkb->procTable.insertProc("procA");
-    int bIdx = pkb->procTable.insertProc("procB");
-    int cIdx = pkb->procTable.insertProc("procC");
+    int aIdx = pkb->insertProc("procA");
+    int bIdx = pkb->insertProc("procB");
+    int cIdx = pkb->insertProc("procC");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -47,9 +47,9 @@ TEST_CASE("Select all design entities") {
 
   SECTION("variable v; Select v") {
     PKB* pkb = new PKB();
-    int xIdx = pkb->varTable.insertVar("x");
-    int yIdx = pkb->varTable.insertVar("y");
-    int zIdx = pkb->varTable.insertVar("z");
+    int xIdx = pkb->insertVar("x");
+    int yIdx = pkb->insertVar("y");
+    int zIdx = pkb->insertVar("z");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -65,9 +65,9 @@ TEST_CASE("Select all design entities") {
 
   SECTION("constant c; Select c") {
     PKB* pkb = new PKB();
-    pkb->addConstant(1);
-    pkb->addConstant(3);
-    pkb->addConstant(5);
+    pkb->insertConst("1");
+    pkb->insertConst("3");
+    pkb->insertConst("5");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -78,7 +78,7 @@ TEST_CASE("Select all design entities") {
 
     SelectClause select = {c, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 3, 5}));
+    REQUIRE(result == unordered_set<int>({0, 1, 2}));
   }
 }
 
@@ -2735,6 +2735,8 @@ TEST_CASE("QueryEvaluator: 1 Clause, Different Design Entities") {
   pkb->addIfStmt(5);
   pkb->addAssignStmt(6);
   pkb->addAssignStmt(7);
+  pkb->addAssignPttFullExpr(6, "x", "1");
+  pkb->addAssignPttSubExpr(6, "x", "1");
   pkb->setParent(4, 5);
   QueryEvaluator qe(pkb);
 
@@ -2932,6 +2934,24 @@ TEST_CASE("QueryEvaluator: 1 Clause, Different Design Entities") {
     SelectClause select = {cll, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  // Test a combo with different design entities and multiple clauses
+  SECTION("Select a such that Follows(rd, a) pattern a (v, _'1'_)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "rd"},
+                                     {ParamType::SYNONYM, "a"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "1"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {a, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({}));
   }
 }
 

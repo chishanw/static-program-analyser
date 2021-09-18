@@ -1,0 +1,5 @@
+1 - Return all constants
+constant c;
+Select c
+0, 1, 123456789101112131415
+5000

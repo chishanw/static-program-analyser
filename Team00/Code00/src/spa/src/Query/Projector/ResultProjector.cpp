@@ -22,8 +22,13 @@ list<string> ResultProjector::formatResults(DesignEntity designEntity,
         formattedResults.push_back(pkb->getProcName(procIdx));
       }
       return formattedResults;
+    case DesignEntity::CONSTANT:
+      for (int constIdx : results) {
+        formattedResults.push_back(pkb->getConst(constIdx));
+      }
+      return formattedResults;
     default:
-      // all statement types and constants
+      // all statement types
       for (int num : results) {
         formattedResults.push_back(to_string(num));
       }

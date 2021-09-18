@@ -31,7 +31,7 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
 
 void DesignExtractor::ExtractProcAndStmt(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
-    pkb->addProcedure(procedure->ProcName);
+    pkb->insertProc(procedure->ProcName);
 
     ExtractProcAndStmtHelper(procedure->StmtList);
   }
@@ -431,20 +431,20 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
 }
 
 void DesignExtractor::ExtractConst(const ProgramAST* programAST) {
-  unordered_set<int> res;
+  unordered_set<string> res;
 
   for (auto procedure : programAST->ProcedureList) {
     res.merge(ExtractConstHelper(procedure->StmtList));
   }
 
   for (auto constant : res) {
-    pkb->addConstant(constant);
+    pkb->insertConst(constant);
   }
 }
 
-unordered_set<int> DesignExtractor::ExtractConstHelper(
+unordered_set<string> DesignExtractor::ExtractConstHelper(
     vector<StmtAST*> stmtList) {
-  unordered_set<int> res;
+  unordered_set<string> res;
 
   for (auto stmt : stmtList) {
     if (const WhileStmtAST* whileStmt =

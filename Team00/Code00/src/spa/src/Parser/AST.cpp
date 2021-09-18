@@ -173,12 +173,12 @@ unordered_set<NAME> FactorAST::GetAllVarNames() const {
 // ==================
 // GetAllConsts
 // ==================
-unordered_set<int> ArithAST::GetAllConsts() const {
+unordered_set<string> ArithAST::GetAllConsts() const {
   if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
     return f->GetAllConsts();
   }
 
-  unordered_set<int> res;
+  unordered_set<string> res;
   if (LeftNode != nullptr) {
     res.merge(LeftNode->GetAllConsts());
   }
@@ -188,7 +188,7 @@ unordered_set<int> ArithAST::GetAllConsts() const {
   return res;
 }
 
-unordered_set<int> CondExprAST::GetAllConsts() const {
+unordered_set<string> CondExprAST::GetAllConsts() const {
   if (hasOnlyOneRelExpr) {
     return RelExpr->GetAllConsts();
   }
@@ -196,20 +196,20 @@ unordered_set<int> CondExprAST::GetAllConsts() const {
     return LeftNode->GetAllConsts();
   }
   // has two cond expr
-  unordered_set<int> res = LeftNode->GetAllConsts();
-  unordered_set<int> resR = RightNode->GetAllConsts();
+  unordered_set<string> res = LeftNode->GetAllConsts();
+  unordered_set<string> resR = RightNode->GetAllConsts();
   res.merge(resR);
   return res;
 }
 
-unordered_set<int> RelExprAST::GetAllConsts() const {
-  unordered_set<int> res;
+unordered_set<string> RelExprAST::GetAllConsts() const {
+  unordered_set<string> res;
   res.merge(LeftNode->GetAllConsts());
   res.merge(RightNode->GetAllConsts());
   return res;
 }
 
-unordered_set<int> FactorAST::GetAllConsts() const {
+unordered_set<string> FactorAST::GetAllConsts() const {
   if (isVarName) {
     return {};
   } else if (isConstValue) {

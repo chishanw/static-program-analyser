@@ -71,25 +71,32 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
   }
 
   SECTION("Procedures") {
-    int exampleIdx = pkb->procTable.getProcIndex("Example");
-    int pIdx = pkb->procTable.getProcIndex("p");
-    int qIdx = pkb->procTable.getProcIndex("q");
+    int exampleIdx = pkb->getProcIndex("Example");
+    int pIdx = pkb->getProcIndex("p");
+    int qIdx = pkb->getProcIndex("q");
 
     REQUIRE(pkb->getAllProcedures() ==
             UNO_SET_OF_STMT_NO{exampleIdx, pIdx, qIdx});
   }
 
   SECTION("Consts") {
-    REQUIRE(pkb->getAllConstants() == UNO_SET_OF_STMT_NO({0, 1, 2, 3, 5}));
+    int c0idx = pkb->getConstIndex("0");
+    int c1idx = pkb->getConstIndex("1");
+    int c2idx = pkb->getConstIndex("2");
+    int c3idx = pkb->getConstIndex("3");
+    int c5idx = pkb->getConstIndex("5");
+
+    REQUIRE(pkb->getAllConstants() ==
+            UNO_SET_OF_STMT_NO{c0idx, c1idx, c2idx, c3idx, c5idx});
   }
 
   SECTION("Variables") {
-    int xIdx = pkb->varTable.getVarIndex("x");
-    int yIdx = pkb->varTable.getVarIndex("y");
-    int zIdx = pkb->varTable.getVarIndex("z");
-    int iIdx = pkb->varTable.getVarIndex("i");
+    int xIdx = pkb->getVarIndex("x");
+    int yIdx = pkb->getVarIndex("y");
+    int zIdx = pkb->getVarIndex("z");
+    int iIdx = pkb->getVarIndex("i");
     REQUIRE(pkb->getAllVariables() ==
-            unordered_set<VAR_IDX>{xIdx, yIdx, zIdx, iIdx});
+            unordered_set<CONST_IDX>{xIdx, yIdx, zIdx, iIdx});
   }
 }
 
@@ -114,30 +121,52 @@ TEST_CASE("[DE][GetAllVarNames & GetAllConsts] complex cond expr") {
   de.Extract(ast);
 
   // 17 variables [0, 1, ..., 16]
-  int aIdx = pkb->varTable.getVarIndex("a");
-  int bIdx = pkb->varTable.getVarIndex("b");
-  int cIdx = pkb->varTable.getVarIndex("c");
-  int dIdx = pkb->varTable.getVarIndex("d");
-  int eIdx = pkb->varTable.getVarIndex("e");
-  int fIdx = pkb->varTable.getVarIndex("f");
-  int gIdx = pkb->varTable.getVarIndex("g");
-  int hIdx = pkb->varTable.getVarIndex("h");
-  int iIdx = pkb->varTable.getVarIndex("i");
-  int jIdx = pkb->varTable.getVarIndex("j");
-  int kIdx = pkb->varTable.getVarIndex("k");
-  int lIdx = pkb->varTable.getVarIndex("l");
-  int mIdx = pkb->varTable.getVarIndex("m");
-  int nIdx = pkb->varTable.getVarIndex("n");
-  int oIdx = pkb->varTable.getVarIndex("o");
-  int pIdx = pkb->varTable.getVarIndex("p");
-  int qIdx = pkb->varTable.getVarIndex("q");
+  int aIdx = pkb->getVarIndex("a");
+  int bIdx = pkb->getVarIndex("b");
+  int cIdx = pkb->getVarIndex("c");
+  int dIdx = pkb->getVarIndex("d");
+  int eIdx = pkb->getVarIndex("e");
+  int fIdx = pkb->getVarIndex("f");
+  int gIdx = pkb->getVarIndex("g");
+  int hIdx = pkb->getVarIndex("h");
+  int iIdx = pkb->getVarIndex("i");
+  int jIdx = pkb->getVarIndex("j");
+  int kIdx = pkb->getVarIndex("k");
+  int lIdx = pkb->getVarIndex("l");
+  int mIdx = pkb->getVarIndex("m");
+  int nIdx = pkb->getVarIndex("n");
+  int oIdx = pkb->getVarIndex("o");
+  int pIdx = pkb->getVarIndex("p");
+  int qIdx = pkb->getVarIndex("q");
+
+  int c0idx = pkb->getConstIndex("0");
+  int c1idx = pkb->getConstIndex("1");
+  int c2idx = pkb->getConstIndex("2");
+  int c3idx = pkb->getConstIndex("3");
+  int c4idx = pkb->getConstIndex("4");
+  int c5idx = pkb->getConstIndex("5");
+  int c6idx = pkb->getConstIndex("6");
+  int c7idx = pkb->getConstIndex("7");
+  int c8idx = pkb->getConstIndex("8");
+  int c9idx = pkb->getConstIndex("9");
+  int c10idx = pkb->getConstIndex("10");
+  int c11idx = pkb->getConstIndex("11");
+  int c12idx = pkb->getConstIndex("12");
+  int c13idx = pkb->getConstIndex("13");
+  int c14idx = pkb->getConstIndex("14");
+  int c15idx = pkb->getConstIndex("15");
+  int c16idx = pkb->getConstIndex("16");
+  int c17idx = pkb->getConstIndex("17");
+  int c18idx = pkb->getConstIndex("18");
 
   REQUIRE(pkb->getAllVariables() ==
           unordered_set<VAR_IDX>{aIdx, bIdx, cIdx, dIdx, eIdx, fIdx, gIdx, hIdx,
                                  iIdx, jIdx, kIdx, lIdx, mIdx, nIdx, oIdx, pIdx,
                                  qIdx});
 
-  REQUIRE(pkb->getAllConstants() == unordered_set<int>{0, 1, 2, 3, 4, 5, 6, 7,
-                                                       8, 9, 10, 11, 12, 13, 14,
-                                                       15, 16, 17, 18});
+  REQUIRE(pkb->getAllConstants() ==
+          unordered_set<CONST_IDX>{c0idx, c1idx, c2idx, c3idx, c4idx, c5idx,
+                                   c6idx, c7idx, c8idx, c9idx, c10idx, c11idx,
+                                   c12idx, c13idx, c14idx, c15idx, c16idx,
+                                   c17idx, c18idx});
 }
