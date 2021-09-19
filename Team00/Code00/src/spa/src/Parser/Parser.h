@@ -59,5 +59,6 @@ class Parser {
   bool isName();
   bool isNumber();
   bool isRelExprInParens();
+  bool isNextTokenEqualSign();
   void errorExpected(std::string);
 };

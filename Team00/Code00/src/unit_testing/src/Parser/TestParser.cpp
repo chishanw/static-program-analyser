@@ -73,6 +73,29 @@ TEST_CASE("[Parser] semantic errors") {
   }
 }
 
+TEST_CASE("[Parser] using keywords as ProcName and VarName") {
+  string program =
+      "procedure if {                                             "
+      "  if ((!(if == else)) || (else == (then * print))) then {  "
+      "    read = 1;                                              "
+      "  } else {                                                 "
+      "    print = 2;                                             "
+      "  }                                                        "
+      "  call = 3;                                                "
+      "  while = 4;                                               "
+      "  if = 5;                                                  "
+      "}                                                          ";
+  REQUIRE_NOTHROW(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+}
+
+TEST_CASE("[Parser] stmt() parser look ahead out of bound error") {
+  string program =
+      "procedure if {                                           "
+      "  read = 1;                                              "
+      "  if                                                     ";
+  REQUIRE_THROWS(Parser().Parse(Tokenizer::TokenizeProgramString(program)));
+}
+
 TEST_CASE("[Parser] parsing INTEGER") {
   SECTION("big number") {
     string program =

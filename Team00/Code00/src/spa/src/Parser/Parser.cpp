@@ -63,7 +63,7 @@ ProcedureAST* Parser::procedure() {
 
 vector<StmtAST*> Parser::stmtLst() {
   vector<StmtAST*> stmtList;
-  while (!expectToken("}")) {
+  while (!(expectToken("}") || noMoreToken())) {
     StmtAST* stmtAST = stmt();
     stmtList.push_back(stmtAST);
   }
@@ -78,7 +78,10 @@ vector<StmtAST*> Parser::stmtLst() {
 StmtAST* Parser::stmt() {
   incrementStmtNo();
 
-  if (expectToken("read")) {
+  if (isNextTokenEqualSign()) {
+    // then it is an AssignStmt
+    return assignStmt();
+  } else if (expectToken("read")) {
     return readStmt();
   } else if (expectToken("print")) {
     return printStmt();
@@ -88,8 +91,9 @@ StmtAST* Parser::stmt() {
     return whileStmt();
   } else if (expectToken("if")) {
     return ifStmt();
-  } else {  // assignment stmt
-    return assignStmt();
+  } else {
+    errorExpected("any one of 'read print call while if' or a 'Name'");
+    return nullptr;  // won't reach this line
   }
 }
 
@@ -258,7 +262,7 @@ FactorAST* Parser::factor() {
     return new FactorAST(constValue, true);
   } else {
     errorExpected("Left_Paren or Name or Number");
-    return new FactorAST("dummy_value");  // won't reach this line
+    return nullptr;  // won't reach this line
   }
 }
 
@@ -479,6 +483,25 @@ bool Parser::isRelExprInParens() {
 
   // consume all tokens and did not find comparison operators
   return false;
+}
+
+bool Parser::isNextTokenEqualSign() {
+  string errMsg =
+      "[Parser] expected another token but parser has reach the EOF.";
+
+  if (noMoreToken()) {
+    throw runtime_error(errMsg);
+    return false;
+  }
+
+  auto tokenIteratorCopy = tokenIterator;
+  tokenIteratorCopy++;
+  if (tokenIteratorCopy == tokens.end()) {
+    throw runtime_error(errMsg);
+    return false;
+  }
+
+  return *tokenIteratorCopy == "=";
 }
 
 void Parser::errorExpected(string expected) {
