@@ -1,0 +1,7 @@
+procedure if {
+	if ((!(if == else)) || (else == (then * print))) then {
+		read = 1;
+	} else {
+		call = 2;
+	}
+}

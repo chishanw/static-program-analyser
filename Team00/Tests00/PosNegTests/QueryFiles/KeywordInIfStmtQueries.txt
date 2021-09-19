@@ -1,0 +1,100 @@
+1 - Return all statements
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+5000
+2 - Return all reads
+read r;
+Select r
+none
+5000
+3 - Return all prints
+print pn;
+Select pn
+none
+5000
+4 - Return all whiles
+while w;
+Select w
+4
+5000
+5 - Return all ifs
+if i;
+Select i
+8
+5000
+6 - Return all assignments
+assign a;
+Select a
+1, 2, 3, 5, 6, 7, 9, 10, 11, 12
+5000
+7 - Return all variables
+variable v;
+Select v
+count, cenX, cenY, x, y, z, flag, normSq, else, if, print, then, xyz, while
+5000
+8 - Follows test
+stmt s;
+Select s such that Follows(4, s)
+8
+5000
+9 - FollowsT test, integer and synonym
+stmt s;
+Select s such that Follows* (4, s)
+8, 12
+5000
+10 - Parent test
+stmt s;
+Select s such that Parent (s, 11)
+8
+5000
+11 - ParentT test
+stmt s;
+Select s such that Parent* (s, 5)
+4
+5000
+12 - Uses test
+stmt s;
+Select s such that Uses(s, "cenX")
+4, 6, 8, 10, 12
+5000
+13 - Modifies test
+stmt s;
+Select s such that Modifies(s, "cenY")
+3, 4, 7, 8, 11
+5000
+14 - Pattern test
+assign a; variable v;
+Select a pattern a (v, _"0"_)
+1, 2, 3
+5000
+15 - Multiple clause with Follows, pattern
+stmt s; variable v, assign a;
+Select a such that Follows (s, a) pattern a (v, _"1"_)
+none
+5000
+16 - Multiple clause with FollowsT, pattern
+assign a; variable v;
+Select a such that Follows* (1, a) pattern a (v, _"0"_)
+2, 3
+5000
+17 - Multiple clause with Parent, pattern
+if i; variable v; assign a;
+Select a such that Parent (i, a) pattern a (v, _"1"_)
+9
+5000
+18 - Multiple clause with ParentT, pattern
+stmt s; variable v; assign a;
+Select a such that Parent* (s, a) pattern a (v, _"1"_)
+5, 9
+5000
+19 - Multiple clause with Uses, pattern
+assign a; variable v;
+Select a such that Uses (a, "count") pattern a (v, _"1"_)
+5
+5000
+20 - Multiple clause with Modifies, pattern
+assign a; variable v;
+Select a such that Modifies (a, "count") pattern a (v, _"1"_)
+5
+5000

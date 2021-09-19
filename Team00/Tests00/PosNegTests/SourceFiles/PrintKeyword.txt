@@ -1,5 +1,5 @@
-procedure computeCentroid {
-    count = 01234;
+procedure procedure {
+    count = 0;
     cenX = 0;
     cenY = 0;
     while ((x != 0) && (y != 0)) {
@@ -14,4 +14,10 @@ procedure computeCentroid {
         cenY = cenY / count;
     }
     normSq = cenX * cenX + cenY * cenY;
+    print normSq;
+    print print;
+    print while;
+    print procedure;
+    print computeCentroid;
 }
+

@@ -43,10 +43,10 @@ stmt s;
 Select              s     such              that Uses(    s,"cenX"       ) 
 4, 6, 8, 10, 12
 5000
-10 - Modifies test
+10 - Modifies test, no comma between arguments
 stmt s;
-Select s such that Modifies(s, "cenY")
-3, 4, 7, 8, 11
+Select s such that Modifies(s "cenY")
+none
 5000
 11 - Pattern test, whitespace between the variable and the underlines
 assign a; variable v;
@@ -77,4 +77,89 @@ none
 if i; variable v; assign a;
 Select a such that Pa (i, a) pattern a (v, _"1"_)
 none
+5000
+17 - Synonyms that have long numbers
+stmt s123456789101112131415;
+Select s123456789101112131415
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+5000
+18 - Comma in between multiple synonym declarations of different types
+stmt s, assign a;
+Select s
+none
+5000
+19 - Long synonym string
+stmt qwertyuiopasdfghjklzxcvbnm;
+Select qwertyuiopasdfghjklzxcvbnm
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+5000
+20 - Semicolon after Select statement
+stmt s;
+Select s;
+none
+5000
+21 - Synonym beginning with a number
+stmt 0s;
+Select 0s
+none
+5000
+22 - Synonym containing non-alphanumeric characters
+stmt s#$;
+Select s#$
+none
+5000
+23 - Many synonym declarations
+stmt s1, s2, s3, s4, s5, s6, s7, s8, s9; read r1, r2, r3, r4, r5, r6, r7, r8, r9; print pn1, pn2, pn3, pn4, pn5, pn6, pn7, pn8, pn9; while w1, w2, w3, w4, w5, w6, w7, w8, w9; if i1, i2, i3, i4, i5, i6, i7, i8, i9; assign a1, a2, a3, a4, a5, a6, a7, a8, a9; variable v1, v2, v3, v4, v5, v6, v7, v8, v9; constant c1, c2, c3, c4, c5, c6, c7, c8, c9;
+Select s1
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+5000
+24 - Other character in between arguments
+stmt s;
+Select s such that Modifies(s; "cenY")
+none
+5000
+25 - Uses test, nothing on select line
+stmt s;
+Select
+none
+5000
+26 - Uses test, no synonyms declared
+stmt;
+Select s
+none
+5000
+26 - Uses test, no synonyms declared
+
+Select
+none
+5000
+27 - Duplicate synonyms
+stmt s1, s2, s3, s4, s5, s6, s7, s8, s9; assign a1; read r1, r2, r3, r4, r5, r6, r7, r8, r9; print pn1, pn2, pn3, pn4, pn5, pn6, pn7, pn8, pn9; while w1, w2, w3, w4, w5, w6, w7, w8, w9; if i1, i2, i3, i4, i5, i6, i7, i8, i9; assign a1, a2, a3, a4, a5, a6, a7, a8, a9; variable v1, v2, v3, v4, v5, v6, v7, v8, v9; constant c1, c2, c3, c4, c5, c6, c7, c8, c9;
+Select s1
+none
+5000
+28 - Pattern test, underlines inside inverted commas
+assign a; variable v;
+Select a pattern a (v, "_0_")
+none
+5000
+29 - Pattern and such that order switched
+stmt s; variable v; assign a;
+Select a such that pattern a (v, _"1"_) Follows (s, a)
+none
+5000
+30 - Pattern test, new line between declarations
+assign a; 
+variable v; Select a pattern a (v, _"0"_)
+1, 2, 3
+5000
+31 - string in first argument of Follows
+assign a;
+Select a such that Follows("x", a)
+none
+5000
+32 - keywords as synonyms
+assign pattern; variable Select;
+Select Select pattern pattern(Select, _"0"_)
+cenX, cenY, count
 5000
