@@ -447,11 +447,21 @@ void QueryEvaluator::addIncomingResults(vector<vector<int>> incomingResults,
     isLeftParamSynonym = true;
     isLeftSynInQueryResults =
         queryResultsSynonyms.find(left.value) != queryResultsSynonyms.end();
+
+    // add new synonym to queryResultsSynonyms
+    if (!isLeftSynInQueryResults) {
+      queryResultsSynonyms.insert(left.value);
+    }
   }
   if (right.type == ParamType::SYNONYM) {
     isRightParamSynonym = true;
     isRightSynInQueryResults =
         queryResultsSynonyms.find(right.value) != queryResultsSynonyms.end();
+
+    // add new synonym to queryResultsSynonyms
+    if (!isRightSynInQueryResults) {
+      queryResultsSynonyms.insert(right.value);
+    }
   }
 
   if (isLeftParamSynonym && isRightParamSynonym) {
@@ -554,11 +564,6 @@ void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
 
 void QueryEvaluator::crossProduct(vector<vector<int>> incomingResult,
                                   vector<string> incomingResultsSynonyms) {
-  // add new synonyms to queryResultsSynonyms
-  for (string synonym : incomingResultsSynonyms) {
-    queryResultsSynonyms.insert(synonym);
-  }
-
   vector<unordered_map<string, int>> newQueryResults;
 
   for (unordered_map<string, int> queryResult : currentQueryResults) {

@@ -1,31 +1,36 @@
-# Team 00
-
-> Please fill in this Readme with the required information, and delete this box.
-> 
-> 1. Note that if you are using the `Windows Startup SPA Solution`, your target environment must be using `Microsoft Visual Studio Enterprise 2019`. 
->   If you are using `Cross-platform Startup SPA Solution`, you will need to decide on your target environment (see [Wiki](https://github.com/nus-cs3203/project-wiki/wiki/Version-Control-System-and-Code-Repository)).
->   Then, please enter the appropriate information below, giving details on the full toolchain (ie. OS, cmake and make versions.)
-> 2. The `.gitigore` is already pre-configured, note that the included libraries files (ie. `Team00/Code00/lib`) must accompany this repository and not to be removed from the repository.
-> 3. Put your test cases inside the correct directory (ie. `Team00/Tests00/`) not inside the scratch test directory (ie. `Team00/Code00/tests/`). The `.gitignore` is configured to prevent this.
-> 4. If you encounter build issues, please visit the respective FAQ *before* reaching out for help:
->     1. [Windows-Startup-SPA-Solution FAQ](https://github.com/nus-cs3203/project-wiki/wiki/Windows-Startup-SPA-Solution#faq)
->     2. [Cross-platform-Startup-SPA-Solution FAQ](https://github.com/nus-cs3203/project-wiki/wiki/Cross-platform-Startup-SPA-Solution#faq)
-> 5. Avoid using removed/deprecated features in C++, make sure you use features that exist in C++17. It is not recommended to use an earlier version of C++, if you want to proceed, please specify the C++ version specifically in the build configuration.
-
+# Team 02
 ## Target Environment
 
 Item | Version
 -|-
 OS | Windows 10
-Toolchain | Microsoft Visual Studio Enterprise 2019 Version 16.11.0
+Toolchain | Windows Visual Studio (CMake Project)
 C++ Standard | C++17
 
 ### Additional Build Instructions
 
-No additional instructions required.
+Name of solution: autotester
+Path to executable produced: Team02/Code02/build_win/x86-Release/src/autotester/autotester
+
+1. Run and build using VS2019 in Release configuration.
+
+2. Open the given Team02 folder in VS2019. Visual Studio automatically generates the CMake cache and detects targets specified in `CMakeLists.txt`.
+
+3. Build All files in Visual Studio, with the x86-Release configuration.
+
+4. After the executable have been built, navigate to the `Team02/Code02/tests` directory and run the following command to run the autotester executable: `../build_win/x86-Release/src/autotester/autotester Sample_source.txt Sample_queries.txt out.xml`
+
+5. Similarly, in order to run our system tests, navigate to the `Team02/Tests02` directory and run the following command: `../Code02/build_win/x86-Release/src/autotester/autotester AmbiguousWhitespace_source.txt AmbiguousWhitespace_queries.txt AmbiguousWhitespace_out.xml`. Repeat for all files in the folder.
+
+Note: Our three SIMPLE programs that satisfy the system acceptance test case requirements are named `FunctionalTest1_source.txt`, `FunctionalTest2_source.txt`, and `FunctionalTest3_source.txt`.
 
 # Team Members
 
 Name | Mobile | Email | Development OS/Toolchain
 -:|:-:|:-|-|
-John Doe | 99887766 | john@doe.com | Windows 10/Visual Studio 2019
+Keith Low Jun | 90174454 | e0406245@u.nus.edu | Windows 10/Visual Studio 2019
+Lim En Sheng Merlin | 98314003 | e0407100@u.nus.edu | Windows 10/Visual Studio 2019
+Ng Choon Kang Warren | 90031727 | warren.ng@u.nus.edu | Windows 10/Visual Studio 2019
+Tang Guofeng | 86789700 | guofeng.tang@u.nus.edu | MacOS/CLion
+Tay Yee Ting Beatrice | 91383530 | e0325690@u.nus.edu | MacOS/CLion
+Wong Chi Shan | 97785582 | wongchishan@u.nus.edu | Windows 10/Visual Studio 2019

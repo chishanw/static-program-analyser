@@ -21,7 +21,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          cd Team00/Code00
+          cd Team02/Code02
           mkdir build
           cd build
           cmake -A Win32 ..
@@ -30,15 +30,15 @@ jobs:
           cmake --build . --target autotester --config ${{env.BUILD_TYPE}}
 
       - name: List Files in ${{env.BUILD_TYPE}}
-        working-directory: ./Team00/Code00/build/src/autotester/${{env.BUILD_TYPE}}/
+        working-directory: ./Team02/Code02/build/src/autotester/${{env.BUILD_TYPE}}/
         run: ls
 
       - name: Unit Test
-        working-directory: ./Team00/Code00/build/src/unit_testing/${{env.BUILD_TYPE}}/
+        working-directory: ./Team02/Code02/build/src/unit_testing/${{env.BUILD_TYPE}}/
         run: ./unit_testing.exe -d yes
 
       - name: Integration Test
-        working-directory: ./Team00/Code00/build/src/integration_testing/${{env.BUILD_TYPE}}/
+        working-directory: ./Team02/Code02/build/src/integration_testing/${{env.BUILD_TYPE}}/
         run: ./integration_testing.exe -d yes
 
       - name: System Tests
@@ -59,16 +59,16 @@ jobs:
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        working-directory: ./Team00/Code00
+        working-directory: ./Team02/Code02
         run: cmake -B build/ -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
         # Build your program with the given configuration
-        working-directory: ./Team00/Code00
+        working-directory: ./Team02/Code02
         run: cmake --build build/ --config ${{env.BUILD_TYPE}}
 
       - name: Unit & Integration Test
-        working-directory: ./Team00/Code00/build/src/
+        working-directory: ./Team02/Code02/build/src/
         run: |
           unit_testing/unit_testing -d yes
           integration_testing/integration_testing -d yes
@@ -86,8 +86,8 @@ jobs:
       - run: |
           cpplint \
           --filter=-legal/copyright,-build/header_guard,-build/namespaces,-runtime/int \
-          --exclude=Team00/Code00/lib/ \
-          --exclude=Team00/Code00/cmake-build-debug/ \
-          --exclude=Team00/Code00/src/autotester/ \
-          --exclude=Team00/Code00/src/autotester_gui/ \
+          --exclude=Team02/Code02/lib/ \
+          --exclude=Team02/Code02/cmake-build-debug/ \
+          --exclude=Team02/Code02/src/autotester/ \
+          --exclude=Team02/Code02/src/autotester_gui/ \
           --recursive .

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool DEBUG_MODE = true;  // TODO(submission): change this
+bool DEBUG_MODE = false;
 
 // =======================================
 //  debug-mode-only methods

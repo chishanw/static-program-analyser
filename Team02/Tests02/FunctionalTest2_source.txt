@@ -1,0 +1,24 @@
+procedure cryAboutModule {
+  daysLeft = 0;
+  thingsToDo = 5;
+  tearsShed = 0;
+
+  while ((daysLeft < 1) && (thingsToDo > 0)) {
+     tearsShed = tearsShed + 111;
+
+     if (tearsShed > 999) then {
+       print justDieLah;
+     } else {
+       print tearsShed;
+     }
+  }
+
+  if (modNotDone == 1) then {
+    sigh = sigh + 5;
+    okay = sigh + okay;
+  } else {
+    print yeSSesSSsSSSSs;
+  }
+  print tearsShed;
+  read sigh;
+}

@@ -1,0 +1,16 @@
+procedure LongProcedureNameWithMany123123123123WordsHelloGoodbyeHelloGoodbyeHelloHell0GoodbyeG00dbye1231231 {
+    if (( (!(x == 0)) && (hellu < helo) ) || (red > blue) ) then {
+        read red;
+        read blue;
+        print red;
+        print blue;
+    } else {
+        red = red + 1;
+        blue = hellu + newVar;
+    }
+    while (hellu > helo) {
+        hellu = hellu - 1;
+        helo = hellu + 1 - 2 * 3 - 8 + 23 - 58 + 20183018381903801893901830912830189032123123;
+    }
+    print hellu;
+}

@@ -1906,7 +1906,7 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   Synonym v = {DesignEntity::VARIABLE, "v"};
   vector<ConditionClause> conditionClauses = {};
 
-  // Test Filter Algo - Subset of 1 Synonym
+  // Test Filter Algo - Subset of 1 Synonym (Case 1)
   SECTION("Select a such that Parent(s1, a) pattern a ('x', 'w')") {
     SuchThatClause suchThatClause = {RelationshipType::PARENT,
                                      {ParamType::SYNONYM, "s1"},
@@ -1922,6 +1922,24 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
     SelectClause select = {a, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({3}));
+  }
+
+  // Test Filter Algo - Subset of 1 Synonym (Case 2)
+  SECTION("Select v such that UsesS(a, _) pattern a (v, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::SYNONYM, "a"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {v, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx}));
   }
 
   // Test Filter Algo - Subset of 2 Synonyms

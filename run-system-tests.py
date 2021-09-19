@@ -23,73 +23,75 @@ def main():
     min_time_taken = math.inf
     avg_time_taken = 0
 
-    autotester_path_mac = "Team00/Code00/build/src/autotester/autotester"
-    autotester_path_win = "Team00/Code00/build/src/autotester/Release/autotester"
+    autotester_path_mac = "Team02/Code02/build/src/autotester/autotester"
+    autotester_path_win = "Team02/Code02/build/src/autotester/Release/autotester"
 
     if args.win_mode:
         autotester_path = autotester_path_win
     else:
         autotester_path = autotester_path_mac
 
-    for folder_name in os.listdir("Team00/Tests00/"):
+    test_folder_dir = "Team02/Tests02/"
+    out_xml_dir = "Team02/Tests02/XmlFiles/"
 
-        source_dir = f"Team00/Tests00/{folder_name}/SourceFiles/"
-        query_dir = f"Team00/Tests00/{folder_name}/QueryFiles/"
-        out_xml_dir = f"Team00/Tests00/{folder_name}/XmlFiles/"
+    # make out directory
+    Path(out_xml_dir).mkdir(parents=True, exist_ok=True)
 
-        # make out directory
-        Path(out_xml_dir).mkdir(parents=True, exist_ok=True)
+    source_fns = []
+    for fn in os.listdir(test_folder_dir):
+        if fn[-len("_source.txt"):] == "_source.txt":
+            source_fns.append(fn)
 
-        for source_fn in os.listdir(source_dir):
+    for source_fn in source_fns:
 
-            source_fn_wo_extension = source_fn.split(".")[0]
+        source_fn_wo_suffix = source_fn[:-len("_source.txt")]
 
-            # match query files
-            query_fns = []
-            for query_fn in os.listdir(query_dir):
-                if query_fn.startswith(source_fn_wo_extension):
-                    query_fns.append(query_fn)
+        # match query files
+        query_fns = []
+        for fn in os.listdir(test_folder_dir):
+            if fn != source_fn and fn.startswith(source_fn_wo_suffix):
+                query_fns.append(fn)
 
-            for query_fn in query_fns:
-                out_xml_fn = query_fn.split(".")[0] + "Out.xml"
+        for query_fn in query_fns:
+            out_xml_fn = query_fn.split(".")[0] + "_out.xml"
 
-                source_path = f'{source_dir}{source_fn}'
-                query_path = f'{query_dir}{query_fn}'
-                xml_path = f'{out_xml_dir}{out_xml_fn}'
+            source_path = f'{test_folder_dir}{source_fn}'
+            query_path = f'{test_folder_dir}{query_fn}'
+            xml_path = f'{out_xml_dir}{out_xml_fn}'
 
-                command = [autotester_path,
-                           source_path, query_path, xml_path]
+            command = [autotester_path,
+                       source_path, query_path, xml_path]
 
-                print(f"[INFO] Query file: {query_path}")
+            print(f"[INFO] Query file: {query_path}")
 
-                output = subprocess.run(command, capture_output=True)
+            output = subprocess.run(command, capture_output=True)
 
-                # if autotester failed
-                if output.returncode:
-                    print(f"[ERROR][Autotester] Program quit unexpectedly")
-                    print(f"return code: {output.returncode}")
-                    print(f"autotester output:")
-                    print(output.stdout.decode())
-                    ci_failed = True
-                    continue
+            # if autotester failed
+            if output.returncode:
+                print(f"[ERROR][Autotester] Program quit unexpectedly")
+                print(f"return code: {output.returncode}")
+                print(f"autotester output:")
+                print(output.stdout.decode())
+                ci_failed = True
+                continue
 
-                # parse xml file only when autotester runs without error
-                try:
-                    with open(f'{out_xml_dir}{out_xml_fn}', 'r') as xml_file:
-                        xml_file_data = xml_file.read().replace('\n', '')
-                        this_failed, this_number_queries, this_total_time_taken, this_max_time_taken, this_min_time_taken = parse_xml_and_print_stat(
-                            xml_file_data, verbose=args.verbose)
-                except Exception as e:
-                    print("[ERROR][ParseXML] Failed to parse xml file")
-                    print(e)
+            # parse xml file only when autotester runs without error
+            try:
+                with open(f'{out_xml_dir}{out_xml_fn}', 'r') as xml_file:
+                    xml_file_data = xml_file.read().replace('\n', '')
+                    this_failed, this_number_queries, this_total_time_taken, this_max_time_taken, this_min_time_taken = parse_xml_and_print_stat(
+                        xml_file_data, verbose=args.verbose)
+            except Exception as e:
+                print("[ERROR][ParseXML] Failed to parse xml file")
+                print(e)
 
-                if this_failed:
-                    ci_failed = True
+            if this_failed:
+                ci_failed = True
 
-                number_queries += this_number_queries
-                total_time_taken += this_total_time_taken
-                max_time_taken = max(max_time_taken, this_max_time_taken)
-                min_time_taken = min(min_time_taken, this_min_time_taken)
+            number_queries += this_number_queries
+            total_time_taken += this_total_time_taken
+            max_time_taken = max(max_time_taken, this_max_time_taken)
+            min_time_taken = min(min_time_taken, this_min_time_taken)
 
     if number_queries:
         avg_time_taken = total_time_taken / number_queries

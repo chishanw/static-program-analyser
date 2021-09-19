@@ -1,0 +1,315 @@
+1 - Return all statements
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+5000
+2 - Return all reads
+read r;
+Select r
+2, 3
+5000
+3 - Return all prints
+print pn;
+Select pn
+4, 5, 11
+5000
+4 - Return all whiles
+while w;
+Select w
+8
+5000
+5 - Return all ifs
+if i;
+Select i
+1
+5000
+6 - Return all assignments
+assign a;
+Select a
+6, 7, 9, 10
+5000
+7 - Return all variables
+variable v;
+Select v
+x, hellu, helo, red, blue, newVar
+5000
+8 - Return all constants
+constant c;
+Select c
+0, 1, 2, 3, 8, 23, 58, 20183018381903801893901830912830189032123123
+5000
+9 - Return all procedures
+procedure p;
+Select p
+LongProcedureNameWithMany123123123123WordsHelloGoodbyeHelloGoodbyeHelloHell0GoodbyeG00dbye1231231
+5000
+10 - Follows test, integer and integer
+stmt s;
+Select s such that Follows(1, 5)
+none
+5000
+11 - Follows test, integer and stmt
+stmt s;
+Select s such that Follows(1, s)
+8
+5000
+12 - Follows test, stmt and stmt
+stmt s1, s2;
+Select s1 such that Follows(s1, s2)
+1, 2, 3, 4, 6, 8, 9
+5000
+13 - Follows test, wildcard and stmt
+stmt s;
+Select s such that Follows(_, s)
+3, 4, 5, 7, 8, 10, 11
+5000
+14 - Invalid Follows test, procedure and variable
+procedure p; variable v;
+Select p such that Follows(p, v)
+none
+5000
+15 - FollowsT test, integer and integer
+stmt s;
+Select s such that Follows*(2, 5)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+5000
+16 - FollowsT test, integer and stmt
+stmt s;
+Select s such that Follows*(1, s)
+8, 11
+5000
+17 - FollowsT test, read and print
+read r; print p;
+Select r such that Follows*(r, p)
+2, 3
+5000
+18 - FollowsT test, while and wildcard
+while w;
+Select w such that Follows*(w, _)
+8
+5000
+19 - Invalid FollowsT test, procedure and variable
+procedure p; variable v;
+Select p such that Follows*(p, v)
+none
+5000
+20 - Parent test, integer and integer
+assign a;
+Select a such that Parent(8, 10)
+6, 7, 9, 10
+5000
+21 - Parent test, integer and stmt
+stmt s;
+Select s such that Parent(1, s)
+2, 3, 4, 5, 6, 7
+5000
+22 - Parent test, if and assign
+assign a; if ifs;
+Select a such that Parent(ifs, a)
+6, 7
+5000
+23 - Parent test, wildcard and stmt
+stmt s;
+Select s such that Parent(_, s)
+2, 3, 4, 5, 6, 7, 9, 10
+5000
+22 - Invalid Parent test, procedure and variable
+procedure p; variable v;
+Select p such that Parent(p, v)
+none
+5000
+24 - ParentT test, integer and integer
+assign a;
+Select a such that Parent*(1, 7)
+6, 7, 9, 10
+5000
+25 - ParentT test, integer and assign
+assign a;
+Select a such that Parent*(8, a)
+9, 10
+5000
+26 - ParentT test, while and stmt
+while crazyWhileSyyyyn0nym; stmt stmt;
+Select stmt such that Parent*(crazyWhileSyyyyn0nym, stmt)
+9, 10
+5000
+27 - ParentT test, wildcard and wildcard
+stmt s;
+Select s such that Parent*(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+5000
+28 - Invalid ParentT test, procedure and wildcard
+procedure p;
+Select p such that Parent*(p, _)
+none
+5000
+29 - UsesS test, integer and literal value
+if if;
+Select if such that Uses(4, "red")
+1
+5000
+30 - UsesS test, while and literal value
+while while;
+Select while such that Uses(while, "hellu")
+8
+5000
+31 - UsesS test, if and variable
+if if; variable varS123;
+Select varS123 such that Uses(if, varS123)
+x, hellu, helo, red, blue, newVar
+5000
+32 - UsesS test, print and wildcard
+print p;
+Select p such that Uses(p, _)
+4, 5, 11
+5000
+33 - Invalid UsesS test, read and wildcard
+read r;
+Select r such that Uses(r, _)
+none
+5000
+34 - Invalid UsesS test, call and wildcard
+call c;
+Select c such that Uses(c, _)
+none
+5000
+35 - Invalid UsesS test, wildcard and wildcard
+read r;
+Select r such that Uses(_, _)
+none
+5000
+36 - Invalid UsesP test, procedure and wildcard
+procedure p;
+Select p such that Uses(p, _)
+none
+5000
+37 - ModifiesS test, integer and literal value
+if if;
+Select if such that Modifies(3, "blue")
+1
+5000
+38 - ModifiesS test, while and literal value
+while while;
+Select while such that Modifies(while, "hellu")
+8
+5000
+39 - ModifiesS test, if and variable
+if if; variable varS123;
+Select varS123 such that Modifies(if, varS123)
+red, blue
+5000
+40 - ModifiesS test, read and wildcard
+read r;
+Select r such that Modifies(r, _)
+2, 3
+5000
+41 - Invalid ModifiesS test, print and wildcard
+print p;
+Select p such that Modifies(p, _)
+none
+5000
+42 - Invalid ModifiesS test, call and wildcard
+call c;
+Select c such that Modifies(c, _)
+none
+5000
+43 - Invalid ModifiesS test, wildcard and wildcard
+stmt s;
+Select s such that Modifies(_, _)
+none
+5000
+44 - Invalid ModifiesP test, procedure and wildcard
+procedure p;
+Select p such that Modifies(p, _)
+none
+5000
+45 - Pattern test, literal name and literal integer
+assign a;
+Select a pattern a("helo", _"58"_)
+10
+5000
+46 - Pattern test, literal name and literal integer 2
+assign a;
+Select a pattern a("helo", _"918230192830918239008123190238012830182903128"_)
+none
+5000
+47 - Pattern test, literal name and literal name
+assign a;
+Select a pattern a("helo", _"hellu"_)
+10
+5000
+48 - Pattern test, variable and literal name
+assign a; variable v;
+Select a pattern a(v, _"hellu"_)
+7, 9, 10
+5000
+49 - Pattern test, variable and wildcard
+assign ass1GN; variable v;
+Select v pattern ass1GN(v, _)
+red, blue, hellu, helo
+5000
+50 - Pattern test, wildcard and wildcard
+assign a;
+Select a pattern a(_, _)
+6, 7, 9, 10
+5000
+51 - Invalid pattern test, variable and variable
+assign a; variable v1, v2;
+Select a pattern(v1, v2)
+none
+5000
+52 - Invalid pattern test, variable and exact match
+assign a; variable v1;
+Select a pattern(v1, "red")
+none
+5000
+53 - Multiclause, Follows and pattern clause
+assign a1, a2;
+Select a1 such that Follows(a1, a2) pattern a2(_, _"hellu"_)
+6, 9
+5000
+54 - Multiclause, FollowsT and pattern clause
+assign a; stmt s;
+Select s such that Follows*(1, a) pattern a(_, _)
+none
+5000
+55 - Multiclause, Parent and pattern clause
+assign a; stmt s;
+Select s such that Parent(s, a) pattern a(_, _"58"_)
+8
+5000
+56 - Multiclause, ParentT and pattern clause
+assign a;
+Select a such that Parent*(_, a) pattern a("hellu", _)
+9
+5000
+57 - Multiclause, UsesS and pattern clause
+variable v; assign a;
+Select v such that Uses(a, v) pattern a(v, _)
+hellu, red
+5000
+58 - Multiclause, UsesS and pattern clause 2
+variable v; assign a; stmt s;
+Select v such that Uses(a, _) pattern a(v, _)
+red, blue, hellu, helo
+5000
+59 - Multiclause, ModifiesS and pattern clause
+variable v; assign a; stmt s;
+Select v such that Modifies(s, v) pattern a(v, _)
+red, blue, hellu, helo
+5000
+60 - Multiclause, ModifiesS and pattern clause 2
+variable v; assign a;
+Select v such that Modifies(a, "helo") pattern a(v, _)
+helo
+5000
+61 - Multiclause, Unrelated FollowsT and pattern clause
+assign a;
+Select a such that Follows*(1, 8) pattern a(_, _)
+6, 7, 9, 10
+5000
+62 - Multiclause, Unrelated FollowsT and pattern clause
+assign a;
+Select a such that Follows*(1, 2) pattern a(_, _)
+none
+5000

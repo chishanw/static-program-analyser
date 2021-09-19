@@ -1,0 +1,155 @@
+1 - Follows test 1
+stmt s;
+Select s such that Follows(1, 2)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+5000
+2 - Follows test 2
+stmt s;
+Select s such that Follows(s, 4)
+3
+5000
+3 - Follows test 3
+print pr;
+Select pr such that Follows(pr, 4)
+none
+5000
+4 - Follows* test 1
+stmt s;
+Select s such that Follows*(1, s)
+2, 3, 4, 9, 13, 14
+5000
+5 - Follows* test 2
+assign a;
+Select a such that Follows*(1, a)
+2, 3
+5000
+6 - Follows* test 3
+stmt s1, s2;
+Select s1 such that Follows*(s1, s2)
+1, 2, 3, 4, 5, 9, 10, 13
+5000
+7 - Parent test 1
+stmt s;
+Select s such that Parent(s, _)
+4, 6, 9
+5000
+8 - Parent test 2
+while w;
+Select w such that Parent(w, _)
+4
+5000
+9 - Parent test 3
+if ifs;
+Select ifs such that Parent(ifs, _)
+6, 9
+5000
+10 - Parent* test 1
+print pr;
+Select pr such that Parent*(4, pr)
+7, 8
+5000
+11 - Parent* test 2
+stmt s;
+Select s such that Parent*(6, 7)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+5000
+12 - Parent* test 3
+assign a;
+Select a such that Parent*(_, a)
+5, 10, 11
+5000
+13 - UsesS test 1
+stmt s;
+Select s such that Uses(s, _)
+4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+5000
+14 - UsesS test 2
+stmt s; variable v;
+Select v such that Uses(s, v)
+daysLeft, thingsToDo, tearsShed, justDieLah, modNotDone, sigh, okay, yeSSesSSsSSSSs
+5000
+15 - UsesS test 3
+variable v;
+Select v such that Uses(4, v)
+daysLeft, thingsToDo, tearsShed, justDieLah
+5000
+16 - ModifiesS test 1
+stmt s;
+Select s such that Modifies(s, _)
+1, 2, 3, 4, 5, 9, 10, 11, 14
+5000
+17 - ModifiesS test 2
+assign a; variable v;
+Select v such that Modifies(a, v)
+daysLeft, thingsToDo, tearsShed, sigh, okay
+5000
+18 - ModifiesS test 3
+stmt s;
+Select s such that Modifies(s, "sigh")
+9, 10, 14
+5000
+19 - Pattern test 1
+assign a;
+Select a pattern a(_, _"111"_)
+5
+5000
+20 - Pattern test 2
+assign a; variable v;
+Select v pattern a(v, _"5"_)
+thingsToDo, sigh
+5000
+21 - Pattern test 3
+assign a; variable v;
+Select v pattern a(v, _"okay"_)
+okay
+5000
+22 - Follows + Pattern 1
+assign a;
+Select a such that Follows(a, 11) pattern a(_, _"5"_)
+10
+5000
+23 - Follows + Pattern 2
+assign a; variable v;
+Select v such that Follows(_, _) pattern a(v, _"okay"_)
+okay
+5000
+24 - Follows* + Pattern
+assign a;
+Select a such that Follows*(1, 2) pattern a(_, _"sigh"_)
+10, 11
+5000
+25 - Parent + Pattern 1
+assign a; stmt s;
+Select s such that Parent(s, 5) pattern a(_, _"okay"_)
+4
+5000
+26 - Parent + Pattern 2
+assign a;
+Select a such that Parent(_, _) pattern a(_, _"5"_)
+2, 10
+5000
+27 - Parent* + Pattern
+assign a;
+Select a such that Parent*(4, a) pattern a(_, _"123"_)
+none
+5000
+28 - UsesS + Pattern 1
+assign a;
+Select a such that Uses(a, "tearsShed") pattern a(_, _"111"_)
+5
+5000
+29 - UsesS + Pattern 2
+stmt s; variable v; assign a;
+Select v such that Uses(s, v) pattern a(v, _"111"_)
+tearsShed
+5000
+30 - ModifiesS + Pattern 2
+read rd; assign a;
+Select rd such that Modifies(rd, "sigh") pattern a(_, _"111"_)
+14
+5000
+31 - ModifiesS + Pattern 2
+stmt s; assign a;
+Select s such that Modifies(s, _) pattern a(_, _"nope"_)
+none
+5000
