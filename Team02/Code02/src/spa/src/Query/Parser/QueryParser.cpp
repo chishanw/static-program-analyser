@@ -17,24 +17,29 @@ const unordered_map<string, DesignEntity> keywordToDesignEntity = {
     {"stmt", DesignEntity::STATEMENT},
     {"read", DesignEntity::READ},
     {"print", DesignEntity::PRINT},
+    {"call", DesignEntity::CALL},
     {"while", DesignEntity::WHILE},
     {"if", DesignEntity::IF},
     {"assign", DesignEntity::ASSIGN},
     {"variable", DesignEntity::VARIABLE},
     {"constant", DesignEntity::CONSTANT},
-    {"procedure", DesignEntity::PROCEDURE}};
+    {"procedure", DesignEntity::PROCEDURE},
+    {"prog_line", DesignEntity::PROG_LINE}};
 
 const set<DesignEntity> validFollowsParentParamEntities = {
-    DesignEntity::STATEMENT, DesignEntity::READ, DesignEntity::PRINT,
-    DesignEntity::WHILE,     DesignEntity::IF,   DesignEntity::ASSIGN};
+    DesignEntity::STATEMENT, DesignEntity::READ,     DesignEntity::PRINT,
+    DesignEntity::WHILE,     DesignEntity::IF,       DesignEntity::ASSIGN,
+    DesignEntity::CALL,      DesignEntity::PROG_LINE};
 
 const set<DesignEntity> validUsesStmtParamEntities = {
-    DesignEntity::PRINT, DesignEntity::STATEMENT, DesignEntity::ASSIGN,
-    DesignEntity::IF, DesignEntity::WHILE};
+    DesignEntity::PRINT,    DesignEntity::STATEMENT, DesignEntity::ASSIGN,
+    DesignEntity::IF,       DesignEntity::WHILE,     DesignEntity::CALL,
+    DesignEntity::PROG_LINE};
 
 const set<DesignEntity> validModifiesStmtParamEntities = {
-    DesignEntity::READ, DesignEntity::STATEMENT, DesignEntity::ASSIGN,
-    DesignEntity::IF, DesignEntity::WHILE};
+    DesignEntity::READ,     DesignEntity::STATEMENT, DesignEntity::ASSIGN,
+    DesignEntity::IF,       DesignEntity::WHILE,     DesignEntity::CALL,
+    DesignEntity::PROG_LINE};
 
 // ============ Helpers (Token) ============
 QueryToken QueryParser::consumeToken() {
@@ -206,49 +211,52 @@ SelectClause QueryParser::parseSelectClause() {
   // Parse clauses
   vector<ConditionClause> conditionClauses;
 
-  if (hasNextToken()) {
-    string clauseKeyword = getKeyword();
+  while (hasNextToken()) {
+    optional<QueryToken> nextToken = peekToken();
+    string keyword = nextToken.value().value;
 
-    if (clauseKeyword == "such") {
-      string nextKeyword = getExactKeyword("that");
-      ConditionClause suchThatClause = parseSuchThatClause();
-      conditionClauses.push_back(suchThatClause);
+    if (keyword == "such") {
+      parseSuchThatClause(conditionClauses);
 
-      // if there is a pattern clause after a such that clause
-      if (hasNextToken()) {
-        getExactKeyword("pattern");
-        ConditionClause patternClause = parsePatternClause();
-        conditionClauses.push_back(patternClause);
-      }
-
-    } else if (clauseKeyword == "pattern") {
-      ConditionClause patternClause = parsePatternClause();
-      conditionClauses.push_back(patternClause);
+    } else if (keyword == "pattern") {
+      parsePatternClause(conditionClauses);
 
     } else {
-      throw runtime_error(INVALID_ST_P_NUM_MSG);
+      throw runtime_error(INVALID_ST_P_KEYWORD_MSG);
     }
-  }
-  if (hasNextToken()) {
-    throw runtime_error(INVALID_ST_P_NUM_MSG);
   }
 
   return {selectSynonym, conditionClauses};
 }
 
-ConditionClause QueryParser::parseSuchThatClause() {
-  string relationship = getKeyword();
-  if (keywordToFollowsParentType.find(relationship) !=
-      keywordToFollowsParentType.end()) {
-    return parseFollowsParentClause(relationship);
+void QueryParser::parseSuchThatClause(vector<ConditionClause>& results) {
+  getExactKeyword("such");
+  getExactKeyword("that");
+
+  bool hasNextRelationship = true;
+  while (hasNextRelationship) {
+    string relationship = getKeyword();
+
+    if (keywordToFollowsParentType.find(relationship) !=
+        keywordToFollowsParentType.end()) {
+      results.push_back(parseFollowsParentClause(relationship));
+
+    } else if (relationship == "Uses") {
+      results.push_back(parseUsesClause());
+
+    } else if (relationship == "Modifies") {
+      results.push_back(parseModifiesClause());
+
+    } else {
+      throw runtime_error(INVALID_ST_RELATIONSHIP_MSG);
+    }
+
+    // checks if there are multiple relationships connected by 'and'
+    hasNextRelationship = hasNextToken() && peekToken().value().value == "and";
+    if (hasNextRelationship) {
+      getExactKeyword("and");
+    }
   }
-  if (relationship == "Uses") {
-    return parseUsesClause();
-  }
-  if (relationship == "Modifies") {
-    return parseModifiesClause();
-  }
-  throw runtime_error(INVALID_ST_RELATIONSHIP_MSG);
 }
 
 query::ConditionClause QueryParser::parseFollowsParentClause(
@@ -301,20 +309,25 @@ query::ConditionClause QueryParser::parseUsesClause() {
       throw runtime_error(INVALID_ST_USES_MODIFIES_WILDCARD_MSG);
     }
     case ParamType::NAME_LITERAL: {
-      throw runtime_error(INVALID_ST_USESP_MODIFIESP_MSG);
+      type = RelationshipType::USES_P;
+      break;
     }
     case ParamType::INTEGER_LITERAL: {
       type = RelationshipType::USES_S;
       break;
     }
     case ParamType::SYNONYM: {
-      type = RelationshipType::USES_S;
       DesignEntity entity = getEntityFromSynonymName(left.value);
-      if (validUsesStmtParamEntities.find(entity) ==
-          validUsesStmtParamEntities.end()) {
-        throw runtime_error(INVALID_ST_USES_SYNONYM_ENTITY_MSG);
+      if (entity == DesignEntity::PROCEDURE) {
+        type = RelationshipType::USES_P;
+        break;
       }
-      break;
+      if (validUsesStmtParamEntities.find(entity) !=
+          validUsesStmtParamEntities.end()) {
+        type = RelationshipType::USES_S;
+        break;
+      }
+      throw runtime_error(INVALID_ST_USES_SYNONYM_ENTITY_MSG);
     }
     default:
       throw runtime_error(INVALID_PARAM_TYPE_MSG);
@@ -348,20 +361,25 @@ query::ConditionClause QueryParser::parseModifiesClause() {
       throw runtime_error(INVALID_ST_USES_MODIFIES_WILDCARD_MSG);
     }
     case ParamType::NAME_LITERAL: {
-      throw runtime_error(INVALID_ST_USESP_MODIFIESP_MSG);
+      type = RelationshipType::MODIFIES_P;
+      break;
     }
     case ParamType::INTEGER_LITERAL: {
       type = RelationshipType::MODIFIES_S;
       break;
     }
     case ParamType::SYNONYM: {
-      type = RelationshipType::MODIFIES_S;
       DesignEntity entity = getEntityFromSynonymName(left.value);
-      if (validModifiesStmtParamEntities.find(entity) ==
-          validModifiesStmtParamEntities.end()) {
-        throw runtime_error(INVALID_ST_MODIFIES_SYNONYM_ENTITY_MSG);
+      if (entity == DesignEntity::PROCEDURE) {
+        type = RelationshipType::MODIFIES_P;
+        break;
       }
-      break;
+      if (validModifiesStmtParamEntities.find(entity) !=
+          validModifiesStmtParamEntities.end()) {
+        type = RelationshipType::MODIFIES_S;
+        break;
+      }
+      throw runtime_error(INVALID_ST_MODIFIES_SYNONYM_ENTITY_MSG);
     }
     default:
       throw runtime_error(INVALID_PARAM_TYPE_MSG);
@@ -381,31 +399,42 @@ query::ConditionClause QueryParser::parseModifiesClause() {
   return {stClause, {}, ConditionClauseType::SUCH_THAT};
 }
 
-query::ConditionClause QueryParser::parsePatternClause() {
-  string synonymName = getName();
-  DesignEntity entity = getEntityFromSynonymName(synonymName);
-  getExactCharSymbol('(');
-  Param left = getRefParam();
-  getExactCharSymbol(',');
-  PatternExpr patternExpr = parsePatternExpr();
-  getExactCharSymbol(')');
+void QueryParser::parsePatternClause(vector<ConditionClause>& results) {
+  getExactKeyword("pattern");
 
-  // validate that synonym is assignment
-  if (entity != DesignEntity::ASSIGN) {
-    throw runtime_error(INVALID_SYNONYM_NON_ASSIGN_MSG);
-  }
-  // validate left param
-  if (left.type == ParamType::INTEGER_LITERAL) {
-    throw runtime_error(INVALID_ENT_REF_MSG);
-  }
-  if (left.type == ParamType::SYNONYM &&
-      getEntityFromSynonymName(left.value) != DesignEntity::VARIABLE) {
-    throw runtime_error(INVALID_SYNONYM_NON_VARIABLE_MSG);
-  }
+  bool hasNextPattern = true;
+  while (hasNextPattern) {
+    string synonymName = getName();
+    DesignEntity entity = getEntityFromSynonymName(synonymName);
+    getExactCharSymbol('(');
+    Param left = getRefParam();
+    getExactCharSymbol(',');
+    PatternExpr patternExpr = parsePatternExpr();
+    getExactCharSymbol(')');
 
-  Synonym patternSynonym = {entity, synonymName};
-  PatternClause patternClause = {patternSynonym, left, patternExpr};
-  return {{}, patternClause, ConditionClauseType::PATTERN};
+    // validate that synonym is assignment
+    if (entity != DesignEntity::ASSIGN) {
+      throw runtime_error(INVALID_SYNONYM_NON_ASSIGN_MSG);
+    }
+    // validate left param
+    if (left.type == ParamType::INTEGER_LITERAL) {
+      throw runtime_error(INVALID_ENT_REF_MSG);
+    }
+    if (left.type == ParamType::SYNONYM &&
+        getEntityFromSynonymName(left.value) != DesignEntity::VARIABLE) {
+      throw runtime_error(INVALID_SYNONYM_NON_VARIABLE_MSG);
+    }
+
+    Synonym patternSynonym = {entity, synonymName};
+    PatternClause patternClause = {patternSynonym, left, patternExpr};
+    results.push_back({{}, patternClause, ConditionClauseType::PATTERN});
+
+    // checks if there are multiple patterns connected by 'and'
+    hasNextPattern = hasNextToken() && peekToken().value().value == "and";
+    if (hasNextPattern) {
+      getExactKeyword("and");
+    }
+  }
 }
 
 query::PatternExpr QueryParser::parsePatternExpr() {

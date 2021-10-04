@@ -178,11 +178,6 @@ read r;
 Select r such that Uses(_, _)
 none
 5000
-36 - Invalid UsesP test, procedure and wildcard
-procedure p;
-Select p such that Uses(p, _)
-none
-5000
 37 - ModifiesS test, integer and literal value
 if if;
 Select if such that Modifies(3, "blue")
@@ -216,11 +211,6 @@ none
 43 - Invalid ModifiesS test, wildcard and wildcard
 stmt s;
 Select s such that Modifies(_, _)
-none
-5000
-44 - Invalid ModifiesP test, procedure and wildcard
-procedure p;
-Select p such that Modifies(p, _)
 none
 5000
 45 - Pattern test, literal name and literal integer

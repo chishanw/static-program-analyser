@@ -344,7 +344,7 @@ TEST_CASE(
     REQUIRE(get<1>(actual) == get<1>(expected));
   }
 
-  SECTION("Valid Follows(a, a))") {
+  SECTION("Valid Follows(a, a1))") {
     string validQuery =
         "assign a, a1;"
         "Select a such that Follows(a, a1)";
@@ -360,6 +360,60 @@ TEST_CASE(
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "a",
                                      query::ParamType::SYNONYM, "a1");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Follows(c, c1))") {
+    string validQuery =
+        "call c, c1;"
+        "Select c such that Follows(c, c1)";
+
+    // expected
+    SynonymMap map = {
+        {"c", query::DesignEntity::CALL},
+        {"c1", query::DesignEntity::CALL},
+        };
+    query::Synonym selectSynonym = {query::DesignEntity::CALL, "c"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::SYNONYM, "c",
+                                     query::ParamType::SYNONYM, "c1");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Follows(n, n1))") {
+    string validQuery =
+        "prog_line n, n1;"
+        "Select n such that Follows(n, n1)";
+
+    // expected
+    SynonymMap map = {
+        {"n", query::DesignEntity::PROG_LINE},
+        {"n1", query::DesignEntity::PROG_LINE},
+        };
+    query::Synonym selectSynonym = {query::DesignEntity::PROG_LINE, "n"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::SYNONYM, "n",
+                                     query::ParamType::SYNONYM, "n1");
 
     tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
 

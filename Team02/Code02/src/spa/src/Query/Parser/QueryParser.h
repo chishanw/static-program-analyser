@@ -57,9 +57,8 @@ class QueryParser {
   inline static const std::string INVALID_PARAM_TYPE_MSG =
       "QueryParser expects a valid param type.";
 
-  inline static const std::string INVALID_ST_P_NUM_MSG =
-      "QueryParser expects 0 or 1 number of such that clauses then 0 or 1 "
-      "number of pattern clauses.";
+  inline static const std::string INVALID_ST_P_KEYWORD_MSG =
+      "QueryParser expects a such that or pattern keyword.";
   inline static const std::string INVALID_ST_RELATIONSHIP_MSG =
       "QueryParser expects a valid such-that relationship.";
   inline static const std::string INVALID_ST_USES_MODIFIES_WILDCARD_MSG =
@@ -67,12 +66,12 @@ class QueryParser {
   inline static const std::string INVALID_ST_USES_MODIFIES_INTEGER_MSG =
       "QueryParser expects SYNONYM, WILDCARD, or IDENT param type but got "
       "INTEGER.";
-  inline static const std::string INVALID_ST_USESP_MODIFIESP_MSG =
-      "QueryParser expects UsesS or ModifiesS but received UsesP or ModifiesP.";
   inline static const std::string INVALID_ST_USES_SYNONYM_ENTITY_MSG =
-      "QueryParser expects a print, statement, assign, if or while synonym.";
+      "QueryParser expects a print, statement, call, assign, if, while, "
+      "procedure or prog_line synonym.";
   inline static const std::string INVALID_ST_MODIFIES_SYNONYM_ENTITY_MSG =
-      "QueryParser expects a read, statement, assign, if or while synonym.";
+      "QueryParser expects a read, statement, call, assign, if, while, "
+      "procedure or prog_line synonym.";
 
   inline static const std::string INVALID_P_EXPR_CHARA_MSG =
       "QueryParser found an invalid character in the pattern expr.";
@@ -101,10 +100,12 @@ class QueryParser {
 
   SynonymMap parseSynonyms();
   query::SelectClause parseSelectClause();
-  query::ConditionClause parseSuchThatClause();
+
+  void parseSuchThatClause(std::vector<query::ConditionClause>&);
   query::ConditionClause parseFollowsParentClause(const std::string&);
   query::ConditionClause parseUsesClause();
   query::ConditionClause parseModifiesClause();
-  query::ConditionClause parsePatternClause();
+
+  void parsePatternClause(std::vector<query::ConditionClause>&);
   query::PatternExpr parsePatternExpr();
 };

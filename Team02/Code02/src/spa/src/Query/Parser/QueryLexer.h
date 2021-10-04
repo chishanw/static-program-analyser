@@ -29,7 +29,7 @@ class QueryLexer {
   bool isLetter(char);
   bool isDigit(char);
   bool isAllowedSymbol(char);
-  bool isStarSymbol(char);
+  bool isAllowedKeywordSymbol(char);
   char consumeChar();
   std::optional<char> peekChar();
   void consumeWhitespace();

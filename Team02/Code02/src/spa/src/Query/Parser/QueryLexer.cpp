@@ -20,7 +20,9 @@ bool QueryLexer::isAllowedSymbol(char c) {
   return ALLOWED_SYMBOL_SET.find(c) != ALLOWED_SYMBOL_SET.end();
 }
 
-bool QueryLexer::isStarSymbol(char c) { return c == '*'; }
+bool QueryLexer::isAllowedKeywordSymbol(char c) {
+  return c == '*' || c == '_';
+}
 
 void QueryLexer::consumeWhitespace() {
   optional<char> maybeNextChar = peekChar();
@@ -48,25 +50,29 @@ optional<char> QueryLexer::peekChar() {
 
 QueryToken QueryLexer::getNameOrKeyword() {
   string nameOrKeyword;
-  bool hasLetter = true;
-  while (hasLetter) {
-    char letter = consumeChar();
-    nameOrKeyword.push_back(letter);
+  // type is NAME_OR_KEYWORD if it passes NAME validation checks
+  // type is KEYWORD if it has * or _ symbol
+  TokenType type = TokenType::NAME_OR_KEYWORD;
 
-    optional<char> maybeNextChar = peekChar();
-    hasLetter = maybeNextChar.has_value() && (isLetter(maybeNextChar.value()) ||
-                                              isDigit(maybeNextChar.value()));
+  bool hasNextNameOrKeyword = true;
+  while (hasNextNameOrKeyword) {
+    char c = consumeChar();
+    if (isAllowedKeywordSymbol(c)) {
+      // if it is a symbol, it must be a KEYWORD
+      type = TokenType::KEYWORD;
+    }
+    nameOrKeyword.push_back(c);
+
+    // checks if the next character is a continuation of the NAME or KEYWORD
+    if (!peekChar().has_value()) {
+      hasNextNameOrKeyword = false;
+    } else {
+      char next = peekChar().value();
+      hasNextNameOrKeyword = isLetter(next) || isDigit(next)
+          || isAllowedKeywordSymbol(next);
+    }
   }
-
-  // Check if there is a keyword symbol like * at the end of a string
-  optional<char> nextChar = peekChar();
-  if (nextChar.has_value() && isStarSymbol(nextChar.value())) {
-    char symbol = consumeChar();
-    nameOrKeyword.push_back(symbol);
-    return {TokenType::KEYWORD, nameOrKeyword};
-  }
-
-  return {TokenType::NAME_OR_KEYWORD, nameOrKeyword};
+  return {type, nameOrKeyword};
 }
 
 QueryToken QueryLexer::getInteger() {

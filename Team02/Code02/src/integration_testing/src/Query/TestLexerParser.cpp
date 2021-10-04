@@ -41,8 +41,7 @@ TEST_CASE("Valid synonym declarations succeeds") {
   SECTION("Valid synonym declarations for all possible design entities") {
     string validQuery =
         "stmt s, s1, s2; read r; print pr; while w, w1; if ifs; assign a; "
-        "variable v; "
-        "constant c; procedure p;"
+        "variable v; constant c; procedure p; call ca; prog_line n;"
         "Select s";
 
     // expected
@@ -59,6 +58,8 @@ TEST_CASE("Valid synonym declarations succeeds") {
         {"v", query::DesignEntity::VARIABLE},
         {"c", query::DesignEntity::CONSTANT},
         {"p", query::DesignEntity::PROCEDURE},
+        {"ca", query::DesignEntity::CALL},
+        {"n", query::DesignEntity::PROG_LINE},
     };
     query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
     vector<query::ConditionClause> clauses;
@@ -74,15 +75,6 @@ TEST_CASE("Valid synonym declarations succeeds") {
 }
 
 TEST_CASE("Invalid synonym declarations throws") {
-  SECTION("Invalid call synonym throws") {
-    string invalidQuery =
-        "call c;"
-        "Select c";
-    // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SPECIFIC_KEYWORD_MSG);
-  }
-
   SECTION("Invalid design entity throws") {
     string invalidQuery =
         "stmtt s;"
@@ -241,7 +233,7 @@ TEST_CASE("Invalid keywords throws") {
         "Select s suchthat Parent(1, 2)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_P_NUM_MSG);
+                        QueryParser::INVALID_ST_P_KEYWORD_MSG);
   }
 
   SECTION("Invalid 'such' keyword with missing 'that'") {
@@ -259,12 +251,12 @@ TEST_CASE("Invalid keywords throws") {
         "Select s patterna(_, _)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_P_NUM_MSG);
+                        QueryParser::INVALID_ST_P_KEYWORD_MSG);
   }
 }
 
 // ========= Testing num and sequence of suchthat-cl and pattern-cl =========
-TEST_CASE("Valid queries with one such that clause and one pattern clause") {
+TEST_CASE("Valid queries with many such that/pattern clause") {
   SECTION("Valid such that Follows(1, 2) pattern a(_, _)") {
     string validQuery =
         "assign a;"
@@ -292,58 +284,153 @@ TEST_CASE("Valid queries with one such that clause and one pattern clause") {
     REQUIRE(get<0>(actual) == get<0>(expected));
     REQUIRE(get<1>(actual) == get<1>(expected));
   }
-}
 
-TEST_CASE(
-    "Invalid queries with invalid number of or sequence of such-that "
-    "/ pattern clause") {
-  SECTION("Invalid pattern a(_, _) such that Follows(1, 2)") {
-    string invalidQuery =
+  SECTION("Valid pattern a(_, _) such that Follows(1, 2)") {
+    string validQuery =
         "assign a;"
         "Select a pattern a(_, _) such that Follows(1, 2)";
 
+    // expected
+    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD, "_",
+                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::INTEGER_LITERAL, "1",
+                                     query::ParamType::INTEGER_LITERAL, "2");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_P_NUM_MSG);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 
-  SECTION("Invalid such that Follows(1, 2) such that Follows(2, 3)") {
-    string invalidQuery =
+  SECTION(
+      "Valid such that Follows(1, 2) such that Follows(2, 3) pattern a(_,_) "
+      "such that Follows*(a, 2)") {
+    string validQuery =
         "assign a;"
-        "Select a such that Follows(1, 2) such that Follows(2, 3))";
+        "Select a such that Follows(1, 2) such that Follows(2, 3) pattern "
+        "a(_,_) such that Follows*(a, 2)";
+
+    // expected
+    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::INTEGER_LITERAL, "1",
+                                     query::ParamType::INTEGER_LITERAL, "2");
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::INTEGER_LITERAL, "2",
+                                     query::ParamType::INTEGER_LITERAL, "3");
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD, "_",
+                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::FOLLOWS_T, query::ParamType::SYNONYM,
+        "a", query::ParamType::INTEGER_LITERAL, "2");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SPECIFIC_KEYWORD_MSG);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+}
+
+TEST_CASE("Valid queries with many clauses connected with and") {
+  SECTION("Valid such that Follows(1, 2) and Follows(2, 3)") {
+    string validQuery =
+        "assign a;"
+        "Select a such that Follows(1, 2) and Follows(2, 3)";
+
+    // expected
+    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::INTEGER_LITERAL, "1",
+                                     query::ParamType::INTEGER_LITERAL, "2");
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::INTEGER_LITERAL, "2",
+                                     query::ParamType::INTEGER_LITERAL, "3");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 
-  SECTION("Invalid such that Follows(1, 2) and Follows(2, 3)") {
-    string invalidQuery =
+  SECTION("Valid pattern a(_, _) and a(_, _\"x\"_)") {
+    string validQuery =
         "assign a;"
-        "Select a such that Follows(1, 2) and Follows(2, 3))";
+        "Select a pattern a(_, _) and a(_, _\"x\"_)";
+
+    // expected
+    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD, "_",
+                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD, "_",
+                                    query::MatchType::SUB_EXPRESSION, "x");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SPECIFIC_KEYWORD_MSG);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 
-  SECTION("Invalid pattern a(_, _) pattern a(_, \"x\")") {
-    string invalidQuery =
+  SECTION("Valid pattern a(_, _) and a(_, _\"x\"_) such that Follows(2, 3)") {
+    string validQuery =
         "assign a;"
-        "Select a pattern a(_, _) pattern a(_, \"x\")";
+        "Select a pattern a(_, _) and a(_, _\"x\"_) such that Follows(2, 3)";
+
+    // expected
+    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD, "_",
+                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD, "_",
+                                    query::MatchType::SUB_EXPRESSION, "x");
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+                                     query::ParamType::INTEGER_LITERAL, "2",
+                                     query::ParamType::INTEGER_LITERAL, "3");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_P_NUM_MSG);
-  }
-
-  SECTION("Invalid pattern a(_, _) and pattern a(_, \"x\")") {
-    string invalidQuery =
-        "assign a;"
-        "Select a pattern a(_, _) and pattern a(_, \"x\")";
-
-    // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_P_NUM_MSG);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 }

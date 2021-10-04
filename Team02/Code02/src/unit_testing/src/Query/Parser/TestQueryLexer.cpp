@@ -13,7 +13,7 @@ using namespace std;
 TEST_CASE("Query with valid synonym types are tokenized successfully") {
   string validQuery =
       "stmt s, s1, s2; read r; print p; while w; if i; assign a; variable v; "
-      "constant c; procedure p;"
+      "constant c; procedure p; call ca; prog_line n;"
       "Select s such that Follows(1, 2)";
 
   vector<qpp::QueryToken> expectedTokens = {
@@ -47,6 +47,12 @@ TEST_CASE("Query with valid synonym types are tokenized successfully") {
       {qpp::TokenType::CHAR_SYMBOL, ";"},
       {qpp::TokenType::NAME_OR_KEYWORD, "procedure"},
       {qpp::TokenType::NAME_OR_KEYWORD, "p"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "call"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "ca"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+      {qpp::TokenType::KEYWORD, "prog_line"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n"},
       {qpp::TokenType::CHAR_SYMBOL, ";"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
@@ -455,8 +461,9 @@ TEST_CASE("Query with invalid character throws") {
 // ============================ Testing integer ===========================
 
 TEST_CASE("Large integer is parsed successfully") {
-  string validQuery = "assign a;"
-                      "Select a such that Follows(1, 2200000000)";
+  string validQuery =
+      "assign a;"
+      "Select a such that Follows(1, 2200000000)";
 
   vector<qpp::QueryToken> expectedTokens = {
       {qpp::TokenType::NAME_OR_KEYWORD, "assign"},
@@ -471,18 +478,17 @@ TEST_CASE("Large integer is parsed successfully") {
       {qpp::TokenType::INTEGER, "1"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2200000000"},
-      {qpp::TokenType::CHAR_SYMBOL, ")"}
-  };
+      {qpp::TokenType::CHAR_SYMBOL, ")"}};
 
-  vector<qpp::QueryToken> actualTokens =
-      QueryLexer().Tokenize(validQuery);
+  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
 
   REQUIRE(actualTokens == expectedTokens);
 }
 
 TEST_CASE("Zero value integer is parsed successfully") {
-  string validQuery = "assign a;"
-                      "Select a such that Follows(1, 0)";
+  string validQuery =
+      "assign a;"
+      "Select a such that Follows(1, 0)";
 
   vector<qpp::QueryToken> expectedTokens = {
       {qpp::TokenType::NAME_OR_KEYWORD, "assign"},
@@ -497,18 +503,17 @@ TEST_CASE("Zero value integer is parsed successfully") {
       {qpp::TokenType::INTEGER, "1"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "0"},
-      {qpp::TokenType::CHAR_SYMBOL, ")"}
-  };
+      {qpp::TokenType::CHAR_SYMBOL, ")"}};
 
-  vector<qpp::QueryToken> actualTokens =
-      QueryLexer().Tokenize(validQuery);
+  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
 
   REQUIRE(actualTokens == expectedTokens);
 }
 
 TEST_CASE("Query with invalid integer throws") {
-  string invalidQuery = "assign a;"
-                        "Select a such that Follows(0123, 4567)";
+  string invalidQuery =
+      "assign a;"
+      "Select a such that Follows(0123, 4567)";
 
   REQUIRE_THROWS_WITH(QueryLexer().Tokenize(invalidQuery),
                       QueryLexer::INVALID_INTEGER_START_ZERO_MSG);

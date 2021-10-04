@@ -14,7 +14,8 @@ enum class DesignEntity {
   ASSIGN,
   VARIABLE,
   CONSTANT,
-  PROCEDURE
+  PROCEDURE,
+  PROG_LINE
 };
 
 enum class RelationshipType {

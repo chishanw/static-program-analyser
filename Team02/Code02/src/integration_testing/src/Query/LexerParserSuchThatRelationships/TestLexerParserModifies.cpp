@@ -468,6 +468,156 @@ TEST_CASE(
     REQUIRE(get<0>(actual) == get<0>(expected));
     REQUIRE(get<1>(actual) == get<1>(expected));
   }
+
+  SECTION("Valid Modifies(c, \"x\")") {
+    string validQuery =
+        "call c;"
+        "Select c such that Modifies(c, \"x\")";
+
+    // expected
+    SynonymMap map = {{"c", query::DesignEntity::CALL}};
+    query::Synonym selectSynonym = {query::DesignEntity::CALL, "c"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        "c", query::ParamType::NAME_LITERAL, "x");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(c, v)") {
+    string validQuery =
+        "call c; variable v;"
+        "Select c such that Modifies(c, v)";
+
+    // expected
+    SynonymMap map = {
+        {"c", query::DesignEntity::CALL},
+        {"v", query::DesignEntity::VARIABLE},
+    };
+    query::Synonym selectSynonym = {query::DesignEntity::CALL, "c"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        "c", query::ParamType::SYNONYM, "v");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(c, _)") {
+    string validQuery =
+        "call c;"
+        "Select c such that Modifies(c, _)";
+
+    // expected
+    SynonymMap map = {{"c", query::DesignEntity::CALL}};
+    query::Synonym selectSynonym = {query::DesignEntity::CALL, "c"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        "c", query::ParamType::WILDCARD, "_");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(n, \"x\")") {
+    string validQuery =
+        "prog_line n;"
+        "Select n such that Modifies(n, \"x\")";
+
+    // expected
+    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    query::Synonym selectSynonym = {query::DesignEntity::PROG_LINE, "n"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        "n", query::ParamType::NAME_LITERAL, "x");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(n, v)") {
+    string validQuery =
+        "prog_line n; variable v;"
+        "Select n such that Modifies(n, v)";
+
+    // expected
+    SynonymMap map = {
+        {"n", query::DesignEntity::PROG_LINE},
+        {"v", query::DesignEntity::VARIABLE},
+    };
+    query::Synonym selectSynonym = {query::DesignEntity::PROG_LINE, "n"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        "n", query::ParamType::SYNONYM, "v");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(n, _)") {
+    string validQuery =
+        "prog_line n;"
+        "Select n such that Modifies(n, _)";
+
+    // expected
+    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    query::Synonym selectSynonym = {query::DesignEntity::PROG_LINE, "n"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        "n", query::ParamType::WILDCARD, "_");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
 }
 
 TEST_CASE("Invalid queries for one such that clause for ModifiesS throws") {
@@ -509,22 +659,155 @@ TEST_CASE("Invalid queries for one such that clause for ModifiesS throws") {
 }
 
 // ====================== Testing ModifiesP relationship ======================
-TEST_CASE("Invalid queries for one such that clause for ModifiesP throws") {
-  SECTION("Invalid Modifies(p, \"x\")") {
-    string invalidQuery =
+TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
+  SECTION("Valid Modifies(p, \"x\")") {
+    string validQuery =
         "procedure p;"
         "Select p such that Modifies(p, \"x\")";
+
+    // expected
+    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    query::Synonym selectSynonym = {query::DesignEntity::PROCEDURE, "p"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
+        "p", query::ParamType::NAME_LITERAL, "x");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_MODIFIES_SYNONYM_ENTITY_MSG);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 
-  SECTION("Invalid Modifies(\"y\", \"x\")") {
-    string invalidQuery =
-        "stmt s;"
-        "Select s such that Modifies(\"y\", \"x\")";
+  SECTION("Valid Modifies(p, v)") {
+    string validQuery =
+        "procedure p; variable v;"
+        "Select p such that Modifies(p, v)";
+
+    // expected
+    SynonymMap map = {
+        {"p", query::DesignEntity::PROCEDURE},
+        {"v", query::DesignEntity::VARIABLE},
+    };
+    query::Synonym selectSynonym = {query::DesignEntity::PROCEDURE, "p"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
+        "p", query::ParamType::SYNONYM, "v");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_USESP_MODIFIESP_MSG);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(p, _)") {
+    string validQuery =
+        "procedure p;"
+        "Select p such that Modifies(p, _)";
+
+    // expected
+    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    query::Synonym selectSynonym = {query::DesignEntity::PROCEDURE, "p"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
+        "p", query::ParamType::WILDCARD, "_");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(\"x\", \"y\")") {
+    string validQuery =
+        "procedure p;"
+        "Select p such that Modifies(\"x\", \"y\")";
+
+    // expected
+    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    query::Synonym selectSynonym = {query::DesignEntity::PROCEDURE, "p"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses,
+                                     query::RelationshipType::MODIFIES_P,
+                                     query::ParamType::NAME_LITERAL, "x",
+                                     query::ParamType::NAME_LITERAL, "y");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(\"x\", v)") {
+    string validQuery =
+        "procedure p; variable v;"
+        "Select p such that Modifies(\"x\", v)";
+
+    // expected
+    SynonymMap map = {
+        {"p", query::DesignEntity::PROCEDURE},
+        {"v", query::DesignEntity::VARIABLE},
+    };
+    query::Synonym selectSynonym = {query::DesignEntity::PROCEDURE, "p"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_P,
+        query::ParamType::NAME_LITERAL, "x", query::ParamType::SYNONYM, "v");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Modifies(\"x\", _)") {
+    string validQuery =
+        "procedure p;"
+        "Select p such that Modifies(\"x\", _)";
+
+    // expected
+    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    query::Synonym selectSynonym = {query::DesignEntity::PROCEDURE, "p"};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(
+        clauses, query::RelationshipType::MODIFIES_P,
+        query::ParamType::NAME_LITERAL, "x", query::ParamType::WILDCARD, "_");
+
+    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 }
