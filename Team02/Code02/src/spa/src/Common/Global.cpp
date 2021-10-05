@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool DEBUG_MODE = false;
+bool DEBUG_MODE = true;  // TODO(anyone): remove for iter2 submission
 
 // =======================================
 //  debug-mode-only methods
