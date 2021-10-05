@@ -81,6 +81,11 @@ class PKB {
   std::unordered_set<VAR_IDX> getVarsModifiedS(STMT_NO s);
   std::unordered_set<STMT_NO> getModifiesS(VAR_NAME v);
   std::vector<std::pair<STMT_NO, std::vector<VAR_IDX>>> getAllModifiesSPairs();
+  void addModifiesP(PROC_NAME proc, VAR_NAME var);
+  bool isModifiesP(PROC_NAME p, VAR_NAME v);
+  std::unordered_set<VAR_IDX> getVarsModifiedP(PROC_NAME p);
+  std::unordered_set<PROC_IDX> getModifiesP(VAR_NAME v);
+  std::vector<std::pair<PROC_IDX, std::vector<VAR_IDX>>> getAllModifiesPPairs();
 
   // Uses API
   void addUsesS(STMT_NO s, VAR_NAME var);
@@ -88,6 +93,11 @@ class PKB {
   std::unordered_set<VAR_IDX> getVarsUsedS(STMT_NO s);
   std::unordered_set<STMT_NO> getUsesS(VAR_NAME v);
   std::vector<std::pair<STMT_NO, std::vector<VAR_IDX>>> getAllUsesSPairs();
+  void addUsesP(PROC_NAME proc, VAR_NAME var);
+  bool isUsesP(PROC_NAME proc, VAR_NAME v);
+  std::unordered_set<VAR_IDX> getVarsUsedP(PROC_NAME proc);
+  std::unordered_set<PROC_IDX> getUsesP(VAR_NAME v);
+  std::vector<std::pair<PROC_IDX, std::vector<VAR_IDX>>> getAllUsesPPairs();
 
   // Pattern API
   void addAssignPttFullExpr(STMT_NO s, std::string var, std::string expr);
@@ -126,8 +136,8 @@ class PKB {
   // Design Abstractions
   FollowKB followKB;
   ParentKB parentKB;
-  ModifiesKB modifiesKB = ModifiesKB(&varTable);
-  UsesKB usesKB = UsesKB(&varTable);
+  ModifiesKB modifiesKB = ModifiesKB(&varTable, &procTable);
+  UsesKB usesKB = UsesKB(&varTable, &procTable);
   PatternKB patternKB = PatternKB(&varTable);
 
   // Members

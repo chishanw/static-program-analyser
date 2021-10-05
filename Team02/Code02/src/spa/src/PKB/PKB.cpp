@@ -179,6 +179,22 @@ vector<pair<STMT_NO, vector<VAR_IDX>>> PKB::getAllModifiesSPairs() {
   return modifiesKB.getAllModifiesSPairs();
 }
 
+void PKB::addModifiesP(PROC_NAME proc, VAR_NAME var) {
+  modifiesKB.addModifiesP(proc, var);
+}
+bool PKB::isModifiesP(PROC_NAME proc, VAR_NAME v) {
+  return modifiesKB.isModifiesP(proc, v);
+}
+unordered_set<VAR_IDX> PKB::getVarsModifiedP(PROC_NAME proc) {
+  return modifiesKB.getVarsModifiedP(proc);
+}
+unordered_set<PROC_IDX> PKB::getModifiesP(VAR_NAME v) {
+  return modifiesKB.getModifiesP(v);
+}
+vector<pair<PROC_IDX, vector<VAR_IDX>>> PKB::getAllModifiesPPairs() {
+  return modifiesKB.getAllModifiesPPairs();
+}
+
 // Uses API
 void PKB::addUsesS(STMT_NO s, VAR_NAME var) {
   usesKB.addUsesS(s, var);
@@ -194,6 +210,22 @@ unordered_set<STMT_NO> PKB::getUsesS(VAR_NAME v) {
 }
 vector<pair<STMT_NO, vector<VAR_IDX>>> PKB::getAllUsesSPairs() {
   return usesKB.getAllUsesSPairs();
+}
+
+void PKB::addUsesP(PROC_NAME proc, VAR_NAME var) {
+  usesKB.addUsesP(proc, var);
+}
+bool PKB::isUsesP(PROC_NAME proc, VAR_NAME v) {
+  return usesKB.isUsesP(proc, v);
+}
+unordered_set<VAR_IDX> PKB::getVarsUsedP(PROC_NAME proc) {
+  return usesKB.getVarsUsedP(proc);
+}
+unordered_set<PROC_IDX> PKB::getUsesP(VAR_NAME v) {
+  return usesKB.getUsesP(v);
+}
+vector<pair<PROC_IDX, vector<VAR_IDX>>> PKB::getAllUsesPPairs() {
+  return usesKB.getAllUsesPPairs();
 }
 
 // Pattern API
