@@ -55,3 +55,37 @@ vector<pair<int, vector<int>>> ModifiesEvaluator::evaluatePairModifiesS(
     const Param& left, const Param& right) {
   return pkb->getAllModifiesSPairs();
 }
+
+bool ModifiesEvaluator::evaluateBoolModifiesP(const Param& left,
+                                              const Param& right) {
+  ParamType leftType = left.type;
+  ParamType rightType = right.type;
+
+  if (leftType == ParamType::WILDCARD) {
+    DMOprintErrMsgAndExit(
+        "[ModifiesEvaluator][evaluateBoolModifiesP] wildcard in left param");
+  }
+
+  if (leftType == ParamType::NAME_LITERAL &&
+      rightType == ParamType::NAME_LITERAL) {
+    return pkb->isModifiesP(left.value, right.value);
+  }
+
+  return !pkb->getVarsModifiedP(left.value).empty();
+}
+
+UNO_SET_OF_STMT_NO ModifiesEvaluator::evaluateModifiesP(const Param& left,
+                                                        const Param& right) {
+  ParamType leftType = left.type;
+
+  if (leftType == ParamType::SYNONYM) {
+    return pkb->getModifiesP(right.value);
+  }
+
+  return pkb->getVarsModifiedP(left.value);
+}
+
+vector<pair<int, vector<int>>> ModifiesEvaluator::evaluatePairModifiesP(
+    const Param& left, const Param& right) {
+  return pkb->getAllModifiesPPairs();
+}

@@ -58,14 +58,13 @@ class QueryEvaluator {
   void evaluateParentClause(query::SuchThatClause);
   void evaluateParentTClause(query::SuchThatClause);
   void evaluateUsesSClause(query::SuchThatClause);
+  void evaluateUsesPClause(query::SuchThatClause);
   void evaluateModifiesSClause(query::SuchThatClause);
+  void evaluateModifiesPClause(query::SuchThatClause);
 
   void evaluatePatternClause(query::PatternClause);
 
   // helper methods
-  bool isBoolClause(const query::Param& left, const query::Param& right);
-  bool isRefClause(const query::Param& left, const query::Param& right);
-
   std::vector<std::vector<int>> formatRefResults(
       std::unordered_set<int> results);
   std::vector<std::vector<int>> formatRefPairResults(

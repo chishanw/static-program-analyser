@@ -17,9 +17,9 @@ bool UsesEvaluator::evaluateBoolUsesS(const Param& left, const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
-  if (leftType == ParamType::WILDCARD) {
+  if (leftType == ParamType::WILDCARD || leftType == ParamType::NAME_LITERAL) {
     DMOprintErrMsgAndExit(
-        "[UsesEvaluator][evaluateBoolUsesS] wildcard in left param");
+        "[UsesEvaluator][evaluateBoolUsesS] wildcard or string in left param");
   }
 
   // if both literal - UsesS(1, "x")
@@ -38,7 +38,6 @@ UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesS(const Param& left,
                                                 const Param& right) {
   // if one literal + synonym - UsesS(s, "x"), UsesS(1, v)
   ParamType leftType = left.type;
-  ParamType rightType = right.type;
 
   if (leftType == ParamType::SYNONYM) {
     return pkb->getUsesS(right.value);
@@ -53,4 +52,38 @@ UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesS(const Param& left,
 vector<pair<int, vector<int>>> UsesEvaluator::evaluatePairUsesS(
     const Param& left, const Param& right) {
   return pkb->getAllUsesSPairs();
+}
+
+bool UsesEvaluator::evaluateBoolUsesP(const Param& left, const Param& right) {
+  ParamType leftType = left.type;
+  ParamType rightType = right.type;
+
+  if (leftType == ParamType::WILDCARD ||
+      leftType == ParamType::INTEGER_LITERAL) {
+    DMOprintErrMsgAndExit(
+        "[UsesEvaluator][evaluateBoolUsesP] wildcard or integer in left param");
+  }
+
+  if (leftType == ParamType::NAME_LITERAL &&
+      rightType == ParamType::NAME_LITERAL) {
+    return pkb->isUsesP(left.value, right.value);
+  }
+
+  return !pkb->getVarsUsedP(left.value).empty();
+}
+
+UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesP(const Param& left,
+                                                const Param& right) {
+  ParamType leftType = left.type;
+
+  if (leftType == ParamType::SYNONYM) {
+    return pkb->getUsesP(right.value);
+  }
+
+  return pkb->getVarsUsedP(left.value);
+}
+
+vector<pair<int, vector<int>>> UsesEvaluator::evaluatePairUsesP(
+    const Param& left, const Param& right) {
+  return pkb->getAllUsesPPairs();
 }

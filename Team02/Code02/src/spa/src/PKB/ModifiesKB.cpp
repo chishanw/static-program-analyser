@@ -102,7 +102,7 @@ unordered_set<STMT_NO> ModifiesKB::getModifiesS(VAR_NAME v) {
   }
 }
 
-unordered_set<STMT_NO> ModifiesKB::getModifiesP(VAR_NAME v) {
+unordered_set<PROC_IDX> ModifiesKB::getModifiesP(VAR_NAME v) {
   VAR_IDX varIdx = varTable->getVarIndex(v);
   try {
     return invTableP.at(varIdx);

@@ -81,8 +81,16 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
       evaluateUsesSClause(clause);
       break;
 
+    case RelationshipType::USES_P:
+      evaluateUsesPClause(clause);
+      break;
+
     case RelationshipType::MODIFIES_S:
       evaluateModifiesSClause(clause);
+      break;
+
+    case RelationshipType::MODIFIES_P:
+      evaluateModifiesPClause(clause);
       break;
 
     default:
@@ -91,19 +99,31 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
 }
 
 void QueryEvaluator::evaluateFollowsClause(SuchThatClause clause) {
-  auto relationshipType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
 
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::INTEGER_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
   // evaluate clause that returns a boolean
-  if (isBoolClause(left, right)) {  // both literal/wildcard
+  if (isBoolClause) {  // both literal/wildcard
     areAllClausesTrue = followsEvaluator.evaluateBoolFollows(left, right);
     return;
   }
 
   // the rest of clauses has at least one synonym
   vector<vector<int>> incomingResults;
-  if (isRefClause(left, right)) {  // 1 syn & 1 literal
+  if (isRefClause) {  // 1 syn & 1 literal
     // evaluate clause that returns a vector of single refs
     incomingResults =
         formatRefResults(followsEvaluator.evaluateStmtFollows(left, right));
@@ -128,24 +148,32 @@ void QueryEvaluator::evaluateFollowsClause(SuchThatClause clause) {
 }
 
 void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
-  auto relationshipType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
 
-  // evaluate clause that returns a boolean
-  if (isBoolClause(left, right)) {  // both literal/wildcard
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::INTEGER_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
     areAllClausesTrue = followsEvaluator.evaluateBoolFollowsT(left, right);
     return;
   }
 
-  // the rest of clauses has at least one synonym
   vector<vector<int>> incomingResults;
-  if (isRefClause(left, right)) {  // 1 syn & 1 literal
-    // evaluate clause that returns a vector of single refs
+  if (isRefClause) {
     incomingResults =
         formatRefResults(followsEvaluator.evaluateStmtFollowsT(left, right));
-  } else {  // 1 syn & 1 wildcard | 2 syn | 2 wildcards
-    // evaluate clause that returns a vector of ref pairs
+  } else {
     incomingResults = formatRefPairResults(
         followsEvaluator.evaluateStmtPairFollowsT(left, right));
   }
@@ -166,24 +194,32 @@ void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
 }
 
 void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
-  auto relationshipType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
 
-  // evaluate clause that returns a boolean
-  if (isBoolClause(left, right)) {  // both literal/wildcard
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::INTEGER_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
     areAllClausesTrue = parentEvaluator.evaluateBoolParent(left, right);
     return;
   }
 
-  // the rest of clauses has at least one synonym
   vector<vector<int>> incomingResults;
-  if (isRefClause(left, right)) {  // 1 syn & 1 literal
-    // evaluate clause that returns a vector of single refs
+  if (isRefClause) {
     incomingResults =
         formatRefResults(parentEvaluator.evaluateStmtParent(left, right));
-  } else {  // 1 syn & 1 wildcard | 2 syn | 2 wildcards
-    // evaluate clause that returns a vector of ref pairs
+  } else {
     incomingResults = formatRefPairResults(
         parentEvaluator.evaluateStmtPairParent(left, right));
   }
@@ -204,24 +240,32 @@ void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
 }
 
 void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
-  auto relationshipType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
 
-  // evaluate clause that returns a boolean
-  if (isBoolClause(left, right)) {  // both literal/wildcard
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::INTEGER_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
     areAllClausesTrue = parentEvaluator.evaluateBoolParentT(left, right);
     return;
   }
 
-  // the rest of clauses has at least one synonym
   vector<vector<int>> incomingResults;
-  if (isRefClause(left, right)) {  // 1 syn & 1 literal
-    // evaluate clause that returns a vector of single refs
+  if (isRefClause) {
     incomingResults =
         formatRefResults(parentEvaluator.evaluateStmtParentT(left, right));
-  } else {  // 1 syn & 1 wildcard | 2 syn | 2 wildcards
-    // evaluate clause that returns a vector of ref pairs
+  } else {
     incomingResults = formatRefPairResults(
         parentEvaluator.evaluateStmtPairParentT(left, right));
   }
@@ -242,25 +286,33 @@ void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
 }
 
 void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
-  auto relationshipType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
 
-  // evaluate clause that returns a boolean
-  if (isBoolClause(left, right)) {  // both literal/wildcard
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::NAME_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
     areAllClausesTrue = usesEvaluator.evaluateBoolUsesS(left, right);
     return;
   }
 
-  // the rest of clauses has at least one synonym
   vector<vector<int>> incomingResults;
-  if (isRefClause(left, right)) {  // 1 syn & 1 literal
-    // evaluate clause that returns a vector of single refs
+  if (isRefClause) {
     incomingResults =
         formatRefResults(usesEvaluator.evaluateUsesS(left, right));
 
-  } else {  // 1 syn & 1 wildcard | 2 syn | 2 wildcards
-    // evaluate clause that returns a vector of ref pairs
+  } else {
     incomingResults =
         formatRefPairResults(usesEvaluator.evaluatePairUsesS(left, right));
   }
@@ -280,27 +332,128 @@ void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
   }
 }
 
-void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
-  auto relationshipType = clause.relationshipType;
+void QueryEvaluator::evaluateUsesPClause(SuchThatClause clause) {
   auto left = clause.leftParam;
   auto right = clause.rightParam;
 
-  // evaluate clause that returns a boolean
-  if (isBoolClause(left, right)) {  // both literal/wildcard
+  bool isBoolClause =
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::NAME_LITERAL) ||
+                     (left.type == ParamType::NAME_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = usesEvaluator.evaluateBoolUsesP(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults =
+        formatRefResults(usesEvaluator.evaluateUsesP(left, right));
+
+  } else {
+    incomingResults =
+        formatRefPairResults(usesEvaluator.evaluatePairUsesP(left, right));
+  }
+
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
+
+  if (currentQueryResults.empty()) {
+    initializeQueryResults(filteredIncomingResults, left, right);
+  } else {
+    addIncomingResults(filteredIncomingResults, left, right);
+  }
+}
+
+void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::NAME_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
     areAllClausesTrue = modifiesEvaluator.evaluateBoolModifiesS(left, right);
     return;
   }
 
-  // the rest of clauses has at least one synonym
   vector<vector<int>> incomingResults;
-  if (isRefClause(left, right)) {  // 1 syn & 1 literal
-    // evaluate clause that returns a vector of single refs
+  if (isRefClause) {
     incomingResults =
         formatRefResults(modifiesEvaluator.evaluateModifiesS(left, right));
-  } else {  // 1 syn & 1 wildcard | 2 syn | 2 wildcards
-    // evaluate clause that returns a vector of ref pairs
+  } else {
     incomingResults = formatRefPairResults(
         modifiesEvaluator.evaluatePairModifiesS(left, right));
+  }
+
+  vector<vector<int>> filteredIncomingResults =
+      filterIncomingResults(incomingResults, left, right);
+
+  if (filteredIncomingResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
+
+  if (currentQueryResults.empty()) {
+    initializeQueryResults(filteredIncomingResults, left, right);
+  } else {
+    addIncomingResults(filteredIncomingResults, left, right);
+  }
+}
+
+void QueryEvaluator::evaluateModifiesPClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::NAME_LITERAL) ||
+                     (left.type == ParamType::NAME_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = modifiesEvaluator.evaluateBoolModifiesP(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults =
+        formatRefResults(modifiesEvaluator.evaluateModifiesP(left, right));
+  } else {
+    incomingResults = formatRefPairResults(
+        modifiesEvaluator.evaluatePairModifiesP(left, right));
   }
 
   vector<vector<int>> filteredIncomingResults =
@@ -330,7 +483,6 @@ void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
     incomingResults = formatRefResults(
         patternEvaluator.evaluateAssignPattern(varParam, patternExpr));
   } else {
-    // synonym
     incomingResults =
         patternEvaluator.evaluateAssignPairPattern(varParam, patternExpr);
   }
@@ -583,32 +735,6 @@ void QueryEvaluator::crossProduct(vector<vector<int>> incomingResult,
   currentQueryResults = newQueryResults;
 }
 
-bool QueryEvaluator::isBoolClause(const Param& left, const Param& right) {
-  ParamType leftType = left.type;
-  ParamType rightType = right.type;
-  return (leftType == ParamType::INTEGER_LITERAL &&
-          rightType == ParamType::INTEGER_LITERAL) ||
-         (leftType == ParamType::INTEGER_LITERAL &&
-          rightType == ParamType::WILDCARD) ||
-         (leftType == ParamType::WILDCARD &&
-          rightType == ParamType::INTEGER_LITERAL) ||
-         (leftType == ParamType::WILDCARD &&
-          rightType == ParamType::WILDCARD) ||
-         (leftType == ParamType::INTEGER_LITERAL &&
-          rightType == ParamType::NAME_LITERAL);
-}
-
-bool QueryEvaluator::isRefClause(const Param& left, const Param& right) {
-  ParamType leftType = left.type;
-  ParamType rightType = right.type;
-  return (leftType == ParamType::SYNONYM &&
-          rightType == ParamType::INTEGER_LITERAL) ||
-         (leftType == ParamType::INTEGER_LITERAL &&
-          rightType == ParamType::SYNONYM) ||
-         (leftType == ParamType::SYNONYM &&
-          rightType == ParamType::NAME_LITERAL);
-}
-
 vector<vector<int>> QueryEvaluator::formatRefResults(
     unordered_set<int> results) {
   vector<vector<int>> formattedResults = {};
@@ -634,6 +760,8 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
   DesignEntity designEntity = synonymMap.find(synonymName)->second;
   switch (designEntity) {
     case DesignEntity::STATEMENT:
+      return pkb->getAllStmts();
+    case DesignEntity::PROG_LINE:
       return pkb->getAllStmts();
     case DesignEntity::READ:
       return pkb->getAllReadStmts();

@@ -28,7 +28,7 @@ list<string> ResultProjector::formatResults(DesignEntity designEntity,
       }
       return formattedResults;
     default:
-      // all statement types
+      // all statement types and prog_line
       for (int num : results) {
         formattedResults.push_back(to_string(num));
       }

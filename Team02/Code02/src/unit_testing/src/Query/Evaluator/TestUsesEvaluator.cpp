@@ -89,3 +89,85 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
     REQUIRE(result.empty());
   }
 }
+
+TEST_CASE("UsesEvaluator: UsesP - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addUsesP("someProc", "x");
+  UsesEvaluator ue(pkb);
+
+  SECTION("UsesP('someProc', 'x')") {
+    Param left = {ParamType::NAME_LITERAL, "someProc"};
+    Param right = {ParamType::NAME_LITERAL, "x"};
+    bool result = ue.evaluateBoolUsesP(left, right);
+    REQUIRE(result == true);
+  }
+
+  SECTION("UsesP('procName', _)") {
+    Param left = {ParamType::NAME_LITERAL, "someProc"};
+    Param right = {ParamType::WILDCARD, "_"};
+    bool result = ue.evaluateBoolUsesP(left, right);
+    REQUIRE(result == true);
+  }
+
+  SECTION("UsesP('someProc', v)") {
+    Param left = {ParamType::NAME_LITERAL, "someProc"};
+    Param right = {ParamType::SYNONYM, "v"};
+    unordered_set<int> result = ue.evaluateUsesP(left, right);
+    REQUIRE(result == unordered_set<int>({0}));
+  }
+
+  SECTION("UsesP(p, v)") {
+    Param left = {ParamType::SYNONYM, "p"};
+    Param right = {ParamType::SYNONYM, "v"};
+    vector<pair<int, vector<int>>> result = ue.evaluatePairUsesP(left, right);
+    pair<int, vector<int>> resultPair = result[0];
+    REQUIRE(resultPair.first == 0);
+    REQUIRE(resultPair.second == vector<int>({0}));
+  }
+}
+
+TEST_CASE("UsesEvaluator: UsesP - Falsy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+
+  SECTION("UsesP('someProc', 'x')") {
+    pkb->addUsesP("otherProc", "x");
+    UsesEvaluator ue(pkb);
+
+    Param left = {ParamType::NAME_LITERAL, "someProc"};
+    Param right = {ParamType::NAME_LITERAL, "x"};
+    bool result = ue.evaluateBoolUsesP(left, right);
+    REQUIRE(result == false);
+  }
+
+  SECTION("UsesP('someProc', _)") {
+    pkb->addUsesP("otherProc", "x");
+    UsesEvaluator ue(pkb);
+
+    Param left = {ParamType::NAME_LITERAL, "someProc"};
+    Param right = {ParamType::WILDCARD, "_"};
+    bool result = ue.evaluateBoolUsesP(left, right);
+    REQUIRE(result == false);
+  }
+
+  SECTION("UsesP('someProc', v)") {
+    pkb->addUsesP("otherProc", "x");
+    UsesEvaluator ue(pkb);
+
+    Param left = {ParamType::NAME_LITERAL, "someProc"};
+    Param right = {ParamType::SYNONYM, "v"};
+    unordered_set<int> result = ue.evaluateUsesP(left, right);
+    REQUIRE(result.empty());
+  }
+
+  SECTION("UsesP(p, v)") {
+    UsesEvaluator ue(pkb);
+
+    Param left = {ParamType::SYNONYM, "p"};
+    Param right = {ParamType::SYNONYM, "v"};
+    vector<pair<int, vector<int>>> result = ue.evaluatePairUsesP(left, right);
+    REQUIRE(result.empty());
+  }
+}
