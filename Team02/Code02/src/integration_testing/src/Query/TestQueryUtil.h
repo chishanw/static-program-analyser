@@ -13,5 +13,5 @@ class TestQueryUtil {
                                 std::string, query::ParamType, std::string);
   static void AddPatternClause(std::vector<query::ConditionClause>&,
                                query::Synonym, query::ParamType, std::string,
-                               query::MatchType, std::string);
+                               query::PatternExpr);
 };

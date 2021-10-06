@@ -150,7 +150,7 @@ query::Param QueryParser::getRefParam() {
   throw runtime_error(INVALID_STMT_ENT_REF_MSG);
 }
 
-// ============ Parsers ============
+// ============ Parsers (Main) ============
 SynonymMap QueryParser::parseSynonyms() {
   SynonymMap synonyms;
 
@@ -229,6 +229,7 @@ SelectClause QueryParser::parseSelectClause() {
   return {selectSynonym, conditionClauses};
 }
 
+// ============ Parsers (such that) ============
 void QueryParser::parseSuchThatClause(vector<ConditionClause>& results) {
   getExactKeyword("such");
   getExactKeyword("that");
@@ -399,35 +400,32 @@ query::ConditionClause QueryParser::parseModifiesClause() {
   return {stClause, {}, ConditionClauseType::SUCH_THAT};
 }
 
+// ============ Parsers (pattern) ============
 void QueryParser::parsePatternClause(vector<ConditionClause>& results) {
   getExactKeyword("pattern");
 
   bool hasNextPattern = true;
   while (hasNextPattern) {
-    string synonymName = getName();
-    DesignEntity entity = getEntityFromSynonymName(synonymName);
-    getExactCharSymbol('(');
-    Param left = getRefParam();
-    getExactCharSymbol(',');
-    PatternExpr patternExpr = parsePatternExpr();
-    getExactCharSymbol(')');
+    QueryToken nextToken = peekToken().value();
+    if (nextToken.tokenType != TokenType::NAME_OR_KEYWORD) {
+      throw new runtime_error(INVALID_NAME_MSG);
+    }
+    string nextSynonym = nextToken.value;
+    DesignEntity entity = getEntityFromSynonymName(nextSynonym);
 
-    // validate that synonym is assignment
-    if (entity != DesignEntity::ASSIGN) {
-      throw runtime_error(INVALID_SYNONYM_NON_ASSIGN_MSG);
+    switch (entity) {
+      case DesignEntity::IF:
+        results.push_back(parseIfPatternClause());
+        break;
+      case DesignEntity::WHILE:
+        results.push_back(parseWhilePatternClause());
+        break;
+      case DesignEntity::ASSIGN:
+        results.push_back(parseAssignPatternClause());
+        break;
+      default:
+        throw runtime_error(INVALID_PATTERN_SYNONYM_MSG);
     }
-    // validate left param
-    if (left.type == ParamType::INTEGER_LITERAL) {
-      throw runtime_error(INVALID_ENT_REF_MSG);
-    }
-    if (left.type == ParamType::SYNONYM &&
-        getEntityFromSynonymName(left.value) != DesignEntity::VARIABLE) {
-      throw runtime_error(INVALID_SYNONYM_NON_VARIABLE_MSG);
-    }
-
-    Synonym patternSynonym = {entity, synonymName};
-    PatternClause patternClause = {patternSynonym, left, patternExpr};
-    results.push_back({{}, patternClause, ConditionClauseType::PATTERN});
 
     // checks if there are multiple patterns connected by 'and'
     hasNextPattern = hasNextToken() && peekToken().value().value == "and";
@@ -435,6 +433,90 @@ void QueryParser::parsePatternClause(vector<ConditionClause>& results) {
       getExactKeyword("and");
     }
   }
+}
+
+query::ConditionClause QueryParser::parseIfPatternClause() {
+  string synonymName = getName();
+  DesignEntity entity = getEntityFromSynonymName(synonymName);
+  // validate synonym type
+  if (entity != DesignEntity::IF) {
+    throw runtime_error(INVALID_SYNONYM_MSG);
+  }
+
+  getExactCharSymbol('(');
+  Param left = getRefParam();
+  getExactCharSymbol(',');
+  getExactCharSymbol('_');
+  getExactCharSymbol(',');
+  getExactCharSymbol('_');
+  getExactCharSymbol(')');
+
+  // validate left param
+  if (left.type == ParamType::INTEGER_LITERAL) {
+    throw runtime_error(INVALID_ENT_REF_MSG);
+  }
+  if (left.type == ParamType::SYNONYM &&
+      getEntityFromSynonymName(left.value) != DesignEntity::VARIABLE) {
+    throw runtime_error(INVALID_SYNONYM_NON_VARIABLE_MSG);
+  }
+  Synonym ifSynonym = {entity, synonymName};
+  PatternClause patternClause = {ifSynonym, left, {}};
+  return {{}, patternClause, ConditionClauseType::PATTERN};
+}
+
+query::ConditionClause QueryParser::parseWhilePatternClause() {
+  string synonymName = getName();
+  DesignEntity entity = getEntityFromSynonymName(synonymName);
+  // validate synonym type
+  if (entity != DesignEntity::WHILE) {
+    throw runtime_error(INVALID_SYNONYM_MSG);
+  }
+
+  getExactCharSymbol('(');
+  Param left = getRefParam();
+  getExactCharSymbol(',');
+  getExactCharSymbol('_');
+  getExactCharSymbol(')');
+
+  // validate left param
+  if (left.type == ParamType::INTEGER_LITERAL) {
+    throw runtime_error(INVALID_ENT_REF_MSG);
+  }
+  if (left.type == ParamType::SYNONYM &&
+      getEntityFromSynonymName(left.value) != DesignEntity::VARIABLE) {
+    throw runtime_error(INVALID_SYNONYM_NON_VARIABLE_MSG);
+  }
+  Synonym whileSynonym = {entity, synonymName};
+  PatternClause patternClause = {whileSynonym, left, {}};
+  return {{}, patternClause, ConditionClauseType::PATTERN};
+}
+
+query::ConditionClause QueryParser::parseAssignPatternClause() {
+  string synonymName = getName();
+  DesignEntity entity = getEntityFromSynonymName(synonymName);
+  // validate synonym type
+  if (entity != DesignEntity::ASSIGN) {
+    throw runtime_error(INVALID_SYNONYM_MSG);
+  }
+
+  getExactCharSymbol('(');
+  Param left = getRefParam();
+  getExactCharSymbol(',');
+  PatternExpr patternExpr = parsePatternExpr();
+  getExactCharSymbol(')');
+
+  // validate left param
+  if (left.type == ParamType::INTEGER_LITERAL) {
+    throw runtime_error(INVALID_ENT_REF_MSG);
+  }
+  if (left.type == ParamType::SYNONYM &&
+      getEntityFromSynonymName(left.value) != DesignEntity::VARIABLE) {
+    throw runtime_error(INVALID_SYNONYM_NON_VARIABLE_MSG);
+  }
+
+  Synonym patternSynonym = {entity, synonymName};
+  PatternClause patternClause = {patternSynonym, left, patternExpr};
+  return {{}, patternClause, ConditionClauseType::PATTERN};
 }
 
 query::PatternExpr QueryParser::parsePatternExpr() {

@@ -18,15 +18,14 @@ void TestQueryUtil::AddSuchThatClause(vector<ConditionClause>& clauses,
   clauses.push_back(conditionClause);
 }
 
-void TestQueryUtil::AddPatternClause(vector<ConditionClause>& clauses,
+void TestQueryUtil::AddPatternClause(vector<ConditionClause> &clauses,
                                      Synonym patternSynonym,
                                      ParamType leftParamType,
                                      string leftParamVal,
-                                     MatchType exprMatchType,
-                                     string exprString) {
+                                     PatternExpr expr) {
   PatternClause pClause = {patternSynonym,
                            {leftParamType, leftParamVal},
-                           {exprMatchType, exprString}};
+                           expr};
 
   ConditionClause conditionClause = {{}, pClause, ConditionClauseType::PATTERN};
 

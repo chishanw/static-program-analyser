@@ -45,8 +45,8 @@ class QueryParser {
       "QueryParser expects a valid synonym.";
   inline static const std::string INVALID_SYNONYM_NON_VARIABLE_MSG =
       "QueryParser expects a variable synonym.";
-  inline static const std::string INVALID_SYNONYM_NON_ASSIGN_MSG =
-      "QueryParser expects an assignment synonym.";
+  inline static const std::string INVALID_PATTERN_SYNONYM_MSG =
+      "QueryParser expects an assignment, while or if synonym.";
 
   inline static const std::string INVALID_STMT_REF_MSG =
       "QueryParser expects a STMT_REF.";
@@ -107,5 +107,8 @@ class QueryParser {
   query::ConditionClause parseModifiesClause();
 
   void parsePatternClause(std::vector<query::ConditionClause>&);
+  query::ConditionClause parseWhilePatternClause();
+  query::ConditionClause parseIfPatternClause();
+  query::ConditionClause parseAssignPatternClause();
   query::PatternExpr parsePatternExpr();
 };

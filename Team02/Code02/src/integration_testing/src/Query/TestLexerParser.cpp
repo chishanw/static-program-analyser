@@ -271,9 +271,11 @@ TEST_CASE("Valid queries with many such that/pattern clause") {
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::ANY, "_"});
 
     tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
 
@@ -295,9 +297,11 @@ TEST_CASE("Valid queries with many such that/pattern clause") {
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::ANY, "_"});
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
@@ -331,9 +335,11 @@ TEST_CASE("Valid queries with many such that/pattern clause") {
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "2",
                                      query::ParamType::INTEGER_LITERAL, "3");
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::ANY, "_");
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::ANY, "_"});
     TestQueryUtil::AddSuchThatClause(
         clauses, query::RelationshipType::FOLLOWS_T, query::ParamType::SYNONYM,
         "a", query::ParamType::INTEGER_LITERAL, "2");
@@ -387,12 +393,16 @@ TEST_CASE("Valid queries with many clauses connected with and") {
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::ANY, "_");
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::SUB_EXPRESSION, "x");
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::ANY, "_"});
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::SUB_EXPRESSION, "x"});
 
     tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
 
@@ -414,12 +424,16 @@ TEST_CASE("Valid queries with many clauses connected with and") {
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::ANY, "_");
-    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD, "_",
-                                    query::MatchType::SUB_EXPRESSION, "x");
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::ANY, "_"});
+    TestQueryUtil::AddPatternClause(clauses,
+                                    {query::DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::WILDCARD,
+                                    "_",
+                                    {query::MatchType::SUB_EXPRESSION, "x"});
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "2",
                                      query::ParamType::INTEGER_LITERAL, "3");
