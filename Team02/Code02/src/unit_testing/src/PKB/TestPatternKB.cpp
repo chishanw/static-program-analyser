@@ -92,3 +92,74 @@ TEST_CASE("SUB_PATTERN") {
   REQUIRE(db.getAssignForVar("y") == unordered_set({1, 2}));
   REQUIRE(db.getAssignForVar("v") == unordered_set({3, 4}));
 }
+
+TEST_CASE("IF_PATTERN") {
+  // Init PKB
+  PKB db = PKB();
+
+  // Empty Results
+  REQUIRE(db.getIfStmtVarPairs() == vector<vector<int>>());
+  REQUIRE(db.getIfStmtForVar("f") == unordered_set<int>());
+
+  db.addIfPtt(1, "a");
+  db.addIfPtt(2, "a");
+  db.addIfPtt(3, "b");
+  db.addIfPtt(4, "b");
+  db.addIfPtt(5, "c");
+  db.addIfPtt(5, "d");
+
+  // ifs("a", _, _) = {1, 2}
+  REQUIRE(db.getIfStmtForVar("a") == unordered_set({1, 2}));
+  REQUIRE(db.getIfStmtForVar("b") == unordered_set({3, 4}));
+  REQUIRE(db.getIfStmtForVar("c") == unordered_set({5}));
+  REQUIRE(db.getIfStmtForVar("d") == unordered_set({5}));
+
+  // ifs("_", _, _) = All possible pairs of <s, index(var_name)>
+  int aIndex = db.getVarIndex("a");
+  int bIndex = db.getVarIndex("b");
+  int cIndex = db.getVarIndex("c");
+  int dIndex = db.getVarIndex("d");
+  REQUIRE(db.getIfStmtVarPairs() == vector({
+    vector({1, aIndex}),
+    vector({2, aIndex}),
+    vector({3, bIndex}),
+    vector({4, bIndex}),
+    vector({5, cIndex}),
+    vector({5, dIndex})}));
+}
+
+TEST_CASE("WHILE_PATTERN") {
+  // Init PKB
+  PKB db = PKB();
+
+  // Empty Results
+  REQUIRE(db.getWhileStmtVarPairs() == vector<vector<int>>());
+  REQUIRE(db.getWhileStmtForVar("d") == unordered_set<int>());
+
+  db.addWhilePtt(1, "a");
+  db.addWhilePtt(2, "a");
+  db.addWhilePtt(3, "b");
+  db.addWhilePtt(4, "b");
+  db.addWhilePtt(5, "c");
+  db.addWhilePtt(5, "d");
+
+  // w("a", _) = {1, 2}
+  REQUIRE(db.getWhileStmtForVar("a") == unordered_set({1, 2}));
+  REQUIRE(db.getWhileStmtForVar("b") == unordered_set({3, 4}));
+  REQUIRE(db.getWhileStmtForVar("c") == unordered_set({5}));
+  REQUIRE(db.getWhileStmtForVar("d") == unordered_set({5}));
+
+  // w("_", _) = All possible pairs of <s, index(var_name)>
+  int aIndex = db.getVarIndex("a");
+  int bIndex = db.getVarIndex("b");
+  int cIndex = db.getVarIndex("c");
+  int dIndex = db.getVarIndex("d");
+  REQUIRE(db.getWhileStmtVarPairs() == vector({
+    vector({1, aIndex}),
+    vector({2, aIndex}),
+    vector({3, bIndex}),
+    vector({4, bIndex}),
+    vector({5, cIndex}),
+    vector({5, dIndex}),
+    }));
+}

@@ -24,20 +24,14 @@ PatternKB::PatternKB(VarTable* varTable) {
 
   tableOfAssignForVar = unordered_map<VAR_IDX, UNO_SET_OF_STMT_NO>();
   listOfAssignVarPairs = vector<vector<int>>({});
-}
-
-int PatternKB::assignVar(string var) {
-  // check vartable
-  int result = varTable->getVarIndex(var);
-  if (result < 0) {
-    // Variable does not exist
-    result = varTable->insertVar(var);
-  }
-  return result;
+  tableOfIfPtt = unordered_map<VAR_IDX, UNO_SET_OF_STMT_NO>();
+  tableOfWhilePtt = unordered_map<VAR_IDX, UNO_SET_OF_STMT_NO>();
+  listOfIfVarPairs = vector<vector<int>>({});
+  listOfWhileVarPairs = vector<vector<int>>({});
 }
 
 void PatternKB::addAssignPttFullExpr(STMT_NO s, string varName, string expr) {
-  VAR_IDX varIdx = assignVar(varName);
+  VAR_IDX varIdx = varTable->insertVar(varName);
 
   if (tableOfFullExpr.count(expr) == 0) {
     UNO_SET_OF_STMT_NO newSet({s});
@@ -86,7 +80,7 @@ void PatternKB::addAssignPttFullExpr(STMT_NO s, string varName, string expr) {
 }
 
 void PatternKB::addAssignPttSubExpr(STMT_NO s, string varName, string subExpr) {
-  VAR_IDX varIdx = assignVar(varName);
+  VAR_IDX varIdx = varTable->insertVar(varName);
 
   if (tableOfSubExpr.count(subExpr) == 0) {
     UNO_SET_OF_STMT_NO newSet({s});
@@ -126,6 +120,30 @@ void PatternKB::addAssignPttSubExpr(STMT_NO s, string varName, string subExpr) {
   } else {
     tableOfAssignForVar.at(varIdx).insert(s);
   }
+}
+
+void PatternKB::addIfPtt(STMT_NO s, string varName) {
+  VAR_IDX varIdx = varTable->insertVar(varName);
+  if (tableOfIfPtt.count(varIdx) == 0) {
+    UNO_SET_OF_STMT_NO newSet({s});
+    tableOfIfPtt.insert({varIdx, newSet});
+  } else {
+    tableOfIfPtt.at(varIdx).insert(s);
+  }
+  vector<int> newPair({s, varIdx});
+  listOfIfVarPairs.push_back(newPair);
+}
+
+void PatternKB::addWhilePtt(STMT_NO s, string varName) {
+  VAR_IDX varIdx = varTable->insertVar(varName);
+  if (tableOfWhilePtt.count(varIdx) == 0) {
+    UNO_SET_OF_STMT_NO newSet({s});
+    tableOfWhilePtt.insert({varIdx, newSet});
+  } else {
+    tableOfWhilePtt.at(varIdx).insert(s);
+  }
+  vector<int> newPair({s, varIdx});
+  listOfWhileVarPairs.push_back(newPair);
 }
 
 unordered_set<int> PatternKB::getAssignForFullExpr(string expr) {
@@ -227,4 +245,30 @@ unordered_set<int> PatternKB::getAssignForVar(string varName) {
 
 vector<vector<int>> PatternKB::getAssignVarPairs() {
   return listOfAssignVarPairs;
+}
+
+unordered_set<int> PatternKB::getIfStmtForVar(string varName) {
+  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  if (tableOfIfPtt.count(varIdx) == 0) {
+    return UNO_SET_OF_STMT_NO();
+  } else {
+    return tableOfIfPtt.at(varIdx);
+  }
+}
+
+vector<vector<int>> PatternKB::getIfStmtVarPairs() {
+  return listOfIfVarPairs;
+}
+
+unordered_set<int> PatternKB::getWhileStmtForVar(string varName) {
+  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  if (tableOfWhilePtt.count(varIdx) == 0) {
+    return UNO_SET_OF_STMT_NO();
+  } else {
+    return tableOfWhilePtt.at(varIdx);
+  }
+}
+
+vector<vector<int>> PatternKB::getWhileStmtVarPairs() {
+  return listOfWhileVarPairs;
 }

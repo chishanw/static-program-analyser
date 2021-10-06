@@ -114,6 +114,12 @@ class PKB {
       std::string subExpr);
   std::unordered_set<int> getAssignForVar(std::string varName);
   std::vector<std::vector<int>> getAssignVarPairs();
+  void addIfPtt(STMT_NO s, std::string varName);
+  std::unordered_set<int> getIfStmtForVar(std::string varName);
+  std::vector<std::vector<int>> getIfStmtVarPairs();
+  void addWhilePtt(STMT_NO s, std::string varName);
+  std::unordered_set<int> getWhileStmtForVar(std::string varName);
+  std::vector<std::vector<int>> getWhileStmtVarPairs();
 
   // Table API
   CONST_IDX insertConst(string constant);

@@ -20,6 +20,8 @@ class PatternKB {
   // Methods for DE
   void addAssignPttFullExpr(STMT_NO s, std::string var, std::string expr);
   void addAssignPttSubExpr(STMT_NO s, std::string var, std::string expr);
+  void addIfPtt(STMT_NO s, std::string varName);
+  void addWhilePtt(STMT_NO s, std::string varName);
 
   // Methods for QE
 
@@ -35,6 +37,11 @@ class PatternKB {
       std::string subExpr);
   std::unordered_set<int> getAssignForVar(std::string varName);
   std::vector<std::vector<int>> getAssignVarPairs();
+
+  std::unordered_set<int> getIfStmtForVar(std::string varName);
+  std::vector<std::vector<int>> getIfStmtVarPairs();
+  std::unordered_set<int> getWhileStmtForVar(std::string varName);
+  std::vector<std::vector<int>> getWhileStmtVarPairs();
 
  private:
   // Members
@@ -54,8 +61,10 @@ class PatternKB {
   std::unordered_map<VAR_IDX, UNO_SET_OF_STMT_NO> tableOfAssignForVar;
   std::vector<std::vector<int>> listOfAssignVarPairs;
 
-  VarTable* varTable;
+  std::unordered_map<VAR_IDX, UNO_SET_OF_STMT_NO> tableOfIfPtt;
+  std::unordered_map<VAR_IDX, UNO_SET_OF_STMT_NO> tableOfWhilePtt;
+  std::vector<std::vector<int>> listOfIfVarPairs;
+  std::vector<std::vector<int>> listOfWhileVarPairs;
 
-  // Helper Function
-  int assignVar(std::string var);
+  VarTable* varTable;
 };

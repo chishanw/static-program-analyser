@@ -261,6 +261,30 @@ unordered_set<int> PKB::getAssignForVar(string varName) {
 vector<vector<int>> PKB::getAssignVarPairs() {
   return patternKB.getAssignVarPairs();
 }
+void PKB::addIfPtt(STMT_NO s, string varName) {
+  patternKB.addIfPtt(s, varName);
+}
+
+void PKB::addWhilePtt(STMT_NO s, string varName) {
+  patternKB.addWhilePtt(s, varName);
+}
+
+unordered_set<int> PKB::getIfStmtForVar(string varName) {
+  return patternKB.getIfStmtForVar(varName);
+}
+
+vector<vector<int>> PKB::getIfStmtVarPairs() {
+  return patternKB.getIfStmtVarPairs();
+}
+
+unordered_set<int> PKB::getWhileStmtForVar(string varName) {
+  return patternKB.getWhileStmtForVar(varName);
+}
+
+vector<vector<int>> PKB::getWhileStmtVarPairs() {
+  return patternKB.getWhileStmtVarPairs();
+}
+
 // Table API
 CONST_IDX PKB::insertConst(string constant) {
   return constTable.insertConst(constant);
