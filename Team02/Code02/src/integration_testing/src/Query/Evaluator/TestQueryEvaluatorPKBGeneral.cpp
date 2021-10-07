@@ -22,7 +22,7 @@ TEST_CASE("Select all design entities") {
     Synonym s = {DesignEntity::STATEMENT, "s"};
     vector<ConditionClause> conditionClauses = {};
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
     REQUIRE(result == unordered_set<int>({1, 2, 3}));
   }
@@ -40,7 +40,7 @@ TEST_CASE("Select all design entities") {
     Synonym n = {DesignEntity::PROG_LINE, "n"};
     vector<ConditionClause> conditionClauses = {};
 
-    SelectClause select = {n, conditionClauses};
+    SelectClause select = {{n}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
     REQUIRE(result == unordered_set<int>({1, 2, 3}));
   }
@@ -58,7 +58,7 @@ TEST_CASE("Select all design entities") {
     Synonym p = {DesignEntity::PROCEDURE, "p"};
     vector<ConditionClause> conditionClauses = {};
 
-    SelectClause select = {p, conditionClauses};
+    SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
     REQUIRE(result == unordered_set<int>({aIdx, bIdx, cIdx}));
   }
@@ -76,7 +76,7 @@ TEST_CASE("Select all design entities") {
     Synonym v = {DesignEntity::VARIABLE, "v"};
     vector<ConditionClause> conditionClauses = {};
 
-    SelectClause select = {v, conditionClauses};
+    SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
     REQUIRE(result == unordered_set<int>({xIdx, yIdx, zIdx}));
   }
@@ -94,7 +94,7 @@ TEST_CASE("Select all design entities") {
     Synonym c = {DesignEntity::CONSTANT, "c"};
     vector<ConditionClause> conditionClauses = {};
 
-    SelectClause select = {c, conditionClauses};
+    SelectClause select = {{c}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> result = qe.evaluateQuery(synonyms, select);
     REQUIRE(result == unordered_set<int>({0, 1, 2}));
   }
@@ -143,7 +143,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({1, 2, 3, 4, 5, 6}));
   }
@@ -155,7 +155,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {n, conditionClauses};
+    SelectClause select = {{n}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({1, 2, 3, 4, 5, 6}));
   }
@@ -167,7 +167,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {rd, conditionClauses};
+    SelectClause select = {{rd}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({1}));
   }
@@ -179,7 +179,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {pr, conditionClauses};
+    SelectClause select = {{pr}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({2}));
   }
@@ -191,7 +191,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {cll, conditionClauses};
+    SelectClause select = {{cll}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({3}));
   }
@@ -203,7 +203,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {w, conditionClauses};
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({4}));
   }
@@ -215,7 +215,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {ifs, conditionClauses};
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({5}));
   }
@@ -227,7 +227,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {a, conditionClauses};
+    SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({6}));
   }
@@ -240,19 +240,19 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {rd, conditionClauses};
+    SelectClause select = {{rd}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({1}));
   }
 
-  SECTION("print pr; Select cll such that Follows(1, pr)") {
+  SECTION("print pr; Select pr such that Follows(1, pr)") {
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::SYNONYM, "pr"}};
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {pr, conditionClauses};
+    SelectClause select = {{pr}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({2}));
   }
@@ -264,7 +264,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {rd, conditionClauses};
+    SelectClause select = {{rd}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({1}));
   }
@@ -276,7 +276,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {a, conditionClauses};
+    SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({6, 7}));
   }
@@ -288,7 +288,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {w, conditionClauses};
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({4}));
   }
@@ -300,7 +300,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {ifs, conditionClauses};
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({5}));
   }
@@ -312,7 +312,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {w, conditionClauses};
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({4}));
   }
@@ -324,7 +324,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {cll, conditionClauses};
+    SelectClause select = {{cll}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({3}));
   }
@@ -342,7 +342,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
     conditionClauses.push_back(
         {{}, patternClause, ConditionClauseType::PATTERN});
 
-    SelectClause select = {a, conditionClauses};
+    SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({}));
   }
@@ -378,7 +378,7 @@ TEST_CASE("Test clauses with same synonym for both params") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
@@ -390,7 +390,7 @@ TEST_CASE("Test clauses with same synonym for both params") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
@@ -402,7 +402,7 @@ TEST_CASE("Test clauses with same synonym for both params") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {a, conditionClauses};
+    SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
@@ -414,7 +414,7 @@ TEST_CASE("Test clauses with same synonym for both params") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
@@ -426,7 +426,7 @@ TEST_CASE("Test clauses with same synonym for both params") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
@@ -438,7 +438,7 @@ TEST_CASE("Test clauses with same synonym for both params") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
-    SelectClause select = {s, conditionClauses};
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }

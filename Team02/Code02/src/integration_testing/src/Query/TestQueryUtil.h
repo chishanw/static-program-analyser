@@ -1,10 +1,10 @@
 #pragma once
 
+#include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Query/Parser/QueryToken.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class TestQueryUtil {
  public:

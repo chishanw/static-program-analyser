@@ -11,8 +11,6 @@
 #include "Query/Common.h"
 #include "QueryLexer.h"
 
-enum RefType { STATEMENT_REF, ENTITY_REF };
-
 typedef std::unordered_map<std::string, query::DesignEntity> SynonymMap;
 
 class QueryParser {
@@ -57,6 +55,9 @@ class QueryParser {
   inline static const std::string INVALID_PARAM_TYPE_MSG =
       "QueryParser expects a valid param type.";
 
+  inline static const std::string INVALID_RESULT_TYPE_MSG =
+      "QueryParser expects a BOOLEAN, a tuple or one synonym for result "
+      "clause.";
   inline static const std::string INVALID_ST_P_KEYWORD_MSG =
       "QueryParser expects a such that or pattern keyword.";
   inline static const std::string INVALID_ST_RELATIONSHIP_MSG =
@@ -77,10 +78,13 @@ class QueryParser {
       "QueryParser found an invalid character in the pattern expr.";
 
  private:
-  std::vector<qpp::QueryToken> tokens;
   std::vector<qpp::QueryToken>::iterator it;
   std::vector<qpp::QueryToken>::iterator endIt;
   SynonymMap synonymMap;
+
+  // used to return FALSE for semantically invalid Select BOOLEAN clause
+  bool isSemanticallyValid;
+  std::string semanticErrorMsg;
 
   bool hasNextToken();
   qpp::QueryToken consumeToken();
@@ -88,7 +92,7 @@ class QueryParser {
 
   bool isDesignEntity(const std::string&);
 
-  std::string getName();
+  std::string getNameOrKeyword();
   char getCharSymbol();
   char getExactCharSymbol(const char&);
   query::DesignEntity getDesignEntity();
@@ -100,6 +104,8 @@ class QueryParser {
 
   SynonymMap parseSynonyms();
   query::SelectClause parseSelectClause();
+  std::tuple<std::vector<query::Synonym>, query::SelectType>
+  parseResultClause();
 
   void parseSuchThatClause(std::vector<query::ConditionClause>&);
   query::ConditionClause parseFollowsParentClause(const std::string&);

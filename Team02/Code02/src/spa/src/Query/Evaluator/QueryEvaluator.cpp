@@ -32,7 +32,7 @@ unordered_set<int> QueryEvaluator::evaluateQuery(
     unordered_map<string, DesignEntity> synonymMap, SelectClause select) {
   this->synonymMap = synonymMap;
 
-  Synonym selectSynonym = select.selectSynonym;
+  Synonym selectSynonym = select.selectSynonyms[0];
   vector<ConditionClause> conditionClauses = select.conditionClauses;
 
   for (auto clause : conditionClauses) {

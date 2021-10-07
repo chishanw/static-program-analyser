@@ -1,9 +1,9 @@
+#include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Query/Parser/QueryToken.h>
 
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 #include "../TestQueryUtil.h"
 #include "catch.hpp"
@@ -25,13 +25,15 @@ TEST_CASE(
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
     query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::PARENT,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -54,13 +56,15 @@ TEST_CASE(
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
     query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::PARENT_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -79,5 +83,7 @@ TEST_CASE("Invalid queries for one such that clause for Parent* throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 }

@@ -1,5 +1,5 @@
+#include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Query/Parser/QueryToken.h>
 
 #include <string>
 #include <unordered_map>
@@ -23,15 +23,16 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses,
                                     {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD,
-                                    "_",
+                                    query::ParamType::WILDCARD, "_",
                                     {query::MatchType::ANY, "_"});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -49,15 +50,16 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses,
                                     {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::WILDCARD,
-                                    "_",
+                                    query::ParamType::WILDCARD, "_",
                                     {query::MatchType::SUB_EXPRESSION, "x"});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -75,15 +77,16 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses,
                                     {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::NAME_LITERAL,
-                                    "x",
+                                    query::ParamType::NAME_LITERAL, "x",
                                     {query::MatchType::ANY, "_"});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -101,15 +104,16 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses,
                                     {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::NAME_LITERAL,
-                                    "x",
+                                    query::ParamType::NAME_LITERAL, "x",
                                     {query::MatchType::SUB_EXPRESSION, "x"});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -128,15 +132,16 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN},
                       {"v", query::DesignEntity::VARIABLE}};
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses,
                                     {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::SYNONYM,
-                                    "v",
+                                    query::ParamType::SYNONYM, "v",
                                     {query::MatchType::ANY, "_"});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -155,15 +160,16 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN},
                       {"v", query::DesignEntity::VARIABLE}};
     query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses,
                                     {query::DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::SYNONYM,
-                                    "v",
+                                    query::ParamType::SYNONYM, "v",
                                     {query::MatchType::SUB_EXPRESSION, "x"});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -183,6 +189,8 @@ TEST_CASE("Invalid EXACT pattern_expr throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(_, \"1\")") {
@@ -193,6 +201,8 @@ TEST_CASE("Invalid EXACT pattern_expr throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(v, \"x\")") {
@@ -203,6 +213,8 @@ TEST_CASE("Invalid EXACT pattern_expr throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(v, \"1\")") {
@@ -213,6 +225,8 @@ TEST_CASE("Invalid EXACT pattern_expr throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(\"x\", \"x\")") {
@@ -223,6 +237,8 @@ TEST_CASE("Invalid EXACT pattern_expr throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(\"x\", \"1\")") {
@@ -233,6 +249,8 @@ TEST_CASE("Invalid EXACT pattern_expr throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 }
 
@@ -244,6 +262,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_PATTERN_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(1, _)") {
@@ -253,6 +273,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(s, _)") {
@@ -262,6 +284,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SYNONYM_NON_VARIABLE_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
   }
 
   SECTION("Invalid pattern a(s, _\"x\")") {
@@ -271,6 +295,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(s, \"x\"_)") {
@@ -280,6 +306,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(s, \"x_)") {
@@ -289,6 +317,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(s, x)") {
@@ -298,6 +328,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(_, _") {
@@ -307,6 +339,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_INSUFFICIENT_TOKENS_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(_ _)") {
@@ -316,6 +350,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern a(_)") {
@@ -325,6 +361,8 @@ TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 }
 
@@ -338,15 +376,14 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
     // expected
     SynonymMap map = {{"w", query::DesignEntity::WHILE}};
     query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::WHILE, "w"},
-                                    query::ParamType::WILDCARD, "_",
-                                    {});
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::WHILE, "w"},
+                                    query::ParamType::WILDCARD, "_", {});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
-
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
@@ -363,15 +400,14 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
     // expected
     SynonymMap map = {{"w", query::DesignEntity::WHILE}};
     query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::WHILE, "w"},
-                                    query::ParamType::NAME_LITERAL, "x",
-                                    {});
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::WHILE, "w"},
+                                    query::ParamType::NAME_LITERAL, "x", {});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
-
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
@@ -391,15 +427,14 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
         {"v", query::DesignEntity::VARIABLE},
     };
     query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::WHILE, "w"},
-                                    query::ParamType::SYNONYM, "v",
-                                    {});
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::WHILE, "w"},
+                                    query::ParamType::SYNONYM, "v", {});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
-
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
@@ -417,6 +452,8 @@ TEST_CASE("Invalid queries with one pattern clause for while throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern w(p, _)") {
@@ -426,6 +463,8 @@ TEST_CASE("Invalid queries with one pattern clause for while throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SYNONYM_NON_VARIABLE_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
   }
 
   SECTION("Invalid pattern w(s, _)") {
@@ -435,6 +474,8 @@ TEST_CASE("Invalid queries with one pattern clause for while throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SYNONYM_NON_VARIABLE_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
   }
 
   SECTION("Invalid pattern w(1, _)") {
@@ -444,15 +485,8 @@ TEST_CASE("Invalid queries with one pattern clause for while throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_ENT_REF_MSG);
-  }
-
-  SECTION("Invalid pattern a(_, v)") {
-    string invalidQuery =
-        "assign a; variable v"
-        "Select a pattern a(_, v)";
-    // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 }
 
@@ -466,15 +500,14 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
     // expected
     SynonymMap map = {{"ifs", query::DesignEntity::IF}};
     query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::IF, "ifs"},
-                                    query::ParamType::WILDCARD, "_",
-                                    {});
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::IF, "ifs"},
+                                    query::ParamType::WILDCARD, "_", {});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
-
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
@@ -491,15 +524,14 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
     // expected
     SynonymMap map = {{"ifs", query::DesignEntity::IF}};
     query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::IF, "ifs"},
-                                    query::ParamType::NAME_LITERAL, "x",
-                                    {});
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::IF, "ifs"},
+                                    query::ParamType::NAME_LITERAL, "x", {});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
-
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
 
@@ -517,17 +549,16 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
     SynonymMap map = {
         {"ifs", query::DesignEntity::IF},
         {"v", query::DesignEntity::VARIABLE},
-        };
+    };
     query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
+    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::IF, "ifs"},
-                                    query::ParamType::SYNONYM, "v",
-                                    {});
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::IF, "ifs"},
+                                    query::ParamType::SYNONYM, "v", {});
 
-    tuple<SynonymMap, SelectClause> expected = {map, {selectSynonym, clauses}};
-
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
     // test
@@ -544,6 +575,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern ifs(_, _)") {
@@ -553,6 +586,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern ifs(s, _, _)") {
@@ -562,6 +597,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SYNONYM_NON_VARIABLE_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
   }
 
   SECTION("Invalid pattern ifs(p, _, _)") {
@@ -571,6 +608,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SYNONYM_NON_VARIABLE_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
   }
 
   SECTION("Invalid pattern ifs(1, _, _)") {
@@ -580,6 +619,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern ifs(_, v, _)") {
@@ -589,6 +630,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern ifs(_, _, v)") {
@@ -598,6 +641,8 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 
   SECTION("Invalid pattern ifs(_\"x\"_, _, _)") {
@@ -607,5 +652,7 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 }

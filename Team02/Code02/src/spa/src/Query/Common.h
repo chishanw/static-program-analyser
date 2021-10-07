@@ -43,6 +43,8 @@ enum class ConditionClauseType {
 
 enum class MatchType { EXACT, SUB_EXPRESSION, ANY };
 
+enum class SelectType { SYNONYMS, BOOLEAN };
+
 struct Synonym {
   const DesignEntity entity;
   const std::string name;
@@ -102,10 +104,11 @@ struct ConditionClause {
 };
 
 struct SelectClause {
-  const Synonym selectSynonym;
+  const std::vector<Synonym> selectSynonyms;
+  const SelectType selectType;
   const std::vector<ConditionClause> conditionClauses;
   bool operator ==(const SelectClause& other) const {
-    return selectSynonym == other.selectSynonym
+    return selectSynonyms == other.selectSynonyms
     && conditionClauses == other.conditionClauses;
   }
 };

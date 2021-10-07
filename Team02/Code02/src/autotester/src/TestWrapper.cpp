@@ -5,6 +5,7 @@
 #include <Parser/Parser.h>
 #include <Parser/Tokenizer.h>
 #include <Query/Evaluator/QueryEvaluator.h>
+#include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
 #include <Query/Projector/ResultProjector.h>
 
@@ -72,13 +73,31 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 
     SynonymMap map = get<0>(parsedQuery);
     SelectClause clause = get<1>(parsedQuery);
-    DesignEntity selectSynDesignEntity = map.at(clause.selectSynonym.name);
+    DesignEntity selectSynDesignEntity = map.at(clause.selectSynonyms[0].name);
     results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
                                                  evaluatedResult);
     DMOprintInfoMsg("Query Result Projector was successful");
 
+  } catch (const qpp::SyntacticErrorException& ex) {
+    DMOprintInfoMsg("TestWrapper evaluate() caught a syntactic error");
+    results = {};
+    cout << "Exception caught: " << ex.what() << endl;
+    return;
+
+  } catch (const qpp::SemanticSynonymErrorException& ex) {
+    DMOprintInfoMsg("TestWrapper evaluate() caught a semantic synonym error");
+    results = {};
+    cout << "Exception caught: " << ex.what() << endl;
+    return;
+
+  } catch (const qpp::SemanticBooleanErrorException& ex) {
+    DMOprintInfoMsg("TestWrapper evaluate() caught a semantic boolean error");
+    results = {"FALSE"};
+    cout << "Exception caught: " << ex.what() << endl;
+    return;
+
   } catch (const exception& ex) {
-    DMOprintInfoMsg("TestWrapper evaluate() caught an exception");
+    DMOprintInfoMsg("TestWrapper evaluate() caught an unknown exception");
     results = {};
     cout << "Exception caught: " << ex.what() << endl;
     return;

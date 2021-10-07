@@ -20,9 +20,7 @@ bool QueryLexer::isAllowedSymbol(char c) {
   return ALLOWED_SYMBOL_SET.find(c) != ALLOWED_SYMBOL_SET.end();
 }
 
-bool QueryLexer::isAllowedKeywordSymbol(char c) {
-  return c == '*' || c == '_';
-}
+bool QueryLexer::isAllowedKeywordSymbol(char c) { return c == '*' || c == '_'; }
 
 void QueryLexer::consumeWhitespace() {
   optional<char> maybeNextChar = peekChar();
@@ -34,7 +32,8 @@ void QueryLexer::consumeWhitespace() {
 
 char QueryLexer::consumeChar() {
   if (it == endIt) {
-    throw runtime_error("QueryLexer expected another char but received None.");
+    throw qpp::SyntacticErrorException(
+        "QueryLexer expected another char but received None.");
   }
   char current = *it;
   ++it;
@@ -68,8 +67,8 @@ QueryToken QueryLexer::getNameOrKeyword() {
       hasNextNameOrKeyword = false;
     } else {
       char next = peekChar().value();
-      hasNextNameOrKeyword = isLetter(next) || isDigit(next)
-          || isAllowedKeywordSymbol(next);
+      hasNextNameOrKeyword =
+          isLetter(next) || isDigit(next) || isAllowedKeywordSymbol(next);
     }
   }
   return {type, nameOrKeyword};
@@ -86,7 +85,8 @@ QueryToken QueryLexer::getInteger() {
   optional<char> maybeNextChar = peekChar();
   bool hasDigit = maybeNextChar.has_value() && isDigit(maybeNextChar.value());
   if (hasDigit && isFirstDigitZero) {
-    throw runtime_error(INVALID_INTEGER_START_ZERO_MSG);
+    isSemanticallyValid = false;  // semantic error
+    semanticErrorMsg = INVALID_INTEGER_START_ZERO_MSG;
   }
 
   // otherwise, first digit is not 0
@@ -106,7 +106,7 @@ QueryToken QueryLexer::getSymbol() {
   return {TokenType::CHAR_SYMBOL, symbol};
 }
 
-vector<QueryToken> QueryLexer::Tokenize(const string& in) {
+tuple<vector<QueryToken>, bool, string> QueryLexer::Tokenize(const string& in) {
   vector<QueryToken> tokens;
 
   it = in.begin();
@@ -131,9 +131,9 @@ vector<QueryToken> QueryLexer::Tokenize(const string& in) {
       tokens.push_back(getInteger());
 
     } else {
-      throw std::runtime_error(INVALID_TOKEN_MSG);
+      throw qpp::SyntacticErrorException(INVALID_TOKEN_MSG);
     }
     hasNextChar = peekChar().has_value();
   }
-  return tokens;
+  return {tokens, isSemanticallyValid, semanticErrorMsg};
 }

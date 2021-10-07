@@ -3,9 +3,10 @@
 #include <optional>
 #include <set>
 #include <string>
+#include <tuple>
 #include <vector>
 
-#include "QueryToken.h"
+#include "QueryLexerParserCommon.h"
 
 typedef std::basic_string<char>::const_iterator sIterator;
 class QueryLexer {
@@ -17,14 +18,19 @@ class QueryLexer {
       " a non zero digit";
 
   QueryLexer();
-  std::vector<qpp::QueryToken> Tokenize(const std::string&);
+  std::tuple<std::vector<qpp::QueryToken>, bool, std::string> Tokenize(
+      const std::string&);
 
  private:
   sIterator it;
   sIterator endIt;
 
-  const std::set<char> ALLOWED_SYMBOL_SET = {'+', '-', '*', '/', '%', '_',
-                                             '"', ',', ';', '(', ')'};
+  // used to return FALSE for semantically invalid Select BOOLEAN clause
+  bool isSemanticallyValid = true;
+  std::string semanticErrorMsg;
+
+  const std::set<char> ALLOWED_SYMBOL_SET = {'+', '-', '*', '/', '%', '_', '"',
+                                             ',', ';', '(', ')', '<', '>'};
 
   bool isLetter(char);
   bool isDigit(char);

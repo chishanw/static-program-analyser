@@ -1,5 +1,5 @@
 #include <Query/Parser/QueryLexer.h>
-#include <Query/Parser/QueryToken.h>
+#include <Query/Parser/QueryLexerParserCommon.h>
 
 #include <string>
 #include <vector>
@@ -64,10 +64,139 @@ TEST_CASE("Query with valid synonym types are tokenized successfully") {
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
+}
+
+// ============================ Testing Select ===========================
+TEST_CASE("Query with valid select clauses are tokenized") {
+  SECTION("Select BOOLEAN") {
+    string validQuery = "Select   BOOLEAN";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "BOOLEAN"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
+
+  SECTION("Select s") {
+    string validQuery = "stmt s; Select   s";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
+
+  SECTION("Select <s1, s2>") {
+    string validQuery = "stmt s1, s2; Select <   s1,      s2>";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::CHAR_SYMBOL, "<"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, ">"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
+
+  SECTION("Select <s1, n, c, s2>") {
+    string validQuery = "stmt s1; stmt s2; prog_line n; call c;"
+                        "Select <s1, n, c, s2>";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::KEYWORD, "prog_line"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "n"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "call"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "c"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::CHAR_SYMBOL, "<"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "n"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "c"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, ">"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
+}
+
+TEST_CASE("Invalid Select clauses are tokenized correctly") {
+  SECTION("Select <>") {
+    string validQuery = "Select <>";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::CHAR_SYMBOL, "<"},
+        {qpp::TokenType::CHAR_SYMBOL, ">"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
 }
 
 // ============================ Testing such that ===========================
@@ -139,10 +268,15 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 TEST_CASE(
@@ -241,10 +375,15 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 // ============================ Testing pattern ===========================
@@ -307,10 +446,15 @@ TEST_CASE("Query with valid pattern clauses are tokenized correctly") {
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 // ============================ Testing multi-clause ===========================
@@ -348,10 +492,15 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 // ============================ Testing whitespace ===========================
@@ -382,10 +531,15 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 TEST_CASE("Whitespaces in one keyword is tokenized into separate tokens") {
@@ -430,11 +584,15 @@ TEST_CASE("Whitespaces in one keyword is tokenized into separate tokens") {
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens =
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
       QueryLexer().Tokenize(invalidWhitespaceInKeyword);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 // ============================ Testing keywords ===========================
@@ -443,12 +601,12 @@ TEST_CASE("Tokenization of Follows * and Follows* should be different") {
   string validFollows = "Follows*";
   string invalidFollows = "Follows *";
 
-  vector<qpp::QueryToken> validFollowsTokens =
+  tuple<vector<qpp::QueryToken>, bool, string> validFollowsTokens =
       QueryLexer().Tokenize(validFollows);
-  vector<qpp::QueryToken> invalidFollowsTokens =
+  tuple<vector<qpp::QueryToken>, bool, string> invalidFollowsTokens =
       QueryLexer().Tokenize(invalidFollows);
 
-  REQUIRE(validFollowsTokens != invalidFollowsTokens);
+  REQUIRE(get<0>(validFollowsTokens) != get<0>(invalidFollowsTokens));
 }
 
 TEST_CASE("Query with invalid character throws") {
@@ -456,6 +614,8 @@ TEST_CASE("Query with invalid character throws") {
 
   REQUIRE_THROWS_WITH(QueryLexer().Tokenize(invalidQuery),
                       QueryLexer::INVALID_TOKEN_MSG);
+  REQUIRE_THROWS_AS(QueryLexer().Tokenize(invalidQuery),
+                    qpp::SyntacticErrorException);
 }
 
 // ============================ Testing integer ===========================
@@ -479,10 +639,15 @@ TEST_CASE("Large integer is parsed successfully") {
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2200000000"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
 TEST_CASE("Zero value integer is parsed successfully") {
@@ -504,17 +669,42 @@ TEST_CASE("Zero value integer is parsed successfully") {
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "0"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
 
-  vector<qpp::QueryToken> actualTokens = QueryLexer().Tokenize(validQuery);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
 
-  REQUIRE(actualTokens == expectedTokens);
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
-TEST_CASE("Query with invalid integer throws") {
+TEST_CASE("Query with invalid integer returns False for isSemanticallyValid") {
   string invalidQuery =
       "assign a;"
       "Select a such that Follows(0123, 4567)";
+  vector<qpp::QueryToken> expectedTokens = {
+      {qpp::TokenType::NAME_OR_KEYWORD, "assign"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "0123"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "4567"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, false, QueryLexer::INVALID_INTEGER_START_ZERO_MSG};
 
-  REQUIRE_THROWS_WITH(QueryLexer().Tokenize(invalidQuery),
-                      QueryLexer::INVALID_INTEGER_START_ZERO_MSG);
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(invalidQuery);
+
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
 }
