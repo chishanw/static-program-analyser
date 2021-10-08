@@ -12,7 +12,6 @@ PKB::PKB() {
   allStmtNo = UNO_SET_OF_STMT_NO();
   allReadStmtNo = UNO_SET_OF_STMT_NO();
   allPrintStmtNo = UNO_SET_OF_STMT_NO();
-  allCallStmtNo = UNO_SET_OF_STMT_NO();
   allWhileStmtNo = UNO_SET_OF_STMT_NO();
   allIfStmtNo = UNO_SET_OF_STMT_NO();
   allAssignStmtNo = UNO_SET_OF_STMT_NO();
@@ -42,15 +41,6 @@ void PKB::addPrintStmt(STMT_NO s) {
 
   addStmt(s);
   allPrintStmtNo.insert(s);
-}
-
-void PKB::addCallStmt(STMT_NO s) {
-  if (allCallStmtNo.count(s) > 0) {
-    return;
-  }
-
-  addStmt(s);
-  allCallStmtNo.insert(s);
 }
 
 void PKB::addWhileStmt(STMT_NO s) {
@@ -83,14 +73,12 @@ void PKB::addAssignStmt(STMT_NO s) {
 UNO_SET_OF_STMT_NO PKB::getAllStmts() { return allStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllReadStmts() { return allReadStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllPrintStmts() { return allPrintStmtNo; }
-UNO_SET_OF_STMT_NO PKB::getAllCallStmts() { return allCallStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllWhileStmts() { return allWhileStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllIfStmts() { return allIfStmtNo; }
 UNO_SET_OF_STMT_NO PKB::getAllAssignStmts() { return allAssignStmtNo; }
 
 bool PKB::isReadStmt(int s) { return allReadStmtNo.count(s) > 0; }
 bool PKB::isPrintStmt(int s) { return allPrintStmtNo.count(s) > 0; }
-bool PKB::isCallStmt(int s) { return allCallStmtNo.count(s) > 0; }
 bool PKB::isWhileStmt(int s) { return allWhileStmtNo.count(s) > 0; }
 bool PKB::isIfStmt(int s) { return allIfStmtNo.count(s) > 0; }
 bool PKB::isAssignStmt(int s) { return allAssignStmtNo.count(s) > 0; }
@@ -283,6 +271,48 @@ unordered_set<int> PKB::getWhileStmtForVar(string varName) {
 
 vector<vector<int>> PKB::getWhileStmtVarPairs() {
   return patternKB.getWhileStmtVarPairs();
+}
+
+// Calls API
+void PKB::addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee) {
+  addStmt(s);
+  callsKB.addCalls(s, caller, callee);
+}
+void PKB::addCallsT(PROC_IDX caller, PROC_IDX callee) {
+    callsKB.addCallsT(caller, callee);
+}
+bool PKB::isCalls(PROC_NAME caller, PROC_NAME callee) {
+  return callsKB.isCalls(caller, callee);
+}
+unordered_set<PROC_IDX> PKB::getProcsCalledBy(PROC_NAME proc) {
+  return callsKB.getProcsCalledBy(proc);
+}
+unordered_set<PROC_IDX> PKB::getCallerProcs(PROC_NAME proc) {
+  return callsKB.getCallerProcs(proc);
+}
+vector<pair<PROC_IDX, vector<PROC_IDX>>> PKB::getAllCallsPairs() {
+  return callsKB.getAllCallsPairs();
+}
+PROC_IDX PKB::getProcCalledByCallStmt(int callStmtNum) {
+  return callsKB.getProcCalledByCallStmt(callStmtNum);
+}
+bool PKB::isCallsT(PROC_NAME caller, PROC_NAME callee) {
+  return callsKB.isCallsT(caller, callee);
+}
+unordered_set<PROC_IDX> PKB::getProcsCalledTBy(PROC_NAME proc) {
+  return callsKB.getProcsCalledTBy(proc);
+}
+unordered_set<PROC_IDX> PKB::getCallerTProcs(PROC_NAME proc) {
+  return callsKB.getCallerTProcs(proc);
+}
+vector<pair<PROC_IDX, vector<PROC_IDX>>> PKB::getAllCallsTPairs() {
+  return callsKB.getAllCallsTPairs();
+}
+UNO_SET_OF_STMT_NO PKB::getAllCallStmts() {
+  return callsKB.getAllCallStmts();
+}
+bool PKB::isCallStmt(STMT_NO s) {
+  return callsKB.isCallStmt(s);
 }
 
 // Table API

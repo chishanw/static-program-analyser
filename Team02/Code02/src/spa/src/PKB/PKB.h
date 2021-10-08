@@ -18,6 +18,7 @@
 #include "UsesKB.h"
 #include "VarTable.h"
 #include "ConstTable.h"
+#include "CallsKB.h"
 
 using namespace std;
 
@@ -30,7 +31,6 @@ class PKB {
   void addStmt(STMT_NO s);
   void addReadStmt(STMT_NO s);
   void addPrintStmt(STMT_NO s);
-  void addCallStmt(STMT_NO s);
   void addWhileStmt(STMT_NO s);
   void addIfStmt(STMT_NO s);
   void addAssignStmt(STMT_NO s);
@@ -45,7 +45,6 @@ class PKB {
 
   bool isReadStmt(int s);
   bool isPrintStmt(int s);
-  bool isCallStmt(int s);
   bool isWhileStmt(int s);
   bool isIfStmt(int s);
   bool isAssignStmt(int s);
@@ -121,6 +120,20 @@ class PKB {
   std::unordered_set<int> getWhileStmtForVar(std::string varName);
   std::vector<std::vector<int>> getWhileStmtVarPairs();
 
+  // Calls API
+  void addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee);
+  void addCallsT(PROC_IDX caller, PROC_IDX callee);
+  bool isCallStmt(STMT_NO s);
+  bool isCalls(PROC_NAME caller, PROC_NAME callee);
+  std::unordered_set<PROC_IDX> getProcsCalledBy(PROC_NAME proc);
+  std::unordered_set<PROC_IDX> getCallerProcs(PROC_NAME proc);
+  std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsPairs();
+  PROC_IDX getProcCalledByCallStmt(int callStmtNum);
+  bool isCallsT(PROC_NAME caller, PROC_NAME callee);
+  std::unordered_set<PROC_IDX> getProcsCalledTBy(PROC_NAME proc);
+  std::unordered_set<PROC_IDX> getCallerTProcs(PROC_NAME proc);
+  std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsTPairs();
+
   // Table API
   CONST_IDX insertConst(string constant);
   std::string getConst(CONST_IDX index);
@@ -145,11 +158,11 @@ class PKB {
   ModifiesKB modifiesKB = ModifiesKB(&varTable, &procTable);
   UsesKB usesKB = UsesKB(&varTable, &procTable);
   PatternKB patternKB = PatternKB(&varTable);
+  CallsKB callsKB = CallsKB(&procTable);
 
   // Members
   UNO_SET_OF_STMT_NO allReadStmtNo;
   UNO_SET_OF_STMT_NO allPrintStmtNo;
-  UNO_SET_OF_STMT_NO allCallStmtNo;
   UNO_SET_OF_STMT_NO allWhileStmtNo;
   UNO_SET_OF_STMT_NO allIfStmtNo;
   UNO_SET_OF_STMT_NO allAssignStmtNo;

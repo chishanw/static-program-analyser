@@ -8,7 +8,7 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
 
   db.addReadStmt(1);
   db.addPrintStmt(2);
-  db.addCallStmt(3);
+  db.addCalls(3, "test1", "test2");
   db.addWhileStmt(4);
   db.addIfStmt(5);
   db.addAssignStmt(6);

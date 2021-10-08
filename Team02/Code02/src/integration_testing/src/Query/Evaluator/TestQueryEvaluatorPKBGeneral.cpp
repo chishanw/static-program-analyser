@@ -110,7 +110,7 @@ TEST_CASE("QueryEvaluator: Different Design Entities") {
   }
   pkb->addReadStmt(1);
   pkb->addPrintStmt(2);
-  pkb->addCallStmt(3);
+  pkb->addCalls(3, "test1", "test2");
   pkb->addWhileStmt(4);
   pkb->addIfStmt(5);
   pkb->addAssignStmt(6);

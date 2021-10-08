@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -26,6 +27,9 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
 
   ExtractUsesRS(programAST);
   ExtractModifies(programAST);
+
+  ExtractCalls(programAST);
+  ExtractCallsTrans();
   // ... other subroutines to extract other r/s go here too
 }
 
@@ -45,7 +49,7 @@ void DesignExtractor::ExtractProcAndStmtHelper(
     } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
       pkb->addPrintStmt(stmt->StmtNo);
     } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
-      pkb->addCallStmt(stmt->StmtNo);
+      // handled by ExtractCalls
     } else if (const WhileStmtAST* whileStmt =
                    dynamic_cast<const WhileStmtAST*>(stmt)) {
       pkb->addWhileStmt(stmt->StmtNo);
@@ -462,4 +466,53 @@ unordered_set<string> DesignExtractor::ExtractConstHelper(
   }
 
   return res;
+}
+
+void DesignExtractor::ExtractCalls(const ProgramAST* programAST) {
+  for (auto caller : programAST->ProcedureList) {
+    unordered_map<STMT_NO, PROC_NAME> res = ExtractCallsHelper(
+        caller->StmtList);
+    for (auto it = res.begin(); it != res.end(); it++) {
+      pkb->addCalls(it->first, caller->ProcName, it->second);
+    }
+  }
+}
+
+unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
+    const vector<StmtAST*> stmtList) {
+  unordered_map<STMT_NO, PROC_NAME> res;
+  for (auto stmt : stmtList) {
+    if (const CallStmtAST* callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
+      res.insert({ callStmt->StmtNo, callStmt->ProcName });
+    } else if (const WhileStmtAST* whileStmt =
+        dynamic_cast<const WhileStmtAST*>(stmt)) {
+      res.merge(ExtractCallsHelper(whileStmt->StmtList));
+    } else if (const IfStmtAST* ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      res.merge(ExtractCallsHelper(ifStmt->ThenBlock));
+      res.merge(ExtractCallsHelper(ifStmt->ElseBlock));
+    }
+  }
+
+  return res;
+}
+
+void DesignExtractor::ExtractCallsTrans() {
+  int noOfProcs = pkb->getAllProcedures().size();
+  for (int currProcIdx = 0; currProcIdx < noOfProcs; currProcIdx++) {
+    unordered_set<PROC_IDX> procsCalledByCurrIdx = pkb->getProcsCalledBy(
+        pkb->getProcName(currProcIdx));
+    for (auto procIdx : procsCalledByCurrIdx) {
+      ExtractCallsTransHelper(currProcIdx, procIdx);
+    }
+  }
+}
+
+void DesignExtractor::ExtractCallsTransHelper(PROC_IDX caller,
+    PROC_IDX callee) {
+  pkb->addCallsT(caller, callee);
+  unordered_set<PROC_IDX> calledByCallee = pkb->getProcsCalledBy(
+      pkb->getProcName(callee));
+  for (auto procIdx : calledByCallee) {
+    ExtractCallsTransHelper(caller, procIdx);
+  }
 }

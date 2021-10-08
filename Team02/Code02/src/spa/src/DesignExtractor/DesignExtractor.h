@@ -1,4 +1,5 @@
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -47,4 +48,10 @@ class DesignExtractor {
   void ExtractConst(const ProgramAST*);
   std::unordered_set<std::string> ExtractConstHelper(
       const std::vector<StmtAST*>);
+
+  void ExtractCalls(const ProgramAST*);
+  std::unordered_map<STMT_NO, PROC_NAME> ExtractCallsHelper(
+      const std::vector<StmtAST*>);
+  void ExtractCallsTrans();
+  void ExtractCallsTransHelper(PROC_IDX caller, PROC_IDX callee);
 };
