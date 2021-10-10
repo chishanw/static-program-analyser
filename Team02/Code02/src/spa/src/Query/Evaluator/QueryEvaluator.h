@@ -36,6 +36,9 @@ class QueryEvaluator {
   std::unordered_set<std::string> queryResultsSynonyms;
 
   // methods to build queryResults
+  void filterAndAddIncomingResults(
+      std::vector<std::vector<int>> incomingResults, const query::Param& left,
+      const query::Param& right);
   std::vector<std::vector<int>> filterIncomingResults(
       std::vector<std::vector<int>> incomingResults, const query::Param& left,
       const query::Param& right);
@@ -44,6 +47,8 @@ class QueryEvaluator {
                               const query::Param& right);
   void addIncomingResults(std::vector<std::vector<int>> incomingResults,
                           const query::Param& left, const query::Param& right);
+
+  // main algos to merge results
   void filter(std::vector<std::vector<int>> incomingResults,
               std::vector<string> incomingResultsSynonyms);
   void innerJoin(std::vector<std::vector<int>> incomingResults,
@@ -63,6 +68,9 @@ class QueryEvaluator {
   void evaluateModifiesPClause(query::SuchThatClause);
 
   void evaluatePatternClause(query::PatternClause);
+  void evaluateAssignPatternClause(query::PatternClause);
+  void evaluateIfPatternClause(query::PatternClause);
+  void evaluateWhilePatternClause(query::PatternClause);
 
   // helper methods
   std::vector<std::vector<int>> formatRefResults(

@@ -2518,3 +2518,256 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     REQUIRE(results.empty());
   }
 }
+
+TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addIfStmt(1);
+  pkb->addIfStmt(2);
+  pkb->addIfStmt(3);
+
+  pkb->addIfPtt(1, "x");
+  pkb->addIfPtt(1, "y");
+  pkb->addIfPtt(2, "x");
+  pkb->addIfPtt(3, "z");
+
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int zVarIdx = 2;
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"ifs", DesignEntity::IF}, {"v", DesignEntity::VARIABLE}};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select ifs pattern ifs ('x', _, _)") {
+    PatternClause patternClause = {ifs, {ParamType::NAME_LITERAL, "x"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select ifs pattern ifs (_, _, _)") {
+    PatternClause patternClause = {ifs, {ParamType::WILDCARD, "_"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select ifs pattern ifs (v, _, _)") {
+    PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v pattern ifs (v, _, _)") {
+    PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
+  PKB* pkb = new PKB();
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"ifs", DesignEntity::IF}, {"v", DesignEntity::VARIABLE}};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select ifs pattern ifs ('x', _, _)") {
+    pkb->addIfStmt(1);
+    pkb->addIfPtt(1, "y");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {ifs, {ParamType::NAME_LITERAL, "x"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select ifs pattern ifs (_, _, _)") {
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {ifs, {ParamType::WILDCARD, "_"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select ifs pattern ifs (v, _, _)") {
+    pkb->addIfStmt(1);  // e.g. if condition has const but no var
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v pattern ifs (v, _, _)") {
+    pkb->addIfStmt(1);
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addWhileStmt(1);
+  pkb->addWhileStmt(2);
+  pkb->addWhileStmt(3);
+  pkb->addWhileStmt(4);
+
+  pkb->addWhilePtt(1, "x");
+  pkb->addWhilePtt(1, "y");
+  pkb->addWhilePtt(2, "x");
+  pkb->addWhilePtt(3, "z");
+
+  int xVarIdx = 0;
+  int yVarIdx = 1;
+  int zVarIdx = 2;
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"w", DesignEntity::WHILE}, {"v", DesignEntity::VARIABLE}};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select w pattern w ('x', _)") {
+    PatternClause patternClause = {w, {ParamType::NAME_LITERAL, "x"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Select w pattern w (_, _)") {
+    PatternClause patternClause = {w, {ParamType::WILDCARD, "_"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select w pattern w (v, _)") {
+    PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+  }
+
+  SECTION("Select v pattern w (v, _)") {
+    PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
+  PKB* pkb = new PKB();
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"w", DesignEntity::WHILE}, {"v", DesignEntity::VARIABLE}};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select w pattern w ('x', _, _)") {
+    pkb->addWhileStmt(1);
+    pkb->addWhilePtt(1, "y");
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {w, {ParamType::NAME_LITERAL, "x"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select w pattern w (_, _, _)") {
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {w, {ParamType::WILDCARD, "_"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select w pattern w (v, _, _)") {
+    pkb->addWhileStmt(1);  // e.g. while condition has const but no var
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v pattern w (v, _, _)") {
+    pkb->addWhileStmt(1);
+    QueryEvaluator qe(pkb);
+
+    PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}

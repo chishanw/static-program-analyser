@@ -62,39 +62,24 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
 
   switch (clause.relationshipType) {
     case RelationshipType::FOLLOWS:
-      evaluateFollowsClause(clause);
-      break;
-
+      return evaluateFollowsClause(clause);
     case RelationshipType::FOLLOWS_T:
-      evaluateFollowsTClause(clause);
-      break;
-
+      return evaluateFollowsTClause(clause);
     case RelationshipType::PARENT:
-      evaluateParentClause(clause);
-      break;
-
+      return evaluateParentClause(clause);
     case RelationshipType::PARENT_T:
-      evaluateParentTClause(clause);
-      break;
-
+      return evaluateParentTClause(clause);
     case RelationshipType::USES_S:
-      evaluateUsesSClause(clause);
-      break;
-
+      return evaluateUsesSClause(clause);
     case RelationshipType::USES_P:
-      evaluateUsesPClause(clause);
-      break;
-
+      return evaluateUsesPClause(clause);
     case RelationshipType::MODIFIES_S:
-      evaluateModifiesSClause(clause);
-      break;
-
+      return evaluateModifiesSClause(clause);
     case RelationshipType::MODIFIES_P:
-      evaluateModifiesPClause(clause);
-      break;
-
+      return evaluateModifiesPClause(clause);
     default:
-      break;
+      DMOprintErrMsgAndExit(
+          "[QueryEvaluator][evaluateSuchThatClause] invalid relationship type");
   }
 }
 
@@ -132,19 +117,7 @@ void QueryEvaluator::evaluateFollowsClause(SuchThatClause clause) {
     incomingResults = followsEvaluator.evaluateStmtPairFollows(left, right);
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
@@ -178,19 +151,7 @@ void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
         followsEvaluator.evaluateStmtPairFollowsT(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
@@ -224,19 +185,7 @@ void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
         parentEvaluator.evaluateStmtPairParent(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
@@ -270,19 +219,7 @@ void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
         parentEvaluator.evaluateStmtPairParentT(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
@@ -317,19 +254,7 @@ void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
         formatRefPairResults(usesEvaluator.evaluatePairUsesS(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateUsesPClause(SuchThatClause clause) {
@@ -364,19 +289,7 @@ void QueryEvaluator::evaluateUsesPClause(SuchThatClause clause) {
         formatRefPairResults(usesEvaluator.evaluatePairUsesP(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
@@ -410,19 +323,7 @@ void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
         modifiesEvaluator.evaluatePairModifiesS(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateModifiesPClause(SuchThatClause clause) {
@@ -456,22 +357,24 @@ void QueryEvaluator::evaluateModifiesPClause(SuchThatClause clause) {
         modifiesEvaluator.evaluatePairModifiesP(left, right));
   }
 
-  vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, left, right);
-
-  if (filteredIncomingResults.empty()) {
-    areAllClausesTrue = false;
-    return;
-  }
-
-  if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, left, right);
-  } else {
-    addIncomingResults(filteredIncomingResults, left, right);
-  }
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
+  switch (clause.matchSynonym.entity) {
+    case DesignEntity::ASSIGN:
+      return evaluateAssignPatternClause(clause);
+    case DesignEntity::IF:
+      return evaluateIfPatternClause(clause);
+    case DesignEntity::WHILE:
+      return evaluateWhilePatternClause(clause);
+    default:
+      DMOprintErrMsgAndExit(
+          "[QueryEvaluator][evaluatePatternClause] invalid ptt design entity");
+  }
+}
+
+void QueryEvaluator::evaluateAssignPatternClause(PatternClause clause) {
   Synonym matchSynonym = clause.matchSynonym;
   Param varParam = clause.leftParam;
   PatternExpr patternExpr = clause.patternExpr;
@@ -488,9 +391,55 @@ void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
   }
 
   Param assignSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
+  filterAndAddIncomingResults(incomingResults, assignSynonymParam, varParam);
+}
+
+void QueryEvaluator::evaluateIfPatternClause(PatternClause clause) {
+  Synonym matchSynonym = clause.matchSynonym;
+  Param varParam = clause.leftParam;
+
+  vector<vector<int>> incomingResults;
+
+  if (varParam.type == ParamType::NAME_LITERAL ||
+      varParam.type == ParamType::WILDCARD) {
+    incomingResults =
+        formatRefResults(patternEvaluator.evaluateIfPattern(varParam));
+  } else {
+    incomingResults = patternEvaluator.evaluateIfPairPattern(varParam);
+  }
+
+  Param ifSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
+  filterAndAddIncomingResults(incomingResults, ifSynonymParam, varParam);
+}
+
+void QueryEvaluator::evaluateWhilePatternClause(PatternClause clause) {
+  Synonym matchSynonym = clause.matchSynonym;
+  Param varParam = clause.leftParam;
+
+  vector<vector<int>> incomingResults;
+
+  if (varParam.type == ParamType::NAME_LITERAL ||
+      varParam.type == ParamType::WILDCARD) {
+    incomingResults =
+        formatRefResults(patternEvaluator.evaluateWhilePattern(varParam));
+  } else {
+    incomingResults = patternEvaluator.evaluateWhilePairPattern(varParam);
+  }
+
+  Param whileSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
+  filterAndAddIncomingResults(incomingResults, whileSynonymParam, varParam);
+}
+
+void QueryEvaluator::filterAndAddIncomingResults(
+    vector<vector<int>> incomingResults, const Param& left,
+    const Param& right) {
+  if (incomingResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
 
   vector<vector<int>> filteredIncomingResults =
-      filterIncomingResults(incomingResults, assignSynonymParam, varParam);
+      filterIncomingResults(incomingResults, left, right);
 
   if (filteredIncomingResults.empty()) {
     areAllClausesTrue = false;
@@ -498,10 +447,9 @@ void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
   }
 
   if (currentQueryResults.empty()) {
-    initializeQueryResults(filteredIncomingResults, assignSynonymParam,
-                           varParam);
+    initializeQueryResults(filteredIncomingResults, left, right);
   } else {
-    addIncomingResults(filteredIncomingResults, assignSynonymParam, varParam);
+    addIncomingResults(filteredIncomingResults, left, right);
   }
 }
 

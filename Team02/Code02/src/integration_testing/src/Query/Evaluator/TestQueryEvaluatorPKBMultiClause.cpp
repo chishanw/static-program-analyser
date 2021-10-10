@@ -610,7 +610,7 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   }
 }
 
-TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
+TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->addStmt(1);
   pkb->addStmt(2);
@@ -620,20 +620,19 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
   pkb->addFollowsT(1, 2);
   pkb->addFollowsT(1, 3);
   pkb->addFollowsT(2, 3);
+  pkb->addModifiesS(2, "x");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT},
       {"s2", DesignEntity::STATEMENT},
-      {"s3", DesignEntity::STATEMENT},
-      {"s4", DesignEntity::STATEMENT}};
+      {"v", DesignEntity::VARIABLE}};
   Synonym s1 = {DesignEntity::STATEMENT, "s1"};
   Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym s3 = {DesignEntity::STATEMENT, "s3"};
-  Synonym s4 = {DesignEntity::STATEMENT, "s4"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
   vector<ConditionClause> conditionClauses = {};
 
-  SECTION("2 Follows: Bool + Synonym") {
+  SECTION("Same RelationshipType: No Common Synonym") {
     // Select s1 such that Follows(1, 2) and Follows(s1, 2)
     SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
                                       {ParamType::INTEGER_LITERAL, "1"},
@@ -652,70 +651,7 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
     REQUIRE(results == unordered_set<int>({1}));
   }
 
-  SECTION(
-      "2 Follows: Synonym Clause + Synonym Clause: Filter Algo - One Common "
-      "Synonym") {
-    // Select s1 such that Follows(s1, s2) and Follows(s1, 2)
-    SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s1"},
-                                      {ParamType::SYNONYM, "s2"}};
-    conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
-
-    SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s1"},
-                                      {ParamType::INTEGER_LITERAL, "2"}};
-    conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
-
-    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1}));
-  }
-
-  SECTION("2 Follows: Synonym + Synonym: Filter Algo - Both Common Synonyms") {
-    // Select s1 such that Follows(s1, s2) and Follows(s1, s2)
-    SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s1"},
-                                      {ParamType::SYNONYM, "s2"}};
-    conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
-
-    SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s1"},
-                                      {ParamType::SYNONYM, "s2"}};
-
-    conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
-
-    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
-  }
-
-  SECTION(
-      "2 Follows: Synonym + Synonym: Inner Join Algo - One Common Synonym") {
-    // Select s1 such that Follows(s1, s2) and Follows(s2, s3)
-    SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s1"},
-                                      {ParamType::SYNONYM, "s2"}};
-    conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
-
-    SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s2"},
-                                      {ParamType::SYNONYM, "s3"}};
-    conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
-
-    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1}));
-  }
-
-  SECTION(
-      "2 Follows: Synonym + Synonym: Inner Join Algo - One Common Synonym w/ "
-      "Wildcard") {
+  SECTION("Same RelationshipType: Common Synonym") {
     // Select s1 such that Follows(s1, s2) and Follows(s1, _)
     SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s1"},
@@ -734,18 +670,17 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
     REQUIRE(results == unordered_set<int>({1, 2}));
   }
 
-  SECTION(
-      "2 Follows: Synonym + Synonym: Cross Product Algo - No Common Synonyms") {
-    // Select s1 such that Follows(s1, s2) and Follows(s3, s4)
+  SECTION("Different RelationshipType: No Common Synonym") {
+    // Select s1 such that Follows(s1, _) and Modifies(s2, v)
     SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s1"},
-                                      {ParamType::SYNONYM, "s2"}};
+                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
         {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
 
-    SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s3"},
-                                      {ParamType::SYNONYM, "s4"}};
+    SuchThatClause suchThatClause2 = {RelationshipType::MODIFIES_S,
+                                      {ParamType::SYNONYM, "s2"},
+                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
         {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
 
@@ -754,29 +689,27 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Truthy Values") {
     REQUIRE(results == unordered_set<int>({1, 2}));
   }
 
-  SECTION(
-      "2 Follows: Synonym + Synonym: Cross Product Algo - No Common Synonyms "
-      "w/ Wildcard") {
-    // Select s1 such that Follows(s1, _) and Follows(s2, _)
+  SECTION("Different RelationshipType: Common Synonym") {
+    // Select s1 such that Follows(s1, _) and Modifies(s1, v)
     SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
         {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
 
-    SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
-                                      {ParamType::SYNONYM, "s2"},
-                                      {ParamType::WILDCARD, "_"}};
+    SuchThatClause suchThatClause2 = {RelationshipType::MODIFIES_S,
+                                      {ParamType::SYNONYM, "s1"},
+                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
         {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    REQUIRE(results == unordered_set<int>({2}));
   }
 }
 
-TEST_CASE("QueryEvaluator: 2 Clauses - Falsy Values") {
+TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Falsy Values") {
   PKB* pkb = new PKB();
   pkb->addStmt(1);
   pkb->addStmt(2);
@@ -870,5 +803,79 @@ TEST_CASE("QueryEvaluator: 2 Clauses - Falsy Values") {
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     unordered_set<int> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == unordered_set<int>({}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: Multiple Pattern Clauses") {
+  PKB* pkb = new PKB();
+  pkb->addAssignStmt(1);
+  pkb->addAssignStmt(2);
+  pkb->addIfStmt(3);
+  pkb->addWhileStmt(4);
+  pkb->addAssignPttFullExpr(1, "x", "y");
+  pkb->addAssignPttFullExpr(2, "x", "z");
+  pkb->addIfPtt(3, "y");
+  pkb->addWhilePtt(4, "x");
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"a", DesignEntity::ASSIGN},
+      {"ifs", DesignEntity::IF},
+      {"w", DesignEntity::WHILE},
+      {"v", DesignEntity::VARIABLE}};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym v = {DesignEntity::VARIABLE, "v"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Same RelationshipType") {
+    // Select a pattern a ("x", _) and a (v, "y")
+    PatternClause patternClause1 = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause1, ConditionClauseType::PATTERN});
+
+    PatternClause patternClause2 = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "y"}};
+    conditionClauses.push_back(
+        {{}, patternClause2, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1}));
+  }
+
+  SECTION("Different RelationshipType: No Common Synonym") {
+    // Select a pattern a ("x", _) and ifs (v, _, _)
+    PatternClause patternClause1 = {
+        a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause1, ConditionClauseType::PATTERN});
+
+    PatternClause patternClause2 = {ifs, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause2, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == unordered_set<int>({1, 2}));
+  }
+
+  SECTION("Different RelationshipType: Common Synonym") {
+    // Select v pattern a (v, _) and w (v, _)
+    PatternClause patternClause1 = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
+    conditionClauses.push_back(
+        {{}, patternClause1, ConditionClauseType::PATTERN});
+
+    PatternClause patternClause2 = {w, {ParamType::SYNONYM, "v"}, {}};
+    conditionClauses.push_back(
+        {{}, patternClause2, ConditionClauseType::PATTERN});
+
+    SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
+    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    int xVarIdx = 0;
+    REQUIRE(results == unordered_set<int>({xVarIdx}));
   }
 }
