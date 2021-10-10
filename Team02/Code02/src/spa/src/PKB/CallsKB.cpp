@@ -35,22 +35,24 @@ void CallsKB::addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee) {
 }
 
 // indices guaranteed to be valid
-void CallsKB::addCallsT(PROC_IDX caller, PROC_IDX callee) {
+void CallsKB::addCallsT(PROC_NAME caller, PROC_NAME callee) {
+    PROC_IDX p1 = procTable->getProcIndex(caller);
+    PROC_IDX p2 = procTable->getProcIndex(callee);
     try {
-        tableT.at(caller).insert(callee);
+        tableT.at(p1).insert(p2);
     }
     catch (const out_of_range& e) {
         unordered_set<PROC_IDX> newSet({});
-        newSet.insert(callee);
-        tableT.insert({ caller, newSet });
+        newSet.insert(p2);
+        tableT.insert({ p1, newSet });
     }
     try {
-        invTableT.at(callee).insert(caller);
+        invTableT.at(p2).insert(p1);
     }
     catch (const out_of_range& e) {
         unordered_set<PROC_IDX> newSet({});
-        newSet.insert(caller);
-        invTableT.insert({ callee, newSet });
+        newSet.insert(p1);
+        invTableT.insert({ p2, newSet });
     }
 }
 
@@ -148,8 +150,8 @@ PROC_IDX CallsKB::getProcCalledByCallStmt(int callStmtNum) {
   }
 }
 
-unordered_set<PROC_IDX> CallsKB::getAllCallStmts() {
-  unordered_set<PROC_IDX> res;
+unordered_set<STMT_NO> CallsKB::getAllCallStmts() {
+  unordered_set<STMT_NO> res;
   for (auto it = stmtToCallee.begin(); it != stmtToCallee.end(); it++) {
     res.insert(it->first);
   }
@@ -157,6 +159,6 @@ unordered_set<PROC_IDX> CallsKB::getAllCallStmts() {
 }
 
 bool CallsKB::isCallStmt(STMT_NO s) {
-  unordered_set allCallStmts = getAllCallStmts();
+  unordered_set<STMT_NO> allCallStmts = getAllCallStmts();
   return allCallStmts.count(s) > 0;
 }

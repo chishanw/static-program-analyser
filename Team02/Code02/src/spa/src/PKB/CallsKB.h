@@ -11,9 +11,8 @@
 #include <unordered_set>
 #include <unordered_map>
 
-typedef int STMT_NO;
+typedef int STMT_NO, PROC_IDX;
 typedef std::string PROC_NAME;
-typedef int PROC_IDX;
 
 class CallsKB {
  public:
@@ -21,12 +20,12 @@ class CallsKB {
 
   // API for DE
   void addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee);
-  void addCallsT(PROC_IDX caller, PROC_IDX callee);
+  void addCallsT(PROC_NAME caller, PROC_NAME callee);
 
   // API for QE
   bool isCallStmt(STMT_NO s);
   PROC_IDX getProcCalledByCallStmt(int callStmtNum);
-  std::unordered_set<PROC_IDX> getAllCallStmts();
+  std::unordered_set<STMT_NO> getAllCallStmts();
   bool isCalls(PROC_NAME caller, PROC_NAME callee);
   std::unordered_set<PROC_IDX> getProcsCalledBy(PROC_NAME proc);
   std::unordered_set<PROC_IDX> getCallerProcs(PROC_NAME proc);

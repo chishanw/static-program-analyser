@@ -122,7 +122,7 @@ class PKB {
 
   // Calls API
   void addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee);
-  void addCallsT(PROC_IDX caller, PROC_IDX callee);
+  void addCallsT(PROC_NAME caller, PROC_NAME callee);
   bool isCallStmt(STMT_NO s);
   bool isCalls(PROC_NAME caller, PROC_NAME callee);
   std::unordered_set<PROC_IDX> getProcsCalledBy(PROC_NAME proc);

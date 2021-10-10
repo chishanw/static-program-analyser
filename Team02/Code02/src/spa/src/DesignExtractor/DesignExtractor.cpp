@@ -25,10 +25,11 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractFollows(programAST);
   ExtractFollowsTrans(programAST);
 
-  ExtractCalls(programAST);
-  ExtractCallsTrans();  // this should be called before ExtractUsesRS or
-                        // ExtractModifies to prevent infinite recursion
-                        // if there exists Recursive/Cyclic Calls
+  CALL_GRAPH callGraph = ExtractCalls(programAST);
+  ExtractCallsTrans(callGraph);   // this should be called before ExtractUsesRS
+                                  // or ExtractModifies to prevent infinite
+                                  // recursion if there exists Recursive/Cyclic
+                                  // Calls
 
   ExtractUsesRS(programAST);
   ExtractModifies(programAST);
@@ -515,14 +516,24 @@ unordered_set<string> DesignExtractor::ExtractConstHelper(
   return res;
 }
 
-void DesignExtractor::ExtractCalls(const ProgramAST* programAST) {
+CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST) {
+  CALL_GRAPH callGraph;
+
   for (auto caller : programAST->ProcedureList) {
+    unordered_set<PROC_NAME> allProcsCalled;
+
     unordered_map<STMT_NO, PROC_NAME> res = ExtractCallsHelper(
         caller->StmtList);
-    for (auto it = res.begin(); it != res.end(); it++) {
-      pkb->addCalls(it->first, caller->ProcName, it->second);
+    for (auto it : res) {
+      pkb->addCalls(it.first, caller->ProcName, it.second);
+      allProcsCalled.insert(it.second);
     }
+
+    // allProcsCalled could be empty set
+    callGraph.insert({ caller->ProcName, allProcsCalled });
   }
+
+  return callGraph;
 }
 
 unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
@@ -543,23 +554,28 @@ unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
   return res;
 }
 
-void DesignExtractor::ExtractCallsTrans() {
-  int noOfProcs = pkb->getAllProcedures().size();
-  for (int currProcIdx = 0; currProcIdx < noOfProcs; currProcIdx++) {
-    unordered_set<PROC_IDX> procsCalledByCurrIdx = pkb->getProcsCalledBy(
-        pkb->getProcName(currProcIdx));
-    for (auto procIdx : procsCalledByCurrIdx) {
-      ExtractCallsTransHelper(currProcIdx, procIdx);
+void DesignExtractor::ExtractCallsTrans(CALL_GRAPH callGraph) {
+  for (auto it : callGraph) {
+    PROC_NAME caller = it.first;
+    unordered_set<PROC_NAME> callees = it.second;
+    for (auto callee : callees) {
+      ExtractCallsTransHelper(callGraph, caller, callee);
     }
   }
 }
 
-void DesignExtractor::ExtractCallsTransHelper(PROC_IDX caller,
-    PROC_IDX callee) {
+void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
+                                              PROC_NAME caller,
+                                              PROC_NAME callee) {
+  if (caller == callee) {
+    throw runtime_error("Cyclic/Recursive loop detected.");
+    return;
+  }
+
   pkb->addCallsT(caller, callee);
-  unordered_set<PROC_IDX> calledByCallee = pkb->getProcsCalledBy(
-      pkb->getProcName(callee));
-  for (auto procIdx : calledByCallee) {
-    ExtractCallsTransHelper(caller, procIdx);
+
+  unordered_set<PROC_NAME> nextLayerCallees = callGraph.at(callee);
+  for (auto nextLayerCallee : nextLayerCallees) {
+      ExtractCallsTransHelper(callGraph, caller, nextLayerCallee);
   }
 }

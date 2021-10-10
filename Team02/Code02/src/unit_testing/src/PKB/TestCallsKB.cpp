@@ -90,9 +90,9 @@ TEST_CASE("CALLS_TABLE_TRANS") {
   db.insertProc("b");
   db.insertProc("c");
 
-  db.addCallsT(0, 1);
-  db.addCallsT(0, 2);
-  db.addCallsT(1, 2);
+  db.addCallsT("a", "b");
+  db.addCallsT("a", "c");
+  db.addCallsT("b", "c");
 
   REQUIRE(db.isCallsT("a", "b"));
   REQUIRE(db.isCallsT("a", "c"));

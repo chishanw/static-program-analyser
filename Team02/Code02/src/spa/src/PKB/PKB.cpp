@@ -278,7 +278,7 @@ void PKB::addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee) {
   addStmt(s);
   callsKB.addCalls(s, caller, callee);
 }
-void PKB::addCallsT(PROC_IDX caller, PROC_IDX callee) {
+void PKB::addCallsT(PROC_NAME caller, PROC_NAME callee) {
     callsKB.addCallsT(caller, callee);
 }
 bool PKB::isCalls(PROC_NAME caller, PROC_NAME callee) {

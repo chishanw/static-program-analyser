@@ -7,6 +7,8 @@
 #include "PKB/PKB.h"
 #include "Parser/AST.h"
 
+typedef std::unordered_map<PROC_NAME, std::unordered_set<PROC_NAME>> CALL_GRAPH;
+
 class DesignExtractor {
  public:
   explicit DesignExtractor(PKB*);
@@ -49,9 +51,9 @@ class DesignExtractor {
   std::unordered_set<std::string> ExtractConstHelper(
       const std::vector<StmtAST*>);
 
-  void ExtractCalls(const ProgramAST*);
+  CALL_GRAPH ExtractCalls(const ProgramAST*);
   std::unordered_map<STMT_NO, PROC_NAME> ExtractCallsHelper(
       const std::vector<StmtAST*>);
-  void ExtractCallsTrans();
-  void ExtractCallsTransHelper(PROC_IDX caller, PROC_IDX callee);
+  void ExtractCallsTrans(CALL_GRAPH);
+  void ExtractCallsTransHelper(CALL_GRAPH, PROC_NAME, PROC_NAME);
 };
