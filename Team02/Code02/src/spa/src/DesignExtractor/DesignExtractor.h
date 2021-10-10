@@ -21,11 +21,11 @@ class DesignExtractor {
 
   void ExtractUsesRS(const ProgramAST*);
   std::vector<std::pair<STMT_NO, NAME>> ExtractUsesRSHelper(
-      const vector<StmtAST*>);
+      const vector<StmtAST*>, unordered_map<NAME, ProcedureAST*>);
 
   void ExtractModifies(const ProgramAST*);
   std::vector<std::pair<STMT_NO, NAME>> ExtractModifiesHelper(
-      const vector<StmtAST*>);
+      const vector<StmtAST*>, unordered_map<NAME, ProcedureAST*>);
 
   void ExtractParent(const ProgramAST*);
   std::vector<std::pair<STMT_NO, STMT_NO>> ExtractParentHelper(

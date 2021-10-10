@@ -31,6 +31,7 @@ TEST_CASE("[DE][Modifies R/S] sample source") {
     "\n"
     "procedure p {\n"
     "  if (x<0) then {\n"
+    "    a = 0;\n"
     "    while (i>0) {\n"
     "      x = z * 3 + 2 * y;\n"
     "      call q;\n"
@@ -43,7 +44,8 @@ TEST_CASE("[DE][Modifies R/S] sample source") {
     "\n"
     "procedure q {\n"
     "  if (x==1) then {\n"
-    "    z = x + 1; }\n"
+    "    z = x + 1;\n"
+    "    b = z;}\n"
     "  else {\n"
     "    x = z + x; } }\n"
     "\n";
@@ -54,12 +56,15 @@ TEST_CASE("[DE][Modifies R/S] sample source") {
   de.Extract(ast);
 
   SECTION("Modifies R/S") {
-    REQUIRE(pkb->getModifiesS("x") == UNO_SET_OF_STMT_NO({1, 4, 5, 13, 14,
-        15, 18, 22, 24}));
+    REQUIRE(pkb->getModifiesS("x") == UNO_SET_OF_STMT_NO({1, 4, 5, 10, 12,
+        13, 15, 16, 17, 19, 23, 26}));
     REQUIRE(pkb->getModifiesS("i") == UNO_SET_OF_STMT_NO({3, 4, 11,
-        13, 14, 17}));
+        12, 13, 15, 18}));
     REQUIRE(pkb->getModifiesS("z") == UNO_SET_OF_STMT_NO({2, 4, 6, 7, 9,
-        13, 19, 20, 21, 22, 23}));
+        10, 12, 13, 15, 17, 20, 21, 22, 23, 24}));
     REQUIRE(pkb->getModifiesS("y") == UNO_SET_OF_STMT_NO({4, 6, 8}));
+    REQUIRE(pkb->getModifiesS("a") == UNO_SET_OF_STMT_NO({ 12, 13, 14 }));
+    REQUIRE(pkb->getModifiesS("b") == UNO_SET_OF_STMT_NO({ 4, 10, 12, 13,
+        15, 17, 23, 25 }));
   }
 }

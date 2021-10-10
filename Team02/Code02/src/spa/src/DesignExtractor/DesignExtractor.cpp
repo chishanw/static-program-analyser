@@ -25,11 +25,13 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractFollows(programAST);
   ExtractFollowsTrans(programAST);
 
+  ExtractCalls(programAST);
+  ExtractCallsTrans();  // this should be called before ExtractUsesRS or
+                        // ExtractModifies to prevent infinite recursion
+                        // if there exists Recursive/Cyclic Calls
+
   ExtractUsesRS(programAST);
   ExtractModifies(programAST);
-
-  ExtractCalls(programAST);
-  ExtractCallsTrans();
   // ... other subroutines to extract other r/s go here too
 }
 
@@ -89,19 +91,26 @@ void DesignExtractor::ExtractUsesRS(const ProgramAST* programAST) {
   // 5. Procedure call c (i.e. "call p") Variable v
   // Uses (c, v) is defined in the same way as Uses (p, v).
 
-  // TODO(de): 4 and 5 is not included in iter1
-
   vector<pair<STMT_NO, NAME>> result;
 
+  unordered_map<NAME, ProcedureAST*> procNameToAST;
   for (auto procedure : programAST->ProcedureList) {
-    result = ExtractUsesRSHelper(procedure->StmtList);
+    procNameToAST.insert({ procedure->ProcName, procedure });
+  }
 
-    for (auto p : result) pkb->addUsesS(p.first, p.second);
+  for (auto procedure : programAST->ProcedureList) {
+    result = ExtractUsesRSHelper(procedure->StmtList, procNameToAST);
+
+    for (auto p : result) {
+      pkb->addUsesS(p.first, p.second);
+      pkb->addUsesP(procedure->ProcName, p.second);
+    }
   }
 }
 
 vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
-    const vector<StmtAST*> stmtList) {
+    const vector<StmtAST*> stmtList,
+    unordered_map<NAME, ProcedureAST*> procNameToAST) {
   vector<pair<STMT_NO, NAME>> result;      // resultAtThisNestingLevel
   vector<pair<STMT_NO, NAME>> resultNext;  // resultAtNextNestingLevel
 
@@ -124,14 +133,14 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
       }
 
       // then
-      resultNext = ExtractUsesRSHelper(ifStmt->ThenBlock);
+      resultNext = ExtractUsesRSHelper(ifStmt->ThenBlock, procNameToAST);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
         uniqueDescendantVarNames.insert(res.second);
       }
 
       // else
-      resultNext = ExtractUsesRSHelper(ifStmt->ElseBlock);
+      resultNext = ExtractUsesRSHelper(ifStmt->ElseBlock, procNameToAST);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
         uniqueDescendantVarNames.insert(res.second);
@@ -150,7 +159,7 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
         result.push_back(make_pair(whileStmt->StmtNo, varName));
       }
 
-      resultNext = ExtractUsesRSHelper(whileStmt->StmtList);
+      resultNext = ExtractUsesRSHelper(whileStmt->StmtList, procNameToAST);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
         uniqueDescendantVarNames.insert(res.second);
@@ -158,6 +167,21 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
       // insert Descendant VarNames
       for (auto descendantVarName : uniqueDescendantVarNames) {
         result.push_back(make_pair(whileStmt->StmtNo, descendantVarName));
+      }
+    } else if (const CallStmtAST* callStmt =
+        dynamic_cast<const CallStmtAST*>(stmt)) {
+      unordered_set<NAME> uniqueDescendantVarNames;
+      ProcedureAST* calledProc = procNameToAST.at(callStmt->ProcName);
+      resultNext = ExtractUsesRSHelper(calledProc->StmtList, procNameToAST);
+
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+
+      for (auto res : resultNext) {
+        uniqueDescendantVarNames.insert(res.second);
+      }
+
+      for (auto descendantVarName : uniqueDescendantVarNames) {
+        result.push_back(make_pair(callStmt->StmtNo, descendantVarName));
       }
     }
   }
@@ -167,16 +191,24 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractUsesRSHelper(
 
 void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
   vector<pair<STMT_NO, NAME>> result;
+
+  unordered_map<NAME, ProcedureAST*> procNameToAST;
   for (auto procedure : programAST->ProcedureList) {
-    result = ExtractModifiesHelper(procedure->StmtList);
+    procNameToAST.insert({ procedure->ProcName, procedure });
+  }
+
+  for (auto procedure : programAST->ProcedureList) {
+    result = ExtractModifiesHelper(procedure->StmtList, procNameToAST);
     for (auto p : result) {
       pkb->addModifiesS(p.first, p.second);
+      pkb->addModifiesP(procedure->ProcName, p.second);
     }
   }
 }
 
 vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractModifiesHelper(
-    const vector<StmtAST*> stmtList) {
+    const vector<StmtAST*> stmtList,
+    unordered_map<NAME, ProcedureAST*> procNameToAST) {
   vector<pair<STMT_NO, NAME>> result;
   vector<pair<STMT_NO, NAME>> resultNext;
 
@@ -189,14 +221,14 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractModifiesHelper(
       unordered_set<NAME> uniqueDescendantVarNames;
 
       // then
-      resultNext = ExtractModifiesHelper(ifStmt->ThenBlock);
+      resultNext = ExtractModifiesHelper(ifStmt->ThenBlock, procNameToAST);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
         uniqueDescendantVarNames.insert(res.second);
       }
 
       // else
-      resultNext = ExtractModifiesHelper(ifStmt->ElseBlock);
+      resultNext = ExtractModifiesHelper(ifStmt->ElseBlock, procNameToAST);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
         uniqueDescendantVarNames.insert(res.second);
@@ -210,7 +242,7 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractModifiesHelper(
                    dynamic_cast<const WhileStmtAST*>(stmt)) {
       unordered_set<NAME> uniqueDescendantVarNames;
 
-      resultNext = ExtractModifiesHelper(whileStmt->StmtList);
+      resultNext = ExtractModifiesHelper(whileStmt->StmtList, procNameToAST);
       copy(resultNext.begin(), resultNext.end(), back_inserter(result));
       for (auto res : resultNext) {
         uniqueDescendantVarNames.insert(res.second);
@@ -223,6 +255,21 @@ vector<pair<STMT_NO, NAME>> DesignExtractor::ExtractModifiesHelper(
     } else if (const ReadStmtAST* readStmt =
                    dynamic_cast<const ReadStmtAST*>(stmt)) {
       result.push_back(make_pair(readStmt->StmtNo, readStmt->VarName));
+    } else if (const CallStmtAST* callStmt =
+          dynamic_cast<const CallStmtAST*>(stmt)) {
+      unordered_set<NAME> uniqueDescendantVarNames;
+      ProcedureAST* calledProc = procNameToAST.at(callStmt->ProcName);
+      resultNext = ExtractModifiesHelper(calledProc->StmtList, procNameToAST);
+
+      copy(resultNext.begin(), resultNext.end(), back_inserter(result));
+
+      for (auto res : resultNext) {
+        uniqueDescendantVarNames.insert(res.second);
+      }
+
+      for (auto descendantVarName : uniqueDescendantVarNames) {
+        result.push_back(make_pair(callStmt->StmtNo, descendantVarName));
+      }
     }
   }
 

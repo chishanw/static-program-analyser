@@ -32,7 +32,7 @@ TEST_CASE("[DE][Uses R/S] sample source") {
       "procedure p {\n"
       "  if (x<0) then {\n"
       "    while (i>0) {\n"
-      "      x = z * 3 + 2 * y;\n"
+      "      x = z * 3 + 2 * y + a;\n"
       "      call q;\n"
       "      i = i - 1; }\n"
       "    x = x + 1;\n"
@@ -43,7 +43,7 @@ TEST_CASE("[DE][Uses R/S] sample source") {
       "\n"
       "procedure q {\n"
       "  if (x==1) then {\n"
-      "    z = x + 1; }\n"
+      "    z = x + 1 + b; }\n"
       "  else {\n"
       "    x = z + x; } }\n"
       "\n";
@@ -92,5 +92,16 @@ TEST_CASE("[DE][Uses R/S] sample source") {
     REQUIRE(pkb->isUsesS(23, "x"));
     REQUIRE(pkb->isUsesS(24, "z"));
     REQUIRE(pkb->isUsesS(24, "x"));
+
+    REQUIRE(pkb->getUsesS("x") == UNO_SET_OF_STMT_NO({ 4, 5, 6, 7, 8, 9,
+        10, 12, 13, 14, 16, 18, 19, 21, 22, 23, 24}));
+    REQUIRE(pkb->getUsesS("i") == UNO_SET_OF_STMT_NO({ 4, 9, 11, 12, 13, 14,
+        17, 21 }));
+    REQUIRE(pkb->getUsesS("z") == UNO_SET_OF_STMT_NO({ 4, 6, 8, 9, 10, 12,
+        13, 14, 15, 16, 19, 21, 22, 24}));
+    REQUIRE(pkb->getUsesS("y") == UNO_SET_OF_STMT_NO({ 12, 13, 14, 15 }));
+    REQUIRE(pkb->getUsesS("a") == UNO_SET_OF_STMT_NO({ 12, 13, 14, 15 }));
+    REQUIRE(pkb->getUsesS("b") == UNO_SET_OF_STMT_NO({ 4, 10, 12, 13, 14,
+        16, 22, 23 }));
   }
 }
