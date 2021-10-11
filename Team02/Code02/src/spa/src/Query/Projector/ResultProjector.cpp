@@ -1,37 +1,68 @@
 #include "ResultProjector.h"
 
+#include <Common/Global.h>
+
 #include <list>
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
+#include <vector>
 
 using namespace query;
 
 ResultProjector::ResultProjector(PKB* pkb) { this->pkb = pkb; }
 
-list<string> ResultProjector::formatResults(DesignEntity designEntity,
-                                            unordered_set<int> results) {
+list<string> ResultProjector::formatResults(
+    unordered_map<string, DesignEntity> synonymMap, SelectType selectType,
+    vector<Synonym> selectSynonyms, vector<vector<int>> results) {
   list<string> formattedResults = {};
+
+  if (selectType == SelectType::BOOLEAN) {
+    if (results.size() != 1 || results[0].size() != 1) {
+      DMOprintErrMsgAndExit(
+          "[ResultProjector] invalid bool clause results size");
+    }
+
+    int boolClauseResult = results[0][0];
+    if (boolClauseResult == FALSE_SELECT_BOOL_RESULT) {
+      formattedResults.push_back({"FALSE"});
+    } else if (boolClauseResult == TRUE_SELECT_BOOL_RESULT) {
+      formattedResults.push_back({"TRUE"});
+    } else {
+      DMOprintErrMsgAndExit(
+          "[ResultProjector] invalid bool clause results value");
+    }
+  }
+
+  if (selectType == SelectType::SYNONYMS) {
+    for (auto res : results) {
+      string formattedString = "";
+      for (int i = 0; i < selectSynonyms.size(); i++) {
+        Synonym synonym = selectSynonyms[i];
+        DesignEntity designEntity = synonymMap.at(synonym.name);
+        formattedString += getStringByDesignEntity(designEntity, res[i]);
+
+        if (i != selectSynonyms.size() - 1) {
+          formattedString += " ";
+        }
+      }
+      formattedResults.push_back(formattedString);
+    }
+  }
+
+  return formattedResults;
+}
+
+string ResultProjector::getStringByDesignEntity(DesignEntity designEntity,
+                                                int result) {
   switch (designEntity) {
     case DesignEntity::VARIABLE:
-      for (int varIdx : results) {
-        formattedResults.push_back(pkb->getVarName(varIdx));
-      }
-      return formattedResults;
+      return pkb->getVarName(result);
     case DesignEntity::PROCEDURE:
-      for (int procIdx : results) {
-        formattedResults.push_back(pkb->getProcName(procIdx));
-      }
-      return formattedResults;
+      return pkb->getProcName(result);
     case DesignEntity::CONSTANT:
-      for (int constIdx : results) {
-        formattedResults.push_back(pkb->getConst(constIdx));
-      }
-      return formattedResults;
+      return pkb->getConst(result);
     default:
       // all statement types and prog_line
-      for (int num : results) {
-        formattedResults.push_back(to_string(num));
-      }
-      return formattedResults;
+      return to_string(result);
   }
 }

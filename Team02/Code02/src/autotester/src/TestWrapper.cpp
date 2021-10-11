@@ -66,15 +66,15 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
     DMOprintInfoMsg("Query Parser was successful");
 
-    std::unordered_set<int> evaluatedResult = QueryEvaluator(pkb).evaluateQuery(
-        get<0>(parsedQuery), get<1>(parsedQuery));
+    std::vector<std::vector<int>> evaluatedResult =
+        QueryEvaluator(pkb).evaluateQuery(get<0>(parsedQuery),
+                                          get<1>(parsedQuery));
     DMOprintInfoMsg("Query Evaluator was successful");
 
     SynonymMap map = get<0>(parsedQuery);
     SelectClause clause = get<1>(parsedQuery);
-    DesignEntity selectSynDesignEntity = map.at(clause.selectSynonyms[0].name);
-    results = ResultProjector(pkb).formatResults(selectSynDesignEntity,
-                                                 evaluatedResult);
+    results = ResultProjector(pkb).formatResults(
+        map, clause.selectType, clause.selectSynonyms, evaluatedResult);
     DMOprintInfoMsg("Query Result Projector was successful");
 
   } catch (const qpp::SyntacticErrorException& ex) {

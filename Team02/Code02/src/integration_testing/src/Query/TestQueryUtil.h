@@ -3,6 +3,7 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -14,4 +15,6 @@ class TestQueryUtil {
   static void AddPatternClause(std::vector<query::ConditionClause>&,
                                query::Synonym, query::ParamType, std::string,
                                query::PatternExpr);
+  static std::set<int> getUniqueSelectSingleQEResults(
+      std::vector<std::vector<int>> results);
 };

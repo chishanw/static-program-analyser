@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "../TestQueryUtil.h"
 #include "catch.hpp"
 
 using namespace query;
@@ -40,8 +41,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that Follows(1, _)") {
@@ -52,8 +53,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that Follows(1, s1)") {
@@ -64,8 +65,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{2}}));
   }
 
   SECTION("Select s1 such that Follows(s1, 2)") {
@@ -76,8 +77,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}}));
   }
 
   SECTION("Select s1 such that Follows(s1, _)") {
@@ -88,8 +89,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select s1 such that Follows(_, s1)") {
@@ -100,8 +102,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3}));
   }
 
   SECTION("Select s2 such that FollowsT(_, s2)") {
@@ -112,8 +115,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3}));
   }
 
   SECTION("Select s1 such that Follows(s1, s2)") {
@@ -124,8 +128,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select s2 such that Follows(s1, s2)") {
@@ -136,8 +141,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3}));
   }
 
   SECTION("Select s1 such that Follows(_, _)") {
@@ -147,8 +153,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>{1, 2, 3, 4});
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
   }
 
   SECTION("Select r such that FollowsT(_, r)") {
@@ -159,8 +166,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
     SelectClause select = {{r}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>{2});
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>{{2}});
   }
 }
 
@@ -189,8 +196,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Follows(3, _)") {
@@ -205,8 +212,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Follows(3, s1)") {
@@ -221,8 +228,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Follows(s1, 4)") {
@@ -237,8 +244,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Follows(s1, _)") {
@@ -251,8 +258,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Follows(s1, s2)") {
@@ -265,8 +272,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 }
 
@@ -294,8 +301,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
   }
 
   SECTION("Select s1 such that FollowsT(1, _)") {
@@ -306,8 +313,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
   }
 
   SECTION("Select s2 such that FollowsT(1, s2)") {
@@ -319,8 +326,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     qe.evaluateQuery(synonyms, select);
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{2}, {3}}));
   }
 
   SECTION("Select s1 such that FollowsT(s1, _)") {
@@ -331,8 +338,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select s1 such that FollowsT(s1, s2)") {
@@ -343,8 +351,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select s2 such that FollowsT(s1, s2)") {
@@ -355,8 +364,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3}));
   }
 
   SECTION("Select s1 such that FollowsT(_, _)") {
@@ -367,8 +377,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 }
 
@@ -397,8 +408,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that FollowsT(3, _)") {
@@ -414,8 +425,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s2 such that FollowsT(3, s2)") {
@@ -431,8 +442,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that FollowsT(s1, _)") {
@@ -445,8 +456,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that FollowsT(s1, s2)") {
@@ -459,8 +470,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 }
 
@@ -489,8 +500,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
   }
 
   SECTION("Select s1 such that Parent(1, _)") {
@@ -501,8 +513,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
   }
 
   SECTION("Select s1 such that Parent(1, s1)") {
@@ -513,8 +526,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3}));
   }
 
   SECTION("Select s1 such that Parent(s1, 2)") {
@@ -525,8 +539,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}}));
   }
 
   SECTION("Select s1 such that Parent(s1, _)") {
@@ -537,8 +551,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 3}));
   }
 
   SECTION("Select s1 such that Parent(s1, s2)") {
@@ -549,8 +564,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({1, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 3}));
   }
 
   SECTION("Select s2 such that Parent(s1, s2)") {
@@ -561,8 +577,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3, 4}));
   }
 
   SECTION("Select s1 such that Parent(_, _)") {
@@ -572,8 +589,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>{1, 2, 3, 4});
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
   }
 }
 
@@ -602,8 +620,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Parent(3, _)") {
@@ -618,8 +636,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Parent(3, s1)") {
@@ -634,8 +652,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Parent(s1, 4)") {
@@ -650,8 +668,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Parent(s1, _)") {
@@ -664,8 +682,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that Parent(s1, s2)") {
@@ -678,8 +696,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> result = qe.evaluateQuery(synonyms, select);
-    REQUIRE(result == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 }
 
@@ -709,8 +727,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that ParentT(1, _)") {
@@ -721,8 +739,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s2 such that ParentT(1, s2)") {
@@ -734,8 +752,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     qe.evaluateQuery(synonyms, select);
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that ParentT(s1, _)") {
@@ -746,8 +764,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 3}));
   }
 
   SECTION("Select s1 such that ParentT(s1, s2)") {
@@ -758,8 +777,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 3}));
   }
 
   SECTION("Select s2 such that ParentT(s1, s2)") {
@@ -770,8 +790,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3, 4}));
   }
 
   SECTION("Select s1 such that ParentT(_, _)") {
@@ -782,8 +803,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
   }
 }
 
@@ -813,8 +835,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that ParentT(2, _)") {
@@ -831,8 +853,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s2 such that ParentT(2, s2)") {
@@ -849,8 +871,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that ParentT(s1, _)") {
@@ -863,8 +885,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 
   SECTION("Select s1 such that ParentT(s1, s2)") {
@@ -877,8 +899,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
   }
 }
 
@@ -910,8 +932,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select v such that UsesS(1, 'x')") {
@@ -922,8 +945,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select s such that UsesS(1, _)") {
@@ -934,8 +958,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select v such that UsesS(1, _)") {
@@ -946,8 +971,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select s such that UsesS(s, 'x')") {
@@ -958,8 +984,8 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}}));
   }
 
   SECTION("Select v such that UsesS(s, 'x')") {
@@ -970,8 +996,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select s such that UsesS(s, _)") {
@@ -982,8 +1009,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select v such that UsesS(s, _)") {
@@ -994,8 +1022,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select s such that UsesS(s, v)") {
@@ -1006,8 +1035,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select v such that UsesS(s, v)") {
@@ -1018,8 +1048,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
 
@@ -1048,7 +1079,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1065,7 +1096,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1082,7 +1113,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1099,7 +1130,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1114,7 +1145,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1129,7 +1160,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1143,7 +1174,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1157,7 +1188,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1171,7 +1202,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1185,7 +1216,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }
@@ -1218,8 +1249,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx, proc3Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
   SECTION("Select v such that UsesP('proc1', 'x')") {
@@ -1230,8 +1262,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that UsesP('proc1', _)") {
@@ -1242,8 +1275,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx, proc3Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
   SECTION("Select v such that UsesP('proc1', _)") {
@@ -1254,8 +1288,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that UsesP('proc1', v)") {
@@ -1266,8 +1301,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx, proc3Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
   SECTION("Select v such that UsesP('proc1', v)") {
@@ -1278,8 +1314,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx}));
   }
 
   SECTION("Select p such that UsesP(p, 'x')") {
@@ -1290,8 +1327,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{proc1Idx}}));
   }
 
   SECTION("Select v such that UsesP(p, 'x')") {
@@ -1302,8 +1339,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that UsesP(p, _)") {
@@ -1314,8 +1352,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
   }
 
   SECTION("Select v such that UsesP(p, _)") {
@@ -1326,8 +1365,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that UsesP(p, v)") {
@@ -1338,8 +1378,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
   }
 
   SECTION("Select v such that UsesP(p, v)") {
@@ -1350,8 +1391,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
 
@@ -1378,7 +1420,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1394,7 +1436,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1410,7 +1452,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1426,7 +1468,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1441,7 +1483,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1456,7 +1498,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1471,7 +1513,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1486,7 +1528,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1500,7 +1542,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1514,7 +1556,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1528,7 +1570,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1542,7 +1584,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }
@@ -1575,8 +1617,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select v such that ModifiesS(1, 'x')") {
@@ -1587,8 +1630,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select s such that ModifiesS(1, _)") {
@@ -1599,8 +1643,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select v such that ModifiesS(1, _)") {
@@ -1611,8 +1656,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select s such that ModifiesS(s, v)") {
@@ -1623,8 +1669,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
   }
 
   SECTION("Select v such that ModifiesS(s, v)") {
@@ -1635,8 +1682,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
 
@@ -1668,7 +1716,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1685,7 +1733,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1702,7 +1750,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1719,7 +1767,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1734,7 +1782,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1749,7 +1797,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1763,7 +1811,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1777,7 +1825,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1791,7 +1839,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -1805,7 +1853,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }
@@ -1838,8 +1886,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx, proc3Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
   SECTION("Select v such that ModifiesP('proc1', 'x')") {
@@ -1850,8 +1899,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that ModifiesP('proc1', _)") {
@@ -1862,8 +1912,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx, proc3Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
   SECTION("Select v such that ModifiesP('proc1', _)") {
@@ -1874,8 +1925,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that ModifiesP('proc1', v)") {
@@ -1886,8 +1938,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx, proc3Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
   SECTION("Select v such that ModifiesP('proc1', v)") {
@@ -1898,8 +1951,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx}));
   }
 
   SECTION("Select p such that ModifiesP(p, 'x')") {
@@ -1910,8 +1964,8 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{proc1Idx}}));
   }
 
   SECTION("Select v such that ModifiesP(p, 'x')") {
@@ -1922,8 +1976,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that ModifiesP(p, _)") {
@@ -1934,8 +1989,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
   }
 
   SECTION("Select v such that ModifiesP(p, _)") {
@@ -1946,8 +2002,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
   SECTION("Select p such that ModifiesP(p, v)") {
@@ -1958,8 +2015,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({proc1Idx, proc2Idx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
   }
 
   SECTION("Select v such that ModifiesP(p, v)") {
@@ -1970,8 +2028,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
 
@@ -2002,7 +2061,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2018,7 +2077,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2034,7 +2093,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2050,7 +2109,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2066,7 +2125,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2082,7 +2141,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2097,7 +2156,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2112,7 +2171,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2126,7 +2185,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2140,7 +2199,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2154,7 +2213,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2168,7 +2227,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
         {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }
@@ -2207,8 +2266,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}}));
   }
 
   SECTION("Select a pattern a ('x', _'w'_)") {
@@ -2218,8 +2277,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}}));
   }
 
   SECTION("Select a pattern a ('x', _)") {
@@ -2229,8 +2288,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}}));
   }
 
   SECTION("Select a pattern a (_, 'w')") {
@@ -2240,8 +2299,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
   }
 
   SECTION("Select a pattern a (_, _'w'_)") {
@@ -2251,8 +2310,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
   }
 
   SECTION("Select a pattern a (_, _)") {
@@ -2262,8 +2321,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
   }
 
   SECTION("Select a pattern a (v, 'w')") {
@@ -2273,8 +2332,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
   }
 
   SECTION("Select a pattern a (v, _'w'_)") {
@@ -2284,8 +2343,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
   }
 
   SECTION("Select a pattern a (v, _)") {
@@ -2295,8 +2354,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
   }
 
   SECTION("Select v pattern a (v, 'w')") {
@@ -2306,8 +2365,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{xVarIdx}, {yVarIdx}}));
   }
 
   SECTION("Select v pattern a (v, _'w'_)") {
@@ -2317,8 +2376,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{xVarIdx}, {yVarIdx}}));
   }
 
   SECTION("Select v pattern a (v, _)") {
@@ -2328,8 +2387,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{xVarIdx}, {yVarIdx}, {zVarIdx}}));
   }
 }
 
@@ -2353,7 +2412,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2368,7 +2427,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2383,7 +2442,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2398,7 +2457,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2413,7 +2472,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2426,7 +2485,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2441,7 +2500,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2456,7 +2515,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2470,7 +2529,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2485,7 +2544,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2500,7 +2559,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2514,7 +2573,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }
@@ -2548,8 +2607,8 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
   }
 
   SECTION("Select ifs pattern ifs (_, _, _)") {
@@ -2558,8 +2617,8 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
   }
 
   SECTION("Select ifs pattern ifs (v, _, _)") {
@@ -2568,8 +2627,9 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select v pattern ifs (v, _, _)") {
@@ -2578,8 +2638,9 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
 
@@ -2602,7 +2663,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2614,7 +2675,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2627,7 +2688,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2640,7 +2701,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }
@@ -2675,8 +2736,8 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
   }
 
   SECTION("Select w pattern w (_, _)") {
@@ -2685,8 +2746,8 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3, 4}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select w pattern w (v, _)") {
@@ -2695,8 +2756,9 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({1, 2, 3}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select v pattern w (v, _)") {
@@ -2705,8 +2767,9 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == unordered_set<int>({xVarIdx, yVarIdx, zVarIdx}));
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
 
@@ -2729,7 +2792,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2741,7 +2804,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2754,7 +2817,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 
@@ -2767,7 +2830,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
         {{}, patternClause, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
-    unordered_set<int> results = qe.evaluateQuery(synonyms, select);
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }

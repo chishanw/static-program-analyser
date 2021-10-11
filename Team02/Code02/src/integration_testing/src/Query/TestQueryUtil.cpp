@@ -18,16 +18,26 @@ void TestQueryUtil::AddSuchThatClause(vector<ConditionClause>& clauses,
   clauses.push_back(conditionClause);
 }
 
-void TestQueryUtil::AddPatternClause(vector<ConditionClause> &clauses,
+void TestQueryUtil::AddPatternClause(vector<ConditionClause>& clauses,
                                      Synonym patternSynonym,
                                      ParamType leftParamType,
-                                     string leftParamVal,
-                                     PatternExpr expr) {
-  PatternClause pClause = {patternSynonym,
-                           {leftParamType, leftParamVal},
-                           expr};
+                                     string leftParamVal, PatternExpr expr) {
+  PatternClause pClause = {patternSynonym, {leftParamType, leftParamVal}, expr};
 
   ConditionClause conditionClause = {{}, pClause, ConditionClauseType::PATTERN};
 
   clauses.push_back(conditionClause);
+}
+
+set<int> TestQueryUtil::getUniqueSelectSingleQEResults(
+    vector<vector<int>> results) {
+  // used for QE testing to prevent macOS tests from failing
+  // due to reversed order of vectors
+  set<int> uniqueValues = {};
+  for (auto result : results) {
+    for (auto val : result) {
+      uniqueValues.insert(val);
+    }
+  }
+  return uniqueValues;
 }

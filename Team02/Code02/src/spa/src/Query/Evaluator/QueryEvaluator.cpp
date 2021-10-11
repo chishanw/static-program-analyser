@@ -28,11 +28,10 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
   queryResultsSynonyms = {};
 }
 
-unordered_set<int> QueryEvaluator::evaluateQuery(
+vector<vector<int>> QueryEvaluator::evaluateQuery(
     unordered_map<string, DesignEntity> synonymMap, SelectClause select) {
   this->synonymMap = synonymMap;
 
-  Synonym selectSynonym = select.selectSynonyms[0];
   vector<ConditionClause> conditionClauses = select.conditionClauses;
 
   for (auto clause : conditionClauses) {
@@ -44,17 +43,22 @@ unordered_set<int> QueryEvaluator::evaluateQuery(
 
     if (!areAllClausesTrue) {
       // early termination as soon as any clause is false
-      return {};
+      // if select bool, false
+      if (select.selectType == SelectType::BOOLEAN) {
+        return {{FALSE_SELECT_BOOL_RESULT}};
+      } else {
+        return {};
+      }
     }
 
     if (AbstractWrapper::GlobalStop) {
       // check if TLE after each clause evaluation
       // return whatever results we can
-      return getSelectSynonymFinalResults(selectSynonym.name);
+      return getSelectSynonymFinalResults(select);
     }
   }
 
-  return getSelectSynonymFinalResults(selectSynonym.name);
+  return getSelectSynonymFinalResults(select);
 }
 
 void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
@@ -736,19 +740,39 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
   }
 }
 
-unordered_set<int> QueryEvaluator::getSelectSynonymFinalResults(
-    string synonymName) {
-  if (queryResultsSynonyms.find(synonymName) == queryResultsSynonyms.end()) {
-    return getAllValuesOfSynonym(synonymName);
+vector<vector<int>> QueryEvaluator::getSelectSynonymFinalResults(
+    SelectClause select) {
+  vector<vector<int>> finalResults = {};
+
+  if (select.selectType == SelectType::BOOLEAN) {
+    return {{TRUE_SELECT_BOOL_RESULT}};
   }
-  unordered_set<int> results = {};
-  // after iter 1 should be selecting from queryResults
-  for (unordered_map<string, int> res : currentQueryResults) {
-    if (res.find(synonymName) != res.end()) {
-      results.insert(res[synonymName]);
+
+  if (select.selectType == SelectType::SYNONYMS) {
+    for (auto synonym : select.selectSynonyms) {
+      if (queryResultsSynonyms.find(synonym.name) ==
+          queryResultsSynonyms.end()) {
+        unordered_set<int> allValues = getAllValuesOfSynonym(synonym.name);
+        vector<vector<int>> incomingResults = {};
+        for (int value : allValues) {
+          incomingResults.push_back({value});
+        }
+        filterAndAddIncomingResults(incomingResults,
+                                    {ParamType::SYNONYM, synonym.name},
+                                    {ParamType::WILDCARD, "_"});
+      }
+    }
+
+    for (auto result : currentQueryResults) {
+      vector<int> currTupleResult = {};
+      for (auto synonym : select.selectSynonyms) {
+        currTupleResult.push_back(result[synonym.name]);
+      }
+      finalResults.push_back(currTupleResult);
     }
   }
-  return results;
+
+  return finalResults;
 }
 
 bool QueryEvaluator::checkIsCorrectDesignEntity(int result,

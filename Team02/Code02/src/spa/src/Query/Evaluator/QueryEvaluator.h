@@ -17,7 +17,7 @@
 class QueryEvaluator {
  public:
   explicit QueryEvaluator(PKB*);
-  std::unordered_set<int> evaluateQuery(
+  std::vector<std::vector<int>> evaluateQuery(
       std::unordered_map<string, query::DesignEntity> synonymMap,
       query::SelectClause select);
 
@@ -79,7 +79,8 @@ class QueryEvaluator {
       std::vector<std::pair<int, std::vector<int>>> results);
 
   std::unordered_set<int> getAllValuesOfSynonym(std::string synonymName);
-  std::unordered_set<int> getSelectSynonymFinalResults(string synonymName);
+  std::vector<std::vector<int>> getSelectSynonymFinalResults(
+      query::SelectClause selectClause);
 
   bool checkIsCorrectDesignEntity(int stmtNum,
                                   query::DesignEntity designEntity);
