@@ -1,5 +1,0 @@
-1 - Return all statements
-stmt s;
-Select s
-none
-5000

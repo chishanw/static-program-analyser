@@ -3,31 +3,6 @@ while w;
 Select w such that Parent(w, 7)
 none
 5000
-2 - comment
-if ifs;
-Select ifs such that Follows(5, ifs)
-none
-5000
-3 - comment
-assign a;
-Select a such that Parent*(4, a)
-none
-5000
-4 - comment
-call c;
-Select c such that Follows*(1, c)
-none
-5000
-5 - comment
-stmt s;
-Select s such that Modifies(s, "i")
-none
-5000
-6 - comment
-variable v;
-Select v such that Uses("p", v)
-none
-5000
 7 - comment
 procedure p;
 Select p such that Calls(p, "q")

@@ -38,8 +38,7 @@ void TestWrapper::parse(std::string filename) {
     vector<string> tokens = Tokenizer::TokenizeFile(filename);
 
     // then tokends will be passed to parser
-    const bool enableIter1restriction = true;
-    const ProgramAST* programAST = Parser(enableIter1restriction).Parse(tokens);
+    const ProgramAST* programAST = Parser().Parse(tokens);
     DMOprintInfoMsg("SIMPLE Parser was successful");
 
     // then programAST will be passed to DE
