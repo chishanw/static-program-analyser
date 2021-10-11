@@ -315,6 +315,23 @@ bool PKB::isCallStmt(STMT_NO s) {
   return callsKB.isCallStmt(s);
 }
 
+// Next API
+void PKB::addNext(STMT_NO s1, STMT_NO s2) {
+  nextKB.addNext(s1, s2);
+}
+bool PKB::isNext(STMT_NO s1, STMT_NO s2) {
+  return nextKB.isNext(s1, s2);
+}
+UNO_SET_OF_STMT_NO PKB::getNextStmts(STMT_NO s1) {
+  return nextKB.getNextStmts(s1);
+}
+UNO_SET_OF_STMT_NO PKB::getPreviousStmts(STMT_NO s2) {
+  return nextKB.getPreviousStmts(s2);
+}
+vector<pair<STMT_NO, vector<STMT_NO>>> PKB::getAllNextStmtPairs() {
+  return nextKB.getAllNextStmtPairs();
+}
+
 // Table API
 CONST_IDX PKB::insertConst(string constant) {
   return constTable.insertConst(constant);

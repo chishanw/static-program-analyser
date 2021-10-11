@@ -19,6 +19,7 @@
 #include "VarTable.h"
 #include "ConstTable.h"
 #include "CallsKB.h"
+#include "NextKB.h"
 
 using namespace std;
 
@@ -134,6 +135,13 @@ class PKB {
   std::unordered_set<PROC_IDX> getCallerTProcs(PROC_NAME proc);
   std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsTPairs();
 
+  // Next API
+  void addNext(STMT_NO s1, STMT_NO s2);
+  bool isNext(STMT_NO s1, STMT_NO s2);
+  UNO_SET_OF_STMT_NO getNextStmts(STMT_NO s1);
+  UNO_SET_OF_STMT_NO getPreviousStmts(STMT_NO s2);
+  std::vector<std::pair<STMT_NO, std::vector<STMT_NO>>> getAllNextStmtPairs();
+
   // Table API
   CONST_IDX insertConst(string constant);
   std::string getConst(CONST_IDX index);
@@ -155,6 +163,7 @@ class PKB {
   // Design Abstractions
   FollowKB followKB;
   ParentKB parentKB;
+  NextKB nextKB;
   ModifiesKB modifiesKB = ModifiesKB(&varTable, &procTable);
   UsesKB usesKB = UsesKB(&varTable, &procTable);
   PatternKB patternKB = PatternKB(&varTable);
