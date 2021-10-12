@@ -18,6 +18,8 @@ enum class DesignEntity {
   PROG_LINE
 };
 
+enum class Attribute { PROC_NAME, VAR_NAME, VALUE, STMT_NUM };
+
 enum class RelationshipType {
   FOLLOWS,
   FOLLOWS_T,
@@ -29,9 +31,18 @@ enum class RelationshipType {
   MODIFIES_P
 };
 
-enum class ParamType { SYNONYM, INTEGER_LITERAL, NAME_LITERAL, WILDCARD };
+enum class ParamType {
+  SYNONYM,
+  INTEGER_LITERAL,
+  NAME_LITERAL,
+  WILDCARD,
+  ATTRIBUTE_PROC_NAME,
+  ATTRIBUTE_VAR_NAME,
+  ATTRIBUTE_VALUE,
+  ATTRIBUTE_STMT_NUM
+};
 
-enum class ConditionClauseType { SUCH_THAT, PATTERN };
+enum class ConditionClauseType { SUCH_THAT, PATTERN, WITH };
 
 enum class MatchType { EXACT, SUB_EXPRESSION, ANY };
 
@@ -40,8 +51,11 @@ enum class SelectType { SYNONYMS, BOOLEAN };
 struct Synonym {
   const DesignEntity entity;
   const std::string name;
+  const bool hasAttribute;
+  const Attribute attribute;
   bool operator==(const Synonym& other) const {
-    return entity == other.entity && name == other.name;
+    return entity == other.entity && name == other.name &&
+           hasAttribute == other.hasAttribute && attribute == other.attribute;
   }
 };
 
@@ -81,13 +95,23 @@ struct PatternClause {
   }
 };
 
+struct WithClause {
+  const Param leftParam;
+  const Param rightParam;
+  bool operator==(const WithClause& other) const {
+    return leftParam == other.leftParam && rightParam == other.rightParam;
+  }
+};
+
 struct ConditionClause {
   const SuchThatClause suchThatClause;
   const PatternClause patternClause;
+  const WithClause withClause;
   const ConditionClauseType conditionClauseType;
   bool operator==(const ConditionClause& other) const {
     return suchThatClause == other.suchThatClause &&
            patternClause == other.patternClause &&
+           withClause == other.withClause &&
            conditionClauseType == other.conditionClauseType;
   }
 };

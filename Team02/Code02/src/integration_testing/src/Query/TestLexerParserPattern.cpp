@@ -22,12 +22,11 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
 
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::ASSIGN, "a"},
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::WILDCARD, "_",
                                     {query::MatchType::ANY, "_"});
 
@@ -49,12 +48,11 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
 
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::ASSIGN, "a"},
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::WILDCARD, "_",
                                     {query::MatchType::SUB_EXPRESSION, "x"});
 
@@ -76,12 +74,11 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
 
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::ASSIGN, "a"},
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::NAME_LITERAL, "x",
                                     {query::MatchType::ANY, "_"});
 
@@ -103,12 +100,11 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
 
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::ASSIGN, "a"},
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::NAME_LITERAL, "x",
                                     {query::MatchType::SUB_EXPRESSION, "x"});
 
@@ -131,12 +127,11 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN},
                       {"v", query::DesignEntity::VARIABLE}};
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::ASSIGN, "a"},
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::SYNONYM, "v",
                                     {query::MatchType::ANY, "_"});
 
@@ -159,12 +154,11 @@ TEST_CASE("Valid queries with one pattern clause for assignment succeeds") {
     // expected
     SynonymMap map = {{"a", query::DesignEntity::ASSIGN},
                       {"v", query::DesignEntity::VARIABLE}};
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses,
-                                    {query::DesignEntity::ASSIGN, "a"},
+    TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::SYNONYM, "v",
                                     {query::MatchType::SUB_EXPRESSION, "x"});
 
@@ -375,8 +369,8 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
 
     // expected
     SynonymMap map = {{"w", query::DesignEntity::WHILE}};
-    query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::WHILE, "w"},
@@ -399,8 +393,8 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
 
     // expected
     SynonymMap map = {{"w", query::DesignEntity::WHILE}};
-    query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::WHILE, "w"},
@@ -426,8 +420,8 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
         {"w", query::DesignEntity::WHILE},
         {"v", query::DesignEntity::VARIABLE},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::WHILE, "w"},
@@ -499,8 +493,8 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
 
     // expected
     SynonymMap map = {{"ifs", query::DesignEntity::IF}};
-    query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::IF, "ifs"},
@@ -523,8 +517,8 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
 
     // expected
     SynonymMap map = {{"ifs", query::DesignEntity::IF}};
-    query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::IF, "ifs"},
@@ -550,8 +544,8 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
         {"ifs", query::DesignEntity::IF},
         {"v", query::DesignEntity::VARIABLE},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::IF, "ifs"},

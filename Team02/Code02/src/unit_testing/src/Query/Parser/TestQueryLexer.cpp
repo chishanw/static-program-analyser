@@ -141,8 +141,9 @@ TEST_CASE("Query with valid select clauses are tokenized") {
   }
 
   SECTION("Select <s1, n, c, s2>") {
-    string validQuery = "stmt s1; stmt s2; prog_line n; call c;"
-                        "Select <s1, n, c, s2>";
+    string validQuery =
+        "stmt s1; stmt s2; prog_line n; call c;"
+        "Select <s1, n, c, s2>";
 
     vector<qpp::QueryToken> expectedTokens = {
         {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
@@ -166,6 +167,136 @@ TEST_CASE("Query with valid select clauses are tokenized") {
         {qpp::TokenType::NAME_OR_KEYWORD, "c"},
         {qpp::TokenType::CHAR_SYMBOL, ","},
         {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, ">"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
+
+  SECTION("Select s.stmt#") {
+    string validQuery = "stmt s; Select s.stmt#";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"}};
+    tuple<vector<qpp::QueryToken>, bool, string> expected = {
+        expectedTokens, true, {}};
+
+    tuple<vector<qpp::QueryToken>, bool, string> actual =
+        QueryLexer().Tokenize(validQuery);
+
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE(get<2>(actual) == get<2>(expected));
+  }
+
+  SECTION("Select all possible attribute types") {
+    string validQuery =
+        "stmt s1, s2; procedure p; call c; variable v;"
+        "read r; print pr; constant con; while w; if ifs; assign a; "
+        "Select <  s1, p.procName, c.procName, v.varName, r.varName, "
+        "pr.varName, con.value, s2.stmt#, r.stmt#, pr.stmt#, c.stmt#, "
+        "w.stmt#, ifs.stmt#, a.stmt# >";
+
+    vector<qpp::QueryToken> expectedTokens = {
+        {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "procedure"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "p"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "call"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "c"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "variable"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "v"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "read"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "r"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "print"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "pr"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "constant"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "con"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "while"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "w"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "if"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "ifs"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "assign"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+        {qpp::TokenType::CHAR_SYMBOL, ";"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+        {qpp::TokenType::CHAR_SYMBOL, "<"},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "p"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::NAME_OR_KEYWORD, "procName"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "c"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::NAME_OR_KEYWORD, "procName"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "v"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::NAME_OR_KEYWORD, "varName"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "r"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::NAME_OR_KEYWORD, "varName"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "pr"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::NAME_OR_KEYWORD, "varName"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "con"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::NAME_OR_KEYWORD, "value"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "s2"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "r"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "pr"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "c"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "w"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "ifs"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
+        {qpp::TokenType::CHAR_SYMBOL, ","},
+        {qpp::TokenType::NAME_OR_KEYWORD, "a"},
+        {qpp::TokenType::CHAR_SYMBOL, "."},
+        {qpp::TokenType::KEYWORD, "stmt#"},
         {qpp::TokenType::CHAR_SYMBOL, ">"}};
     tuple<vector<qpp::QueryToken>, bool, string> expected = {
         expectedTokens, true, {}};
@@ -446,6 +577,30 @@ TEST_CASE("Query with valid pattern clauses are tokenized correctly") {
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
+
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
+
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
+}
+
+// ============================ Testing with ===========================
+
+TEST_CASE("Query with valid with clauses are tokenized correctly") {
+  string validQuery = "Select BOOLEAN with 1 = 2";
+
+  vector<qpp::QueryToken> expectedTokens = {
+      {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "BOOLEAN"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "with"},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, "="},
+      {qpp::TokenType::INTEGER, "2"}};
+
   tuple<vector<qpp::QueryToken>, bool, string> expected = {
       expectedTokens, true, {}};
 

@@ -29,8 +29,9 @@ class QueryLexer {
   bool isSemanticallyValid = true;
   std::string semanticErrorMsg;
 
-  const std::set<char> ALLOWED_SYMBOL_SET = {'+', '-', '*', '/', '%', '_', '"',
-                                             ',', ';', '(', ')', '<', '>'};
+  const std::set<char> ALLOWED_SYMBOL_SET = {'+', '-', '*', '/', '%',
+                                             '_', '"', '.', '=', ',',
+                                             ';', '(', ')', '<', '>'};
 
   bool isLetter(char);
   bool isDigit(char);

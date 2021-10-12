@@ -148,7 +148,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -161,7 +161,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "n"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{n}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -174,7 +174,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "rd"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{rd}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -186,7 +186,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "pr"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{pr}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -198,7 +198,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "cll"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{cll}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -210,7 +210,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "w"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -222,7 +222,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "ifs"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -234,7 +234,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "a"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -247,7 +247,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "rd"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{rd}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -259,7 +259,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::SYNONYM, "pr"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{pr}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -271,7 +271,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "rd"},
                                      {ParamType::SYNONYM, "pr"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{rd}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -283,7 +283,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -295,7 +295,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "w"},
                                      {ParamType::INTEGER_LITERAL, "5"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -307,7 +307,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::INTEGER_LITERAL, "4"},
                                      {ParamType::SYNONYM, "ifs"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -319,7 +319,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "w"},
                                      {ParamType::SYNONYM, "ifs"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -331,7 +331,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{cll}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -344,12 +344,12 @@ TEST_CASE("QueryEvaluator: Different design entities") {
                                      {ParamType::SYNONYM, "rd"},
                                      {ParamType::SYNONYM, "a"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "1"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -385,7 +385,7 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "s"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -397,7 +397,7 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "s"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -409,7 +409,7 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
                                      {ParamType::SYNONYM, "a"},
                                      {ParamType::SYNONYM, "a"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -421,7 +421,7 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "s"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -433,7 +433,7 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "s"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -445,7 +445,7 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "s"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -484,13 +484,13 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -503,14 +503,14 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::SYNONYM, "s2"}};
 
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -525,13 +525,13 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s2"},
                                       {ParamType::SYNONYM, "s3"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -546,13 +546,13 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -567,13 +567,13 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s3"},
                                       {ParamType::SYNONYM, "s4"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -589,13 +589,13 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
                                       {ParamType::SYNONYM, "s2"},
                                       {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -632,7 +632,7 @@ TEST_CASE("QueryEvaluator: Select tuple") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -645,7 +645,7 @@ TEST_CASE("QueryEvaluator: Select tuple") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -658,7 +658,7 @@ TEST_CASE("QueryEvaluator: Select tuple") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {
         {s1, s2, s3}, SelectType::SYNONYMS, conditionClauses};
@@ -676,7 +676,7 @@ TEST_CASE("QueryEvaluator: Select tuple") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1, s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -715,7 +715,7 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -728,7 +728,7 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
                                      {ParamType::SYNONYM, "a"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -741,18 +741,18 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "x * 2"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SuchThatClause suchThatClause2 = {RelationshipType::MODIFIES_S,
                                       {ParamType::SYNONYM, "s2"},
                                       {ParamType::SYNONYM, "s3"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -764,19 +764,19 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SuchThatClause suchThatClause1 = {RelationshipType::USES_S,
                                       {ParamType::SYNONYM, "s1"},
                                       {ParamType::NAME_LITERAL, "y"}};
     conditionClauses.push_back(
-        {suchThatClause1, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SuchThatClause suchThatClause2 = {RelationshipType::USES_S,
                                       {ParamType::SYNONYM, "s2"},
                                       {ParamType::SYNONYM, "a"}};
     conditionClauses.push_back(
-        {suchThatClause2, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);

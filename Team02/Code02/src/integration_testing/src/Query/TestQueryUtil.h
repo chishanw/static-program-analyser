@@ -15,6 +15,9 @@ class TestQueryUtil {
   static void AddPatternClause(std::vector<query::ConditionClause>&,
                                query::Synonym, query::ParamType, std::string,
                                query::PatternExpr);
+  static void AddWithClause(std::vector<query::ConditionClause>&,
+                               query::ParamType, std::string,
+                               query::ParamType, std::string);
   static std::set<int> getUniqueSelectSingleQEResults(
       std::vector<std::vector<int>> results);
 };

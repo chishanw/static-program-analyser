@@ -20,7 +20,9 @@ bool QueryLexer::isAllowedSymbol(char c) {
   return ALLOWED_SYMBOL_SET.find(c) != ALLOWED_SYMBOL_SET.end();
 }
 
-bool QueryLexer::isAllowedKeywordSymbol(char c) { return c == '*' || c == '_'; }
+bool QueryLexer::isAllowedKeywordSymbol(char c) {
+  return c == '*' || c == '_' || c == '#';
+}
 
 void QueryLexer::consumeWhitespace() {
   optional<char> maybeNextChar = peekChar();

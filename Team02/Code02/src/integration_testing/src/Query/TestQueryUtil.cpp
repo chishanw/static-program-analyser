@@ -13,7 +13,7 @@ void TestQueryUtil::AddSuchThatClause(vector<ConditionClause>& clauses,
       type, {leftParamType, leftParamVal}, {rightParamType, rightParamVal}};
 
   ConditionClause conditionClause = {
-      stClause, {}, ConditionClauseType::SUCH_THAT};
+      stClause, {}, {}, ConditionClauseType::SUCH_THAT};
 
   clauses.push_back(conditionClause);
 }
@@ -24,7 +24,21 @@ void TestQueryUtil::AddPatternClause(vector<ConditionClause>& clauses,
                                      string leftParamVal, PatternExpr expr) {
   PatternClause pClause = {patternSynonym, {leftParamType, leftParamVal}, expr};
 
-  ConditionClause conditionClause = {{}, pClause, ConditionClauseType::PATTERN};
+  ConditionClause conditionClause = {
+      {}, pClause, {}, ConditionClauseType::PATTERN};
+
+  clauses.push_back(conditionClause);
+}
+
+void TestQueryUtil::AddWithClause(vector<ConditionClause>& clauses,
+                                  ParamType leftParamType, string leftParamVal,
+                                  ParamType rightParamType,
+                                  string rightParamVal) {
+  WithClause wClause = {{leftParamType, leftParamVal},
+                        {rightParamType, rightParamVal}};
+
+  ConditionClause conditionClause = {
+      {}, {}, wClause, ConditionClauseType::WITH};
 
   clauses.push_back(conditionClause);
 }

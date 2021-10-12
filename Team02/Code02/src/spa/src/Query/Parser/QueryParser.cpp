@@ -26,6 +26,12 @@ const unordered_map<string, DesignEntity> keywordToDesignEntity = {
     {"procedure", DesignEntity::PROCEDURE},
     {"prog_line", DesignEntity::PROG_LINE}};
 
+const unordered_map<string, Attribute> keywordToAttribute = {
+    {"procName", Attribute::PROC_NAME},
+    {"varName", Attribute::VAR_NAME},
+    {"value", Attribute::VALUE},
+    {"stmt#", Attribute::STMT_NUM}};
+
 const set<DesignEntity> validFollowsParentParamEntities = {
     DesignEntity::STATEMENT, DesignEntity::READ,     DesignEntity::PRINT,
     DesignEntity::WHILE,     DesignEntity::IF,       DesignEntity::ASSIGN,
@@ -40,6 +46,14 @@ const set<DesignEntity> validModifiesStmtParamEntities = {
     DesignEntity::READ,     DesignEntity::STATEMENT, DesignEntity::ASSIGN,
     DesignEntity::IF,       DesignEntity::WHILE,     DesignEntity::CALL,
     DesignEntity::PROG_LINE};
+
+const set<ParamType> integerParamTypes = {
+    ParamType::INTEGER_LITERAL, ParamType::ATTRIBUTE_STMT_NUM,
+    ParamType::ATTRIBUTE_VALUE, ParamType::SYNONYM};
+
+const set<ParamType> stringParamTypes = {
+    ParamType::NAME_LITERAL, ParamType::ATTRIBUTE_VAR_NAME,
+    ParamType::ATTRIBUTE_PROC_NAME};
 
 // ============ Helpers (Token) ============
 QueryToken QueryParser::consumeToken() {
@@ -125,6 +139,46 @@ DesignEntity QueryParser::getEntityFromSynonymName(const string& name) {
   return synonymMap.at(name);
 }
 
+// ============ Helpers (Getters for Attribute) ============
+query::Attribute QueryParser::getAttribute(const std::string& synonymName) {
+  DesignEntity entity = getEntityFromSynonymName(synonymName);
+  string attrName = getKeyword();
+
+  if (keywordToAttribute.find(attrName) == keywordToAttribute.end()) {
+    throw SyntacticErrorException(INVALID_ATTRIBUTE);
+  }
+  Attribute attribute = keywordToAttribute.at(attrName);
+
+  // validate attribute against synonym type
+  switch (attribute) {
+    case Attribute::PROC_NAME:
+      if (entity == DesignEntity::PROCEDURE || entity == DesignEntity::CALL) {
+        return attribute;
+      }
+    case Attribute::VAR_NAME:
+      if (entity == DesignEntity::VARIABLE || entity == DesignEntity::READ ||
+          entity == DesignEntity::PRINT) {
+        return attribute;
+      }
+    case Attribute::STMT_NUM:
+      if (entity == DesignEntity::STATEMENT || entity == DesignEntity::READ ||
+          entity == DesignEntity::PRINT || entity == DesignEntity::CALL ||
+          entity == DesignEntity::WHILE || entity == DesignEntity::IF ||
+          entity == DesignEntity::ASSIGN) {
+        return attribute;
+      }
+    case Attribute::VALUE:
+      if (entity == DesignEntity::CONSTANT) {
+        return attribute;
+      }
+    default:
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_SYNONYM_ATTRIBUTE_MATCH;
+  }
+
+  return attribute;
+}
+
 // ============ Helpers (Getters for Param) ============
 query::Param QueryParser::getRefParam() {
   QueryToken t = consumeToken();
@@ -145,14 +199,40 @@ query::Param QueryParser::getRefParam() {
 
   if (t.tokenType == TokenType::NAME_OR_KEYWORD) {
     string synonymName = t.value;
-    return {ParamType::SYNONYM, synonymName};
+
+    // validate that synonym had been declared
+    getEntityFromSynonymName(synonymName);
+
+    if (!(peekToken().has_value() &&
+          peekToken().value().tokenType == TokenType::CHAR_SYMBOL &&
+          peekToken().value().value == ".")) {
+      return {ParamType::SYNONYM, synonymName};
+    }
+
+    // synonym has an attribute
+    consumeToken();  // consume '.'
+    Attribute attribute = getAttribute(synonymName);
+
+    switch (attribute) {
+      case Attribute::PROC_NAME:
+        return {ParamType::ATTRIBUTE_PROC_NAME, synonymName};
+      case Attribute::VAR_NAME:
+        return {ParamType::ATTRIBUTE_VAR_NAME, synonymName};
+      case Attribute::VALUE:
+        return {ParamType::ATTRIBUTE_VALUE, synonymName};
+      case Attribute::STMT_NUM:
+        return {ParamType::ATTRIBUTE_STMT_NUM, synonymName};
+      default:
+        isSemanticallyValid = false;  // semantic error
+        semanticErrorMsg = INVALID_SYNONYM_ATTRIBUTE_MATCH;
+    }
   }
 
   throw SyntacticErrorException(INVALID_STMT_ENT_REF_MSG);
 }
 
 // ============ Parsers (Main) ============
-SynonymMap QueryParser::parseSynonyms() {
+SynonymMap QueryParser::parseSynonymDeclarations() {
   SynonymMap synonyms;
 
   optional<QueryToken> maybeToken = peekToken();
@@ -213,6 +293,9 @@ SelectClause QueryParser::parseSelectClause() {
     } else if (keyword == "pattern") {
       parsePatternClause(conditionClauses);
 
+    } else if (keyword == "with") {
+      parseWithClause(conditionClauses);
+
     } else {
       throw SyntacticErrorException(INVALID_ST_P_KEYWORD_MSG);
     }
@@ -233,7 +316,21 @@ tuple<vector<Synonym>, SelectType> QueryParser::parseResultClause() {
     while (hasSynonym) {
       string synonymName = getNameOrKeyword();
       DesignEntity entity = getEntityFromSynonymName(synonymName);
-      selectSynonyms.push_back({entity, synonymName});
+
+      bool hasAttribute = false;
+      Attribute attribute = {};
+
+      if (peekToken().has_value() &&
+          peekToken().value().tokenType == TokenType::CHAR_SYMBOL &&
+          peekToken().value().value == ".") {
+        // synonym has an attribute
+        consumeToken();  // consume '.'
+        hasAttribute = true;
+        attribute = getAttribute(synonymName);
+      }
+
+      selectSynonyms.push_back({entity, synonymName, hasAttribute, attribute});
+
       hasSynonym = peekToken().has_value() && peekToken().value().value == ",";
       if (hasSynonym) {
         getExactCharSymbol(',');
@@ -249,8 +346,20 @@ tuple<vector<Synonym>, SelectType> QueryParser::parseResultClause() {
     selectType = SelectType::SYNONYMS;
     string synonymName = resultToken.value;
     DesignEntity entity = getEntityFromSynonymName(synonymName);
-    selectSynonyms.push_back({entity, synonymName});
 
+    bool hasAttribute = false;
+    Attribute attribute = {};
+
+    if (peekToken().has_value() &&
+        peekToken().value().tokenType == TokenType::CHAR_SYMBOL &&
+        peekToken().value().value == ".") {
+      // synonym has an attribute
+      consumeToken();  // consume '.'
+      hasAttribute = true;
+      attribute = getAttribute(synonymName);
+    }
+
+    selectSynonyms.push_back({entity, synonymName, hasAttribute, attribute});
   } else {
     throw SyntacticErrorException(INVALID_RESULT_TYPE_MSG);
   }
@@ -324,7 +433,7 @@ query::ConditionClause QueryParser::parseFollowsParentClause(
   }
 
   SuchThatClause stClause = {type, left, right};
-  return {stClause, {}, ConditionClauseType::SUCH_THAT};
+  return {stClause, {}, {}, ConditionClauseType::SUCH_THAT};
 }
 
 query::ConditionClause QueryParser::parseUsesClause() {
@@ -381,7 +490,7 @@ query::ConditionClause QueryParser::parseUsesClause() {
   }
 
   SuchThatClause stClause = {type, left, right};
-  return {stClause, {}, ConditionClauseType::SUCH_THAT};
+  return {stClause, {}, {}, ConditionClauseType::SUCH_THAT};
 }
 
 query::ConditionClause QueryParser::parseModifiesClause() {
@@ -438,7 +547,7 @@ query::ConditionClause QueryParser::parseModifiesClause() {
   }
 
   SuchThatClause stClause = {type, left, right};
-  return {stClause, {}, ConditionClauseType::SUCH_THAT};
+  return {stClause, {}, {}, ConditionClauseType::SUCH_THAT};
 }
 
 // ============ Parsers (pattern) ============
@@ -503,7 +612,7 @@ query::ConditionClause QueryParser::parseIfPatternClause() {
   }
   Synonym ifSynonym = {entity, synonymName};
   PatternClause patternClause = {ifSynonym, left, {}};
-  return {{}, patternClause, ConditionClauseType::PATTERN};
+  return {{}, patternClause, {}, ConditionClauseType::PATTERN};
 }
 
 query::ConditionClause QueryParser::parseWhilePatternClause() {
@@ -531,7 +640,7 @@ query::ConditionClause QueryParser::parseWhilePatternClause() {
   }
   Synonym whileSynonym = {entity, synonymName};
   PatternClause patternClause = {whileSynonym, left, {}};
-  return {{}, patternClause, ConditionClauseType::PATTERN};
+  return {{}, patternClause, {}, ConditionClauseType::PATTERN};
 }
 
 query::ConditionClause QueryParser::parseAssignPatternClause() {
@@ -560,7 +669,7 @@ query::ConditionClause QueryParser::parseAssignPatternClause() {
 
   Synonym patternSynonym = {entity, synonymName};
   PatternClause patternClause = {patternSynonym, left, patternExpr};
-  return {{}, patternClause, ConditionClauseType::PATTERN};
+  return {{}, patternClause, {}, ConditionClauseType::PATTERN};
 }
 
 query::PatternExpr QueryParser::parsePatternExpr() {
@@ -584,6 +693,54 @@ query::PatternExpr QueryParser::parsePatternExpr() {
   return {MatchType::SUB_EXPRESSION, exprToken.value};
 }
 
+// ============ Parsers (with) ============
+void QueryParser::parseWithClause(
+    std::vector<query::ConditionClause>& results) {
+  getExactKeyword("with");
+
+  bool hasNextWith = true;
+  while (hasNextWith) {
+    Param left = getRefParam();
+    getExactCharSymbol('=');
+    Param right = getRefParam();
+
+    // validate synonym params
+    if (left.type == ParamType::SYNONYM &&
+        getEntityFromSynonymName(left.value) != DesignEntity::PROG_LINE) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_W_SYNONYM;
+    }
+
+    if (right.type == ParamType::SYNONYM &&
+        getEntityFromSynonymName(right.value) != DesignEntity::PROG_LINE) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_W_SYNONYM;
+    }
+
+    // validate type of params
+    bool areBothIntegers =
+        (integerParamTypes.find(left.type) != integerParamTypes.end()) &&
+        (integerParamTypes.find(right.type) != integerParamTypes.end());
+    bool areBothStrings =
+        (stringParamTypes.find(left.type) != stringParamTypes.end()) &&
+        (stringParamTypes.find(right.type) != stringParamTypes.end());
+
+    if (!(areBothIntegers || areBothStrings)) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_W_DIFF_PARAM_TYPES;
+    }
+
+    WithClause withClause = {left, right};
+    results.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    // checks if there are multiple with clauses connected by 'and'
+    hasNextWith = hasNextToken() && peekToken().value().value == "and";
+    if (hasNextWith) {
+      getExactKeyword("and");
+    }
+  }
+}
+
 // ============ MAIN ============
 
 QueryParser::QueryParser() = default;
@@ -598,7 +755,7 @@ tuple<SynonymMap, SelectClause> QueryParser::Parse(const string& query) {
   it = tokens.begin();
   endIt = tokens.end();
 
-  synonymMap = parseSynonyms();
+  synonymMap = parseSynonymDeclarations();
   SelectClause selectClause = parseSelectClause();
 
   // if SelectClause was parsed successfully but there is a semantic error

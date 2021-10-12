@@ -38,7 +38,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -50,7 +50,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -62,7 +62,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::SYNONYM, "s1"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -74,7 +74,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -86,7 +86,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -99,7 +99,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::SYNONYM, "s1"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -112,7 +112,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -125,7 +125,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -138,7 +138,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -151,7 +151,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
@@ -164,7 +164,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::SYNONYM, "r"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
     SelectClause select = {{r}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results == vector<vector<int>>{{2}});
@@ -193,7 +193,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::INTEGER_LITERAL, "4"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -209,7 +209,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -225,7 +225,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::SYNONYM, "s1"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -241,7 +241,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::INTEGER_LITERAL, "4"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -255,7 +255,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -269,7 +269,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -298,7 +298,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -310,7 +310,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -322,7 +322,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     qe.evaluateQuery(synonyms, select);
@@ -335,7 +335,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -348,7 +348,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -361,7 +361,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -374,7 +374,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -405,7 +405,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::INTEGER_LITERAL, "4"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -422,7 +422,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -439,7 +439,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -453,7 +453,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -467,7 +467,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -497,7 +497,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -510,7 +510,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -523,7 +523,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::SYNONYM, "s1"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -536,7 +536,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -548,7 +548,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -561,7 +561,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -574,7 +574,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -587,7 +587,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
@@ -617,7 +617,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "2"},
                                      {ParamType::INTEGER_LITERAL, "3"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -633,7 +633,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -649,7 +649,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::SYNONYM, "s1"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -665,7 +665,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::INTEGER_LITERAL, "4"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -679,7 +679,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -693,7 +693,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -724,7 +724,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -736,7 +736,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -748,7 +748,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     qe.evaluateQuery(synonyms, select);
@@ -761,7 +761,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -774,7 +774,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -787,7 +787,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -800,7 +800,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -832,7 +832,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "2"},
                                      {ParamType::INTEGER_LITERAL, "3"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -850,7 +850,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "2"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -868,7 +868,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "2"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -882,7 +882,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -896,7 +896,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s1"},
                                      {ParamType::SYNONYM, "s2"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -929,7 +929,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -942,7 +942,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -955,7 +955,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -968,7 +968,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -981,7 +981,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -993,7 +993,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1006,7 +1006,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1019,7 +1019,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1032,7 +1032,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1045,7 +1045,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1076,7 +1076,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1093,7 +1093,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1110,7 +1110,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1127,7 +1127,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1142,7 +1142,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1157,7 +1157,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1171,7 +1171,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1185,7 +1185,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1199,7 +1199,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1213,7 +1213,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1246,7 +1246,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1259,7 +1259,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1272,7 +1272,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1285,7 +1285,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1298,7 +1298,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1311,7 +1311,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1324,7 +1324,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1336,7 +1336,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1349,7 +1349,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1362,7 +1362,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1375,7 +1375,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1388,7 +1388,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1417,7 +1417,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc2"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1433,7 +1433,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1449,7 +1449,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1465,7 +1465,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1480,7 +1480,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1495,7 +1495,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1510,7 +1510,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1525,7 +1525,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1539,7 +1539,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1553,7 +1553,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1567,7 +1567,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1581,7 +1581,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1614,7 +1614,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1627,7 +1627,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1640,7 +1640,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1653,7 +1653,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
                                      {ParamType::INTEGER_LITERAL, "1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1666,7 +1666,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1679,7 +1679,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1713,7 +1713,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1730,7 +1730,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1747,7 +1747,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1764,7 +1764,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1779,7 +1779,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1794,7 +1794,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1808,7 +1808,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1822,7 +1822,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1836,7 +1836,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1850,7 +1850,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "s"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1883,7 +1883,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1896,7 +1896,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1909,7 +1909,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1922,7 +1922,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1935,7 +1935,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1948,7 +1948,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::NAME_LITERAL, "proc1"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1961,7 +1961,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1973,7 +1973,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1986,7 +1986,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -1999,7 +1999,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2012,7 +2012,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2025,7 +2025,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2058,7 +2058,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc3"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2074,7 +2074,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc3"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2090,7 +2090,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2106,7 +2106,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc3"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2122,7 +2122,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc3"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2138,7 +2138,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::NAME_LITERAL, "proc3"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2153,7 +2153,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2168,7 +2168,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::NAME_LITERAL, "x"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2182,7 +2182,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2196,7 +2196,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2210,7 +2210,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{p}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2224,7 +2224,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
                                      {ParamType::SYNONYM, "p"},
                                      {ParamType::SYNONYM, "v"}};
     conditionClauses.push_back(
-        {suchThatClause, {}, ConditionClauseType::SUCH_THAT});
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2263,7 +2263,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2274,7 +2274,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2285,7 +2285,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2296,7 +2296,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2307,7 +2307,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::WILDCARD, "_"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2318,7 +2318,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2329,7 +2329,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2340,7 +2340,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2351,7 +2351,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2362,7 +2362,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2373,7 +2373,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2384,7 +2384,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2409,7 +2409,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2424,7 +2424,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2439,7 +2439,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::NAME_LITERAL, "x"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2454,7 +2454,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::WILDCARD, "_"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2469,7 +2469,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::WILDCARD, "_"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2482,7 +2482,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::WILDCARD, "_"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2497,7 +2497,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2512,7 +2512,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2526,7 +2526,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2541,7 +2541,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::EXACT, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2556,7 +2556,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "w"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2570,7 +2570,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     PatternClause patternClause = {
         a, {ParamType::SYNONYM, "v"}, {MatchType::ANY, "_"}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2604,7 +2604,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
   SECTION("Select ifs pattern ifs ('x', _, _)") {
     PatternClause patternClause = {ifs, {ParamType::NAME_LITERAL, "x"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2614,7 +2614,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
   SECTION("Select ifs pattern ifs (_, _, _)") {
     PatternClause patternClause = {ifs, {ParamType::WILDCARD, "_"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2624,7 +2624,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
   SECTION("Select ifs pattern ifs (v, _, _)") {
     PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2635,7 +2635,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
   SECTION("Select v pattern ifs (v, _, _)") {
     PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2660,7 +2660,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {ifs, {ParamType::NAME_LITERAL, "x"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2672,7 +2672,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {ifs, {ParamType::WILDCARD, "_"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2685,7 +2685,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2698,7 +2698,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2733,7 +2733,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
   SECTION("Select w pattern w ('x', _)") {
     PatternClause patternClause = {w, {ParamType::NAME_LITERAL, "x"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2743,7 +2743,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
   SECTION("Select w pattern w (_, _)") {
     PatternClause patternClause = {w, {ParamType::WILDCARD, "_"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2753,7 +2753,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
   SECTION("Select w pattern w (v, _)") {
     PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2764,7 +2764,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
   SECTION("Select v pattern w (v, _)") {
     PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2789,7 +2789,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {w, {ParamType::NAME_LITERAL, "x"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2801,7 +2801,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {w, {ParamType::WILDCARD, "_"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2814,7 +2814,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
@@ -2827,7 +2827,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
     PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
     conditionClauses.push_back(
-        {{}, patternClause, ConditionClauseType::PATTERN});
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);

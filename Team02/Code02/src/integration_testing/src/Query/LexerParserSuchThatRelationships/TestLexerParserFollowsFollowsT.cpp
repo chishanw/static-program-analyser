@@ -24,8 +24,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -50,8 +50,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -76,8 +76,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -128,8 +128,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -154,8 +154,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -180,8 +180,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -206,8 +206,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -235,8 +235,8 @@ TEST_CASE(
         {"s", query::DesignEntity::STATEMENT},
         {"s1", query::DesignEntity::STATEMENT},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -264,8 +264,8 @@ TEST_CASE(
         {"r", query::DesignEntity::READ},
         {"r1", query::DesignEntity::READ},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::READ, "r"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::READ, "r", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -293,8 +293,8 @@ TEST_CASE(
         {"p", query::DesignEntity::PRINT},
         {"p1", query::DesignEntity::PRINT},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::PRINT, "p"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::PRINT, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -322,8 +322,8 @@ TEST_CASE(
         {"w", query::DesignEntity::WHILE},
         {"w1", query::DesignEntity::WHILE},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::WHILE, "w"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -351,8 +351,8 @@ TEST_CASE(
         {"ifs", query::DesignEntity::IF},
         {"ifs1", query::DesignEntity::IF},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::IF, "ifs"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -380,8 +380,8 @@ TEST_CASE(
         {"a", query::DesignEntity::ASSIGN},
         {"a1", query::DesignEntity::ASSIGN},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::ASSIGN, "a"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -409,8 +409,8 @@ TEST_CASE(
         {"c", query::DesignEntity::CALL},
         {"c1", query::DesignEntity::CALL},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::CALL, "c"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::CALL, "c", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -438,8 +438,8 @@ TEST_CASE(
         {"n", query::DesignEntity::PROG_LINE},
         {"n1", query::DesignEntity::PROG_LINE},
     };
-    query::Synonym selectSynonym = {query::DesignEntity::PROG_LINE, "n"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::PROG_LINE, "n", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
@@ -592,8 +592,8 @@ TEST_CASE(
 
     // expected
     SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
-    query::Synonym selectSynonym = {query::DesignEntity::STATEMENT, "s"};
-    std::vector<query::Synonym> resultSynonyms = {selectSynonym};
+    std::vector<query::Synonym> resultSynonyms = {
+        {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,

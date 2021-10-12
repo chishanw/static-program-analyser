@@ -46,6 +46,10 @@ class QueryParser {
   inline static const std::string INVALID_PATTERN_SYNONYM_MSG =
       "QueryParser expects an assignment, while or if synonym.";
 
+  inline static const std::string INVALID_ATTRIBUTE =
+      "QueryParser expects a valid attribute name.";
+  inline static const std::string INVALID_SYNONYM_ATTRIBUTE_MATCH =
+      "QueryParser found an invalid attribute for the given synonym.";
   inline static const std::string INVALID_STMT_REF_MSG =
       "QueryParser expects a STMT_REF.";
   inline static const std::string INVALID_ENT_REF_MSG =
@@ -59,7 +63,7 @@ class QueryParser {
       "QueryParser expects a BOOLEAN, a tuple or one synonym for result "
       "clause.";
   inline static const std::string INVALID_ST_P_KEYWORD_MSG =
-      "QueryParser expects a such that or pattern keyword.";
+      "QueryParser expects a such that or pattern or with keyword.";
   inline static const std::string INVALID_ST_RELATIONSHIP_MSG =
       "QueryParser expects a valid such-that relationship.";
   inline static const std::string INVALID_ST_USES_MODIFIES_WILDCARD_MSG =
@@ -76,6 +80,12 @@ class QueryParser {
 
   inline static const std::string INVALID_P_EXPR_CHARA_MSG =
       "QueryParser found an invalid character in the pattern expr.";
+
+  inline static const std::string INVALID_W_SYNONYM =
+      "QueryParser expects a prog_line synonym.";
+  inline static const std::string INVALID_W_DIFF_PARAM_TYPES =
+      "QueryParser expects the same type (string/integer) to be compared in "
+      "the with-clause.";
 
  private:
   std::vector<qpp::QueryToken>::iterator it;
@@ -98,11 +108,12 @@ class QueryParser {
   query::DesignEntity getDesignEntity();
   std::string getKeyword();
   std::string getExactKeyword(const std::string&);
+  query::Attribute getAttribute(const std::string&);
 
   query::DesignEntity getEntityFromSynonymName(const std::string&);
   query::Param getRefParam();
 
-  SynonymMap parseSynonyms();
+  SynonymMap parseSynonymDeclarations();
   query::SelectClause parseSelectClause();
   std::tuple<std::vector<query::Synonym>, query::SelectType>
   parseResultClause();
@@ -117,4 +128,6 @@ class QueryParser {
   query::ConditionClause parseIfPatternClause();
   query::ConditionClause parseAssignPatternClause();
   query::PatternExpr parsePatternExpr();
+
+  void parseWithClause(std::vector<query::ConditionClause>&);
 };
