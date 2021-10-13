@@ -66,5 +66,22 @@ TEST_CASE("[DE][Modifies R/S] sample source") {
     REQUIRE(pkb->getModifiesS("a") == UNO_SET_OF_STMT_NO({ 12, 13, 14 }));
     REQUIRE(pkb->getModifiesS("b") == UNO_SET_OF_STMT_NO({ 4, 10, 12, 13,
         15, 17, 23, 25 }));
+
+    REQUIRE(pkb->isModifiesP("q", "z"));
+    REQUIRE(pkb->isModifiesP("q", "b"));
+    REQUIRE(pkb->isModifiesP("q", "x"));
+
+    REQUIRE(pkb->isModifiesP("p", "a"));
+    REQUIRE(pkb->isModifiesP("p", "x"));
+    REQUIRE(pkb->isModifiesP("p", "i"));
+    REQUIRE(pkb->isModifiesP("p", "b"));
+    REQUIRE(pkb->isModifiesP("p", "z"));
+
+    REQUIRE(pkb->isModifiesP("Example", "a"));
+    REQUIRE(pkb->isModifiesP("Example", "x"));
+    REQUIRE(pkb->isModifiesP("Example", "i"));
+    REQUIRE(pkb->isModifiesP("Example", "b"));
+    REQUIRE(pkb->isModifiesP("Example", "z"));
+    REQUIRE(pkb->isModifiesP("Example", "y"));
   }
 }

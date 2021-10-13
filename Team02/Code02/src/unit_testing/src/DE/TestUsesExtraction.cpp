@@ -103,5 +103,23 @@ TEST_CASE("[DE][Uses R/S] sample source") {
     REQUIRE(pkb->getUsesS("a") == UNO_SET_OF_STMT_NO({ 12, 13, 14, 15 }));
     REQUIRE(pkb->getUsesS("b") == UNO_SET_OF_STMT_NO({ 4, 10, 12, 13, 14,
         16, 22, 23 }));
+
+    REQUIRE(pkb->isUsesP("q", "z"));
+    REQUIRE(pkb->isUsesP("q", "b"));
+    REQUIRE(pkb->isUsesP("q", "x"));
+
+    REQUIRE(pkb->isUsesP("p", "a"));
+    REQUIRE(pkb->isUsesP("p", "y"));
+    REQUIRE(pkb->isUsesP("p", "x"));
+    REQUIRE(pkb->isUsesP("p", "i"));
+    REQUIRE(pkb->isUsesP("p", "b"));
+    REQUIRE(pkb->isUsesP("p", "z"));
+
+    REQUIRE(pkb->isUsesP("Example", "a"));
+    REQUIRE(pkb->isUsesP("Example", "x"));
+    REQUIRE(pkb->isUsesP("Example", "i"));
+    REQUIRE(pkb->isUsesP("Example", "b"));
+    REQUIRE(pkb->isUsesP("Example", "z"));
+    REQUIRE(pkb->isUsesP("Example", "y"));
   }
 }
