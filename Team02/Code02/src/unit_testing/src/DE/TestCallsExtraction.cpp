@@ -2,7 +2,7 @@
 #include <DesignExtractor/DesignExtractor.h>
 #include <PKB/PKB.h>
 #include <Parser/Parser.h>
-#include <Parser/Tokenizer.h>
+#include <Common/Tokenizer.h>
 
 #include <vector>
 

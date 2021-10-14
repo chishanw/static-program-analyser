@@ -866,7 +866,7 @@ TEST_CASE("Valid queries with many clauses connected with and") {
                                     {query::MatchType::ANY, "_"});
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::WILDCARD, "_",
-                                    {query::MatchType::SUB_EXPRESSION, "x"});
+                                    {query::MatchType::SUB_EXPRESSION, "[x]"});
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
@@ -895,7 +895,7 @@ TEST_CASE("Valid queries with many clauses connected with and") {
                                     {query::MatchType::ANY, "_"});
     TestQueryUtil::AddPatternClause(clauses, {query::DesignEntity::ASSIGN, "a"},
                                     query::ParamType::WILDCARD, "_",
-                                    {query::MatchType::SUB_EXPRESSION, "x"});
+                                    {query::MatchType::SUB_EXPRESSION, "[x]"});
     TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "2",
                                      query::ParamType::INTEGER_LITERAL, "3");

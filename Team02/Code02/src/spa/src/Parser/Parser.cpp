@@ -1,5 +1,6 @@
 #include "Parser.h"
 
+#include <Common/ExprParser.h>
 #include <Common/Global.h>
 
 #include <iostream>
@@ -174,96 +175,10 @@ AssignStmtAST* Parser::assignStmt() {
 //  expr
 // =======================================
 
-ArithAST* Parser::buildExprAST(
-    ArithAST* leftNode,
-    vector<pair<string, ArithAST*>>& listSignAndTerm) const {
-  if (listSignAndTerm.empty()) {
-    return leftNode;
-  }
-
-  for (vector<pair<string, ArithAST*>>::iterator it = listSignAndTerm.begin();
-       it != listSignAndTerm.end(); ++it) {
-    string sign = it->first;
-    ArithAST* rightNode = it->second;
-    ArithAST* newNode = new ArithAST(sign, leftNode, rightNode);
-    leftNode = newNode;
-  }
-
-  return leftNode;
-}
-
 ArithAST* Parser::expr() {
-  ArithAST* leftNode = term();
-  vector<pair<string, ArithAST*>> listSignAndTerm = exprPrime();
-  return buildExprAST(leftNode, listSignAndTerm);
-}
-
-vector<pair<string, ArithAST*>> Parser::exprPrime() {
-  if (expectToken("+")) {
-    consumeToken("+");
-    ArithAST* exprAST = term();
-    vector<pair<string, ArithAST*>> rest = exprPrime();
-    rest.insert(rest.begin(), make_pair("+", exprAST));
-    return rest;
-  } else if (expectToken("-")) {
-    consumeToken("-");
-    ArithAST* exprAST = term();
-    vector<pair<string, ArithAST*>> rest = exprPrime();
-    rest.insert(rest.begin(), make_pair("-", exprAST));
-    return rest;
-  } else {
-    vector<pair<string, ArithAST*>> res;
-    return res;
-  }
-}
-
-ArithAST* Parser::term() {
-  ArithAST* leftNode = factor();
-  vector<pair<string, ArithAST*>> listSignAndFactor = termPrime();
-  return buildExprAST(leftNode, listSignAndFactor);
-}
-
-vector<pair<string, ArithAST*>> Parser::termPrime() {
-  if (expectToken("*")) {
-    consumeToken("*");
-    ArithAST* factorAST = factor();
-    vector<pair<string, ArithAST*>> rest = termPrime();
-    rest.insert(rest.begin(), make_pair("*", factorAST));
-    return rest;
-  } else if (expectToken("/")) {
-    consumeToken("/");
-    ArithAST* factorAST = factor();
-    vector<pair<string, ArithAST*>> rest = termPrime();
-    rest.insert(rest.begin(), make_pair("/", factorAST));
-    return rest;
-  } else if (expectToken("%")) {
-    consumeToken("%");
-    ArithAST* factorAST = factor();
-    vector<pair<string, ArithAST*>> rest = termPrime();
-    rest.insert(rest.begin(), make_pair("%", factorAST));
-    return rest;
-  } else {
-    vector<pair<string, ArithAST*>> res;
-    return res;
-  }
-}
-
-FactorAST* Parser::factor() {
-  if (expectToken("(")) {
-    consumeToken("(");
-    ArithAST* exprAST = expr();
-    consumeToken(")");
-    return new FactorAST(exprAST);
-  } else if (isName()) {
-    NAME varName = name();
-    return new FactorAST(varName);
-  } else if (isNumber()) {
-    string constValue = number();
-    return new FactorAST(constValue, true);
-  } else {
-    errorExpected("Left_Paren or Name or Number");
-    return nullptr;  // won't reach this line
-  }
+  ArithAST* exprAST = ExprParser().Parse(&tokenIterator, tokens.end());
+  token = *(tokenIterator);
+  return exprAST;
 }
 
 // =======================================

@@ -3,6 +3,31 @@ while w;
 Select w such that Parent(w, 7)
 none
 5000
+2 - comment
+if ifs;
+Select ifs such that Follows(5, ifs)
+6
+5000
+3 - comment
+assign a;
+Select a such that Parent*(4, a)
+5, 7, 8, 9, 11
+5000
+4 - comment
+call c;
+Select c such that Follows*(1, c)
+12
+5000
+5 - comment
+stmt s;
+Select s such that Modifies(s, "i")
+3, 4, 11, 12, 13, 14, 17
+5000
+6 - comment
+variable v;
+Select v such that Uses("p", v)
+i, x, y, z
+5000
 7 - comment
 procedure p;
 Select p such that Calls(p, "q")
@@ -41,7 +66,7 @@ none
 14 - comment
 assign a;
 Select a pattern a(_, _"x + 1"_)
-none
+7, 18, 23
 5000
 15 - comment
 assign a;

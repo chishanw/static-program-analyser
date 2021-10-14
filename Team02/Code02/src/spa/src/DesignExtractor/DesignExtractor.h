@@ -4,8 +4,8 @@
 #include <utility>
 #include <vector>
 
+#include "Common/AST.h"
 #include "PKB/PKB.h"
-#include "Parser/AST.h"
 
 typedef std::unordered_map<PROC_NAME, std::unordered_set<PROC_NAME>> CALL_GRAPH;
 typedef std::pair<STMT_NO, NAME> STMT_NO_NAME_PAIR;

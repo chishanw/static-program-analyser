@@ -1,6 +1,6 @@
 
 #include <Parser/Parser.h>
-#include <Parser/Tokenizer.h>
+#include <Common/Tokenizer.h>
 
 #include <vector>
 

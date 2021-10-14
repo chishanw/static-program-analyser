@@ -3,7 +3,7 @@
 #include <utility>
 #include <vector>
 
-#include "AST.h"
+#include "Common/AST.h"
 
 class Parser {
  public:
@@ -33,13 +33,7 @@ class Parser {
   AssignStmtAST* assignStmt();
 
   //  expr
-  ArithAST* buildExprAST(ArithAST* leftNode,
-                         std::vector<std::pair<std::string, ArithAST*>>&) const;
   ArithAST* expr();
-  std::vector<std::pair<std::string, ArithAST*>> exprPrime();
-  ArithAST* term();
-  std::vector<std::pair<std::string, ArithAST*>> termPrime();
-  FactorAST* factor();
 
   //  cond expr
   CondExprAST* condExpr();

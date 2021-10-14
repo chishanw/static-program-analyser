@@ -20,19 +20,16 @@ class ArithAST {
   ArithAST() : hasOnlyOneNode(false) {}  // default constructor for child class
 
   explicit ArithAST(ArithAST* leftNode)
-      : hasOnlyOneNode(true), Sign(""), LeftNode(leftNode), RightNode(nullptr) {
-    // TODO(gf): clean up
-    // std::cout << "1N_Arith is called: " << leftNode << std::endl;
-  }
+      : hasOnlyOneNode(true),
+        Sign(""),
+        LeftNode(leftNode),
+        RightNode(nullptr) {}
 
   ArithAST(std::string sign, ArithAST* leftNode, ArithAST* rightNode)
       : hasOnlyOneNode(false),
         Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode) {
-    // TODO(gf): clean up
-    // std::cout << "2N_Arith is called: " << leftNode << std::endl;
-  }
+        RightNode(rightNode) {}
 
   virtual ~ArithAST() {}
 

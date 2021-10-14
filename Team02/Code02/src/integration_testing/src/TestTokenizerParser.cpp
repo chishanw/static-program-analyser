@@ -1,5 +1,5 @@
 #include <Parser/Parser.h>
-#include <Parser/Tokenizer.h>
+#include <Common/Tokenizer.h>
 
 #include <vector>
 
@@ -26,7 +26,7 @@ TEST_CASE("Tokenizer Parser Integration Test 1") {
   REQUIRE(ra->VarName == "x");
 
   // expr
-  REQUIRE(ra->Expr->GetFullExprPatternStr() == "1");
+  REQUIRE(ra->Expr->GetFullExprPatternStr() == "[1]");
 }
 
 TEST_CASE("Tokenizer Parser Integration Test 2") {
@@ -47,7 +47,7 @@ TEST_CASE("Tokenizer Parser Integration Test 2") {
   REQUIRE(ra->VarName == "x");
 
   // expr
-  REQUIRE(ra->Expr->GetFullExprPatternStr() == "1-2+3");
+  REQUIRE(ra->Expr->GetFullExprPatternStr() == "[[[1]-[2]]+[3]]");
 }
 
 TEST_CASE("Parser Exception Test") {

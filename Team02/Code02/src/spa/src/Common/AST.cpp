@@ -15,27 +15,33 @@ string ArithAST::GetFullExprPatternStr() const {
 
   // no space between tokens
   stringstream out;
+  out << "[";
   if (hasOnlyOneNode) {
     out << LeftNode->GetFullExprPatternStr();
   } else {
     out << LeftNode->GetFullExprPatternStr() << Sign
         << RightNode->GetFullExprPatternStr();
   }
+  out << "]";
   return out.str();
 }
 
 string FactorAST::GetFullExprPatternStr() const {
+  if (isExpr) {
+    return Expr->GetFullExprPatternStr();
+  }
+
   // no space between tokens
   stringstream out;
+  out << "[";
   if (isVarName) {
     out << VarName;
   } else if (isConstValue) {
     out << ConstValue;
-  } else if (isExpr) {
-    out << "(" << Expr->GetFullExprPatternStr() << ")";
   } else {
     DMOprintErrMsgAndExit("FactorAST has wrong bool value");
   }
+  out << "]";
   return out.str();
 }
 

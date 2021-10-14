@@ -1,5 +1,8 @@
 #include "QueryParser.h"
 
+#include <Common/ExprParser.h>
+#include <Common/Tokenizer.h>
+
 #include <set>
 
 using namespace std;
@@ -51,9 +54,11 @@ const set<ParamType> integerParamTypes = {
     ParamType::INTEGER_LITERAL, ParamType::ATTRIBUTE_STMT_NUM,
     ParamType::ATTRIBUTE_VALUE, ParamType::SYNONYM};
 
-const set<ParamType> stringParamTypes = {
-    ParamType::NAME_LITERAL, ParamType::ATTRIBUTE_VAR_NAME,
-    ParamType::ATTRIBUTE_PROC_NAME};
+const set<ParamType> stringParamTypes = {ParamType::NAME_LITERAL,
+                                         ParamType::ATTRIBUTE_VAR_NAME,
+                                         ParamType::ATTRIBUTE_PROC_NAME};
+
+const set<string> validPatternExprChars = {"+", "-", "*", "/", "%", "(", ")"};
 
 // ============ Helpers (Token) ============
 QueryToken QueryParser::consumeToken() {
@@ -673,24 +678,52 @@ query::ConditionClause QueryParser::parseAssignPatternClause() {
 }
 
 query::PatternExpr QueryParser::parsePatternExpr() {
-  getExactCharSymbol('_');
+  // pattern may be either [_] or [_"expr"_] or ["expr"]
+  char symbol = getCharSymbol();
 
-  // expr is [_]
-  if (peekToken().has_value() && peekToken().value().value == ")") {
+  // identify pattern type
+  if (symbol == '_' && peekToken().has_value() &&
+      peekToken().value().value == ")") {  // pattern is [_]
     return {MatchType::ANY, "_"};
   }
+  MatchType matchType;
+  if (symbol == '_') {  // pattern is [_"expr"_]
+    getExactCharSymbol('"');
+    matchType = MatchType::SUB_EXPRESSION;
 
-  // expr is [_"FACTOR"_]
-  getExactCharSymbol('"');
-  QueryToken exprToken = consumeToken();
-  // if expr is not IDENT or literal
-  if (exprToken.tokenType != TokenType::NAME_OR_KEYWORD &&
-      exprToken.tokenType != TokenType::INTEGER) {
+  } else if (symbol == '"') {  // pattern is ["expr"]
+    matchType = MatchType::EXACT;
+
+  } else {  // pattern is not valid
     throw SyntacticErrorException(INVALID_P_EXPR_CHARA_MSG);
   }
+
+  // extract expression
+  string exprString = "";
+  bool hasExprTokens = true;
+  while (hasExprTokens) {
+    QueryToken current = consumeToken();
+    exprString += current.value;
+    hasExprTokens = hasNextToken() && peekToken().value().value != "\"";
+  }
+
+  // validate closing tokens
   getExactCharSymbol('"');
-  getExactCharSymbol('_');
-  return {MatchType::SUB_EXPRESSION, exprToken.value};
+  if (matchType == MatchType::SUB_EXPRESSION) {
+    getExactCharSymbol('_');
+  }
+
+  // convert expression tokens into exprString
+  try {
+    vector<string> exprTokens = Tokenizer::TokenizeProgramString(exprString);
+    auto exprTokensIt = exprTokens.begin();
+    ArithAST* exprAST = ExprParser().Parse(&exprTokensIt, exprTokens.end());
+    string parsedExprString = exprAST->GetFullExprPatternStr();
+
+    return {matchType, parsedExprString};
+  } catch (exception e) {
+    throw SyntacticErrorException(INVALID_P_EXPR_CHARA_MSG);
+  }
 }
 
 // ============ Parsers (with) ============

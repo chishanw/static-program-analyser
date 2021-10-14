@@ -135,6 +135,7 @@ DesignExtractor::ExtractUsesHelper(
 
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       for (auto varName : ifStmt->CondExpr->GetAllVarNames()) {
+        pkb->addIfPtt(ifStmt->StmtNo, varName);  // for if pattern
         result.insert(make_pair(ifStmt->StmtNo, varName));
       }
 
@@ -154,6 +155,7 @@ DesignExtractor::ExtractUsesHelper(
 
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
       for (auto varName : whileStmt->CondExpr->GetAllVarNames()) {
+        pkb->addWhilePtt(whileStmt->StmtNo, varName);  // for while pattern
         result.insert(make_pair(whileStmt->StmtNo, varName));
       }
 
@@ -430,8 +432,8 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
 
       string fullExpr = strs[0];
       pkb->addAssignPttFullExpr(stmt->StmtNo, varName, fullExpr);
-      for (auto it = strs.begin(); it != strs.end(); ++it) {
-        pkb->addAssignPttSubExpr(stmt->StmtNo, varName, *it);
+      for (string subExpr : strs) {
+        pkb->addAssignPttSubExpr(stmt->StmtNo, varName, subExpr);
       }
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       ExtractExprPatternsHelper(ifStmt->ThenBlock);
@@ -482,9 +484,9 @@ CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST) {
 
     unordered_map<STMT_NO, PROC_NAME> res =
         ExtractCallsHelper(caller->StmtList);
-    for (auto it : res) {
-      pkb->addCalls(it.first, caller->ProcName, it.second);
-      allProcsCalled.insert(it.second);
+    for (auto p : res) {
+      pkb->addCalls(p.first, caller->ProcName, p.second);
+      allProcsCalled.insert(p.second);
     }
 
     // allProcsCalled could be empty set
@@ -512,9 +514,9 @@ unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
 }
 
 void DesignExtractor::ExtractCallsTrans(CALL_GRAPH callGraph) {
-  for (auto it : callGraph) {
-    PROC_NAME caller = it.first;
-    unordered_set<PROC_NAME> callees = it.second;
+  for (auto p : callGraph) {
+    PROC_NAME caller = p.first;
+    unordered_set<PROC_NAME> callees = p.second;
     for (auto callee : callees) {
       ExtractCallsTransHelper(callGraph, caller, callee);
     }

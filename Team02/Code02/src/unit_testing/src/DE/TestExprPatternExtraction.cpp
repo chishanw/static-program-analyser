@@ -2,7 +2,7 @@
 #include <DesignExtractor/DesignExtractor.h>
 #include <PKB/PKB.h>
 #include <Parser/Parser.h>
-#include <Parser/Tokenizer.h>
+#include <Common/Tokenizer.h>
 
 #include <vector>
 
@@ -61,86 +61,115 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
     // ===============
     // full expr
     // ===============
-    REQUIRE(pkb->getAssignForVarAndFullExpr("x", "2") == UNO_SET_OF_STMT_NO{1});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "3") == UNO_SET_OF_STMT_NO{2});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("i", "5") == UNO_SET_OF_STMT_NO{3});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("x", "x-1") ==
+    REQUIRE(pkb->getAssignForVarAndFullExpr("x", "[2]") ==
+            UNO_SET_OF_STMT_NO{1});
+    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[3]") ==
+            UNO_SET_OF_STMT_NO{2});
+    REQUIRE(pkb->getAssignForVarAndFullExpr("i", "[5]") ==
+            UNO_SET_OF_STMT_NO{3});
+    REQUIRE(pkb->getAssignForVarAndFullExpr("x", "[[x]-[1]]") ==
             UNO_SET_OF_STMT_NO{5});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "x+1") ==
+    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[[x]+[1]]") ==
             UNO_SET_OF_STMT_NO{7, 23});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("y", "z+x") ==
+    REQUIRE(pkb->getAssignForVarAndFullExpr("y", "[[z]+[x]]") ==
             UNO_SET_OF_STMT_NO{8});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "z+x+i") ==
+    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[[[z]+[x]]+[i]]") ==
             UNO_SET_OF_STMT_NO{9, 21});
     // TODO(gf): expr pattern string is gonna change in
     // iter2, so not gonna write too many tests for now
 
-    REQUIRE(pkb->getAssignForFullExpr("2") == UNO_SET_OF_STMT_NO{1});
-    REQUIRE(pkb->getAssignForFullExpr("3") == UNO_SET_OF_STMT_NO{2});
-    REQUIRE(pkb->getAssignForFullExpr("5") == UNO_SET_OF_STMT_NO{3});
-    REQUIRE(pkb->getAssignForFullExpr("x-1") == UNO_SET_OF_STMT_NO{5});
-    REQUIRE(pkb->getAssignForFullExpr("x+1") == UNO_SET_OF_STMT_NO{7, 18, 23});
-    REQUIRE(pkb->getAssignForFullExpr("z+x") == UNO_SET_OF_STMT_NO{8, 24});
-    REQUIRE(pkb->getAssignForFullExpr("z+x+i") == UNO_SET_OF_STMT_NO{9, 21});
+    REQUIRE(pkb->getAssignForFullExpr("[2]") == UNO_SET_OF_STMT_NO{1});
+    REQUIRE(pkb->getAssignForFullExpr("[3]") == UNO_SET_OF_STMT_NO{2});
+    REQUIRE(pkb->getAssignForFullExpr("[5]") == UNO_SET_OF_STMT_NO{3});
+    REQUIRE(pkb->getAssignForFullExpr("[[x]-[1]]") == UNO_SET_OF_STMT_NO{5});
+    REQUIRE(pkb->getAssignForFullExpr("[[x]+[1]]") ==
+            UNO_SET_OF_STMT_NO{7, 18, 23});
+    REQUIRE(pkb->getAssignForFullExpr("[[z]+[x]]") ==
+            UNO_SET_OF_STMT_NO{8, 24});
+    REQUIRE(pkb->getAssignForFullExpr("[[[z]+[x]]+[i]]") ==
+            UNO_SET_OF_STMT_NO{9, 21});
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("2"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[2]"),
                  VectorContains(vector<int>{1, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("3"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[3]"),
                  VectorContains(vector<int>{2, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("5"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[5]"),
                  VectorContains(vector<int>{3, iIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("x-1"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]-[1]]"),
                  VectorContains(vector<int>{5, xIdx}));
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("x+1"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]+[1]]"),
                  VectorContains(vector<int>{7, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("x+1"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]+[1]]"),
                  VectorContains(vector<int>{18, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("x+1"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]+[1]]"),
                  VectorContains(vector<int>{23, zIdx}));
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("z+x"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[z]+[x]]"),
                  VectorContains(vector<int>{8, yIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("z+x"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[z]+[x]]"),
                  VectorContains(vector<int>{24, xIdx}));
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("z+x+i"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[[z]+[x]]+[i]]"),
                  VectorContains(vector<int>{9, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("z+x+i"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[[z]+[x]]+[i]]"),
                  VectorContains(vector<int>{21, zIdx}));
 
     // ===============
     // sub expr
     // ===============
 
-    REQUIRE(pkb->getAssignForVarAndSubExpr("x", "2") ==
+    REQUIRE(pkb->getAssignForVarAndSubExpr("x", "[2]") ==
             UNO_SET_OF_STMT_NO{1, 15});
 
-    REQUIRE(pkb->getAssignForSubExpr("2") == UNO_SET_OF_STMT_NO{1, 15});
+    REQUIRE(pkb->getAssignForSubExpr("[2]") == UNO_SET_OF_STMT_NO{1, 15});
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("2"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[2]"),
                  VectorContains(vector<int>{1, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("2"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[2]"),
                  VectorContains(vector<int>{15, xIdx}));
 
-    REQUIRE(pkb->getAssignForSubExpr("x") ==
+    REQUIRE(pkb->getAssignForSubExpr("[x]") ==
             UNO_SET_OF_STMT_NO{5, 7, 8, 9, 18, 19, 21, 23, 24});
-    REQUIRE(pkb->getAssignForSubExpr("1") ==
+    REQUIRE(pkb->getAssignForSubExpr("[1]") ==
             UNO_SET_OF_STMT_NO{5, 7, 11, 17, 18, 20, 23});
-    REQUIRE(pkb->getAssignForSubExpr("z") ==
+    REQUIRE(pkb->getAssignForSubExpr("[z]") ==
             UNO_SET_OF_STMT_NO{8, 9, 15, 19, 21, 24});
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("z"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
                  VectorContains(vector<int>{8, yIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("z"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
                  VectorContains(vector<int>{9, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("z"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
                  VectorContains(vector<int>{15, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("z"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
                  VectorContains(vector<int>{19, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("z"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
                  VectorContains(vector<int>{21, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("z"),
+    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
                  VectorContains(vector<int>{24, xIdx}));
   }
+}
+
+TEST_CASE("[ExprParser] compare ASTs of diff expr with same AST") {
+  string program1 =
+      "procedure Example {\n"
+      "  x12y = (c%1 -(2/b - 3 *4) / (((5)))+((a%6))+(7)); }\n"
+      "\n";
+
+  ProgramAST* ast1 = Parser().Parse(Tokenizer::TokenizeProgramString(program1));
+  StmtAST* stmt1 = ast1->ProcedureList[0]->StmtList[0];
+  auto assignStmt1 = dynamic_cast<AssignStmtAST*>(stmt1);
+  string patternStrRepr1 = assignStmt1->Expr->GetFullExprPatternStr();
+
+  string program2 =
+      "procedure Example {\n"
+      "  x12y = ((c%1) -(2/((b)) - ((((3)))) *4) / 5+a%6+7); }\n"
+      "\n";
+  ProgramAST* ast2 = Parser().Parse(Tokenizer::TokenizeProgramString(program2));
+  StmtAST* stmt2 = ast2->ProcedureList[0]->StmtList[0];
+  auto assignStmt2 = dynamic_cast<AssignStmtAST*>(stmt2);
+  string patternStrRepr2 = assignStmt2->Expr->GetFullExprPatternStr();
+
+  CHECK(patternStrRepr1 == patternStrRepr2);
 }
