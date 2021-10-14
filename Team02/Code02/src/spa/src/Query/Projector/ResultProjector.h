@@ -12,7 +12,7 @@ class ResultProjector {
  public:
   explicit ResultProjector(PKB*);
   std::list<std::string> formatResults(
-      std::unordered_map<string, query::DesignEntity> synonymMap,
+      std::unordered_map<std::string, query::DesignEntity> synonymMap,
       query::SelectType selectType, std::vector<query::Synonym> selectSynonyms,
       std::vector<std::vector<int>> results);
 

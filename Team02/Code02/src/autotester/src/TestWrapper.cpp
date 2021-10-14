@@ -1,9 +1,9 @@
 #include "TestWrapper.h"
 
 #include <Common/Global.h>
+#include <Common/Tokenizer.h>
 #include <DesignExtractor/DesignExtractor.h>
 #include <Parser/Parser.h>
-#include <Common/Tokenizer.h>
 #include <Query/Evaluator/QueryEvaluator.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>

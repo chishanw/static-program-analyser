@@ -9,6 +9,7 @@
 
 #include "Common/Global.h"
 
+using namespace std;
 using namespace query;
 
 UsesEvaluator::UsesEvaluator(PKB* pkb) { this->pkb = pkb; }

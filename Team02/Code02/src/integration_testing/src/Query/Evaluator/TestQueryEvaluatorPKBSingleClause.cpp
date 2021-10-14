@@ -6,7 +6,7 @@
 
 #include "../TestQueryUtil.h"
 #include "catch.hpp"
-
+using namespace std;
 using namespace query;
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {

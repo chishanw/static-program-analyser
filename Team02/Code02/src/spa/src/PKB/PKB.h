@@ -10,18 +10,16 @@
 #include <utility>
 #include <vector>
 
+#include "CallsKB.h"
+#include "ConstTable.h"
 #include "FollowKB.h"
 #include "ModifiesKB.h"
+#include "NextKB.h"
 #include "ParentKB.h"
 #include "PatternKB.h"
 #include "ProcTable.h"
 #include "UsesKB.h"
 #include "VarTable.h"
-#include "ConstTable.h"
-#include "CallsKB.h"
-#include "NextKB.h"
-
-using namespace std;
 
 class PKB {
  public:
@@ -143,11 +141,11 @@ class PKB {
   std::vector<std::pair<STMT_NO, std::vector<STMT_NO>>> getAllNextStmtPairs();
 
   // Table API
-  CONST_IDX insertConst(string constant);
+  CONST_IDX insertConst(std::string constant);
   std::string getConst(CONST_IDX index);
   CONST_IDX getConstIndex(std::string constant);
   std::unordered_set<CONST_IDX> getAllConstants();
-  PROC_IDX insertProcedure(string procName);
+  PROC_IDX insertProcedure(std::string procName);
   std::string getProcName(PROC_IDX procIdx);
   PROC_IDX getProcIndex(std::string procName);
   std::unordered_set<PROC_IDX> getAllProcedures();
@@ -156,8 +154,8 @@ class PKB {
   std::unordered_set<VAR_IDX> getAllVariables();
 
   // Table API for tests
-  PROC_IDX insertProc(string procName);
-  VAR_IDX insertVar(string varName);
+  PROC_IDX insertProc(std::string procName);
+  VAR_IDX insertVar(std::string varName);
 
  private:
   // Design Abstractions

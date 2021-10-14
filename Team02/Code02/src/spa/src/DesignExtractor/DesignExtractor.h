@@ -22,16 +22,17 @@ class DesignExtractor {
   PKB* pkb;
 
   void ExtractProcAndStmt(const ProgramAST*);
-  void ExtractProcAndStmtHelper(const vector<StmtAST*>);
+  void ExtractProcAndStmtHelper(const std::vector<StmtAST*>);
 
   void ExtractUses(const ProgramAST*);
   std::unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
-  ExtractUsesHelper(const vector<StmtAST*>, unordered_map<NAME, ProcedureAST*>);
+  ExtractUsesHelper(const std::vector<StmtAST*>,
+                    std::unordered_map<NAME, ProcedureAST*>);
 
   void ExtractModifies(const ProgramAST*);
   std::unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
-  ExtractModifiesHelper(const vector<StmtAST*>,
-                        unordered_map<NAME, ProcedureAST*>);
+  ExtractModifiesHelper(const std::vector<StmtAST*>,
+                        std::unordered_map<NAME, ProcedureAST*>);
 
   void ExtractParent(const ProgramAST*);
   std::vector<std::pair<STMT_NO, STMT_NO>> ExtractParentHelper(

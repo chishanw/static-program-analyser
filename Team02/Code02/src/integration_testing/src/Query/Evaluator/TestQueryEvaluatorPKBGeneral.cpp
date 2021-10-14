@@ -6,7 +6,7 @@
 
 #include "../TestQueryUtil.h"
 #include "catch.hpp"
-
+using namespace std;
 using namespace query;
 using Catch::Matchers::VectorContains;
 

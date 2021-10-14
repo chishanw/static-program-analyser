@@ -13,6 +13,7 @@
 #include "Common/Global.h"
 #include "FollowsEvaluator.h"
 
+using namespace std;
 using namespace query;
 
 QueryEvaluator::QueryEvaluator(PKB* pkb)

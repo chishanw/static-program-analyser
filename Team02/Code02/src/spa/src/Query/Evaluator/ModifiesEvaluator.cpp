@@ -9,6 +9,7 @@
 
 #include "Common/Global.h"
 
+using namespace std;
 using namespace query;
 
 ModifiesEvaluator::ModifiesEvaluator(PKB* pkb) { this->pkb = pkb; }

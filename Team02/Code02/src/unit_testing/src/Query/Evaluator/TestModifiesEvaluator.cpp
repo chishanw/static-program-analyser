@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "catch.hpp"
-
+using namespace std;
 using namespace query;
 
 TEST_CASE("ModifiesEvaluator: ModifiesS - Truthy Values") {

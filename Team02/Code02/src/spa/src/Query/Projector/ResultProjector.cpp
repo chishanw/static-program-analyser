@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
+using namespace std;
 using namespace query;
 
 ResultProjector::ResultProjector(PKB* pkb) { this->pkb = pkb; }

@@ -18,7 +18,7 @@ class QueryEvaluator {
  public:
   explicit QueryEvaluator(PKB*);
   std::vector<std::vector<int>> evaluateQuery(
-      std::unordered_map<string, query::DesignEntity> synonymMap,
+      std::unordered_map<std::string, query::DesignEntity> synonymMap,
       query::SelectClause select);
 
  private:
@@ -50,11 +50,11 @@ class QueryEvaluator {
 
   // main algos to merge results
   void filter(std::vector<std::vector<int>> incomingResults,
-              std::vector<string> incomingResultsSynonyms);
+              std::vector<std::string> incomingResultsSynonyms);
   void innerJoin(std::vector<std::vector<int>> incomingResults,
-                 std::vector<string> incomingResultsSynonyms);
+                 std::vector<std::string> incomingResultsSynonyms);
   void crossProduct(std::vector<std::vector<int>> incomingResults,
-                    std::vector<string> incomingResultsSynonyms);
+                    std::vector<std::string> incomingResultsSynonyms);
 
   // methods to call the relevant sub evaluator
   void evaluateSuchThatClause(query::SuchThatClause);

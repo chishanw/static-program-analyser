@@ -10,6 +10,7 @@
 
 #include "Common/Global.h"
 
+using namespace std;
 using namespace query;
 
 PatternEvaluator::PatternEvaluator(PKB* pkb) { this->pkb = pkb; }

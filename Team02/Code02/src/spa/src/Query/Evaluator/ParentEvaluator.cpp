@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
+using namespace std;
 using namespace query;
 
 ParentEvaluator::ParentEvaluator(PKB* pkb) { this->pkb = pkb; }
