@@ -342,8 +342,14 @@ TEST_CASE(
       "such that Follows*(1, 2)"
       "such that Parent(1, 2)"
       "such that Parent*(1, 2)"
-      "such that Uses(1, 2)"
-      "such that Modifies(1, 2)";
+      "such that Uses(1, \"x\")"
+      "such that Modifies(1, \"x\")"
+      "such that Uses(\"x\", \"x\")"
+      "such that Modifies(\"x\", \"x\")"
+      "such that Calls(\"x\", \"y\")"
+      "such that Calls*(\"x\", \"y\")"
+      "such that Next(1, 2)"
+      "such that Next*(1, 2)";
 
   vector<qpp::QueryToken> expectedTokens = {
       {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
@@ -351,6 +357,7 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ";"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
@@ -359,6 +366,7 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::KEYWORD, "Follows*"},
@@ -367,6 +375,7 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Parent"},
@@ -375,6 +384,7 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::KEYWORD, "Parent*"},
@@ -383,17 +393,93 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Uses"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::INTEGER, "1"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
-      {qpp::TokenType::INTEGER, "2"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Modifies"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Uses"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Modifies"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "y"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::KEYWORD, "Calls*"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "y"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::KEYWORD, "Next*"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::INTEGER, "1"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
@@ -410,21 +496,19 @@ TEST_CASE(
   REQUIRE(get<2>(actual) == get<2>(expected));
 }
 
-TEST_CASE(
-    "Query with valid such that clauses for different parameters are tokenized "
-    "successfully") {
+TEST_CASE("Query with valid stmt refs are tokenized successfully") {
   string validQuery =
       "stmt s, s1;"
       "Select s "
       "such that Follows(1, 2)"
-      "such that Follows(1, s)"
-      "such that Follows(1, _)"
-      "such that Follows(_, 2)"
-      "such that Follows(_, s)"
-      "such that Follows(_, _)"
-      "such that Follows(s, 2)"
-      "such that Follows(s, s1)"
-      "such that Follows(s, _)";
+      "and Follows(1, s)"
+      "and Follows(1, _)"
+      "and Follows(_, 2)"
+      "and Follows(_, s)"
+      "and Follows(_, _)"
+      "and Follows(s, 2)"
+      "and Follows(s, s1)"
+      "and Follows(s, _)";
 
   vector<qpp::QueryToken> expectedTokens = {
       {qpp::TokenType::NAME_OR_KEYWORD, "stmt"},
@@ -432,8 +516,10 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
       {qpp::TokenType::CHAR_SYMBOL, ";"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
+
       {qpp::TokenType::NAME_OR_KEYWORD, "such"},
       {qpp::TokenType::NAME_OR_KEYWORD, "that"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
@@ -442,70 +528,280 @@ TEST_CASE(
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::INTEGER, "1"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::INTEGER, "1"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::INTEGER, "2"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::NAME_OR_KEYWORD, "s1"},
       {qpp::TokenType::CHAR_SYMBOL, ")"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
-      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
       {qpp::TokenType::NAME_OR_KEYWORD, "Follows"},
       {qpp::TokenType::CHAR_SYMBOL, "("},
       {qpp::TokenType::NAME_OR_KEYWORD, "s"},
       {qpp::TokenType::CHAR_SYMBOL, ","},
       {qpp::TokenType::CHAR_SYMBOL, "_"},
       {qpp::TokenType::CHAR_SYMBOL, ")"}};
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
+
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
+
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
+}
+
+TEST_CASE("Query with valid ent refs are tokenized successfully") {
+  string validQuery =
+      "program p1, p2;"
+      "Select p1 "
+      "such that Calls(\"x\", \"y\")"
+      "and Calls(\"x\", _)"
+      "and Calls(\"x\", p2)"
+      "and Calls(_, \"y\")"
+      "and Calls(_, _)"
+      "and Calls(_, p2)"
+      "and Calls(p1, \"y\")"
+      "and Calls(p1, _)"
+      "and Calls(p1, p2)";
+
+  vector<qpp::QueryToken> expectedTokens = {
+      {qpp::TokenType::NAME_OR_KEYWORD, "program"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p2"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p1"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "y"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "x"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "y"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::NAME_OR_KEYWORD, "y"},
+      {qpp::TokenType::CHAR_SYMBOL, "\""},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Calls"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "p2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+  };
+  tuple<vector<qpp::QueryToken>, bool, string> expected = {
+      expectedTokens, true, {}};
+
+  tuple<vector<qpp::QueryToken>, bool, string> actual =
+      QueryLexer().Tokenize(validQuery);
+
+  REQUIRE(get<0>(actual) == get<0>(expected));
+  REQUIRE(get<1>(actual) == get<1>(expected));
+  REQUIRE(get<2>(actual) == get<2>(expected));
+}
+
+TEST_CASE("Query with valid line refs are tokenized successfully") {
+  string validQuery =
+      "prog_line n1, n2;"
+      "Select n1 "
+      "such that Next(1, 2)"
+      "and Next(1, _)"
+      "and Next(1, n2)"
+      "and Next(_, 2)"
+      "and Next(_, _)"
+      "and Next(_, n2)"
+      "and Next(n1, 2)"
+      "and Next(n1, _)"
+      "and Next(n1, n2)";
+
+  vector<qpp::QueryToken> expectedTokens = {
+      {qpp::TokenType::KEYWORD, "prog_line"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n2"},
+      {qpp::TokenType::CHAR_SYMBOL, ";"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "Select"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n1"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "such"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "that"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::INTEGER, "1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::INTEGER, "2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::CHAR_SYMBOL, "_"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "and"},
+      {qpp::TokenType::NAME_OR_KEYWORD, "Next"},
+      {qpp::TokenType::CHAR_SYMBOL, "("},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n1"},
+      {qpp::TokenType::CHAR_SYMBOL, ","},
+      {qpp::TokenType::NAME_OR_KEYWORD, "n2"},
+      {qpp::TokenType::CHAR_SYMBOL, ")"},
+  };
   tuple<vector<qpp::QueryToken>, bool, string> expected = {
       expectedTokens, true, {}};
 

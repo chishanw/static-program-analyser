@@ -41,6 +41,10 @@ class QueryParser {
       "QueryParser expects a unique synonym name but found duplicates.";
   inline static const std::string INVALID_SYNONYM_MSG =
       "QueryParser expects a valid synonym.";
+  inline static const std::string INVALID_SYNONYM_NON_PROCEDURE_MSG =
+      "QueryParser expects a procedure synonym";
+  inline static const std::string INVALID_SYNONYM_NON_PROG_LINE_MSG =
+      "QueryParser expects a prog_line synonym";
   inline static const std::string INVALID_SYNONYM_NON_VARIABLE_MSG =
       "QueryParser expects a variable synonym.";
   inline static const std::string INVALID_PATTERN_SYNONYM_MSG =
@@ -52,6 +56,8 @@ class QueryParser {
       "QueryParser found an invalid attribute for the given synonym.";
   inline static const std::string INVALID_STMT_REF_MSG =
       "QueryParser expects a STMT_REF.";
+  inline static const std::string INVALID_LINE_REF_MSG =
+      "QueryParser expects a LINE_REF.";
   inline static const std::string INVALID_ENT_REF_MSG =
       "QueryParser expects an ENTITY_REF.";
   inline static const std::string INVALID_STMT_ENT_REF_MSG =
@@ -120,6 +126,8 @@ class QueryParser {
 
   void parseSuchThatClause(std::vector<query::ConditionClause>&);
   query::ConditionClause parseFollowsParentClause(const std::string&);
+  query::ConditionClause parseCallsClause(const std::string&);
+  query::ConditionClause parseNextClause(const std::string&);
   query::ConditionClause parseUsesClause();
   query::ConditionClause parseModifiesClause();
 

@@ -28,26 +28,6 @@ variable v;
 Select v such that Uses("p", v)
 i, x, y, z
 5000
-7 - comment
-procedure p;
-Select p such that Calls(p, "q")
-none
-5000
-8 - comment
-procedure p;
-Select p such that Calls*("Example", p)
-none
-5000
-9 - comment
-prog_line n;
-Select n such that Next(4, n)
-none
-5000
-10 - comment
-prog_line n;
-Select n such that Next*(n, 4)
-none
-5000
 11 - comment
 assign a;
 Select a such that Affects(a, 9)
@@ -60,7 +40,7 @@ none
 5000
 13 - comment
 assign a;
-Select a pattern a("z", _"x+i")
+Select a pattern a("z", _"x+i"_)
 none
 5000
 14 - comment
@@ -87,21 +67,6 @@ x, z
 if ifs; assign a1, a2; variable v1, v2;
 Select ifs such that Follows*(a1, ifs) and Follows*(ifs, a2) and Modifies(ifs, v1) and Uses(ifs, v2) with v1.varName = v2.varName
 6
-500
-20 - comment
-prog_line n; stmt s;
-Select s such that Next*(16, n) and Parent*(s, n)
-none
-5000
-21 - comment
-prog_line n; assign a;
-Select a such that Affects*(a, n) and Next*(13, n)
-none
-5000
-22 - comment
-procedure p, q; variable v;
-Select <p, q, v> such that Modifies(p, v) and Calls(p, q)
-none
 5000
 23 - comment
 call c; assign a1, a2;
@@ -111,10 +76,5 @@ none
 24 - comment
 assign a1, a2; variable v;
 Select v pattern a1(v, _) such that Affects*(a1, a2) and Uses(a2, v)
-none
-5000
-25 - comment
-prog_line n1, n2; variable v; call c;
-Select c such that Next*(n1, n2) and Modifies(n1, v) and Uses(n2, v) and Modifies(c, v)
 none
 5000

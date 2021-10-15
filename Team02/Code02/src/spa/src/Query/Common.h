@@ -29,7 +29,11 @@ enum class RelationshipType {
   USES_S,
   USES_P,
   MODIFIES_S,
-  MODIFIES_P
+  MODIFIES_P,
+  CALLS,
+  CALLS_T,
+  NEXT,
+  NEXT_T
 };
 
 enum class ParamType {

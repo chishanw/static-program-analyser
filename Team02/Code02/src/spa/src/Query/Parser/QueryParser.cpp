@@ -16,6 +16,12 @@ const unordered_map<string, RelationshipType> keywordToFollowsParentType = {
     {"Parent", RelationshipType::PARENT},
     {"Parent*", RelationshipType::PARENT_T}};
 
+const unordered_map<string, RelationshipType> keywordToCallsType = {
+    {"Calls", RelationshipType::CALLS}, {"Calls*", RelationshipType::CALLS_T}};
+
+const unordered_map<string, RelationshipType> keywordToNextType = {
+    {"Next", RelationshipType::NEXT}, {"Next*", RelationshipType::NEXT_T}};
+
 const unordered_map<string, DesignEntity> keywordToDesignEntity = {
     {"stmt", DesignEntity::STATEMENT},
     {"read", DesignEntity::READ},
@@ -49,6 +55,12 @@ const set<DesignEntity> validModifiesStmtParamEntities = {
     DesignEntity::READ,     DesignEntity::STATEMENT, DesignEntity::ASSIGN,
     DesignEntity::IF,       DesignEntity::WHILE,     DesignEntity::CALL,
     DesignEntity::PROG_LINE};
+
+const set<DesignEntity> validNextParamEntities = {
+    DesignEntity::STATEMENT, DesignEntity::READ, DesignEntity::PRINT,
+    DesignEntity::CALL, DesignEntity::WHILE, DesignEntity::IF,
+    DesignEntity::ASSIGN, DesignEntity::PROG_LINE
+};
 
 const set<ParamType> integerParamTypes = {
     ParamType::INTEGER_LITERAL, ParamType::ATTRIBUTE_STMT_NUM,
@@ -385,6 +397,14 @@ void QueryParser::parseSuchThatClause(vector<ConditionClause>& results) {
         keywordToFollowsParentType.end()) {
       results.push_back(parseFollowsParentClause(relationship));
 
+    } else if (keywordToCallsType.find(relationship) !=
+               keywordToCallsType.end()) {
+      results.push_back(parseCallsClause(relationship));
+
+    } else if (keywordToNextType.find(relationship) !=
+               keywordToNextType.end()) {
+      results.push_back(parseNextClause(relationship));
+
     } else if (relationship == "Uses") {
       results.push_back(parseUsesClause());
 
@@ -434,6 +454,78 @@ query::ConditionClause QueryParser::parseFollowsParentClause(
         validFollowsParentParamEntities.end()) {
       isSemanticallyValid = false;  // semantic error
       semanticErrorMsg = INVALID_SYNONYM_MSG;
+    }
+  }
+
+  SuchThatClause stClause = {type, left, right};
+  return {stClause, {}, {}, ConditionClauseType::SUCH_THAT};
+}
+
+query::ConditionClause QueryParser::parseCallsClause(
+    const string& relationship) {
+  RelationshipType type = keywordToCallsType.at(relationship);
+
+  getExactCharSymbol('(');
+  Param left = getRefParam();
+  getExactCharSymbol(',');
+  Param right = getRefParam();
+  getExactCharSymbol(')');
+
+  // Validate parameters
+  if (left.type == ParamType::INTEGER_LITERAL ||
+      right.type == ParamType::INTEGER_LITERAL) {
+    throw SyntacticErrorException(INVALID_ENT_REF_MSG);
+  }
+
+  if (left.type == ParamType::SYNONYM) {
+    DesignEntity entity = getEntityFromSynonymName(left.value);
+    if (entity != DesignEntity::PROCEDURE) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_SYNONYM_NON_PROCEDURE_MSG;
+    }
+  }
+
+  if (right.type == ParamType::SYNONYM) {
+    DesignEntity entity = getEntityFromSynonymName(right.value);
+    if (entity != DesignEntity::PROCEDURE) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_SYNONYM_NON_PROCEDURE_MSG;
+    }
+  }
+
+  SuchThatClause stClause = {type, left, right};
+  return {stClause, {}, {}, ConditionClauseType::SUCH_THAT};
+}
+
+query::ConditionClause QueryParser::parseNextClause(
+    const string& relationship) {
+  RelationshipType type = keywordToNextType.at(relationship);
+
+  getExactCharSymbol('(');
+  Param left = getRefParam();
+  getExactCharSymbol(',');
+  Param right = getRefParam();
+  getExactCharSymbol(')');
+
+  // Validate parameters
+  if (left.type == ParamType::NAME_LITERAL ||
+      right.type == ParamType::NAME_LITERAL) {
+    throw SyntacticErrorException(INVALID_LINE_REF_MSG);
+  }
+
+  if (left.type == ParamType::SYNONYM) {
+    DesignEntity entity = getEntityFromSynonymName(left.value);
+    if (validNextParamEntities.find(entity) == validNextParamEntities.end()) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_SYNONYM_NON_PROG_LINE_MSG;
+    }
+  }
+
+  if (right.type == ParamType::SYNONYM) {
+    DesignEntity entity = getEntityFromSynonymName(right.value);
+    if (validNextParamEntities.find(entity) == validNextParamEntities.end()) {
+      isSemanticallyValid = false;  // semantic error
+      semanticErrorMsg = INVALID_SYNONYM_NON_PROG_LINE_MSG;
     }
   }
 
