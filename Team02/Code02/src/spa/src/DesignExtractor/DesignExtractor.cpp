@@ -20,7 +20,7 @@ struct STMT_NO_NAME_PAIR_HASH {
 DesignExtractor::DesignExtractor(PKB* pkb) { this->pkb = pkb; }
 
 void DesignExtractor::Extract(const ProgramAST* programAST) {
-  ExtractProcAndStmt(programAST);
+  unordered_set<PROC_NAME> allProcs = ExtractProcAndStmt(programAST);
 
   ExtractExprPatterns(programAST);
 
@@ -32,7 +32,7 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractFollows(programAST);
   ExtractFollowsTrans(programAST);
 
-  CALL_GRAPH callGraph = ExtractCalls(programAST);
+  CALL_GRAPH callGraph = ExtractCalls(programAST, allProcs);
   ExtractCallsTrans(callGraph);  // this should be called before ExtractUses
                                  // or ExtractModifies to prevent infinite
                                  // recursion if there exists Recursive/Cyclic
@@ -43,12 +43,19 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   // ... other subroutines to extract other r/s go here too
 }
 
-void DesignExtractor::ExtractProcAndStmt(const ProgramAST* programAST) {
+unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(const ProgramAST*
+    programAST) {
+  unordered_set<NAME> allProcs;
   for (auto procedure : programAST->ProcedureList) {
+    if (allProcs.count(procedure->ProcName) > 0) {
+      throw runtime_error("2 procedures with same name detected.");
+    }
+    allProcs.insert(procedure->ProcName);
     pkb->insertProc(procedure->ProcName);
 
     ExtractProcAndStmtHelper(procedure->StmtList);
   }
+  return allProcs;
 }
 
 void DesignExtractor::ExtractProcAndStmtHelper(
@@ -476,14 +483,15 @@ unordered_set<string> DesignExtractor::ExtractConstHelper(
   return res;
 }
 
-CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST) {
+CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
+    unordered_set<NAME> allProcs) {
   CALL_GRAPH callGraph;
 
   for (auto caller : programAST->ProcedureList) {
     unordered_set<PROC_NAME> allProcsCalled;
 
     unordered_map<STMT_NO, PROC_NAME> res =
-        ExtractCallsHelper(caller->StmtList);
+        ExtractCallsHelper(caller->StmtList, allProcs);
     for (auto p : res) {
       pkb->addCalls(p.first, caller->ProcName, p.second);
       allProcsCalled.insert(p.second);
@@ -497,16 +505,20 @@ CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST) {
 }
 
 unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
-    const vector<StmtAST*> stmtList) {
+    const vector<StmtAST*> stmtList, unordered_set<NAME> allProcs) {
   unordered_map<STMT_NO, PROC_NAME> res;
   for (auto stmt : stmtList) {
     if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
+      if (allProcs.count(callStmt->ProcName) < 1) {
+        throw runtime_error("Found call statement calling non-existent "
+            "procedure.");
+      }
       res.insert({callStmt->StmtNo, callStmt->ProcName});
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
-      res.merge(ExtractCallsHelper(whileStmt->StmtList));
+      res.merge(ExtractCallsHelper(whileStmt->StmtList, allProcs));
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
-      res.merge(ExtractCallsHelper(ifStmt->ThenBlock));
-      res.merge(ExtractCallsHelper(ifStmt->ElseBlock));
+      res.merge(ExtractCallsHelper(ifStmt->ThenBlock, allProcs));
+      res.merge(ExtractCallsHelper(ifStmt->ElseBlock, allProcs));
     }
   }
 

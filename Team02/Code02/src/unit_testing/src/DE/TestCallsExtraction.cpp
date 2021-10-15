@@ -146,15 +146,27 @@ TEST_CASE("Recursive Call") {
 
 TEST_CASE("No Call") {
   string program =
-      "procedure a {"
-      "  x = 0;"
-      "}"
-      "procedure b {"
-      "  x = 0;"
-      "}";
+      "procedure a {\n"
+      "  x = 0; }\n"
+      "procedure b {\n"
+      "  x = 0; }\n"
+      "\n";
 
   ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
   PKB* pkb = new PKB();
   DesignExtractor de = DesignExtractor(pkb);
   REQUIRE_NOTHROW(de.Extract(ast));
+}
+
+TEST_CASE("Calling non-existent procedure") {
+  string program =
+      "procedure a {\n"
+      "  call b; }\n"
+      "\n";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  REQUIRE_THROWS_WITH(de.Extract(ast), "Found call statement calling "
+      "non-existent procedure.");
 }

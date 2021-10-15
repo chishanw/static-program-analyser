@@ -21,7 +21,7 @@ class DesignExtractor {
  private:
   PKB* pkb;
 
-  void ExtractProcAndStmt(const ProgramAST*);
+  std::unordered_set<NAME> ExtractProcAndStmt(const ProgramAST*);
   void ExtractProcAndStmtHelper(const std::vector<StmtAST*>);
 
   void ExtractUses(const ProgramAST*);
@@ -56,9 +56,9 @@ class DesignExtractor {
   std::unordered_set<std::string> ExtractConstHelper(
       const std::vector<StmtAST*>);
 
-  CALL_GRAPH ExtractCalls(const ProgramAST*);
+  CALL_GRAPH ExtractCalls(const ProgramAST*, std::unordered_set<NAME>);
   std::unordered_map<STMT_NO, PROC_NAME> ExtractCallsHelper(
-      const std::vector<StmtAST*>);
+      const std::vector<StmtAST*>, std::unordered_set<NAME>);
   void ExtractCallsTrans(CALL_GRAPH);
   void ExtractCallsTransHelper(CALL_GRAPH, PROC_NAME, PROC_NAME);
 };

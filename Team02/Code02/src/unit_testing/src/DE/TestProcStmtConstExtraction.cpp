@@ -170,3 +170,17 @@ TEST_CASE("[DE][GetAllVarNames & GetAllConsts] complex cond expr") {
                                    c12idx, c13idx, c14idx, c15idx, c16idx,
                                    c17idx, c18idx});
 }
+
+TEST_CASE("Multiple procedures with same name") {
+  string program =
+      "procedure a {\n"
+      "  x = 0; }\n"
+      "procedure a {\n"
+      "  y = 0; }\n"
+      "\n";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  REQUIRE_THROWS_WITH(de.Extract(ast), "2 procedures with same name detected.");
+}
