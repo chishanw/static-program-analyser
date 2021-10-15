@@ -7,6 +7,7 @@
 #include <Query/Evaluator/ParentEvaluator.h>
 #include <Query/Evaluator/PatternEvaluator.h>
 #include <Query/Evaluator/UsesEvaluator.h>
+#include <Query/Evaluator/WithEvaluator.h>
 
 #include <string>
 #include <unordered_map>
@@ -29,10 +30,11 @@ class QueryEvaluator {
   UsesEvaluator usesEvaluator;
   ModifiesEvaluator modifiesEvaluator;
   PatternEvaluator patternEvaluator;
+  WithEvaluator withEvaluator;
 
   bool areAllClausesTrue;
-  std::vector<std::unordered_map<std::string, int>> queryResults;
-  std::vector<std::unordered_map<std::string, int>> currentQueryResults;
+  query::QueryResults queryResults;
+  query::QueryResults currentQueryResults;
   std::unordered_set<std::string> queryResultsSynonyms;
 
   // methods to build queryResults
@@ -71,6 +73,8 @@ class QueryEvaluator {
   void evaluateAssignPatternClause(query::PatternClause);
   void evaluateIfPatternClause(query::PatternClause);
   void evaluateWhilePatternClause(query::PatternClause);
+
+  void evaluateWithClause(query::WithClause);
 
   // helper methods
   std::vector<std::vector<int>> formatRefResults(

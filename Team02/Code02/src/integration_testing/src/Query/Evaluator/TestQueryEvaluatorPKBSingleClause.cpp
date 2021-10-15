@@ -2834,3 +2834,194 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
     REQUIRE(results.empty());
   }
 }
+
+TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
+  PKB* pkb = new PKB();
+  int procAIdx = pkb->insertProc("A");
+  int procBIdx = pkb->insertProc("B");
+  int varAIdx = pkb->insertVar("A");
+  int varBIdx = pkb->insertVar("B");
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE},
+      {"p2", DesignEntity::PROCEDURE},
+      {"v1", DesignEntity::VARIABLE},
+      {"v2", DesignEntity::VARIABLE}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym v1 = {DesignEntity::VARIABLE, "v1"};
+  Synonym v2 = {DesignEntity::VARIABLE, "v2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select p1 with p1.procName = p2.procName") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_PROC_NAME, "p2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({procAIdx, procBIdx}));
+  }
+
+  SECTION("Select p1 with p1.procName = v1.varName") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({procAIdx, procBIdx}));
+  }
+
+  SECTION("Select v1 with p1.procName = v1.varName") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({varAIdx, varBIdx}));
+  }
+
+  SECTION("Select p1 with p1.procName = 'A'") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::NAME_LITERAL, "A"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({procAIdx}));
+  }
+
+  SECTION("Select v1 with v1.varName = 'A'") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_VAR_NAME, "v1"},
+                             {ParamType::NAME_LITERAL, "A"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({varAIdx}));
+  }
+
+  SECTION("Select v1 with 'A' = 'A'") {
+    WithClause withClause = {{ParamType::NAME_LITERAL, "A"},
+                             {ParamType::NAME_LITERAL, "A"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({varAIdx, varBIdx}));
+  }
+
+  SECTION("Select BOOLEAN with 'A' = 'A'") {
+    WithClause withClause = {{ParamType::NAME_LITERAL, "A"},
+                             {ParamType::NAME_LITERAL, "A"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({TRUE_SELECT_BOOL_RESULT}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
+  PKB* pkb = new PKB();
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE},
+      {"p2", DesignEntity::PROCEDURE},
+      {"v1", DesignEntity::VARIABLE},
+      {"v2", DesignEntity::VARIABLE}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym v1 = {DesignEntity::VARIABLE, "v1"};
+  Synonym v2 = {DesignEntity::VARIABLE, "v2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select p1 with p1.procName = p2.procName") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_PROC_NAME, "p2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 with p1.procName = v1.varName") {
+    pkb->insertProc("A");
+    pkb->insertVar("x");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v1 with p1.procName = v1.varName") {
+    pkb->insertProc("A");
+    pkb->insertVar("x");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 with p1.procName = 'aaa'") {
+    pkb->insertProc("AAA");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::NAME_LITERAL, "aaa"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v1 with v1.varName = 'xxx'") {
+    pkb->insertVar("x");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_VAR_NAME, "v1"},
+                             {ParamType::NAME_LITERAL, "a"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select v1 with 'A' = 'a'") {
+    pkb->insertVar("x");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::NAME_LITERAL, "A"},
+                             {ParamType::NAME_LITERAL, "a"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}

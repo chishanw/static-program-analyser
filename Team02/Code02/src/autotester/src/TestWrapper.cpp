@@ -71,10 +71,9 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
                                           get<1>(parsedQuery));
     DMOprintInfoMsg("Query Evaluator was successful");
 
-    SynonymMap map = get<0>(parsedQuery);
-    SelectClause clause = get<1>(parsedQuery);
+    SelectClause selectClause = get<1>(parsedQuery);
     results = ResultProjector(pkb).formatResults(
-        map, clause.selectType, clause.selectSynonyms, evaluatedResult);
+        selectClause.selectType, selectClause.selectSynonyms, evaluatedResult);
     DMOprintInfoMsg("Query Result Projector was successful");
 
   } catch (const qpp::SyntacticErrorException& ex) {

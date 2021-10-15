@@ -21,7 +21,8 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
       parentEvaluator(pkb),
       usesEvaluator(pkb),
       modifiesEvaluator(pkb),
-      patternEvaluator(pkb) {
+      patternEvaluator(pkb),
+      withEvaluator(pkb) {
   this->pkb = pkb;
   areAllClausesTrue = true;
   queryResults = {};
@@ -38,8 +39,10 @@ vector<vector<int>> QueryEvaluator::evaluateQuery(
   for (auto clause : conditionClauses) {
     if (clause.conditionClauseType == ConditionClauseType::SUCH_THAT) {
       evaluateSuchThatClause(clause.suchThatClause);
-    } else {
+    } else if (clause.conditionClauseType == ConditionClauseType::PATTERN) {
       evaluatePatternClause(clause.patternClause);
+    } else {
+      evaluateWithClause(clause.withClause);
     }
 
     if (!areAllClausesTrue) {
@@ -435,6 +438,89 @@ void QueryEvaluator::evaluateWhilePatternClause(PatternClause clause) {
   filterAndAddIncomingResults(incomingResults, whileSynonymParam, varParam);
 }
 
+void QueryEvaluator::evaluateWithClause(WithClause clause) {
+  Param left = clause.leftParam;
+  Param right = clause.rightParam;
+
+  bool isLeftParamSynonym = false;
+  bool isRightParamSynonym = false;
+  vector<vector<int>> leftSynoynmValues = {};
+  vector<vector<int>> rightSynoynmValues = {};
+  vector<vector<int>> leftAndRightSynonymValues = {};
+
+  unordered_set<ParamType> attributeTypes = {
+      ParamType::ATTRIBUTE_PROC_NAME, ParamType::ATTRIBUTE_VAR_NAME,
+      ParamType::ATTRIBUTE_VALUE, ParamType::ATTRIBUTE_STMT_NUM};
+
+  if (attributeTypes.find(left.type) != attributeTypes.end()) {
+    isLeftParamSynonym = true;
+    unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(left.value);
+    for (auto value : allValues) {
+      leftSynoynmValues.push_back({value});
+    }
+  }
+  if (attributeTypes.find(right.type) != attributeTypes.end()) {
+    isRightParamSynonym = true;
+    unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(right.value);
+    for (auto value : allValues) {
+      rightSynoynmValues.push_back({value});
+    }
+  }
+  if (isLeftParamSynonym && isRightParamSynonym) {
+    for (auto leftStmt : leftSynoynmValues) {
+      for (auto rightStmt : rightSynoynmValues) {
+        leftAndRightSynonymValues.push_back({leftStmt[0], rightStmt[0]});
+      }
+    }
+  }
+
+  if (currentQueryResults.empty()) {
+    // initialize results with all possible left and/or right synonym values
+    if (isLeftParamSynonym && isRightParamSynonym) {
+      initializeQueryResults(leftAndRightSynonymValues,
+                             {ParamType::SYNONYM, left.value},
+                             {ParamType::SYNONYM, right.value});
+    } else if (isLeftParamSynonym) {
+      initializeQueryResults(leftSynoynmValues,
+                             {ParamType::SYNONYM, left.value}, right);
+    } else if (isRightParamSynonym) {
+      initializeQueryResults(rightSynoynmValues, left,
+                             {ParamType::SYNONYM, right.value});
+    }
+  } else {
+    bool isLeftSynInQueryResults =
+        queryResultsSynonyms.find(left.value) != queryResultsSynonyms.end();
+    bool isRightSynInQueryResults =
+        queryResultsSynonyms.find(right.value) != queryResultsSynonyms.end();
+
+    // add all possible left and/or right synonym values if not yet in results
+    if (isLeftParamSynonym && !isLeftSynInQueryResults && isRightParamSynonym &&
+        !isRightSynInQueryResults) {
+      addIncomingResults(leftAndRightSynonymValues,
+                         {ParamType::SYNONYM, left.value},
+                         {ParamType::SYNONYM, right.value});
+    } else if (isLeftParamSynonym && !isLeftSynInQueryResults) {
+      addIncomingResults(leftSynoynmValues, {ParamType::SYNONYM, left.value},
+                         right);
+    } else if (isRightParamSynonym && !isRightSynInQueryResults) {
+      addIncomingResults(rightSynoynmValues, left,
+                         {ParamType::SYNONYM, right.value});
+    }
+  }
+
+  pair<bool, QueryResults> evaluatedResults = withEvaluator.evaluateAttributes(
+      left, right, synonymMap, currentQueryResults);
+  bool isClauseTrue = evaluatedResults.first;
+  QueryResults newQueryResults = evaluatedResults.second;
+
+  if (!isClauseTrue) {
+    areAllClausesTrue = false;
+    return;
+  } else {
+    currentQueryResults = newQueryResults;
+  }
+}
+
 void QueryEvaluator::filterAndAddIncomingResults(
     vector<vector<int>> incomingResults, const Param& left,
     const Param& right) {
@@ -585,14 +671,13 @@ void QueryEvaluator::addIncomingResults(vector<vector<int>> incomingResults,
       return filter(incomingResults, {left.value});
     }
 
-    return crossProduct(incomingResults, {left.value, right.value});
+    return crossProduct(incomingResults, {left.value});
 
   } else if (isRightParamSynonym) {
     if (isRightSynInQueryResults) {
       return filter(incomingResults, {right.value});
     }
-
-    return crossProduct(incomingResults, {left.value, right.value});
+    return crossProduct(incomingResults, {right.value});
 
   } else {
     // both wild cards, do nothing, whether incomingResults is empty is alr
@@ -605,7 +690,7 @@ void QueryEvaluator::addIncomingResults(vector<vector<int>> incomingResults,
 
 void QueryEvaluator::filter(vector<vector<int>> incomingResults,
                             vector<string> incomingResultsSynonyms) {
-  vector<unordered_map<string, int>> newQueryResults = {};
+  QueryResults newQueryResults = {};
 
   for (int i = 0; i < currentQueryResults.size(); i++) {
     unordered_map<string, int> queryResult = currentQueryResults[i];
@@ -634,7 +719,7 @@ void QueryEvaluator::filter(vector<vector<int>> incomingResults,
 
 void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
                                vector<string> incomingResultsSynonyms) {
-  vector<unordered_map<string, int>> newQueryResults = {};
+  QueryResults newQueryResults = {};
   for (int i = 0; i < currentQueryResults.size(); i++) {
     unordered_map<string, int> queryResult = currentQueryResults[i];
 
@@ -642,8 +727,8 @@ void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
       unordered_map<string, int> newQueryResult = queryResult;
       bool isValidQueryResult = true;
 
-      // TODO(qe): not optimised for the data shape returned from pkb right now,
-      // amy need to swap the for loops above and below
+      // TODO(qe): not optimised for the data shape returned from pkb right
+      // now, amy need to swap the for loops above and below
       for (int j = 0; j < incomingResult.size(); j++) {
         int value = incomingResult[j];
         string synonymName = incomingResultsSynonyms[j];
@@ -669,7 +754,7 @@ void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
 
 void QueryEvaluator::crossProduct(vector<vector<int>> incomingResult,
                                   vector<string> incomingResultsSynonyms) {
-  vector<unordered_map<string, int>> newQueryResults;
+  QueryResults newQueryResults;
 
   for (unordered_map<string, int> queryResult : currentQueryResults) {
     for (vector<int> res : incomingResult) {

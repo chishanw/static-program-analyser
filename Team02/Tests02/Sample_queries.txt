@@ -73,6 +73,21 @@ assign a;
 Select a pattern a(_, " 3  +  2 ")
 none
 5000
+16 - comment
+while w; variable v;
+Select w such that Modifies(w, v) with v.varName = "x"
+4, 14
+5000
+17 - comment
+if ifs; variable v;
+Select v such that Uses(ifs, v) with ifs.stmt# = 22
+x, z
+5000
+19 - comment
+if ifs; assign a1, a2; variable v1, v2;
+Select ifs such that Follows*(a1, ifs) and Follows*(ifs, a2) and Modifies(ifs, v1) and Uses(ifs, v2) with v1.varName = v2.varName
+6
+500
 20 - comment
 prog_line n; stmt s;
 Select s such that Next*(16, n) and Parent*(s, n)

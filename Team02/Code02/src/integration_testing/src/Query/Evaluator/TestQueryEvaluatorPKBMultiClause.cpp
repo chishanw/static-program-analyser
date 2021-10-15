@@ -889,3 +889,246 @@ TEST_CASE("QueryEvaluator: Multiple Pattern Clauses") {
             set<int>({xVarIdx}));
   }
 }
+
+TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addStmt(4);
+  pkb->addAssignStmt(2);
+  pkb->addAssignStmt(4);
+  pkb->addModifiesS(2, "a");
+  pkb->addModifiesS(4, "x");
+  pkb->setFollows(1, 2);
+  pkb->setFollows(2, 3);
+  pkb->addCalls(3, "a", "b");
+  int const1Idx = pkb->insertConst("1");
+  int const2Idx = pkb->insertConst("2");
+  int const3Idx = pkb->insertConst("3");
+  int procAIdx = pkb->insertProc("a");
+  int procBIdx = pkb->insertProc("b");
+  int varAIdx = pkb->getVarIndex("a");
+  int varXIdx = pkb->getVarIndex("x");
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE},
+      {"v1", DesignEntity::VARIABLE},  {"v2", DesignEntity::VARIABLE},
+      {"s", DesignEntity::STATEMENT},  {"a", DesignEntity::ASSIGN},
+      {"c1", DesignEntity::CONSTANT},  {"c2", DesignEntity::CONSTANT},
+      {"cll", DesignEntity::CALL}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym v1 = {DesignEntity::VARIABLE, "v1"};
+  Synonym v2 = {DesignEntity::VARIABLE, "v2"};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym c1 = {DesignEntity::CONSTANT, "c1"};
+  Synonym c2 = {DesignEntity::CONSTANT, "c2"};
+  Synonym cll = {DesignEntity::CALL, "cll"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s such that Follows(s, _) with 1 = 1") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::INTEGER_LITERAL, "1"},
+                             {ParamType::INTEGER_LITERAL, "1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
+  }
+
+  SECTION("Select s such that Follows(s, _) with s.stmt# = 2") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{2}}));
+  }
+
+  SECTION("Select s with s.stmt# = 2 such that Follows(s, _)") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{2}}));
+  }
+
+  SECTION(
+      "Select s such that Follows(s, _) and Follows(a, _) with s.stmt# = "
+      "a.stmt#") {
+    SuchThatClause suchThatClause1 = {RelationshipType::FOLLOWS,
+                                      {ParamType::SYNONYM, "s"},
+                                      {ParamType::WILDCARD, "_"}};
+    SuchThatClause suchThatClause2 = {RelationshipType::FOLLOWS,
+                                      {ParamType::SYNONYM, "a"},
+                                      {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause1, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause2, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s"},
+                             {ParamType::ATTRIBUTE_STMT_NUM, "a"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{2}}));
+  }
+
+  SECTION("Select s such that Follows(s, _) with s.stmt# = c.value") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s"},
+                             {ParamType::ATTRIBUTE_VALUE, "c1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
+  }
+
+  SECTION("Select s such that Follows(s, _) with c1.value = c2.value") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
+  }
+
+  SECTION("Select s such that Follows(s, _) with 'x' = 'x'") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::NAME_LITERAL, "x"},
+                             {ParamType::NAME_LITERAL, "x"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
+  }
+
+  SECTION("Select cll such that Follows(_, cll) with cll.procName = 'b'") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "cll"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "cll"},
+                             {ParamType::NAME_LITERAL, "b"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{cll}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{3}}));
+  }
+
+  SECTION("Select v1 such that ModifiesS(_, v1) with v1.varName = 'a'") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "v1"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_VAR_NAME, "v1"},
+                             {ParamType::NAME_LITERAL, "a"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{varAIdx}}));
+  }
+
+  SECTION(
+      "Select v1 such that ModifiesS(_, v1) with p1.procName = v1.varName") {
+    SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "v1"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
+                             {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{v1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results == vector<vector<int>>({{varAIdx}}));
+  }
+
+  SECTION("Select s such that Follows(s, _) with 1 = 2") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::INTEGER_LITERAL, "1"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s such that Follows(s, _) with 'x' = 'y'") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "s"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    WithClause withClause = {{ParamType::NAME_LITERAL, "x"},
+                             {ParamType::NAME_LITERAL, "y"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}

@@ -4,7 +4,6 @@
 
 #include <list>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -12,9 +11,9 @@ using namespace query;
 
 ResultProjector::ResultProjector(PKB* pkb) { this->pkb = pkb; }
 
-list<string> ResultProjector::formatResults(
-    unordered_map<string, DesignEntity> synonymMap, SelectType selectType,
-    vector<Synonym> selectSynonyms, vector<vector<int>> results) {
+list<string> ResultProjector::formatResults(SelectType selectType,
+                                            vector<Synonym> selectSynonyms,
+                                            vector<vector<int>> results) {
   list<string> formattedResults = {};
 
   if (selectType == SelectType::BOOLEAN) {
@@ -39,8 +38,8 @@ list<string> ResultProjector::formatResults(
       string formattedString = "";
       for (int i = 0; i < selectSynonyms.size(); i++) {
         Synonym synonym = selectSynonyms[i];
-        DesignEntity designEntity = synonymMap.at(synonym.name);
-        formattedString += getStringByDesignEntity(designEntity, res[i]);
+        DesignEntity designEntity = synonym.entity;
+        formattedString += getStringForSynonym(synonym, res[i]);
 
         if (i != selectSynonyms.size() - 1) {
           formattedString += " ";
@@ -53,8 +52,11 @@ list<string> ResultProjector::formatResults(
   return formattedResults;
 }
 
-string ResultProjector::getStringByDesignEntity(DesignEntity designEntity,
-                                                int result) {
+string ResultProjector::getStringForSynonym(Synonym synonym, int result) {
+  bool hasAttribute = synonym.hasAttribute;
+  Attribute attribute = synonym.attribute;
+  DesignEntity designEntity = synonym.entity;
+
   switch (designEntity) {
     case DesignEntity::VARIABLE:
       return pkb->getVarName(result);
@@ -62,8 +64,32 @@ string ResultProjector::getStringByDesignEntity(DesignEntity designEntity,
       return pkb->getProcName(result);
     case DesignEntity::CONSTANT:
       return pkb->getConst(result);
+    case DesignEntity::CALL: {
+      if (hasAttribute && attribute == Attribute::PROC_NAME) {
+        int procIdx = pkb->getProcCalledByCallStmt(result);
+        return pkb->getProcName(procIdx);
+      } else {
+        return to_string(result);
+      }
+    }
+    case DesignEntity::READ: {
+      if (hasAttribute && attribute == Attribute::VAR_NAME) {
+        int varIdx = *pkb->getVarsModifiedS(result).begin();
+        return pkb->getVarName(varIdx);
+      } else {
+        return to_string(result);
+      }
+    }
+    case DesignEntity::PRINT: {
+      if (hasAttribute && attribute == Attribute::VAR_NAME) {
+        int varIdx = *pkb->getVarsUsedS(result).begin();
+        return pkb->getVarName(varIdx);
+      } else {
+        return to_string(result);
+      }
+    }
     default:
-      // all statement types and prog_line
+      // all other statement types (and .stmt#) and prog_line
       return to_string(result);
   }
 }
