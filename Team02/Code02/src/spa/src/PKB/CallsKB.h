@@ -2,14 +2,12 @@
 
 #include <PKB/ProcTable.h>
 
-#include <stdio.h>
 #include <iostream>
-
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
-#include <unordered_set>
-#include <unordered_map>
 
 typedef int STMT_NO, PROC_IDX;
 typedef std::string PROC_NAME;

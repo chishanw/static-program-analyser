@@ -1,7 +1,5 @@
 #include "ParentEvaluator.h"
 
-#include <stdio.h>
-
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>

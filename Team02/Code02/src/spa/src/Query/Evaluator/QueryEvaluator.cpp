@@ -21,6 +21,8 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
       parentEvaluator(pkb),
       usesEvaluator(pkb),
       modifiesEvaluator(pkb),
+      callsEvaluator(pkb),
+      nextEvaluator(pkb),
       patternEvaluator(pkb),
       withEvaluator(pkb) {
   this->pkb = pkb;
@@ -85,6 +87,14 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
       return evaluateModifiesSClause(clause);
     case RelationshipType::MODIFIES_P:
       return evaluateModifiesPClause(clause);
+    case RelationshipType::CALLS:
+      return evaluateCallsClause(clause);
+    case RelationshipType::CALLS_T:
+      return evaluateCallsTClause(clause);
+    case RelationshipType::NEXT:
+      return evaluateNextClause(clause);
+    case RelationshipType::NEXT_T:
+      return evaluateNextTClause(clause);
     default:
       DMOprintErrMsgAndExit(
           "[QueryEvaluator][evaluateSuchThatClause] invalid relationship type");
@@ -400,6 +410,137 @@ void QueryEvaluator::evaluateAssignPatternClause(PatternClause clause) {
 
   Param assignSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
   filterAndAddIncomingResults(incomingResults, assignSynonymParam, varParam);
+}
+
+void QueryEvaluator::evaluateCallsClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::NAME_LITERAL) ||
+                     (left.type == ParamType::NAME_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = callsEvaluator.evaluateBoolCalls(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults =
+        formatRefResults(callsEvaluator.evaluateProcCalls(left, right));
+  } else {
+    incomingResults = callsEvaluator.evaluateProcPairCalls(left, right);
+  }
+
+  filterAndAddIncomingResults(incomingResults, left, right);
+}
+
+void QueryEvaluator::evaluateCallsTClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::NAME_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::NAME_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::NAME_LITERAL) ||
+                     (left.type == ParamType::NAME_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = callsEvaluator.evaluateBoolCallsT(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults =
+        formatRefResults(callsEvaluator.evaluateProcCallsT(left, right));
+  } else {
+    incomingResults = callsEvaluator.evaluateProcPairCallsT(left, right);
+  }
+
+  filterAndAddIncomingResults(incomingResults, left, right);
+}
+
+void QueryEvaluator::evaluateNextClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::INTEGER_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = nextEvaluator.evaluateBoolNext(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults = formatRefResults(nextEvaluator.evaluateNext(left, right));
+  } else {
+    incomingResults = nextEvaluator.evaluatePairNext(left, right);
+  }
+
+  filterAndAddIncomingResults(incomingResults, left, right);
+}
+
+void QueryEvaluator::evaluateNextTClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause = (left.type == ParamType::SYNONYM &&
+                      right.type == ParamType::INTEGER_LITERAL) ||
+                     (left.type == ParamType::INTEGER_LITERAL &&
+                      right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = nextEvaluator.evaluateBoolNextT(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults =
+        formatRefResults(nextEvaluator.evaluateNextT(left, right));
+  } else {
+    incomingResults = nextEvaluator.evaluatePairNextT(left, right);
+  }
+
+  filterAndAddIncomingResults(incomingResults, left, right);
 }
 
 void QueryEvaluator::evaluateIfPatternClause(PatternClause clause) {

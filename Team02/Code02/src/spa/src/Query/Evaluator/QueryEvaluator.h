@@ -2,8 +2,10 @@
 
 #include <PKB/PKB.h>
 #include <Query/Common.h>
+#include <Query/Evaluator/CallsEvaluator.h>
 #include <Query/Evaluator/FollowsEvaluator.h>
 #include <Query/Evaluator/ModifiesEvaluator.h>
+#include <Query/Evaluator/NextEvaluator.h>
 #include <Query/Evaluator/ParentEvaluator.h>
 #include <Query/Evaluator/PatternEvaluator.h>
 #include <Query/Evaluator/UsesEvaluator.h>
@@ -29,6 +31,8 @@ class QueryEvaluator {
   ParentEvaluator parentEvaluator;
   UsesEvaluator usesEvaluator;
   ModifiesEvaluator modifiesEvaluator;
+  CallsEvaluator callsEvaluator;
+  NextEvaluator nextEvaluator;
   PatternEvaluator patternEvaluator;
   WithEvaluator withEvaluator;
 
@@ -68,6 +72,10 @@ class QueryEvaluator {
   void evaluateUsesPClause(query::SuchThatClause);
   void evaluateModifiesSClause(query::SuchThatClause);
   void evaluateModifiesPClause(query::SuchThatClause);
+  void evaluateCallsClause(query::SuchThatClause);
+  void evaluateCallsTClause(query::SuchThatClause);
+  void evaluateNextClause(query::SuchThatClause);
+  void evaluateNextTClause(query::SuchThatClause);
 
   void evaluatePatternClause(query::PatternClause);
   void evaluateAssignPatternClause(query::PatternClause);

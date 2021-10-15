@@ -28,6 +28,16 @@ variable v;
 Select v such that Uses("p", v)
 i, x, y, z
 5000
+7 - comment
+procedure p;
+Select p such that Calls(p, "q")
+Example, p
+5000
+8 - comment
+procedure p;
+Select p such that Calls*("Example", p)
+p, q
+5000
 11 - comment
 assign a;
 Select a such that Affects(a, 9)
@@ -67,6 +77,11 @@ x, z
 if ifs; assign a1, a2; variable v1, v2;
 Select ifs such that Follows*(a1, ifs) and Follows*(ifs, a2) and Modifies(ifs, v1) and Uses(ifs, v2) with v1.varName = v2.varName
 6
+5000
+22 - comment
+procedure p, q; variable v;
+Select <p, q, v> such that Modifies(p, v) and Calls(p, q)
+Example q x, Example q z, Example q i, Example q y, Example p x, Example p z, Example p i, Example p y, p q x, p q i, p q z
 5000
 23 - comment
 call c; assign a1, a2;

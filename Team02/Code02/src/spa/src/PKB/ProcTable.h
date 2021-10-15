@@ -1,8 +1,6 @@
 #pragma once
 
-#include <stdio.h>
 #include <iostream>
-
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -18,6 +16,7 @@ class ProcTable {
   std::string getProcName(PROC_IDX index);
   PROC_IDX getProcIndex(std::string procName);
   std::unordered_set<PROC_IDX> getAllProcedures();
+
  private:
   std::unordered_map<std::string, PROC_IDX> procNameAsKey;
   std::vector<std::string> idxAsKey;

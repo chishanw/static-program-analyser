@@ -1,16 +1,14 @@
 #pragma once
 
-#include <PKB/VarTable.h>
 #include <PKB/ProcTable.h>
+#include <PKB/VarTable.h>
 
-#include <stdio.h>
 #include <iostream>
-
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
-#include <unordered_set>
-#include <unordered_map>
 
 typedef int STMT_NO;
 typedef std::string VAR_NAME, PROC_NAME;

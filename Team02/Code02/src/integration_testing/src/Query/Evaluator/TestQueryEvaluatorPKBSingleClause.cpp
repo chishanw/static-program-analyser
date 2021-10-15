@@ -8,6 +8,7 @@
 #include "catch.hpp"
 using namespace std;
 using namespace query;
+using Catch::Matchers::VectorContains;
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
@@ -2228,6 +2229,1225 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
+  PKB* pkb = new PKB();
+  int proc1Idx = pkb->insertProc("proc1");
+  int proc2Idx = pkb->insertProc("proc2");
+  int proc3Idx = pkb->insertProc("proc3");
+  pkb->addCalls(1, "proc1", "proc2");
+  pkb->addCalls(2, "proc1", "proc3");
+  pkb->addCalls(3, "proc2", "proc3");
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select p1 such that Calls('proc1', 'proc2')") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p1 such that Calls('proc1', _)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p1 such that Calls(_, 'proc2')") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p2 such that Calls('proc1', p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p1 such that Calls(p1, 'proc3')") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::NAME_LITERAL, "proc3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
+  }
+
+  SECTION("Select p2 such that Calls(_, p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p1 such that Calls(p1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
+  }
+
+  SECTION("Select p1 such that Calls(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p1 such that Calls(p1, p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
+  PKB* pkb = new PKB();
+  pkb->insertProc("proc1");
+  pkb->insertProc("proc2");
+  pkb->insertProc("proc3");
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select p1 such that Calls('proc1', 'proc2')") {
+    pkb->addCalls(1, "proc1", "proc3");
+    pkb->addCalls(2, "proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that Calls('proc1', _)") {
+    pkb->addCalls(1, "proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that Calls(_, 'proc2')") {
+    pkb->addCalls(1, "proc1", "proc3");
+    pkb->addCalls(2, "proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p2 such that Calls('proc1', p2)") {
+    pkb->addCalls(1, "proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that Calls(p1, 'proc3')") {
+    pkb->addCalls(1, "proc1", "proc2");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::NAME_LITERAL, "proc3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p2 such that Calls(_, p2)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that Calls(p1, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that Calls(_, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that Calls(p1, p2)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
+  PKB* pkb = new PKB();
+  int proc1Idx = pkb->insertProc("proc1");
+  int proc2Idx = pkb->insertProc("proc2");
+  int proc3Idx = pkb->insertProc("proc3");
+  int proc4Idx = pkb->insertProc("proc4");
+  int proc5Idx = pkb->insertProc("proc5");
+  pkb->addCalls(1, "proc1", "proc2");
+  pkb->addCalls(2, "proc2", "proc3");
+  pkb->addCalls(4, "proc4", "proc5");
+  pkb->addCallsT("proc1", "proc2");
+  pkb->addCallsT("proc2", "proc3");
+  pkb->addCallsT("proc1", "proc3");
+  pkb->addCallsT("proc4", "proc5");
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select p1 such that CallsT('proc1', 'proc3')") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::NAME_LITERAL, "proc3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
+  }
+
+  SECTION("Select p1 such that CallsT('proc1', _)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
+  }
+
+  SECTION("Select p1 such that CallsT(_, 'proc2')") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
+  }
+
+  SECTION("Select p2 such that CallsT('proc1', p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc2Idx, proc3Idx}));
+  }
+
+  SECTION("Select p1 such that CallsT(p1, 'proc5')") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::NAME_LITERAL, "proc5"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc4Idx}));
+  }
+
+  SECTION("Select p2 such that CallsT(_, p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc2Idx, proc3Idx, proc5Idx}));
+  }
+
+  SECTION("Select p1 such that CallsT(p1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc4Idx}));
+  }
+
+  SECTION("Select p1 such that CallsT(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
+  }
+
+  SECTION("Select p1 such that CallsT(p1, p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc1Idx, proc2Idx, proc4Idx}));
+  }
+
+  SECTION("Select p2 such that CallsT(p1, p2)") {
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({proc2Idx, proc3Idx, proc5Idx}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
+  PKB* pkb = new PKB();
+  pkb->insertProc("proc1");
+  pkb->insertProc("proc2");
+  pkb->insertProc("proc3");
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select p1 such that CallsT('proc1', 'proc2')") {
+    pkb->addCallsT("proc1", "proc3");
+    pkb->addCallsT("proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that CallsT('proc1', _)") {
+    pkb->addCallsT("proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that CallsT(_, 'proc2')") {
+    pkb->addCallsT("proc1", "proc3");
+    pkb->addCallsT("proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p2 such that CallsT('proc1', p2)") {
+    pkb->addCallsT("proc2", "proc3");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::NAME_LITERAL, "proc1"},
+                                     {ParamType::NAME_LITERAL, "proc2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that CallsT(p1, 'proc3')") {
+    pkb->addCallsT("proc1", "proc2");
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::NAME_LITERAL, "proc3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p2 such that CallsT(_, p2)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that CallsT(p1, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that CallsT(_, _)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select p1 such that CallsT(p1, p2)") {
+    QueryEvaluator qe(pkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::CALLS_T,
+                                     {ParamType::SYNONYM, "p1"},
+                                     {ParamType::SYNONYM, "p2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{p1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: Next - Truthy Values") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 8; i++) {
+    pkb->addStmt(i);
+  }
+  // example procedure
+  // 1: x = 1;
+  // 2: while (x == 1) {
+  // 3:   if (y == 2) then {
+  // 4:     y = 3; }
+  // 5:   else { z = 4; } }
+  // 6: if (z == 4) then {
+  // 7:   x = y; }
+  // 8: else { z = 6; }
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(3, 5);
+  pkb->addNext(4, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 6);
+  pkb->addNext(6, 7);
+  pkb->addNext(6, 8);
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s1 such that Next(1, 2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
+  }
+
+  SECTION("Select s1 such that Next(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
+  }
+
+  SECTION("Select s1 such that Next(4, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::INTEGER_LITERAL, "4"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
+  }
+
+  SECTION("Select s1 such that Next(s1, 2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 4, 5}));
+  }
+
+  SECTION("Select s2 such that Next(6, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::INTEGER_LITERAL, "6"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({7, 8}));
+  }
+
+  SECTION("Select s1 such that Next(s1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s2 such that Next(_, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3, 4, 5, 6, 7, 8}));
+  }
+
+  SECTION("Select <s1, s2> such that Next(s1, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 2})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({2, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 4})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({4, 2})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 2})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({2, 6})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({6, 7})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({6, 8})));
+  }
+}
+
+TEST_CASE("QueryEvaluator: Next - Falsy Values") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 6; i++) {
+    pkb->addStmt(i);
+  }
+  // example procedure
+  // 1: y = 2;
+  // 2: while (x == 1) {
+  // 3:   if (y == 2) then {
+  // 4:     y = 3; }
+  // 5:   else { z = 4; } }
+  // 6: x = 1;
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(3, 5);
+  pkb->addNext(4, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 6);
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"a", DesignEntity::ASSIGN},
+      {"w", DesignEntity::WHILE},
+      {"ifs", DesignEntity::IF}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s1 such that Next(_, _)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that Next(1, 3)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that Next(6, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::INTEGER_LITERAL, "6"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that Next(s1, 1)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "1"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s2 such that Next(6, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::INTEGER_LITERAL, "6"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that Next(s1, _)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s2 such that Next(_, s2)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select <s1, s2> such that Next(s1, s2)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 9; i++) {
+    pkb->addStmt(i);
+  }
+  pkb->addAssignStmt(1);
+  pkb->addWhileStmt(2);
+  pkb->addIfStmt(3);
+  pkb->addAssignStmt(4);
+  pkb->addAssignStmt(5);
+  pkb->addIfStmt(6);
+  pkb->addAssignStmt(7);
+  pkb->addPrintStmt(8);
+  pkb->addReadStmt(9);
+  // example procedure
+  // 1: x = 1;
+  // 2: while (x == 1) {
+  // 3:   if (y == 2) then {
+  // 4:     y = 3; }
+  // 5:   else { z = 4; } }
+  // 6: if (z == 4) then {
+  // 7:   x = y; }
+  // 8: else { print z; }
+  // 9: read xyz;
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(3, 5);
+  pkb->addNext(4, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 6);
+  pkb->addNext(6, 7);
+  pkb->addNext(6, 8);
+  pkb->addNext(7, 9);
+  pkb->addNext(8, 9);
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"pr", DesignEntity::PRINT},
+      {"w", DesignEntity::WHILE},
+      {"ifs", DesignEntity::IF}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym pr = {DesignEntity::PRINT, "pr"};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s1 such that NextT(1, 3)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
+  }
+
+  SECTION("Select s1 such that NextT(1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
+  }
+
+  SECTION("Select s1 such that NextT(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
+  }
+
+  SECTION("Select s1 such that NextT(s1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
+  }
+
+  SECTION("Select s2 such that NextT(_, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3, 4, 5, 6, 7, 8, 9}));
+  }
+
+  SECTION("Select s1 such that NextT(s1, 2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5}));
+  }
+
+  SECTION("Select s2 such that NextT(6, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "6"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({7, 8, 9}));
+  }
+
+  SECTION("Select s1 such that NextT(s1, pr)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "pr"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select ifs such that NextT(w, ifs)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "w"},
+                                     {ParamType::SYNONYM, "ifs"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{ifs}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({3, 6}));
+  }
+
+  SECTION("Select <s1, s2> such that NextT(s1, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    // NextT(1, _), NextT(2, _), NextT(3, _), NextT(4, _), NextT(5, _)
+    for (int i = 1; i <= 5; i++) {
+      for (int j = 2; j <= 9; j++) {
+        REQUIRE_THAT(results, VectorContains(vector<int>({i, j})));
+      }
+    }
+    // NextT(6, _)
+    for (int i = 7; i <= 9; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({6, i})));
+    }
+    // NextT(7, _)
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 9})));
+    REQUIRE_THAT(results, !VectorContains(vector<int>({7, 8})));
+    // NextT(8, _)
+    REQUIRE_THAT(results, VectorContains(vector<int>({8, 9})));
+  }
+}
+
+TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 9; i++) {
+    pkb->addStmt(i);
+  }
+  pkb->addAssignStmt(1);
+  pkb->addWhileStmt(2);
+  pkb->addIfStmt(3);
+  pkb->addAssignStmt(4);
+  pkb->addAssignStmt(5);
+  pkb->addIfStmt(6);
+  pkb->addAssignStmt(7);
+  pkb->addPrintStmt(8);
+  pkb->addReadStmt(9);
+  // example procedure
+  // 1: x = 1;
+  // 2: while (x == 1) {
+  // 3:   if (y == 2) then {
+  // 4:     y = 3; }
+  // 5:   else { z = 4; } }
+  // 6: if (z == 4) then {
+  // 7:   x = y; }
+  // 8: else { print z; }
+  // 9: read xyz;
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(3, 5);
+  pkb->addNext(4, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 6);
+  pkb->addNext(6, 7);
+  pkb->addNext(6, 8);
+  pkb->addNext(7, 9);
+  pkb->addNext(8, 9);
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"w", DesignEntity::WHILE},
+      {"pr", DesignEntity::PRINT}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym pr = {DesignEntity::PRINT, "pr"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select s1 such that NextT(1, 10)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "10"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that NextT(9, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "9"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that NextT(_, _)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that NextT(s1, _)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s2 such that NextT(_, s2)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select pr such that NextT(pr, 7)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "pr"},
+                                     {ParamType::INTEGER_LITERAL, "7"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{pr}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select w such that NextT(6, w)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "6"},
+                                     {ParamType::SYNONYM, "w"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{w}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select <s1, s2> such that NextT(s1, s2)") {
+    PKB* emptyPkb = new PKB();
+    QueryEvaluator emptyQe(emptyPkb);
+
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = emptyQe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
   }
 }

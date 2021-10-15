@@ -1,7 +1,5 @@
 #include "PatternKB.h"
 
-#include <stdio.h>
-
 #include <iostream>
 #include <set>
 #include <string>
@@ -256,9 +254,7 @@ unordered_set<int> PatternKB::getIfStmtForVar(string varName) {
   }
 }
 
-vector<vector<int>> PatternKB::getIfStmtVarPairs() {
-  return listOfIfVarPairs;
-}
+vector<vector<int>> PatternKB::getIfStmtVarPairs() { return listOfIfVarPairs; }
 
 unordered_set<int> PatternKB::getWhileStmtForVar(string varName) {
   VAR_IDX varIdx = varTable->getVarIndex(varName);

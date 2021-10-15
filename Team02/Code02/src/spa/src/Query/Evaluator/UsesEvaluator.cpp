@@ -1,7 +1,5 @@
 #include "UsesEvaluator.h"
 
-#include <stdio.h>
-
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>
