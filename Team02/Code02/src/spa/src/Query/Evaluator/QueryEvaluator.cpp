@@ -589,18 +589,20 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
   vector<vector<int>> rightSynoynmValues = {};
   vector<vector<int>> leftAndRightSynonymValues = {};
 
-  unordered_set<ParamType> attributeTypes = {
+  unordered_set<ParamType> synonymTypes = {
       ParamType::ATTRIBUTE_PROC_NAME, ParamType::ATTRIBUTE_VAR_NAME,
-      ParamType::ATTRIBUTE_VALUE, ParamType::ATTRIBUTE_STMT_NUM};
+      ParamType::ATTRIBUTE_VALUE, ParamType::ATTRIBUTE_STMT_NUM,
+      ParamType::SYNONYM};
 
-  if (attributeTypes.find(left.type) != attributeTypes.end()) {
+  if (synonymTypes.find(left.type) != synonymTypes.end()) {
     isLeftParamSynonym = true;
     unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(left.value);
     for (auto value : allValues) {
       leftSynoynmValues.push_back({value});
     }
   }
-  if (attributeTypes.find(right.type) != attributeTypes.end()) {
+
+  if (synonymTypes.find(right.type) != synonymTypes.end()) {
     isRightParamSynonym = true;
     unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(right.value);
     for (auto value : allValues) {

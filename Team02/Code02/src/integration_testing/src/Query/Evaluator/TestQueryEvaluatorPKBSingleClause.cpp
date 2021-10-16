@@ -4245,3 +4245,309 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
     REQUIRE(results.empty());
   }
 }
+
+TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->addStmt(1);
+  pkb->addStmt(2);
+  pkb->addStmt(3);
+  pkb->addStmt(4);
+  int const1Idx = pkb->insertConst("1");
+  int const2Idx = pkb->insertConst("2");
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT},
+      {"n1", DesignEntity::PROG_LINE}, {"n2", DesignEntity::PROG_LINE},
+      {"c1", DesignEntity::CONSTANT},  {"c2", DesignEntity::CONSTANT}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym n1 = {DesignEntity::PROG_LINE, "n1"};
+  Synonym n2 = {DesignEntity::PROG_LINE, "n2"};
+  Synonym c1 = {DesignEntity::CONSTANT, "c1"};
+  Synonym c2 = {DesignEntity::CONSTANT, "c2"};
+
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select n1 with n1 = n2") {
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::SYNONYM, "n2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select <n1, n2> with n1 = n2") {
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::SYNONYM, "n2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1, n2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 1})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({2, 2})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({4, 4})));
+  }
+
+  SECTION("Select n1 with n1 = s1.stmt#") {
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::ATTRIBUTE_STMT_NUM, "s1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select n1 with n1 = c1.value") {
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
+  }
+
+  SECTION("Select n1 with n1 = 1") {
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::INTEGER_LITERAL, "1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1}));
+  }
+
+  SECTION("Select s1 with s1.stmt# = s2.stmt#") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
+                             {ParamType::ATTRIBUTE_STMT_NUM, "s2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4}));
+  }
+
+  SECTION("Select s1 with s1.stmt# = c1.value") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2}));
+  }
+
+  SECTION("Select s1 with s1.stmt# = 1") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
+                             {ParamType::INTEGER_LITERAL, "1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1}));
+  }
+
+  SECTION("Select c1 with c1.value = c2.value") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{c1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({const1Idx, const2Idx}));
+  }
+
+  SECTION("Select c1 with c1.value = 2") {
+    WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{c1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({const2Idx}));
+  }
+
+  SECTION("Select BOOLEAN with 1 = 1") {
+    WithClause withClause = {{ParamType::INTEGER_LITERAL, "1"},
+                             {ParamType::INTEGER_LITERAL, "1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({TRUE_SELECT_BOOL_RESULT}));
+  }
+}
+
+TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
+  PKB* pkb = new PKB();
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT},
+      {"n1", DesignEntity::PROG_LINE}, {"n2", DesignEntity::PROG_LINE},
+      {"c1", DesignEntity::CONSTANT},  {"c2", DesignEntity::CONSTANT}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym n1 = {DesignEntity::PROG_LINE, "n1"};
+  Synonym n2 = {DesignEntity::PROG_LINE, "n2"};
+  Synonym c1 = {DesignEntity::CONSTANT, "c1"};
+  Synonym c2 = {DesignEntity::CONSTANT, "c2"};
+
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select n1 with n1 = n2") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::SYNONYM, "n2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select <n1, n2> with n1 = n2") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::SYNONYM, "n2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1, n2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select n1 with n1 = s1.stmt#") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::ATTRIBUTE_STMT_NUM, "s1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select n1 with n1 = c1.value") {
+    pkb->addStmt(1);
+    pkb->insertConst("2");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select n1 with n1 = 3") {
+    pkb->addStmt(1);
+    pkb->addStmt(2);
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::SYNONYM, "n1"},
+                             {ParamType::INTEGER_LITERAL, "3"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{n1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 with s1.stmt# = s2.stmt#") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
+                             {ParamType::ATTRIBUTE_STMT_NUM, "s2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 with s1.stmt# = c1.value") {
+    pkb->addStmt(1);
+    pkb->addStmt(2);
+    pkb->insertConst("3");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c1"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 with s1.stmt# = 2") {
+    pkb->addStmt(1);
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select c1 with c1.value = c2.value") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                             {ParamType::ATTRIBUTE_VALUE, "c2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{c1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select c1 with c1.value = 2") {
+    pkb->insertConst("1");
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{c1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select BOOLEAN with 1 = 2") {
+    QueryEvaluator qe(pkb);
+
+    WithClause withClause = {{ParamType::INTEGER_LITERAL, "1"},
+                             {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({FALSE_SELECT_BOOL_RESULT}));
+  }
+}

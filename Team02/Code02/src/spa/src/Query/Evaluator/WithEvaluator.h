@@ -35,11 +35,12 @@ class WithEvaluator {
                                       std::string nameLiteral);
   void evaluateVarNameAndNameLiteral(std::string synWithVarName,
                                      std::string nameLiteral);
-  void evaluateValueAndStmtNum(std::string constSyn, std::string stmtSyn);
+  void evaluateIndexes(std::string firstSyn, std::string secondSyn);
+  void evaluateValueAndStmt(std::string constSyn, std::string stmtSyn);
   void evaluateValueAndIntegerLiteral(std::string constSyn,
                                       std::string integerLiteral);
-  void evaluateStmtNumAndIntegerLiteral(std::string stmtSyn,
-                                        std::string integerLiteral);
+  void evaluateStmtAndIntegerLiteral(std::string stmtSyn,
+                                     std::string integerLiteral);
 
   int getIndexOfProcNameAttrOfSynonym(
       int valueOfSynonym, query::DesignEntity designEntityOfSynonym);

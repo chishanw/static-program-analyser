@@ -276,7 +276,8 @@ TEST_CASE("WithEvaluator: Integer Attributes") {
       {"c1", DesignEntity::CONSTANT},  {"c2", DesignEntity::CONSTANT},
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT},
       {"a1", DesignEntity::ASSIGN},    {"a2", DesignEntity::ASSIGN},
-      {"ifs", DesignEntity::IF}};
+      {"ifs", DesignEntity::IF},       {"n1", DesignEntity::PROG_LINE},
+      {"n2", DesignEntity::PROG_LINE}};
   Synonym c1 = {DesignEntity::CONSTANT, "c1"};
   Synonym c2 = {DesignEntity::CONSTANT, "c2"};
   Synonym s1 = {DesignEntity::STATEMENT, "s1"};
@@ -284,6 +285,69 @@ TEST_CASE("WithEvaluator: Integer Attributes") {
   Synonym a1 = {DesignEntity::ASSIGN, "a1"};
   Synonym a2 = {DesignEntity::ASSIGN, "a2"};
   Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym n1 = {DesignEntity::PROG_LINE, "n1"};
+  Synonym n2 = {DesignEntity::PROG_LINE, "n2"};
+
+  SECTION("with n1 = n2") {
+    Param left = {ParamType::SYNONYM, "n1"};
+    Param right = {ParamType::SYNONYM, "n2"};
+    QueryResults currentResults = {{{"n1", 1}, {"n2", 1}},
+                                   {{"n1", 2}, {"n2", 3}}};
+    pair<bool, QueryResults> results =
+        we.evaluateAttributes(left, right, synonyms, currentResults);
+    QueryResults newQueryResults = get<1>(results);
+    REQUIRE_THAT(
+        newQueryResults,
+        VectorContains(unordered_map<string, int>({{"n1", 1}, {"n2", 1}})));
+    REQUIRE_THAT(
+        newQueryResults,
+        !VectorContains(unordered_map<string, int>({{"n1", 2}, {"n2", 3}})));
+  }
+
+  SECTION("with n1 = s1.stmt#") {
+    Param left = {ParamType::SYNONYM, "n1"};
+    Param right = {ParamType::ATTRIBUTE_STMT_NUM, "s1"};
+    QueryResults currentResults = {{{"n1", 1}, {"s1", 1}},
+                                   {{"n1", 2}, {"s1", 3}}};
+    pair<bool, QueryResults> results =
+        we.evaluateAttributes(left, right, synonyms, currentResults);
+    QueryResults newQueryResults = get<1>(results);
+    REQUIRE_THAT(
+        newQueryResults,
+        VectorContains(unordered_map<string, int>({{"n1", 1}, {"s1", 1}})));
+    REQUIRE_THAT(
+        newQueryResults,
+        !VectorContains(unordered_map<string, int>({{"n1", 2}, {"s1", 3}})));
+  }
+
+  SECTION("with n1 = c1.value") {
+    Param left = {ParamType::SYNONYM, "n1"};
+    Param right = {ParamType::ATTRIBUTE_VALUE, "c1"};
+    QueryResults currentResults = {{{"n1", 1}, {"c1", const1Idx}},
+                                   {{"n1", 2}, {"c1", const2Idx}}};
+    pair<bool, QueryResults> results =
+        we.evaluateAttributes(left, right, synonyms, currentResults);
+    QueryResults newQueryResults = get<1>(results);
+    REQUIRE_THAT(newQueryResults, VectorContains(unordered_map<string, int>(
+                                      {{"n1", 1}, {"c1", const1Idx}})));
+    REQUIRE_THAT(newQueryResults, VectorContains(unordered_map<string, int>(
+                                      {{"n1", 2}, {"c1", const2Idx}})));
+  }
+
+  SECTION("with n1 = 3") {
+    Param left = {ParamType::SYNONYM, "n1"};
+    Param right = {ParamType::INTEGER_LITERAL, "3"};
+    QueryResults currentResults = {{{"n1", 1}}, {{"n1", 2}}, {{"n1", 3}}};
+    pair<bool, QueryResults> results =
+        we.evaluateAttributes(left, right, synonyms, currentResults);
+    QueryResults newQueryResults = get<1>(results);
+    REQUIRE_THAT(newQueryResults,
+                 VectorContains(unordered_map<string, int>({{"n1", 3}})));
+    REQUIRE_THAT(newQueryResults,
+                 !VectorContains(unordered_map<string, int>({{"n1", 1}})));
+    REQUIRE_THAT(newQueryResults,
+                 !VectorContains(unordered_map<string, int>({{"n1", 2}})));
+  }
 
   SECTION("with c1.value = c2.value") {
     Param left = {ParamType::ATTRIBUTE_VALUE, "c1"};

@@ -28,9 +28,10 @@ pair<bool, QueryResults> WithEvaluator::evaluateAttributes(
   unordered_set<ParamType> nameParamTypes = {ParamType::ATTRIBUTE_PROC_NAME,
                                              ParamType::ATTRIBUTE_VAR_NAME,
                                              ParamType::NAME_LITERAL};
-  unordered_set<ParamType> integerParamTypes = {ParamType::ATTRIBUTE_VALUE,
-                                                ParamType::ATTRIBUTE_STMT_NUM,
-                                                ParamType::INTEGER_LITERAL};
+  unordered_set<ParamType> integerParamTypes = {
+      ParamType::ATTRIBUTE_VALUE, ParamType::ATTRIBUTE_STMT_NUM,
+      ParamType::INTEGER_LITERAL, ParamType::SYNONYM};
+
   if ((nameParamTypes.find(left.type) != nameParamTypes.end()) ||
       (nameParamTypes.find(right.type) != nameParamTypes.end())) {
     evaluateNameAttributes(left, right);
@@ -134,27 +135,19 @@ void WithEvaluator::evaluateIntegerAttributes(const Param& left,
   string rightValue = right.value;
 
   /* Same Attribute Types ------------------------------------------- */
+  if (leftType == ParamType::SYNONYM && rightType == ParamType::SYNONYM) {
+    // compare prog_line synonyms
+    evaluateIndexes(leftValue, rightValue);
+  }
   if (leftType == ParamType::ATTRIBUTE_VALUE &&
       rightType == ParamType::ATTRIBUTE_VALUE) {
-    for (auto results : currentQueryResults) {
-      int leftConstIdx = results.at(leftValue);
-      int rightConstIdx = results.at(rightValue);
-
-      if (leftConstIdx == rightConstIdx) {
-        newQueryResults.push_back(results);
-      }
-    }
+    // compare constant indexes
+    evaluateIndexes(leftValue, rightValue);
   }
   if (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
       rightType == ParamType::ATTRIBUTE_STMT_NUM) {
-    for (auto results : currentQueryResults) {
-      int leftStmtNum = results.at(leftValue);
-      int rightStmtNum = results.at(rightValue);
-
-      if (leftStmtNum == rightStmtNum) {
-        newQueryResults.push_back(results);
-      }
-    }
+    // compare stmt numbers
+    evaluateIndexes(leftValue, rightValue);
   }
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::INTEGER_LITERAL) {
@@ -166,13 +159,35 @@ void WithEvaluator::evaluateIntegerAttributes(const Param& left,
   }
 
   /* Different Attribute Types --------------------------------------- */
+  if ((leftType == ParamType::SYNONYM &&
+       rightType == ParamType::ATTRIBUTE_STMT_NUM) ||
+      (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
+       rightType == ParamType::SYNONYM)) {
+    evaluateIndexes(leftValue, rightValue);
+  }
+  if (leftType == ParamType::SYNONYM &&
+      rightType == ParamType::ATTRIBUTE_VALUE) {
+    evaluateValueAndStmt(rightValue, leftValue);
+  }
+  if (leftType == ParamType::ATTRIBUTE_VALUE &&
+      rightType == ParamType::SYNONYM) {
+    evaluateValueAndStmt(leftValue, rightValue);
+  }
+  if (leftType == ParamType::SYNONYM &&
+      rightType == ParamType::INTEGER_LITERAL) {
+    evaluateStmtAndIntegerLiteral(leftValue, rightValue);
+  }
+  if (leftType == ParamType::INTEGER_LITERAL &&
+      rightType == ParamType::SYNONYM) {
+    evaluateStmtAndIntegerLiteral(rightValue, leftValue);
+  }
   if (leftType == ParamType::ATTRIBUTE_VALUE &&
       rightType == ParamType::ATTRIBUTE_STMT_NUM) {
-    evaluateValueAndStmtNum(leftValue, rightValue);
+    evaluateValueAndStmt(leftValue, rightValue);
   }
   if (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
       rightType == ParamType::ATTRIBUTE_VALUE) {
-    evaluateValueAndStmtNum(rightValue, leftValue);
+    evaluateValueAndStmt(rightValue, leftValue);
   }
   if (leftType == ParamType::ATTRIBUTE_VALUE &&
       rightType == ParamType::INTEGER_LITERAL) {
@@ -184,11 +199,11 @@ void WithEvaluator::evaluateIntegerAttributes(const Param& left,
   }
   if (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
       rightType == ParamType::INTEGER_LITERAL) {
-    evaluateStmtNumAndIntegerLiteral(leftValue, rightValue);
+    evaluateStmtAndIntegerLiteral(leftValue, rightValue);
   }
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::ATTRIBUTE_STMT_NUM) {
-    evaluateStmtNumAndIntegerLiteral(rightValue, leftValue);
+    evaluateStmtAndIntegerLiteral(rightValue, leftValue);
   }
 }
 
@@ -242,7 +257,18 @@ void WithEvaluator::evaluateVarNameAndNameLiteral(string synWithVarName,
   }
 }
 
-void WithEvaluator::evaluateValueAndStmtNum(string constSyn, string stmtSyn) {
+void WithEvaluator::evaluateIndexes(string firstSyn, string secondSyn) {
+  for (auto results : currentQueryResults) {
+    int firstIndex = results.at(firstSyn);
+    int secondIndex = results.at(secondSyn);
+
+    if (firstIndex == secondIndex) {
+      newQueryResults.push_back(results);
+    }
+  }
+}
+
+void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
   for (auto results : currentQueryResults) {
     string constValue = pkb->getConst(results.at(constSyn));
     string stmtNum = to_string(results.at(stmtSyn));
@@ -264,8 +290,8 @@ void WithEvaluator::evaluateValueAndIntegerLiteral(string constSyn,
   }
 }
 
-void WithEvaluator::evaluateStmtNumAndIntegerLiteral(string stmtSyn,
-                                                     string integerLiteral) {
+void WithEvaluator::evaluateStmtAndIntegerLiteral(string stmtSyn,
+                                                  string integerLiteral) {
   for (auto results : currentQueryResults) {
     string stmtNum = to_string(results.at(stmtSyn));
 
