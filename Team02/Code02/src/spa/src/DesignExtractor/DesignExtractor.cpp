@@ -40,11 +40,13 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
 
   ExtractUses(programAST);
   ExtractModifies(programAST);
+
+  ExtractNext(programAST);
   // ... other subroutines to extract other r/s go here too
 }
 
-unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(const ProgramAST*
-    programAST) {
+unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(
+    const ProgramAST* programAST) {
   unordered_set<NAME> allProcs;
   for (auto procedure : programAST->ProcedureList) {
     if (allProcs.count(procedure->ProcName) > 0) {
@@ -484,7 +486,7 @@ unordered_set<string> DesignExtractor::ExtractConstHelper(
 }
 
 CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
-    unordered_set<NAME> allProcs) {
+                                         unordered_set<NAME> allProcs) {
   CALL_GRAPH callGraph;
 
   for (auto caller : programAST->ProcedureList) {
@@ -510,8 +512,8 @@ unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
   for (auto stmt : stmtList) {
     if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
       if (allProcs.count(callStmt->ProcName) < 1) {
-        throw runtime_error("Found call statement calling non-existent "
-            "procedure.");
+        throw runtime_error(
+            "Found call statement calling non-existent procedure.");
       }
       res.insert({callStmt->StmtNo, callStmt->ProcName});
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
@@ -548,5 +550,78 @@ void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
   unordered_set<PROC_NAME> nextLayerCallees = callGraph.at(callee);
   for (auto nextLayerCallee : nextLayerCallees) {
     ExtractCallsTransHelper(callGraph, caller, nextLayerCallee);
+  }
+}
+
+void DesignExtractor::ExtractNext(const ProgramAST* programAST) {
+  for (auto procedure : programAST->ProcedureList) {
+    ExtractNextHelper(procedure->StmtList, -1, -1);
+  }
+}
+
+void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
+                                        STMT_NO prevStmt,
+                                        STMT_NO nextStmtForLastStmt) {
+  auto addNext = [this](STMT_NO s1, STMT_NO s2) {
+    if (s1 == -1 || s2 == -1) {
+      return;
+    }
+    pkb->addNext(s1, s2);
+  };
+
+  for (size_t i = 0; i < stmtList.size(); ++i) {
+    auto stmt = stmtList[i];
+
+    addNext(prevStmt, stmt->StmtNo);
+
+    if (dynamic_cast<const ReadStmtAST*>(stmt)) {
+      prevStmt = stmt->StmtNo;
+    } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
+      prevStmt = stmt->StmtNo;
+    } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
+      prevStmt = stmt->StmtNo;
+    } else if (dynamic_cast<const AssignStmtAST*>(stmt)) {
+      prevStmt = stmt->StmtNo;
+    } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
+      ExtractNextHelper(whileStmt->StmtList, stmt->StmtNo, stmt->StmtNo);
+      prevStmt = stmt->StmtNo;
+    } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      STMT_NO nextStmtForLastStmtInIf = -1;
+      if (i + 1 < stmtList.size()) {
+        nextStmtForLastStmtInIf = stmtList[i + 1]->StmtNo;
+      }
+
+      ExtractNextHelper(ifStmt->ThenBlock, ifStmt->StmtNo,
+                        nextStmtForLastStmtInIf);
+      ExtractNextHelper(ifStmt->ElseBlock, ifStmt->StmtNo,
+                        nextStmtForLastStmtInIf);
+
+      prevStmt = -1;
+    } else {
+      DMOprintErrMsgAndExit(
+          "[DE][ExtractNextHelper][for loop] shouldn't reach here.");
+      return;
+    }
+  }
+
+  // settle last stmt in curr stmtList
+  auto stmt = stmtList[stmtList.size() - 1];
+  if (dynamic_cast<const ReadStmtAST*>(stmt)) {
+    addNext(stmt->StmtNo, nextStmtForLastStmt);
+  } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
+    addNext(stmt->StmtNo, nextStmtForLastStmt);
+  } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
+    addNext(stmt->StmtNo, nextStmtForLastStmt);
+  } else if (dynamic_cast<const AssignStmtAST*>(stmt)) {
+    addNext(stmt->StmtNo, nextStmtForLastStmt);
+  } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
+    addNext(stmt->StmtNo, nextStmtForLastStmt);
+  } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+    ExtractNextHelper(ifStmt->ThenBlock, -1, nextStmtForLastStmt);
+    ExtractNextHelper(ifStmt->ElseBlock, -1, nextStmtForLastStmt);
+  } else {
+    DMOprintErrMsgAndExit(
+        "[DE][ExtractNextHelper][last stmt] shouldn't reach here.");
+    return;
   }
 }

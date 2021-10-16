@@ -1,8 +1,8 @@
 
+#include <Common/Tokenizer.h>
 #include <DesignExtractor/DesignExtractor.h>
 #include <PKB/PKB.h>
 #include <Parser/Parser.h>
-#include <Common/Tokenizer.h>
 
 #include <vector>
 
@@ -75,8 +75,6 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
             UNO_SET_OF_STMT_NO{8});
     REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[[[z]+[x]]+[i]]") ==
             UNO_SET_OF_STMT_NO{9, 21});
-    // TODO(gf): expr pattern string is gonna change in
-    // iter2, so not gonna write too many tests for now
 
     REQUIRE(pkb->getAssignForFullExpr("[2]") == UNO_SET_OF_STMT_NO{1});
     REQUIRE(pkb->getAssignForFullExpr("[3]") == UNO_SET_OF_STMT_NO{2});

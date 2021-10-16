@@ -39,69 +39,65 @@ def main():
 
     source_fns = []
     for fn in os.listdir(test_folder_dir):
-        if fn[-len("_source.txt"):] == "_source.txt":
+        if fn.endswith("_source.txt"):
             source_fns.append(fn)
 
     for source_fn in source_fns:
 
+        # <TEST-DESCRIPTION>_source.txt
+        # <TEST-DESCRIPTION>_queries.txt
         source_fn_wo_suffix = source_fn[:-len("_source.txt")]
+        query_fn = source_fn_wo_suffix + "_queries.txt"
+        out_xml_fn = source_fn_wo_suffix + "_out.xml"
 
-        # match query files
-        query_fns = []
-        for fn in os.listdir(test_folder_dir):
-            if fn != source_fn and fn.startswith(source_fn_wo_suffix):
-                query_fns.append(fn)
+        source_path = f'{test_folder_dir}{source_fn}'
+        query_path = f'{test_folder_dir}{query_fn}'
+        xml_path = f'{out_xml_dir}{out_xml_fn}'
 
-        for query_fn in query_fns:
-            out_xml_fn = query_fn.split(".")[0] + "_out.xml"
+        command = [autotester_path,
+                   source_path, query_path, xml_path]
 
-            source_path = f'{test_folder_dir}{source_fn}'
-            query_path = f'{test_folder_dir}{query_fn}'
-            xml_path = f'{out_xml_dir}{out_xml_fn}'
+        print(f"[INFO] Query file: {query_path}")
 
-            command = [autotester_path,
-                       source_path, query_path, xml_path]
+        output = subprocess.run(command, capture_output=True)
 
-            print(f"[INFO] Query file: {query_path}")
+        # if autotester failed
+        if output.returncode:
+            print(f"[ERROR][Autotester] Program quit unexpectedly")
+            print(f"return code: {output.returncode}")
+            print(f"autotester output:")
+            print(output.stdout.decode())
+            ci_failed = True
+            continue
 
-            output = subprocess.run(command, capture_output=True)
+        # parse xml file only when autotester runs without error
+        try:
+            with open(f'{out_xml_dir}{out_xml_fn}', 'r') as xml_file:
+                xml_file_data = xml_file.read().replace('\n', '')
+                this_failed, this_number_queries, this_total_time_taken, this_max_time_taken, this_min_time_taken = parse_xml_and_print_stat(
+                    xml_file_data, verbose=args.verbose)
+        except Exception as e:
+            print("[ERROR][ParseXML] Failed to parse xml file")
+            print(e)
 
-            # if autotester failed
-            if output.returncode:
-                print(f"[ERROR][Autotester] Program quit unexpectedly")
-                print(f"return code: {output.returncode}")
-                print(f"autotester output:")
-                print(output.stdout.decode())
-                ci_failed = True
-                continue
+        if this_failed:
+            ci_failed = True
 
-            # parse xml file only when autotester runs without error
-            try:
-                with open(f'{out_xml_dir}{out_xml_fn}', 'r') as xml_file:
-                    xml_file_data = xml_file.read().replace('\n', '')
-                    this_failed, this_number_queries, this_total_time_taken, this_max_time_taken, this_min_time_taken = parse_xml_and_print_stat(
-                        xml_file_data, verbose=args.verbose)
-            except Exception as e:
-                print("[ERROR][ParseXML] Failed to parse xml file")
-                print(e)
-
-            if this_failed:
-                ci_failed = True
-
-            number_queries += this_number_queries
-            total_time_taken += this_total_time_taken
-            max_time_taken = max(max_time_taken, this_max_time_taken)
-            min_time_taken = min(min_time_taken, this_min_time_taken)
+        number_queries += this_number_queries
+        total_time_taken += this_total_time_taken
+        max_time_taken = max(max_time_taken, this_max_time_taken)
+        min_time_taken = min(min_time_taken, this_min_time_taken)
 
     if number_queries:
         avg_time_taken = total_time_taken / number_queries
 
+    print()
     print("[INFO] Performance Stats")
-    print("number_queries:", number_queries)
-    print("total_time_taken:", total_time_taken)
-    print("max_time_taken:", max_time_taken)
-    print("min_time_taken:", min_time_taken)
-    print("avg_time_taken:", avg_time_taken)
+    print(f"number_queries: {number_queries}")
+    print(f"total_time_taken (ms): {total_time_taken:.3f}")
+    print(f"max_time_taken (ms): {max_time_taken:.3f}")
+    print(f"min_time_taken (ms): {min_time_taken:.3f}")
+    print(f"avg_time_taken (ms): {avg_time_taken:.3f}")
 
     if ci_failed:
         exit(1)

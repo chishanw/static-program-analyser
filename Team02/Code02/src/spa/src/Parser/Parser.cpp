@@ -20,9 +20,6 @@ ProgramAST* Parser::Parse(std::vector<std::string> tokens) {
   if (tokens.empty()) {
     throw runtime_error(
         "[Parser] a SIMPLE program must have at least 1 procedure.");
-
-    vector<ProcedureAST*> emptyList;
-    return new ProgramAST(emptyList);
   }
 
   // set up instance variables
@@ -42,7 +39,6 @@ ProgramAST* Parser::program() {
     procedures.push_back(procedureAST);
   }
 
-  // TODO(gf): rm this after iter1
   if (enableIter1restriction && procedures.size() > 1) {
     throw runtime_error(
         "[Parser] No more than 1 procedure is allowed in a SIMPLE program in "
@@ -113,7 +109,6 @@ PrintStmtAST* Parser::printStmt() {
 }
 
 CallStmtAST* Parser::callStmt() {
-  // TODO(gf): rm this after iter1
   if (enableIter1restriction) {
     throw runtime_error(
         "[Parser] Call Stmt is NOT allowed in a SIMPLE program in "

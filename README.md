@@ -1,4 +1,7 @@
 # Team 02
+
+![cmake workflow](https://github.com/nus-cs3203/21s1-cp-spa-team-02//actions/workflows/cmake.yml/badge.svg)
+
 ## Target Environment
 
 Item | Version

@@ -61,4 +61,7 @@ class DesignExtractor {
       const std::vector<StmtAST*>, std::unordered_set<NAME>);
   void ExtractCallsTrans(CALL_GRAPH);
   void ExtractCallsTransHelper(CALL_GRAPH, PROC_NAME, PROC_NAME);
+
+  void ExtractNext(const ProgramAST*);
+  void ExtractNextHelper(const std::vector<StmtAST*>, STMT_NO, STMT_NO);
 };

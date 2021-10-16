@@ -1,5 +1,5 @@
-#include <Parser/Parser.h>
 #include <Common/Tokenizer.h>
+#include <Parser/Parser.h>
 
 #include <vector>
 
@@ -63,7 +63,6 @@ TEST_CASE("Parser Exception Test") {
   }
 }
 
-// TODO(gf): disable this after iter1
 TEST_CASE("Parser Exception Test (Iter1 ONLY)") {
   SECTION("> 1 procedures}") {
     string program =
