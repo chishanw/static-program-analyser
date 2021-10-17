@@ -930,6 +930,22 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
   Synonym cll = {DesignEntity::CALL, "cll"};
   vector<ConditionClause> conditionClauses = {};
 
+  SECTION("Select c1 with c1.value = 1 with c1.value = 2") {
+    WithClause withClause1 = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                              {ParamType::INTEGER_LITERAL, "1"}};
+    conditionClauses.push_back(
+        {{}, {}, withClause1, ConditionClauseType::WITH});
+
+    WithClause withClause2 = {{ParamType::ATTRIBUTE_VALUE, "c1"},
+                              {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {{}, {}, withClause2, ConditionClauseType::WITH});
+
+    SelectClause select = {{c1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
   SECTION("Select s such that Follows(s, _) with 1 = 1") {
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
                                      {ParamType::SYNONYM, "s"},

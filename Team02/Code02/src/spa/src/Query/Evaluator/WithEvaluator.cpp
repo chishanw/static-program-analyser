@@ -15,13 +15,13 @@ using namespace query;
 WithEvaluator::WithEvaluator(PKB* pkb) {
   this->pkb = pkb;
   this->newQueryResults = {};
-  this->isClauseTrue = true;
 }
 
 pair<bool, vector<QueryResult>> WithEvaluator::evaluateAttributes(
     const Param& left, const Param& right,
     const unordered_map<string, DesignEntity>& synonymMap,
     const vector<QueryResult>& currentQueryResults) {
+  this->isClauseTrue = false;
   this->synonymMap = synonymMap;
   this->currentQueryResults = currentQueryResults;
 
@@ -46,7 +46,7 @@ pair<bool, vector<QueryResult>> WithEvaluator::evaluateAttributes(
   bool areBothIntegerLiterals = left.type == ParamType::INTEGER_LITERAL &&
                                 right.type == ParamType::INTEGER_LITERAL;
   if (!areBothNameLiterals && !areBothIntegerLiterals) {
-    isClauseTrue = !newQueryResults.empty();
+    isClauseTrue = isClauseTrue && !newQueryResults.empty();
   }
 
   return make_pair(isClauseTrue, newQueryResults);
@@ -72,6 +72,7 @@ void WithEvaluator::evaluateNameAttributes(const Param& left,
                                                          rightDesignEntity);
 
       if (leftProcIdx == rightProcIdx) {
+        isClauseTrue = true;
         newQueryResults.push_back(results);
       }
     }
@@ -86,6 +87,7 @@ void WithEvaluator::evaluateNameAttributes(const Param& left,
       string rightVarName =
           getVarNameAttrOfSynonym(results.at(rightValue), rightDesignEntity);
       if (leftVarName == rightVarName) {
+        isClauseTrue = true;
         newQueryResults.push_back(results);
       }
     }
@@ -93,9 +95,8 @@ void WithEvaluator::evaluateNameAttributes(const Param& left,
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
     if (leftValue == rightValue) {
+      isClauseTrue = true;
       newQueryResults = currentQueryResults;
-    } else {
-      isClauseTrue = false;
     }
   }
 
@@ -152,9 +153,8 @@ void WithEvaluator::evaluateIntegerAttributes(const Param& left,
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::INTEGER_LITERAL) {
     if (leftValue == rightValue) {
+      isClauseTrue = true;
       newQueryResults = currentQueryResults;
-    } else {
-      isClauseTrue = false;
     }
   }
 
@@ -222,6 +222,7 @@ void WithEvaluator::evaluateProcNameAndVarName(string synWithProcName,
                                              designEntOfSynWithVarName);
 
     if (procName == varName) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
@@ -237,6 +238,7 @@ void WithEvaluator::evaluateProcNameAndNameLiteral(string synWithProcName,
                                                designEntOfSynWithProcName);
 
     if (procName == nameLiteral) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
@@ -252,6 +254,7 @@ void WithEvaluator::evaluateVarNameAndNameLiteral(string synWithVarName,
                                              designEntOfSynWithVarName);
 
     if (varName == nameLiteral) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
@@ -263,6 +266,7 @@ void WithEvaluator::evaluateIndexes(string firstSyn, string secondSyn) {
     int secondIndex = results.at(secondSyn);
 
     if (firstIndex == secondIndex) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
@@ -274,6 +278,7 @@ void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
     string stmtNum = to_string(results.at(stmtSyn));
 
     if (constValue == stmtNum) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
@@ -285,6 +290,7 @@ void WithEvaluator::evaluateValueAndIntegerLiteral(string constSyn,
     string constValue = pkb->getConst(results.at(constSyn));
 
     if (constValue == integerLiteral) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
@@ -296,6 +302,7 @@ void WithEvaluator::evaluateStmtAndIntegerLiteral(string stmtSyn,
     string stmtNum = to_string(results.at(stmtSyn));
 
     if (stmtNum == integerLiteral) {
+      isClauseTrue = true;
       newQueryResults.push_back(results);
     }
   }
