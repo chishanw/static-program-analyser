@@ -89,6 +89,8 @@ class QueryParser {
 
   inline static const std::string INVALID_W_SYNONYM =
       "QueryParser expects a prog_line synonym.";
+  inline static const std::string INVALID_W_PARAM =
+      "QueryParser expects an integer, string, attrRef or synonym.";
   inline static const std::string INVALID_W_DIFF_PARAM_TYPES =
       "QueryParser expects the same type (string/integer) to be compared in "
       "the with-clause.";

@@ -758,6 +758,26 @@ TEST_CASE("Invalid queries with one with clause throws") {
                       qpp::SemanticBooleanErrorException);
   }
 
+  SECTION("Invalid with _ = 2") {
+    string invalidQuery =
+        "Select BOOLEAN with _ = 2";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_W_PARAM);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid with \"x\" = _") {
+    string invalidQuery =
+        "Select BOOLEAN with \"x\" = _";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_W_PARAM);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION(
       "Invalid usage of undeclared synonym in with p.procName = \"count\"") {
     string invalidQuery = "Select BOOLEAN with p.procName = \"count\"";

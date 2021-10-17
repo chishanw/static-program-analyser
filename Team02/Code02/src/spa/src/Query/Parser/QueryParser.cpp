@@ -843,6 +843,10 @@ void QueryParser::parseWithClause(
     }
 
     // validate type of params
+    if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
+      throw SyntacticErrorException(INVALID_W_PARAM);
+    }
+
     bool areBothIntegers =
         (integerParamTypes.find(left.type) != integerParamTypes.end()) &&
         (integerParamTypes.find(right.type) != integerParamTypes.end());
