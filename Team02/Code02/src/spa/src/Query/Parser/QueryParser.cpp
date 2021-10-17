@@ -41,7 +41,7 @@ const unordered_map<string, Attribute> keywordToAttribute = {
     {"value", Attribute::VALUE},
     {"stmt#", Attribute::STMT_NUM}};
 
-const set<DesignEntity> validFollowsParentParamEntities = {
+const set<DesignEntity> validStmtRefEntities = {
     DesignEntity::STATEMENT, DesignEntity::READ,     DesignEntity::PRINT,
     DesignEntity::WHILE,     DesignEntity::IF,       DesignEntity::ASSIGN,
     DesignEntity::CALL,      DesignEntity::PROG_LINE};
@@ -56,12 +56,6 @@ const set<DesignEntity> validModifiesStmtParamEntities = {
     DesignEntity::IF,       DesignEntity::WHILE,     DesignEntity::CALL,
     DesignEntity::PROG_LINE};
 
-const set<DesignEntity> validNextParamEntities = {
-    DesignEntity::STATEMENT, DesignEntity::READ, DesignEntity::PRINT,
-    DesignEntity::CALL, DesignEntity::WHILE, DesignEntity::IF,
-    DesignEntity::ASSIGN, DesignEntity::PROG_LINE
-};
-
 const set<ParamType> integerParamTypes = {
     ParamType::INTEGER_LITERAL, ParamType::ATTRIBUTE_STMT_NUM,
     ParamType::ATTRIBUTE_VALUE, ParamType::SYNONYM};
@@ -69,8 +63,6 @@ const set<ParamType> integerParamTypes = {
 const set<ParamType> stringParamTypes = {ParamType::NAME_LITERAL,
                                          ParamType::ATTRIBUTE_VAR_NAME,
                                          ParamType::ATTRIBUTE_PROC_NAME};
-
-const set<string> validPatternExprChars = {"+", "-", "*", "/", "%", "(", ")"};
 
 // ============ Helpers (Token) ============
 QueryToken QueryParser::consumeToken() {
@@ -441,8 +433,8 @@ query::ConditionClause QueryParser::parseFollowsParentClause(
 
   if (left.type == ParamType::SYNONYM) {
     DesignEntity entity = getEntityFromSynonymName(left.value);
-    if (validFollowsParentParamEntities.find(entity) ==
-        validFollowsParentParamEntities.end()) {
+    if (validStmtRefEntities.find(entity) ==
+        validStmtRefEntities.end()) {
       isSemanticallyValid = false;  // semantic error
       semanticErrorMsg = INVALID_SYNONYM_MSG;
     }
@@ -450,8 +442,8 @@ query::ConditionClause QueryParser::parseFollowsParentClause(
 
   if (right.type == ParamType::SYNONYM) {
     DesignEntity entity = getEntityFromSynonymName(right.value);
-    if (validFollowsParentParamEntities.find(entity) ==
-        validFollowsParentParamEntities.end()) {
+    if (validStmtRefEntities.find(entity) ==
+        validStmtRefEntities.end()) {
       isSemanticallyValid = false;  // semantic error
       semanticErrorMsg = INVALID_SYNONYM_MSG;
     }
@@ -515,7 +507,7 @@ query::ConditionClause QueryParser::parseNextClause(
 
   if (left.type == ParamType::SYNONYM) {
     DesignEntity entity = getEntityFromSynonymName(left.value);
-    if (validNextParamEntities.find(entity) == validNextParamEntities.end()) {
+    if (validStmtRefEntities.find(entity) == validStmtRefEntities.end()) {
       isSemanticallyValid = false;  // semantic error
       semanticErrorMsg = INVALID_SYNONYM_NON_PROG_LINE_MSG;
     }
@@ -523,7 +515,7 @@ query::ConditionClause QueryParser::parseNextClause(
 
   if (right.type == ParamType::SYNONYM) {
     DesignEntity entity = getEntityFromSynonymName(right.value);
-    if (validNextParamEntities.find(entity) == validNextParamEntities.end()) {
+    if (validStmtRefEntities.find(entity) == validStmtRefEntities.end()) {
       isSemanticallyValid = false;  // semantic error
       semanticErrorMsg = INVALID_SYNONYM_NON_PROG_LINE_MSG;
     }

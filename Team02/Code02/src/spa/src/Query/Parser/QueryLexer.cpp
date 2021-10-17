@@ -1,8 +1,6 @@
 #include "QueryLexer.h"
 
-#include <iostream>
 #include <set>
-#include <string>
 #include <vector>
 
 using namespace std;
@@ -84,8 +82,7 @@ QueryToken QueryLexer::getInteger() {
 
   // validate that the first digit is not a 0 if there are subsequent digits
   bool isFirstDigitZero = firstDigit == '0';
-  optional<char> maybeNextChar = peekChar();
-  bool hasDigit = maybeNextChar.has_value() && isDigit(maybeNextChar.value());
+  bool hasDigit = peekChar().has_value() && isDigit(peekChar().value());
   if (hasDigit && isFirstDigitZero) {
     isSemanticallyValid = false;  // semantic error
     semanticErrorMsg = INVALID_INTEGER_START_ZERO_MSG;
@@ -97,8 +94,7 @@ QueryToken QueryLexer::getInteger() {
     char digit = consumeChar();
     integer.push_back(digit);
 
-    optional<char> maybeNextChar = peekChar();
-    hasDigit = maybeNextChar.has_value() && isDigit(maybeNextChar.value());
+    hasDigit = peekChar().has_value() && isDigit(peekChar().value());
   }
   return {TokenType::INTEGER, integer};
 }
