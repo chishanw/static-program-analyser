@@ -18,10 +18,10 @@ WithEvaluator::WithEvaluator(PKB* pkb) {
   this->isClauseTrue = true;
 }
 
-pair<bool, QueryResults> WithEvaluator::evaluateAttributes(
+pair<bool, vector<QueryResult>> WithEvaluator::evaluateAttributes(
     const Param& left, const Param& right,
     const unordered_map<string, DesignEntity>& synonymMap,
-    const QueryResults& currentQueryResults) {
+    const vector<QueryResult>& currentQueryResults) {
   this->synonymMap = synonymMap;
   this->currentQueryResults = currentQueryResults;
 

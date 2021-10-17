@@ -37,8 +37,8 @@ class QueryEvaluator {
   WithEvaluator withEvaluator;
 
   bool areAllClausesTrue;
-  query::QueryResults queryResults;
-  query::QueryResults currentQueryResults;
+  std::vector<query::QueryResult> queryResults;
+  std::vector<query::QueryResult> currentQueryResults;
   std::unordered_set<std::string> queryResultsSynonyms;
 
   // methods to build queryResults
@@ -61,6 +61,15 @@ class QueryEvaluator {
                  std::vector<std::string> incomingResultsSynonyms);
   void crossProduct(std::vector<std::vector<int>> incomingResults,
                     std::vector<std::string> incomingResultsSynonyms);
+  // helpers for above main algos
+  void filterValidQueryResults(
+      std::vector<query::QueryResult>* newQueryResults,
+      query::QueryResult queryResult, std::vector<int> incomingResult,
+      std::vector<std::string> incomingResultsSynonyms);
+  void innerJoinValidQueryResults(
+      std::vector<query::QueryResult>* newQueryResults,
+      query::QueryResult queryResult, std::vector<int> incomingResult,
+      std::vector<std::string> incomingResultsSynonyms);
 
   // methods to call the relevant sub evaluator
   void evaluateSuchThatClause(query::SuchThatClause);
@@ -88,7 +97,8 @@ class QueryEvaluator {
   std::vector<std::vector<int>> formatRefResults(
       std::unordered_set<int> results);
   std::vector<std::vector<int>> formatRefPairResults(
-      std::vector<std::pair<int, std::vector<int>>> results);
+      std::vector<std::pair<int, std::vector<int>>> results,
+      query::ParamType leftType, query::ParamType rightType);
 
   std::unordered_set<int> getAllValuesOfSynonym(std::string synonymName);
   std::vector<std::vector<int>> getSelectSynonymFinalResults(

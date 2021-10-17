@@ -12,16 +12,16 @@ class WithEvaluator {
  public:
   explicit WithEvaluator(PKB*);
 
-  std::pair<bool, query::QueryResults> evaluateAttributes(
+  std::pair<bool, std::vector<query::QueryResult>> evaluateAttributes(
       const query::Param& left, const query::Param& right,
       const std::unordered_map<std::string, query::DesignEntity>& synonymMap,
-      const query::QueryResults& currentQueryResults);
+      const std::vector<query::QueryResult>& currentQueryResults);
 
  private:
   PKB* pkb;
-  query::QueryResults newQueryResults;
+  std::vector<query::QueryResult> newQueryResults;
   std::unordered_map<std::string, query::DesignEntity> synonymMap;
-  query::QueryResults currentQueryResults;
+  std::vector<query::QueryResult> currentQueryResults;
   bool isClauseTrue;
 
   void evaluateNameAttributes(const query::Param& left,

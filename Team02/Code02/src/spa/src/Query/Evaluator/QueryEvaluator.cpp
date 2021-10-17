@@ -67,6 +67,7 @@ vector<vector<int>> QueryEvaluator::evaluateQuery(
   return getSelectSynonymFinalResults(select);
 }
 
+/* Evaluate Such That Clauses -------------------------------------------- */
 void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
   auto relationshipType = clause.relationshipType;
 
@@ -166,7 +167,8 @@ void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
         formatRefResults(followsEvaluator.evaluateStmtFollowsT(left, right));
   } else {
     incomingResults = formatRefPairResults(
-        followsEvaluator.evaluateStmtPairFollowsT(left, right));
+        followsEvaluator.evaluateStmtPairFollowsT(left, right), left.type,
+        right.type);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -200,7 +202,8 @@ void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
         formatRefResults(parentEvaluator.evaluateStmtParent(left, right));
   } else {
     incomingResults = formatRefPairResults(
-        parentEvaluator.evaluateStmtPairParent(left, right));
+        parentEvaluator.evaluateStmtPairParent(left, right), left.type,
+        right.type);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -234,7 +237,8 @@ void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
         formatRefResults(parentEvaluator.evaluateStmtParentT(left, right));
   } else {
     incomingResults = formatRefPairResults(
-        parentEvaluator.evaluateStmtPairParentT(left, right));
+        parentEvaluator.evaluateStmtPairParentT(left, right), left.type,
+        right.type);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -268,8 +272,8 @@ void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
         formatRefResults(usesEvaluator.evaluateUsesS(left, right));
 
   } else {
-    incomingResults =
-        formatRefPairResults(usesEvaluator.evaluatePairUsesS(left, right));
+    incomingResults = formatRefPairResults(
+        usesEvaluator.evaluatePairUsesS(left, right), left.type, right.type);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -303,10 +307,9 @@ void QueryEvaluator::evaluateUsesPClause(SuchThatClause clause) {
         formatRefResults(usesEvaluator.evaluateUsesP(left, right));
 
   } else {
-    incomingResults =
-        formatRefPairResults(usesEvaluator.evaluatePairUsesP(left, right));
+    incomingResults = formatRefPairResults(
+        usesEvaluator.evaluatePairUsesP(left, right), left.type, right.type);
   }
-
   filterAndAddIncomingResults(incomingResults, left, right);
 }
 
@@ -338,7 +341,8 @@ void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
         formatRefResults(modifiesEvaluator.evaluateModifiesS(left, right));
   } else {
     incomingResults = formatRefPairResults(
-        modifiesEvaluator.evaluatePairModifiesS(left, right));
+        modifiesEvaluator.evaluatePairModifiesS(left, right), left.type,
+        right.type);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -372,44 +376,11 @@ void QueryEvaluator::evaluateModifiesPClause(SuchThatClause clause) {
         formatRefResults(modifiesEvaluator.evaluateModifiesP(left, right));
   } else {
     incomingResults = formatRefPairResults(
-        modifiesEvaluator.evaluatePairModifiesP(left, right));
+        modifiesEvaluator.evaluatePairModifiesP(left, right), left.type,
+        right.type);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
-}
-
-void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
-  switch (clause.matchSynonym.entity) {
-    case DesignEntity::ASSIGN:
-      return evaluateAssignPatternClause(clause);
-    case DesignEntity::IF:
-      return evaluateIfPatternClause(clause);
-    case DesignEntity::WHILE:
-      return evaluateWhilePatternClause(clause);
-    default:
-      DMOprintErrMsgAndExit(
-          "[QueryEvaluator][evaluatePatternClause] invalid ptt design entity");
-  }
-}
-
-void QueryEvaluator::evaluateAssignPatternClause(PatternClause clause) {
-  Synonym matchSynonym = clause.matchSynonym;
-  Param varParam = clause.leftParam;
-  PatternExpr patternExpr = clause.patternExpr;
-
-  vector<vector<int>> incomingResults;
-
-  if (varParam.type == ParamType::NAME_LITERAL ||
-      varParam.type == ParamType::WILDCARD) {
-    incomingResults = formatRefResults(
-        patternEvaluator.evaluateAssignPattern(varParam, patternExpr));
-  } else {
-    incomingResults =
-        patternEvaluator.evaluateAssignPairPattern(varParam, patternExpr);
-  }
-
-  Param assignSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
-  filterAndAddIncomingResults(incomingResults, assignSynonymParam, varParam);
 }
 
 void QueryEvaluator::evaluateCallsClause(SuchThatClause clause) {
@@ -543,6 +514,41 @@ void QueryEvaluator::evaluateNextTClause(SuchThatClause clause) {
   filterAndAddIncomingResults(incomingResults, left, right);
 }
 
+/* Evaluate Pattern Clauses ------------------------------------------------- */
+void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
+  switch (clause.matchSynonym.entity) {
+    case DesignEntity::ASSIGN:
+      return evaluateAssignPatternClause(clause);
+    case DesignEntity::IF:
+      return evaluateIfPatternClause(clause);
+    case DesignEntity::WHILE:
+      return evaluateWhilePatternClause(clause);
+    default:
+      DMOprintErrMsgAndExit(
+          "[QueryEvaluator][evaluatePatternClause] invalid ptt design entity");
+  }
+}
+
+void QueryEvaluator::evaluateAssignPatternClause(PatternClause clause) {
+  Synonym matchSynonym = clause.matchSynonym;
+  Param varParam = clause.leftParam;
+  PatternExpr patternExpr = clause.patternExpr;
+
+  vector<vector<int>> incomingResults;
+
+  if (varParam.type == ParamType::NAME_LITERAL ||
+      varParam.type == ParamType::WILDCARD) {
+    incomingResults = formatRefResults(
+        patternEvaluator.evaluateAssignPattern(varParam, patternExpr));
+  } else {
+    incomingResults =
+        patternEvaluator.evaluateAssignPairPattern(varParam, patternExpr);
+  }
+
+  Param assignSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
+  filterAndAddIncomingResults(incomingResults, assignSynonymParam, varParam);
+}
+
 void QueryEvaluator::evaluateIfPatternClause(PatternClause clause) {
   Synonym matchSynonym = clause.matchSynonym;
   Param varParam = clause.leftParam;
@@ -579,6 +585,7 @@ void QueryEvaluator::evaluateWhilePatternClause(PatternClause clause) {
   filterAndAddIncomingResults(incomingResults, whileSynonymParam, varParam);
 }
 
+/* Evaluate With Clauses -------------------------------------------------- */
 void QueryEvaluator::evaluateWithClause(WithClause clause) {
   Param left = clause.leftParam;
   Param right = clause.rightParam;
@@ -651,10 +658,11 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
     }
   }
 
-  pair<bool, QueryResults> evaluatedResults = withEvaluator.evaluateAttributes(
-      left, right, synonymMap, currentQueryResults);
+  pair<bool, vector<QueryResult>> evaluatedResults =
+      withEvaluator.evaluateAttributes(left, right, synonymMap,
+                                       currentQueryResults);
   bool isClauseTrue = evaluatedResults.first;
-  QueryResults newQueryResults = evaluatedResults.second;
+  vector<QueryResult> newQueryResults = evaluatedResults.second;
 
   if (!isClauseTrue) {
     areAllClausesTrue = false;
@@ -664,6 +672,7 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
   }
 }
 
+/* Filter And Merge Results For Each Clause --------------------------------- */
 void QueryEvaluator::filterAndAddIncomingResults(
     vector<vector<int>> incomingResults, const Param& left,
     const Param& right) {
@@ -831,80 +840,93 @@ void QueryEvaluator::addIncomingResults(vector<vector<int>> incomingResults,
   }
 }
 
+/* Main Algos to Merge Clause Results --------------------------------------- */
 void QueryEvaluator::filter(vector<vector<int>> incomingResults,
                             vector<string> incomingResultsSynonyms) {
-  QueryResults newQueryResults = {};
+  vector<QueryResult> newQueryResults = {};
 
   for (int i = 0; i < currentQueryResults.size(); i++) {
-    unordered_map<string, int> queryResult = currentQueryResults[i];
+    QueryResult queryResult = currentQueryResults[i];
 
     for (vector<int> incomingResult : incomingResults) {
-      unordered_map<string, int> newQueryResult = queryResult;
-      bool isValidQueryResult = true;
-
-      for (int j = 0; j < incomingResult.size(); j++) {
-        int value = incomingResult[j];
-        string synonymName = incomingResultsSynonyms[j];
-
-        if (queryResult[synonymName] != value) {
-          isValidQueryResult = false;
-          break;
-        }
-      }
-
-      if (isValidQueryResult) {
-        newQueryResults.push_back(newQueryResult);
-      }
+      filterValidQueryResults(&newQueryResults, queryResult, incomingResult,
+                              incomingResultsSynonyms);
     }
   }
   currentQueryResults = newQueryResults;
+}
+
+void QueryEvaluator::filterValidQueryResults(
+    vector<QueryResult>* newQueryResults, QueryResult queryResult,
+    vector<int> incomingResult, vector<string> incomingResultsSynonyms) {
+  QueryResult newQueryResult = queryResult;
+  bool isValidQueryResult = true;
+
+  for (int i = 0; i < incomingResult.size(); i++) {
+    int value = incomingResult[i];
+    string synonymName = incomingResultsSynonyms[i];
+
+    if (queryResult[synonymName] != value) {
+      isValidQueryResult = false;
+      break;
+    }
+  }
+
+  if (isValidQueryResult) {
+    newQueryResults->push_back(newQueryResult);
+  }
 }
 
 void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
                                vector<string> incomingResultsSynonyms) {
-  QueryResults newQueryResults = {};
+  vector<QueryResult> newQueryResults = {};
   for (int i = 0; i < currentQueryResults.size(); i++) {
-    unordered_map<string, int> queryResult = currentQueryResults[i];
+    QueryResult queryResult = currentQueryResults[i];
 
     for (vector<int> incomingResult : incomingResults) {
-      unordered_map<string, int> newQueryResult = queryResult;
-      bool isValidQueryResult = true;
-
-      // TODO(qe): not optimised for the data shape returned from pkb right
-      // now, amy need to swap the for loops above and below
-      for (int j = 0; j < incomingResult.size(); j++) {
-        int value = incomingResult[j];
-        string synonymName = incomingResultsSynonyms[j];
-
-        if (queryResult.find(synonymName) != queryResult.end()) {
-          if (queryResult[synonymName] != value) {
-            isValidQueryResult = false;
-            break;
-          }
-        } else {
-          newQueryResult[synonymName] = value;
-        }
-      }
-
-      if (isValidQueryResult) {
-        newQueryResults.push_back(newQueryResult);
-      }
+      innerJoinValidQueryResults(&newQueryResults, queryResult, incomingResult,
+                                 incomingResultsSynonyms);
     }
   }
 
   currentQueryResults = newQueryResults;
 }
 
-void QueryEvaluator::crossProduct(vector<vector<int>> incomingResult,
+void QueryEvaluator::innerJoinValidQueryResults(
+    vector<QueryResult>* newQueryResults, QueryResult queryResult,
+    vector<int> incomingResult, vector<string> incomingResultsSynonyms) {
+  QueryResult newQueryResult = queryResult;
+  bool isValidQueryResult = true;
+
+  for (int i = 0; i < incomingResult.size(); i++) {
+    int value = incomingResult[i];
+    string synonymName = incomingResultsSynonyms[i];
+
+    if (queryResult.find(synonymName) != queryResult.end()) {
+      if (queryResult[synonymName] != value) {
+        isValidQueryResult = false;
+        break;
+      }
+    } else {
+      newQueryResult[synonymName] = value;
+    }
+  }
+
+  if (isValidQueryResult) {
+    newQueryResults->push_back(newQueryResult);
+  }
+}
+
+void QueryEvaluator::crossProduct(vector<vector<int>> incomingResults,
                                   vector<string> incomingResultsSynonyms) {
-  QueryResults newQueryResults;
+  vector<QueryResult> newQueryResults;
 
-  for (unordered_map<string, int> queryResult : currentQueryResults) {
-    for (vector<int> res : incomingResult) {
-      unordered_map<string, int> newQueryResult = queryResult;
+  for (QueryResult queryResult : currentQueryResults) {
+    for (vector<int> incomingResult : incomingResults) {
+      QueryResult newQueryResult = queryResult;
 
-      for (int i = 0; i < res.size(); i++) {
-        int value = res[i];
+      for (int i = 0; i < incomingResult.size(); i++) {
+        int value = incomingResult[i];
         string synonymName = incomingResultsSynonyms[i];
         newQueryResult[synonymName] = value;
       }
@@ -916,6 +938,7 @@ void QueryEvaluator::crossProduct(vector<vector<int>> incomingResult,
   currentQueryResults = newQueryResults;
 }
 
+/* Miscellaneous Helper Functions ------------------------------------------ */
 vector<vector<int>> QueryEvaluator::formatRefResults(
     unordered_set<int> results) {
   vector<vector<int>> formattedResults = {};
@@ -927,11 +950,31 @@ vector<vector<int>> QueryEvaluator::formatRefResults(
 }
 
 vector<vector<int>> QueryEvaluator::formatRefPairResults(
-    vector<pair<int, vector<int>>> results) {
+    vector<pair<int, vector<int>>> results, ParamType leftType,
+    ParamType rightType) {
   vector<vector<int>> formattedResults = {};
-  for (auto pair : results) {
-    for (int second : pair.second) {
-      formattedResults.push_back({pair.first, second});
+
+  // extract and return results for only the synonyms in the clause
+  if (leftType == ParamType::SYNONYM && rightType == ParamType::SYNONYM) {
+    for (auto res : results) {
+      for (auto second : res.second) {
+        formattedResults.push_back({res.first, second});
+      }
+    }
+    return formattedResults;
+  }
+
+  if (leftType == ParamType::SYNONYM) {
+    for (auto res : results) {
+      formattedResults.push_back({res.first});
+    }
+    return formattedResults;
+  }
+
+  // rightType == ParamType::SYNONYM
+  for (auto res : results) {
+    for (auto second : res.second) {
+      formattedResults.push_back({second});
     }
   }
   return formattedResults;

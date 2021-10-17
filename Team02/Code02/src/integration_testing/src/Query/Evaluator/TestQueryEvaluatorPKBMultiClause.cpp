@@ -6,6 +6,8 @@
 
 #include "../TestQueryUtil.h"
 #include "catch.hpp"
+using Catch::Matchers::VectorContains;
+
 using namespace std;
 using namespace query;
 
@@ -1130,5 +1132,208 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
     SelectClause select = {{s}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
     REQUIRE(results.empty());
+  }
+}
+
+TEST_CASE("QueryEvaluator: Multiple NextT - Ensure Cache Correctness") {
+  // Essentially a duplicate of the unit tests in TestNextEvaluator
+  // But we have two of the same clause in the query
+  // Ensures results are stored and retrieved correctly for NextT
+
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 14; i++) {
+    pkb->addStmt(i);
+  }
+  // example procedure
+  // 1: x = 1;
+  // 2: while (x == 1) {
+  // 3:   if (y == 2) then {
+  // 4:     y = 3; }
+  // 5:   else { z = 4; } }
+  // 6: if (z == 4) then {
+  // 7:   if (x == y) then {
+  // 8:     z = 3; }
+  // 9:   else { y = 4; } }
+  // 10: else { z = 6; }
+  // 11: while (z == 2) {
+  // 12:  while (y == 7) {
+  // 13:    z = x; } }
+  // 14: x = 5;
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(3, 5);
+  pkb->addNext(4, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 6);
+  pkb->addNext(6, 7);
+  pkb->addNext(6, 10);
+  pkb->addNext(10, 11);
+  pkb->addNext(7, 8);
+  pkb->addNext(7, 9);
+  pkb->addNext(8, 11);
+  pkb->addNext(9, 11);
+  pkb->addNext(11, 12);
+  pkb->addNext(12, 13);
+  pkb->addNext(13, 12);
+  pkb->addNext(12, 11);
+  pkb->addNext(11, 14);
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  /* Integer and Integer --------------------------- */
+  SECTION("Select BOOLEAN such that NextT(2, 2) and NextT(2, 2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "2"},
+                                     {ParamType::INTEGER_LITERAL, "2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({TRUE_SELECT_BOOL_RESULT}));
+  }
+
+  /* Integer and Synonym --------------------------- */
+  SECTION("Select s2 such that NextT(1, s2) and NextT(1, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+  }
+
+  SECTION("Select s1 such that NextT(s1, 4) and NextT(s1, 4)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "4"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5}));
+  }
+
+  /* Wildcard and Synonym -------------------------- */
+  SECTION("Select s1 such that NextT(s1, _) and NextT(s1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}));
+  }
+
+  SECTION("Select s2 such that NextT(_, s2) and NextT(_, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+  }
+
+  /* Synonym and Synonym --------------------------- */
+  SECTION("Select <s1, s2> such that NextT(s1, s2) and NextT(s1, s2)") {
+    SuchThatClause suchThatClause = {RelationshipType::NEXT_T,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+
+    // check NextT(1, _)
+    for (int i = 2; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({1, i})));
+    }
+    REQUIRE_THAT(results, !VectorContains(vector<int>({1, 1})));
+    // check NextT(2, _)
+    for (int i = 2; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({2, i})));
+    }
+    // check NextT(3, _)
+    for (int i = 2; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({3, i})));
+    }
+    // check NextT(4, _)
+    for (int i = 2; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({4, i})));
+    }
+    // check NextT(5, _)
+    for (int i = 2; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({5, i})));
+    }
+    // check NextT(6, _)
+    for (int i = 7; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({6, i})));
+    }
+    // check NextT(7, _)
+    for (int i = 8; i <= 14; i++) {
+      if (i == 10) {
+        REQUIRE_THAT(results, !VectorContains(vector<int>({7, i})));
+      } else {
+        REQUIRE_THAT(results, VectorContains(vector<int>({7, i})));
+      }
+    }
+    // check NextT(8, _)
+    for (int i = 11; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({8, i})));
+    }
+    // check NextT(9, _)
+    for (int i = 11; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({9, i})));
+    }
+    // check NextT(10, _)
+    for (int i = 11; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({10, i})));
+    }
+    // check NextT(11, _)
+    for (int i = 11; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({11, i})));
+    }
+    // check NextT(12, _)
+    for (int i = 12; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({12, i})));
+    }
+    // check NextT(13, _)
+    for (int i = 13; i <= 14; i++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({13, i})));
+    }
   }
 }
