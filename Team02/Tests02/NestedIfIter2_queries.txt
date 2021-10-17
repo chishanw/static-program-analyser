@@ -1,0 +1,20 @@
+1 - Next *
+prog_line p;
+Select p such that Next*(p, 15)
+1, 2, 3, 10, 11, 12, 14
+5000
+2 - Pattern if
+if i1, i2; variable v;
+Select v pattern i1(v, _, _) and i2(v, _, _)
+x, z, a, b, i
+5000
+3 - constant
+constant c; stmt s;
+Select c with c.value = s.stmt#
+2, 3, 5, 7
+5000
+4 - multi clause
+if i; assign a; prog_line p;
+Select v such that Modifies(a, v) and Parent(i, a) pattern a (v, _) and i (v, _, _) with p = a.stmt# and i.stmt# = 3
+none
+5000

@@ -1,0 +1,15 @@
+procedure DoubleNestedWhileAtBottom {
+    read a;
+    read b;
+    while (a > b) {
+        x = 9;
+        z = 4;
+        i = 5;
+        while ((x + z + i) > a) {
+            print a;
+            a = a - 1;
+            x = x - 2;
+            z = z - 3;
+        }
+    } 
+}

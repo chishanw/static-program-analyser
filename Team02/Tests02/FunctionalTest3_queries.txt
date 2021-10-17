@@ -178,6 +178,11 @@ read r;
 Select r such that Uses(_, _)
 none
 5000
+36 - UsesP test, procedure and wildcard
+procedure p;
+Select p such that Uses(p, _)
+LongProcedureNameWithMany123123123123WordsHelloGoodbyeHelloGoodbyeHelloHell0GoodbyeG00dbye1231231
+5000
 37 - ModifiesS test, integer and literal value
 if if;
 Select if such that Modifies(3, "blue")
@@ -212,6 +217,11 @@ none
 stmt s;
 Select s such that Modifies(_, _)
 none
+5000
+44 - ModifiesP test, procedure and wildcard
+procedure p;
+Select p such that Modifies(p, _)
+LongProcedureNameWithMany123123123123WordsHelloGoodbyeHelloGoodbyeHelloHell0GoodbyeG00dbye1231231
 5000
 45 - Pattern test, literal name and literal integer
 assign a;
@@ -302,4 +312,14 @@ Select a such that Follows*(1, 8) pattern a(_, _)
 assign a;
 Select a such that Follows*(1, 2) pattern a(_, _)
 none
+5000
+63 - ModifiesP test, procedure and variable
+procedure p; variable v;
+Select v such that Modifies(p, v)
+red, blue, hellu, helo
+5000
+64 - UsesP test, procedure and variable
+procedure p; variable v;
+Select v such that Uses(p, v)
+x, red, blue, hellu, helo, newVar
 5000

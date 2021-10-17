@@ -646,15 +646,15 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
     // add all possible left and/or right synonym values if not yet in results
     if (isLeftParamSynonym && !isLeftSynInQueryResults && isRightParamSynonym &&
         !isRightSynInQueryResults) {
-      addIncomingResults(leftAndRightSynonymValues,
-                         {ParamType::SYNONYM, left.value},
-                         {ParamType::SYNONYM, right.value});
+      queryResultsSynonyms.insert(left.value);
+      queryResultsSynonyms.insert(right.value);
+      crossProduct(leftAndRightSynonymValues, {left.value, right.value});
     } else if (isLeftParamSynonym && !isLeftSynInQueryResults) {
-      addIncomingResults(leftSynoynmValues, {ParamType::SYNONYM, left.value},
-                         right);
+      queryResultsSynonyms.insert(left.value);
+      crossProduct(leftSynoynmValues, {left.value});
     } else if (isRightParamSynonym && !isRightSynInQueryResults) {
-      addIncomingResults(rightSynoynmValues, left,
-                         {ParamType::SYNONYM, right.value});
+      queryResultsSynonyms.insert(right.value);
+      crossProduct(rightSynoynmValues, {right.value});
     }
   }
 
@@ -854,6 +854,10 @@ void QueryEvaluator::filter(vector<vector<int>> incomingResults,
     }
   }
   currentQueryResults = newQueryResults;
+  if (currentQueryResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
 }
 
 void QueryEvaluator::filterValidQueryResults(
@@ -890,6 +894,10 @@ void QueryEvaluator::innerJoin(vector<vector<int>> incomingResults,
   }
 
   currentQueryResults = newQueryResults;
+  if (currentQueryResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
 }
 
 void QueryEvaluator::innerJoinValidQueryResults(
@@ -936,6 +944,10 @@ void QueryEvaluator::crossProduct(vector<vector<int>> incomingResults,
   }
 
   currentQueryResults = newQueryResults;
+  if (currentQueryResults.empty()) {
+    areAllClausesTrue = false;
+    return;
+  }
 }
 
 /* Miscellaneous Helper Functions ------------------------------------------ */

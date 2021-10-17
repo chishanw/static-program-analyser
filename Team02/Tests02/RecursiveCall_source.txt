@@ -1,0 +1,14 @@
+procedure main {
+    flag = 0;
+    read x;
+    if (x == 0) {
+        read y;
+        if (y == 0) {
+            call main;
+        } then {
+            print y;    
+        }
+    } then {
+        print x;
+    }
+}

@@ -1,0 +1,13 @@
+procedure main {
+	read x; 
+	read y;
+	print x;
+	print y;
+}
+
+procedure main {
+	x = 5;
+	y = 7;
+	print x;
+	print y;
+}

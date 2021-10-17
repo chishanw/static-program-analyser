@@ -42,7 +42,6 @@ class Parser {
 
   //  name & number methods
   NAME name();
-  std::string number();
 
   // utility methods
   bool expectToken(std::string);
@@ -51,7 +50,6 @@ class Parser {
   bool noMoreToken();
   void incrementStmtNo();
   bool isName();
-  bool isNumber();
   bool isRelExprInParens();
   bool isNextTokenEqualSign();
   void errorExpected(std::string);

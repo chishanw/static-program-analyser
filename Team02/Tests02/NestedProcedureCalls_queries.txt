@@ -1,0 +1,20 @@
+1 - calls*
+procedure p;
+Select p such that Calls*("main", p)
+a, b, c, d
+5000
+2 - modifiesP
+procedure p; variable v;
+Select v such that Modifies("main", v)
+a, b, c, x, y, z, main
+5000
+3 - modifiesS with calls
+call c; variable v;
+Select v such that Modifies (3, v)
+b, c, x, y, z
+5000
+4 - UsesS with calls
+call c; variable v;
+Select v such that Modifies(3, v)
+c, x, y, b, z
+5000

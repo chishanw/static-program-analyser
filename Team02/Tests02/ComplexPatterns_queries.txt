@@ -1,0 +1,35 @@
+1 - pattern w and pattern i
+while w; if i; variable v;
+Select v pattern i(v, _, _) pattern w(v, _)
+a,b
+5000
+2 - pattern a
+assign a; variable v;
+Select v pattern a(v, _"(f - h) * (g / 30 % h)"_)
+nusComputing
+5000
+3 - pattern a w i
+assign a; while w; if i; variable v;
+Select v pattern a(v, _"x + y"_) and w(v, _) and i(v, _, _)
+a
+5000
+4 - pattern a w i
+assign a; while w; if i; variable v;
+Select v pattern a(v, _"(c + d)"_) 
+cs3203
+5000
+5 - pattern a w i
+assign a; while w; if i; variable v;
+Select v pattern a(v, _"j + k + m + k"_) 
+cs3203
+5000
+4 - usesP while
+while w; variable v;
+Select v such that Uses("bigBrain", v)
+a, b, c, d, e, j, k, m, x, y, z, f, g, h, cs3203
+5000
+5 - usesS call
+variable v;
+Select v such that Uses(4, v)
+a, b, c, d, e, j, k, m, x, y, z, f, g, h, cs3203
+5000

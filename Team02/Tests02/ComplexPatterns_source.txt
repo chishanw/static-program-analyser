@@ -1,0 +1,37 @@
+procedure bigBrain {
+    read x;
+    read y;
+    read z;
+    call intermediate1;
+}
+
+procedure intermediate1 {
+    read b;
+    read h;
+    read g;
+    read j;
+    call intermediate2;
+}
+
+procedure intermediate2 {
+    read c;
+    read i; 
+    read k;
+    read m;
+    call main;
+}
+
+procedure main {
+    read a;                                
+    cs3203 =  j + k + m + k + (c + d);
+    print cs3203;                           
+    if ((20 * ((a - b) * (c / (30 % d))) == 100) || (((10 == a) && (c < 20)) && ((!(20 == b)) || ((c < 20) && ((d < 20) || (e < 20)))))) then {
+        print cs3203;                           
+    } else {
+        a = ((((x)) + (y)) + (z));                      
+        a = ((((x)))) + y + z;                 
+    }
+    while (!(!(!(!(a == b))))) {                                                           
+        nusComputing = (20 + ((f - h) * (g / 30 % h)));                          
+    }
+}

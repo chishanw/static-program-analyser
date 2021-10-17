@@ -1,0 +1,34 @@
+procedure main {
+	main = 0;
+	read a; 
+	call a;
+	call b;
+	print main;
+}
+
+
+procedure a {
+	call b;
+	b = 12;
+	call c;
+	print c;
+}
+
+
+procedure b {
+	c = 4;
+	call c;
+}
+
+procedure c {
+	x = 10;
+	read y;
+	z = x + y;
+	print y;
+	call d;
+}
+
+procedure d {
+	print z;
+}
+

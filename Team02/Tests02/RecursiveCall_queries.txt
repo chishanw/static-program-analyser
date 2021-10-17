@@ -1,0 +1,5 @@
+1 - Recursive call to main
+stmt s;
+Select s
+none
+5000

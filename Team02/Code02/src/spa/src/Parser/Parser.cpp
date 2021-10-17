@@ -283,16 +283,6 @@ NAME Parser::name() {
   return ret;
 }
 
-string Parser::number() {
-  if (!isNumber()) {
-    errorExpected("number");
-    return 0;
-  }
-  string currToken = token;
-  nextToken();
-  return currToken;
-}
-
 // =======================================
 //  utility methods
 // =======================================
@@ -337,22 +327,6 @@ bool Parser::isName() {
   }
   char c = token[0];
   return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
-}
-
-bool Parser::isNumber() {
-  // assumes that tokenizer works properly, then only a Number can start with a
-  // digit, and has only digits
-  switch (token.size()) {
-    case 0:
-      return false;
-    case 1:
-      return '0' <= token[0] &&
-             token[0] <= '9';  // '0' in ascii is 48 and '9' is 57
-    default:
-      // if constant has more than 1 digit, the 1st digit cannot be 0
-      return '1' <= token[0] &&
-             token[0] <= '9';  // '1' in ascii is 49 and '9' is 57
-  }
 }
 
 bool Parser::isRelExprInParens() {

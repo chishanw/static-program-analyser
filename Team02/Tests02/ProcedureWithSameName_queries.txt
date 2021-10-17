@@ -1,0 +1,5 @@
+1 - Call to another procedure with the same name
+stmt s;
+Select s
+none
+5000

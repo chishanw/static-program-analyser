@@ -1,0 +1,5 @@
+1 - long tuple query can also change Follows to Follows* for even more results
+variable v; stmt s; 
+Select <v, v, v.varName, v, v.varName, v.varName, v> such that Uses (s, v) and Modifies(s, v)
+cenX cenX cenX cenX cenX cenX cenX,cenY cenY cenY cenY cenY cenY cenY,count count count count count count count,x x x x x x x,y y y y y y y
+5000

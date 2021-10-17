@@ -12,15 +12,13 @@
 using namespace std;
 using namespace query;
 
-WithEvaluator::WithEvaluator(PKB* pkb) {
-  this->pkb = pkb;
-  this->newQueryResults = {};
-}
+WithEvaluator::WithEvaluator(PKB* pkb) { this->pkb = pkb; }
 
 pair<bool, vector<QueryResult>> WithEvaluator::evaluateAttributes(
     const Param& left, const Param& right,
     const unordered_map<string, DesignEntity>& synonymMap,
     const vector<QueryResult>& currentQueryResults) {
+  this->newQueryResults = {};
   this->isClauseTrue = false;
   this->synonymMap = synonymMap;
   this->currentQueryResults = currentQueryResults;
