@@ -556,6 +556,8 @@ void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
 void DesignExtractor::ExtractNext(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
     ExtractNextHelper(procedure->StmtList, -1, -1);
+    pkb->addFirstStmtOfProc(procedure->ProcName,
+                            procedure->StmtList.front()->StmtNo);
   }
 }
 
@@ -590,6 +592,9 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
       if (i + 1 < stmtList.size()) {
         nextStmtForLastStmtInIf = stmtList[i + 1]->StmtNo;
       }
+      if (nextStmtForLastStmtInIf != -1) {
+        pkb->addNextStmtForIfStmt(stmt->StmtNo, nextStmtForLastStmtInIf);
+      }
 
       ExtractNextHelper(ifStmt->ThenBlock, ifStmt->StmtNo,
                         nextStmtForLastStmtInIf);
@@ -617,6 +622,9 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
   } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
     addNext(stmt->StmtNo, nextStmtForLastStmt);
   } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+    if (nextStmtForLastStmt != -1) {
+      pkb->addNextStmtForIfStmt(ifStmt->StmtNo, nextStmtForLastStmt);
+    }
     ExtractNextHelper(ifStmt->ThenBlock, -1, nextStmtForLastStmt);
     ExtractNextHelper(ifStmt->ElseBlock, -1, nextStmtForLastStmt);
   } else {

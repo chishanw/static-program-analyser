@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include "AffectsInfoKB.h"
 #include "CallsKB.h"
 #include "ConstTable.h"
 #include "FollowKB.h"
@@ -138,6 +139,12 @@ class PKB {
   UNO_SET_OF_STMT_NO getPreviousStmts(STMT_NO s2);
   std::vector<std::pair<STMT_NO, std::vector<STMT_NO>>> getAllNextStmtPairs();
 
+  // Affects Info API
+  void addNextStmtForIfStmt(STMT_NO ifStmt, STMT_NO nextStmt);
+  void addFirstStmtOfProc(std::string procName, STMT_NO firstStmtOfProc);
+  STMT_NO getNextStmtForIfStmt(STMT_NO ifStmt);
+  std::vector<STMT_NO> getFirstStmtOfAllProcs();
+
   // Table API
   CONST_IDX insertConst(std::string constant);
   std::string getConst(CONST_IDX index);
@@ -164,6 +171,7 @@ class PKB {
   UsesKB usesKB = UsesKB(&varTable, &procTable);
   PatternKB patternKB = PatternKB(&varTable);
   CallsKB callsKB = CallsKB(&procTable);
+  AffectsInfoKB affectsInfoKB = AffectsInfoKB(&procTable);
 
   // Members
   UNO_SET_OF_STMT_NO allReadStmtNo;

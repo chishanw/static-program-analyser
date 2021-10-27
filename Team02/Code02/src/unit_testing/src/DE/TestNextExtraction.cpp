@@ -107,3 +107,89 @@ TEST_CASE("[DE][Next R/S] nested while and if") {
   CHECK(pkb->getNextStmts(6) == unordered_set<int>{5});
   CHECK(pkb->getNextStmts(7) == unordered_set<int>{});  // out of bound
 }
+
+TEST_CASE("[DE][AffectsInfo] nested if") {
+  string program =
+      "procedure a {            "
+      "  while (x == 0) {       "  // 1
+      "    if (x == 0) then {   "  // 2
+      "      if (y == 2) then { "  // 3
+      "        x = 2; }         "  // 4
+      "      else { y = 3; }    "  // 5
+      "    } else {             "
+      "      while (x == 0) {   "  // 6
+      "        x = 0;           "  // 7
+      "      }                  "
+      "    }                    "
+      "  }                      "
+      "}                        ";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  REQUIRE(pkb->getNextStmtForIfStmt(2) == 1);
+  REQUIRE(pkb->getNextStmtForIfStmt(3) == 1);
+  CHECK(pkb->getFirstStmtOfAllProcs() == vector<int>({1}));
+}
+
+TEST_CASE("[DE][AffectsInfo] non nested if at top") {
+  string program =
+      "procedure a {            "
+      "    if (x == 0) then {   "  // 1
+      "      y = 3;             "  // 2
+      "    } else {             "
+      "      z = x; }           "  // 3
+      "    read y;              "  // 4
+      "}                        ";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  REQUIRE(pkb->getNextStmtForIfStmt(1) == 4);
+  CHECK(pkb->getFirstStmtOfAllProcs() == vector<int>({1}));
+}
+
+TEST_CASE("[DE][AffectsInfo] non nested if at bottom") {
+  string program =
+      "procedure a {            "
+      "    if (x == 0) then {   "  // 1
+      "      y = 3;             "  // 2
+      "    } else {             "
+      "      z = x; }           "  // 3
+      "}                        ";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  REQUIRE(pkb->getNextStmtForIfStmt(1) == -1);
+  CHECK(pkb->getFirstStmtOfAllProcs() == vector<int>({1}));
+}
+
+TEST_CASE("[DE][AffectsInfo] multiple procedures") {
+  string program =
+      "procedure a {            "
+      "    x = 1;               "  // 1
+      "}                        "
+      "procedure b {            "
+      "    y = 2;               "  // 2
+      "    print y;             "  // 3
+      "}                        "
+      "procedure c {            "
+      "    z = 3;               "  // 4
+      "}                        ";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  auto allFirstStmts = pkb->getFirstStmtOfAllProcs();
+  REQUIRE(set(allFirstStmts.begin(), allFirstStmts.end()) ==
+          set<int>({1, 2, 4}));
+}

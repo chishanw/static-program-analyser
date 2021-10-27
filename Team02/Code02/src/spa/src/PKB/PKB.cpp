@@ -296,6 +296,20 @@ vector<pair<STMT_NO, vector<STMT_NO>>> PKB::getAllNextStmtPairs() {
   return nextKB.getAllNextStmtPairs();
 }
 
+// Affects Info API
+void PKB::addNextStmtForIfStmt(STMT_NO ifStmt, STMT_NO nextStmtForIfStmt) {
+  affectsInfoKB.addNextStmtForIfStmt(ifStmt, nextStmtForIfStmt);
+}
+void PKB::addFirstStmtOfProc(std::string procName, STMT_NO firstStmtOfProc) {
+  affectsInfoKB.addFirstStmtOfProc(procName, firstStmtOfProc);
+}
+STMT_NO PKB::getNextStmtForIfStmt(STMT_NO ifStmt) {
+  return affectsInfoKB.getNextStmtForIfStmt(ifStmt);
+}
+std::vector<STMT_NO> PKB::getFirstStmtOfAllProcs() {
+  return affectsInfoKB.getFirstStmtOfAllProcs();
+}
+
 // Table API
 CONST_IDX PKB::insertConst(string constant) {
   return constTable.insertConst(constant);
