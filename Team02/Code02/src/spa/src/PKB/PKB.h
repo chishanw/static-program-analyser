@@ -141,9 +141,11 @@ class PKB {
 
   // Affects Info API
   void addNextStmtForIfStmt(STMT_NO ifStmt, STMT_NO nextStmt);
-  void addFirstStmtOfProc(std::string procName, STMT_NO firstStmtOfProc);
+  void addFirstStmtOfProc(PROC_NAME procName, STMT_NO firstStmtOfProc);
+  void addProcCallEdge(PROC_NAME callerProcName, PROC_NAME calleeProcName);
   STMT_NO getNextStmtForIfStmt(STMT_NO ifStmt);
   std::vector<STMT_NO> getFirstStmtOfAllProcs();
+  std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> getCallGraph();
 
   // Table API
   CONST_IDX insertConst(std::string constant);

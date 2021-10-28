@@ -1,8 +1,8 @@
 
+#include <Common/Tokenizer.h>
 #include <DesignExtractor/DesignExtractor.h>
 #include <PKB/PKB.h>
 #include <Parser/Parser.h>
-#include <Common/Tokenizer.h>
 
 #include <vector>
 
@@ -62,6 +62,21 @@ TEST_CASE("[DE][Calls R/S] sample source") {
   REQUIRE(pkb->isCalls("p", "q"));
   REQUIRE(!pkb->isCallStmt(25));  // out of bound test, last stmt is #24
   REQUIRE(!pkb->isCallStmt(30));  // out of bound test, last stmt is #24
+
+  SECTION("[DE][AffectsInfo] sample source") {
+    PROC_IDX exampleIdx = pkb->getProcIndex("Example");
+    PROC_IDX pIdx = pkb->getProcIndex("p");
+    PROC_IDX qIdx = pkb->getProcIndex("q");
+
+    unordered_map<PROC_IDX, unordered_set<PROC_IDX>> callGraph =
+        pkb->getCallGraph();
+
+    // positive test
+    CHECK(callGraph.at(exampleIdx) == unordered_set<PROC_IDX>{pIdx});
+    CHECK(callGraph.at(pIdx) == unordered_set<PROC_IDX>{qIdx});
+    // neg test
+    CHECK_THROWS_AS(callGraph.at(qIdx), out_of_range);
+  }
 }
 
 TEST_CASE("[DE][Calls(*) R/S] sample source") {
@@ -167,6 +182,7 @@ TEST_CASE("Calling non-existent procedure") {
   ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
   PKB* pkb = new PKB();
   DesignExtractor de = DesignExtractor(pkb);
-  REQUIRE_THROWS_WITH(de.Extract(ast), "Found call statement calling "
-      "non-existent procedure.");
+  REQUIRE_THROWS_WITH(de.Extract(ast),
+                      "Found call statement calling "
+                      "non-existent procedure.");
 }

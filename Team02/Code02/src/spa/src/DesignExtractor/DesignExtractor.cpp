@@ -503,6 +503,14 @@ CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
     callGraph.insert({caller->ProcName, allProcsCalled});
   }
 
+  // for Affects r/s
+  for (auto p : callGraph) {
+    PROC_NAME callerProcName = p.first;
+    for (PROC_NAME calleeProcName : p.second) {
+      pkb->addProcCallEdge(callerProcName, calleeProcName);
+    }
+  }
+
   return callGraph;
 }
 

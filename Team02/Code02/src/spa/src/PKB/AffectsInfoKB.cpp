@@ -10,18 +10,24 @@ AffectsInfoKB::AffectsInfoKB(ProcTable* procTable) {
 
 // DE Methods
 void AffectsInfoKB::addNextStmtForIfStmt(STMT_NO ifStmt,
-                                           STMT_NO nextStmtForIfStmt) {
-  if (tableOfNextStmtForIfStmts.count(ifStmt) == 0) {
-    tableOfNextStmtForIfStmts.insert({ifStmt, nextStmtForIfStmt});
-  }
+                                         STMT_NO nextStmtForIfStmt) {
+  tableOfNextStmtForIfStmts[ifStmt] = nextStmtForIfStmt;
 }
 
-void AffectsInfoKB::addFirstStmtOfProc(std::string procName,
+void AffectsInfoKB::addFirstStmtOfProc(PROC_NAME procName,
                                        STMT_NO firstStmtOfProc) {
-  PROC_IDX procIdx = procTable->getProcIndex(procName);
-  if (tableOfProcFirstStmts.count(procIdx) == 0) {
-    tableOfProcFirstStmts.insert({procIdx, firstStmtOfProc});
+  PROC_IDX procIdx = procTable->insertProc(procName);
+  tableOfProcFirstStmts[procIdx] = firstStmtOfProc;
+}
+
+void AffectsInfoKB::addProcCallEdge(PROC_NAME callerProcName,
+                                    PROC_NAME calleeProcName) {
+  PROC_IDX callerProcIdx = procTable->insertProc(callerProcName);
+  PROC_IDX calleeProcIdx = procTable->insertProc(calleeProcName);
+  if (callGraph.count(callerProcIdx) == 0) {
+    callGraph[callerProcIdx] = unordered_set<PROC_IDX>{};
   }
+  callGraph[callerProcIdx].insert(calleeProcIdx);
 }
 
 // QE Methods
@@ -39,4 +45,8 @@ vector<STMT_NO> AffectsInfoKB::getFirstStmtOfAllProcs() {
     results.push_back(procToFirstStmt.second);
   }
   return results;
+}
+
+unordered_map<PROC_IDX, unordered_set<PROC_IDX>> AffectsInfoKB::getCallGraph() {
+  return callGraph;
 }

@@ -9,8 +9,7 @@
 #include <utility>
 #include <vector>
 
-typedef int STMT_NO, PROC_IDX;
-typedef std::string PROC_NAME;
+typedef int STMT_NO;
 
 class CallsKB {
  public:

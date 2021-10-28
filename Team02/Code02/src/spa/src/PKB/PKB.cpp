@@ -303,11 +303,18 @@ void PKB::addNextStmtForIfStmt(STMT_NO ifStmt, STMT_NO nextStmtForIfStmt) {
 void PKB::addFirstStmtOfProc(std::string procName, STMT_NO firstStmtOfProc) {
   affectsInfoKB.addFirstStmtOfProc(procName, firstStmtOfProc);
 }
+void PKB::addProcCallEdge(PROC_NAME callerProcName, PROC_NAME calleeProcName) {
+  affectsInfoKB.addProcCallEdge(callerProcName, calleeProcName);
+}
+
 STMT_NO PKB::getNextStmtForIfStmt(STMT_NO ifStmt) {
   return affectsInfoKB.getNextStmtForIfStmt(ifStmt);
 }
-std::vector<STMT_NO> PKB::getFirstStmtOfAllProcs() {
+vector<STMT_NO> PKB::getFirstStmtOfAllProcs() {
   return affectsInfoKB.getFirstStmtOfAllProcs();
+}
+unordered_map<PROC_IDX, unordered_set<PROC_IDX>> PKB::getCallGraph() {
+  return affectsInfoKB.getCallGraph();
 }
 
 // Table API
