@@ -34,11 +34,11 @@ class ArithAST {
   virtual ~ArithAST() {}
 
   bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
-  std::unordered_set<NAME> GetAllVarNames() const;
-  std::unordered_set<std::string> GetAllConsts() const;
-  std::vector<std::string> GetSubExprPatternStrs() const;
-  std::string GetFullExprPatternStr() const;
-  std::string GetDebugStr() const;
+  virtual std::unordered_set<NAME> GetAllVarNames() const;
+  virtual std::unordered_set<std::string> GetAllConsts() const;
+  virtual std::unordered_set<std::string> GetSubExprPatternStrs() const;
+  virtual std::string GetFullExprPatternStr() const;
+  virtual std::string GetDebugStr() const;
 
  private:
   const bool hasOnlyOneNode;
@@ -77,11 +77,11 @@ class FactorAST : public ArithAST {
   bool IsVarName() const { return this->isVarName; }
   bool IsConstValue() const { return this->isConstValue; }
   bool IsExpr() const { return this->isExpr; }
-  std::unordered_set<std::string> GetAllVarNames() const;
-  std::unordered_set<std::string> GetAllConsts() const;
-  std::vector<std::string> GetSubExprPatternStrs() const;
-  std::string GetFullExprPatternStr() const;
-  std::string GetDebugStr() const;
+  std::unordered_set<std::string> GetAllVarNames() const override;
+  std::unordered_set<std::string> GetAllConsts() const override;
+  std::unordered_set<std::string> GetSubExprPatternStrs() const override;
+  std::string GetFullExprPatternStr() const override;
+  std::string GetDebugStr() const override;
 
  private:
   const bool isVarName;

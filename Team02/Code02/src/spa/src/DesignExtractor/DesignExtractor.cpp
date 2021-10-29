@@ -88,6 +88,16 @@ void DesignExtractor::ExtractProcAndStmtHelper(
   }
 }
 
+void mergeResultHelper(
+    unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>* resPtr,
+    unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>* resNextPtr,
+    STMT_NO stmtNo) {
+  for (auto res : *resNextPtr) {
+    resPtr->insert(make_pair(stmtNo, res.second));
+  }
+  resPtr->merge(*resNextPtr);
+}
+
 void DesignExtractor::ExtractUses(const ProgramAST* programAST) {
   // From slides ...
   // 1. Assignment a Variable v
@@ -150,17 +160,11 @@ DesignExtractor::ExtractUsesHelper(
 
       // then
       resultNext = ExtractUsesHelper(ifStmt->ThenBlock, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(ifStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
 
       // else
       resultNext = ExtractUsesHelper(ifStmt->ElseBlock, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(ifStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
 
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
       for (auto varName : whileStmt->CondExpr->GetAllVarNames()) {
@@ -169,19 +173,13 @@ DesignExtractor::ExtractUsesHelper(
       }
 
       resultNext = ExtractUsesHelper(whileStmt->StmtList, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(whileStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
 
     } else if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
       ProcedureAST* calledProc = procNameToAST.at(callStmt->ProcName);
 
       resultNext = ExtractUsesHelper(calledProc->StmtList, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(callStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
     }
   }
 
@@ -216,38 +214,28 @@ DesignExtractor::ExtractModifiesHelper(
     // procedure and call not included in iteration 1
     if (auto assignStmt = dynamic_cast<const AssignStmtAST*>(stmt)) {
       result.insert(make_pair(assignStmt->StmtNo, assignStmt->VarName));
-    } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
-      // then
-      resultNext = ExtractModifiesHelper(ifStmt->ThenBlock, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(ifStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
-
-      // else
-      resultNext = ExtractModifiesHelper(ifStmt->ElseBlock, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(ifStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
-
-    } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
-      resultNext = ExtractModifiesHelper(whileStmt->StmtList, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(whileStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
 
     } else if (auto readStmt = dynamic_cast<const ReadStmtAST*>(stmt)) {
       result.insert(make_pair(readStmt->StmtNo, readStmt->VarName));
+
+    } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      // then
+      resultNext = ExtractModifiesHelper(ifStmt->ThenBlock, procNameToAST);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
+
+      // else
+      resultNext = ExtractModifiesHelper(ifStmt->ElseBlock, procNameToAST);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
+
+    } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
+      resultNext = ExtractModifiesHelper(whileStmt->StmtList, procNameToAST);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
+
     } else if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
       ProcedureAST* calledProc = procNameToAST.at(callStmt->ProcName);
 
       resultNext = ExtractModifiesHelper(calledProc->StmtList, procNameToAST);
-      for (auto res : resultNext) {
-        result.insert(make_pair(callStmt->StmtNo, res.second));
-      }
-      result.merge(resultNext);
+      mergeResultHelper(&result, &resultNext, stmt->StmtNo);
     }
   }
 
@@ -437,13 +425,14 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
     if (auto assignStmt = dynamic_cast<const AssignStmtAST*>(stmt)) {
       const ArithAST* expr = assignStmt->Expr;
       string varName = assignStmt->VarName;
-      vector<string> strs = expr->GetSubExprPatternStrs();
 
-      string fullExpr = strs[0];
+      string fullExpr = assignStmt->Expr->GetFullExprPatternStr();
       pkb->addAssignPttFullExpr(stmt->StmtNo, varName, fullExpr);
-      for (string subExpr : strs) {
+
+      for (string subExpr : expr->GetSubExprPatternStrs()) {
         pkb->addAssignPttSubExpr(stmt->StmtNo, varName, subExpr);
       }
+
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       ExtractExprPatternsHelper(ifStmt->ThenBlock);
       ExtractExprPatternsHelper(ifStmt->ElseBlock);
@@ -573,9 +562,7 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
                                         STMT_NO prevStmt,
                                         STMT_NO nextStmtForLastStmt) {
   auto addNext = [this](STMT_NO s1, STMT_NO s2) {
-    if (s1 == -1 || s2 == -1) {
-      return;
-    }
+    if (s1 == -1 || s2 == -1) return;
     pkb->addNext(s1, s2);
   };
 
@@ -584,13 +571,10 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
 
     addNext(prevStmt, stmt->StmtNo);
 
-    if (dynamic_cast<const ReadStmtAST*>(stmt)) {
-      prevStmt = stmt->StmtNo;
-    } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
-      prevStmt = stmt->StmtNo;
-    } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
-      prevStmt = stmt->StmtNo;
-    } else if (dynamic_cast<const AssignStmtAST*>(stmt)) {
+    if (dynamic_cast<const ReadStmtAST*>(stmt) ||
+        dynamic_cast<const PrintStmtAST*>(stmt) ||
+        dynamic_cast<const CallStmtAST*>(stmt) ||
+        dynamic_cast<const AssignStmtAST*>(stmt)) {
       prevStmt = stmt->StmtNo;
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
       ExtractNextHelper(whileStmt->StmtList, stmt->StmtNo, stmt->StmtNo);
@@ -609,7 +593,8 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
       ExtractNextHelper(ifStmt->ElseBlock, ifStmt->StmtNo,
                         nextStmtForLastStmtInIf);
 
-      prevStmt = -1;
+      prevStmt = -1;  // because Next r/s between the last stmt in ifStmt's
+                      // then/else block are alr handled by recursive call above
     } else {
       DMOprintErrMsgAndExit(
           "[DE][ExtractNextHelper][for loop] shouldn't reach here.");
@@ -619,13 +604,10 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
 
   // settle last stmt in curr stmtList
   auto stmt = stmtList[stmtList.size() - 1];
-  if (dynamic_cast<const ReadStmtAST*>(stmt)) {
-    addNext(stmt->StmtNo, nextStmtForLastStmt);
-  } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
-    addNext(stmt->StmtNo, nextStmtForLastStmt);
-  } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
-    addNext(stmt->StmtNo, nextStmtForLastStmt);
-  } else if (dynamic_cast<const AssignStmtAST*>(stmt)) {
+  if (dynamic_cast<const ReadStmtAST*>(stmt) ||
+      dynamic_cast<const PrintStmtAST*>(stmt) ||
+      dynamic_cast<const CallStmtAST*>(stmt) ||
+      dynamic_cast<const AssignStmtAST*>(stmt)) {
     addNext(stmt->StmtNo, nextStmtForLastStmt);
   } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
     addNext(stmt->StmtNo, nextStmtForLastStmt);

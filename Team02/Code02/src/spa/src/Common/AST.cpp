@@ -9,10 +9,6 @@ using namespace std;
 // GetFullExprPatternStr
 // ==================
 string ArithAST::GetFullExprPatternStr() const {
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetFullExprPatternStr();
-  }
-
   // no space between tokens
   stringstream out;
   out << "[";
@@ -48,46 +44,31 @@ string FactorAST::GetFullExprPatternStr() const {
 // ==================
 // GetSubExprPatternStrs
 // ==================
-vector<string> ArithAST::GetSubExprPatternStrs() const {
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetSubExprPatternStrs();
-  }
+unordered_set<string> ArithAST::GetSubExprPatternStrs() const {
+  unordered_set<string> res = {GetFullExprPatternStr()};
 
-  vector<string> res;
-  res.push_back(GetFullExprPatternStr());
   if (LeftNode != nullptr) {
-    vector<string> resL = LeftNode->GetSubExprPatternStrs();
-    copy(resL.begin(), resL.end(), back_inserter(res));
+    res.merge(LeftNode->GetSubExprPatternStrs());
   }
   if (RightNode != nullptr) {
-    vector<string> resR = RightNode->GetSubExprPatternStrs();
-    copy(resR.begin(), resR.end(), back_inserter(res));
+    res.merge(RightNode->GetSubExprPatternStrs());
   }
+
   return res;
 }
 
-vector<string> FactorAST::GetSubExprPatternStrs() const {
-  vector<string> res;
+unordered_set<string> FactorAST::GetSubExprPatternStrs() const {
   if (!isExpr) {
-    res.push_back(GetFullExprPatternStr());
-    return res;
+    return {GetFullExprPatternStr()};
+  } else {
+    return Expr->GetSubExprPatternStrs();
   }
-
-  // NOTE: itself must be in the 1st index in the res vector,
-  // cos DE expects the 1st string be the whole expr
-  res = Expr->GetSubExprPatternStrs();
-  res.insert(res.begin(), GetFullExprPatternStr());
-  return res;
 }
 
 // ==================
 // GetDebugStr
 // ==================
 string ArithAST::GetDebugStr() const {
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetDebugStr();
-  }
-
   // format => 1NExprAST(0x1234){sign: ..., ln: ..., rn: ...};
   stringstream out;
   if (hasOnlyOneNode) {
@@ -126,10 +107,6 @@ string FactorAST::GetDebugStr() const {
 // GetAllVarNames
 // ==================
 unordered_set<NAME> ArithAST::GetAllVarNames() const {
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetAllVarNames();
-  }
-
   unordered_set<NAME> res;
   if (LeftNode != nullptr) {
     res.merge(LeftNode->GetAllVarNames());
@@ -167,9 +144,7 @@ unordered_set<NAME> FactorAST::GetAllVarNames() const {
   } else if (isConstValue) {
     return {};
   } else if (isExpr) {
-    const ArithAST* expr = this->Expr;
-    const ArithAST* temp = dynamic_cast<const ArithAST*>(this->Expr);
-    return temp->GetAllVarNames();
+    return this->Expr->GetAllVarNames();
   } else {
     DMOprintErrMsgAndExit("[AST][GetAllVarNames] shouldn't reach here");
     return {};
@@ -180,10 +155,6 @@ unordered_set<NAME> FactorAST::GetAllVarNames() const {
 // GetAllConsts
 // ==================
 unordered_set<string> ArithAST::GetAllConsts() const {
-  if (const FactorAST* f = dynamic_cast<const FactorAST*>(this)) {
-    return f->GetAllConsts();
-  }
-
   unordered_set<string> res;
   if (LeftNode != nullptr) {
     res.merge(LeftNode->GetAllConsts());

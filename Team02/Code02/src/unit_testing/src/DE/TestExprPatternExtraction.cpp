@@ -149,6 +149,33 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
   }
 }
 
+TEST_CASE("[DE][Expr Pattern] expr as a factor") {
+  string program =
+      "procedure Example {              "
+      "  x = 1 + (2 + 3 + 4) + 5;       "
+      "}                                ";
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  string s23 = "[[2]+[3]]";
+  string s234 = string("[") + s23 + "+" + "[4]" + "]";
+  string s1234 = string("[") + "[1]" + "+" + s234 + "]";
+  string s12345 = string("[") + s1234 + "+" + "[5]" + "]";
+
+  REQUIRE(pkb->getAssignVarPairsForSubExpr("[1]").size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr("[2]").size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr("[3]").size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr("[4]").size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr("[5]").size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr(s23).size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr(s234).size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr(s1234).size() != 0);
+  REQUIRE(pkb->getAssignVarPairsForSubExpr(s12345).size() != 0);
+}
+
 TEST_CASE("[ExprParser] compare ASTs of diff expr with same AST") {
   string program1 =
       "procedure Example {\n"
