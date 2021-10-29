@@ -71,31 +71,31 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
   }
 
   SECTION("Procedures") {
-    int exampleIdx = pkb->getProcIndex("Example");
-    int pIdx = pkb->getProcIndex("p");
-    int qIdx = pkb->getProcIndex("q");
+    int exampleIdx = pkb->getIndexOf(TABLE_ENUM::PROC_TABLE, "Example");
+    int pIdx = pkb->getIndexOf(TABLE_ENUM::PROC_TABLE, "p");
+    int qIdx = pkb->getIndexOf(TABLE_ENUM::PROC_TABLE, "q");
 
-    REQUIRE(pkb->getAllProcedures() ==
+    REQUIRE(pkb->getAllElementsAt(TABLE_ENUM::PROC_TABLE) ==
             UNO_SET_OF_STMT_NO{exampleIdx, pIdx, qIdx});
   }
 
   SECTION("Consts") {
-    int c0idx = pkb->getConstIndex("0");
-    int c1idx = pkb->getConstIndex("1");
-    int c2idx = pkb->getConstIndex("2");
-    int c3idx = pkb->getConstIndex("3");
-    int c5idx = pkb->getConstIndex("5");
+    int c0idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "0");
+    int c1idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "1");
+    int c2idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "2");
+    int c3idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "3");
+    int c5idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "5");
 
-    REQUIRE(pkb->getAllConstants() ==
+    REQUIRE(pkb->getAllElementsAt(TABLE_ENUM::CONST_TABLE) ==
             UNO_SET_OF_STMT_NO{c0idx, c1idx, c2idx, c3idx, c5idx});
   }
 
   SECTION("Variables") {
-    int xIdx = pkb->getVarIndex("x");
-    int yIdx = pkb->getVarIndex("y");
-    int zIdx = pkb->getVarIndex("z");
-    int iIdx = pkb->getVarIndex("i");
-    REQUIRE(pkb->getAllVariables() ==
+    int xIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "x");
+    int yIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "y");
+    int zIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "z");
+    int iIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "i");
+    REQUIRE(pkb->getAllElementsAt(TABLE_ENUM::VAR_TABLE) ==
             unordered_set<CONST_IDX>{xIdx, yIdx, zIdx, iIdx});
   }
 }
@@ -121,50 +121,50 @@ TEST_CASE("[DE][GetAllVarNames & GetAllConsts] complex cond expr") {
   de.Extract(ast);
 
   // 17 variables [0, 1, ..., 16]
-  int aIdx = pkb->getVarIndex("a");
-  int bIdx = pkb->getVarIndex("b");
-  int cIdx = pkb->getVarIndex("c");
-  int dIdx = pkb->getVarIndex("d");
-  int eIdx = pkb->getVarIndex("e");
-  int fIdx = pkb->getVarIndex("f");
-  int gIdx = pkb->getVarIndex("g");
-  int hIdx = pkb->getVarIndex("h");
-  int iIdx = pkb->getVarIndex("i");
-  int jIdx = pkb->getVarIndex("j");
-  int kIdx = pkb->getVarIndex("k");
-  int lIdx = pkb->getVarIndex("l");
-  int mIdx = pkb->getVarIndex("m");
-  int nIdx = pkb->getVarIndex("n");
-  int oIdx = pkb->getVarIndex("o");
-  int pIdx = pkb->getVarIndex("p");
-  int qIdx = pkb->getVarIndex("q");
+  int aIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "a");
+  int bIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "b");
+  int cIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "c");
+  int dIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "d");
+  int eIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "e");
+  int fIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "f");
+  int gIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "g");
+  int hIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "h");
+  int iIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "i");
+  int jIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "j");
+  int kIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "k");
+  int lIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "l");
+  int mIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "m");
+  int nIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "n");
+  int oIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "o");
+  int pIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "p");
+  int qIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "q");
 
-  int c0idx = pkb->getConstIndex("0");
-  int c1idx = pkb->getConstIndex("1");
-  int c2idx = pkb->getConstIndex("2");
-  int c3idx = pkb->getConstIndex("3");
-  int c4idx = pkb->getConstIndex("4");
-  int c5idx = pkb->getConstIndex("5");
-  int c6idx = pkb->getConstIndex("6");
-  int c7idx = pkb->getConstIndex("7");
-  int c8idx = pkb->getConstIndex("8");
-  int c9idx = pkb->getConstIndex("9");
-  int c10idx = pkb->getConstIndex("10");
-  int c11idx = pkb->getConstIndex("11");
-  int c12idx = pkb->getConstIndex("12");
-  int c13idx = pkb->getConstIndex("13");
-  int c14idx = pkb->getConstIndex("14");
-  int c15idx = pkb->getConstIndex("15");
-  int c16idx = pkb->getConstIndex("16");
-  int c17idx = pkb->getConstIndex("17");
-  int c18idx = pkb->getConstIndex("18");
+  int c0idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "0");
+  int c1idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "1");
+  int c2idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "2");
+  int c3idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "3");
+  int c4idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "4");
+  int c5idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "5");
+  int c6idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "6");
+  int c7idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "7");
+  int c8idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "8");
+  int c9idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "9");
+  int c10idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "10");
+  int c11idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "11");
+  int c12idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "12");
+  int c13idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "13");
+  int c14idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "14");
+  int c15idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "15");
+  int c16idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "16");
+  int c17idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "17");
+  int c18idx = pkb->getIndexOf(TABLE_ENUM::CONST_TABLE, "18");
 
-  REQUIRE(pkb->getAllVariables() ==
+  REQUIRE(pkb->getAllElementsAt(TABLE_ENUM::VAR_TABLE) ==
           unordered_set<VAR_IDX>{aIdx, bIdx, cIdx, dIdx, eIdx, fIdx, gIdx, hIdx,
                                  iIdx, jIdx, kIdx, lIdx, mIdx, nIdx, oIdx, pIdx,
                                  qIdx});
 
-  REQUIRE(pkb->getAllConstants() ==
+  REQUIRE(pkb->getAllElementsAt(TABLE_ENUM::CONST_TABLE) ==
           unordered_set<CONST_IDX>{c0idx, c1idx, c2idx, c3idx, c4idx, c5idx,
                                    c6idx, c7idx, c8idx, c9idx, c10idx, c11idx,
                                    c12idx, c13idx, c14idx, c15idx, c16idx,

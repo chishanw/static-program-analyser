@@ -905,13 +905,13 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
   pkb->setFollows(1, 2);
   pkb->setFollows(2, 3);
   pkb->addCalls(3, "a", "b");
-  int const1Idx = pkb->insertConst("1");
-  int const2Idx = pkb->insertConst("2");
-  int const3Idx = pkb->insertConst("3");
-  int procAIdx = pkb->insertProc("a");
-  int procBIdx = pkb->insertProc("b");
-  int varAIdx = pkb->getVarIndex("a");
-  int varXIdx = pkb->getVarIndex("x");
+  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
+  int const2Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
+  int const3Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
+  int procAIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "a");
+  int procBIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "b");
+  int varAIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "a");
+  int varXIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "x");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {

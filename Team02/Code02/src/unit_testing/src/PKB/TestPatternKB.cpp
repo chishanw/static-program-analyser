@@ -27,8 +27,8 @@ TEST_CASE("FULL_PATTERN") {
   REQUIRE(db.getAssignForVarAndFullExpr("y", "x+1") == unordered_set({1, 2}));
 
   // a (v, "x+1") = { {1, index(y)}, {2, index(y)}, {3, index(v)} }
-  int yIdx = db.getVarIndex("y");
-  int vIdx = db.getVarIndex("v");
+  int yIdx = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "y");
+  int vIdx = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "v");
   REQUIRE(db.getAssignVarPairsForFullExpr("x+1") ==
           vector({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
                   vector<int>({3, vIdx})}));
@@ -84,8 +84,8 @@ TEST_CASE("SUB_PATTERN") {
   REQUIRE(db.getAssignForVarAndSubExpr("y", "x") == unordered_set({1, 2}));
 
   // a (v, "x+1") = { {1, index(y)}, {2, index(y)}, {3, index(v)} }
-  int yIdx = db.getVarIndex("y");
-  int vIdx = db.getVarIndex("v");
+  int yIdx = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "y");
+  int vIdx = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "v");
   REQUIRE(db.getAssignVarPairsForSubExpr("x+1") ==
           vector({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
                   vector<int>({3, vIdx})}));
@@ -115,10 +115,10 @@ TEST_CASE("IF_PATTERN") {
   REQUIRE(db.getIfStmtForVar("d") == unordered_set({5}));
 
   // ifs("_", _, _) = All possible pairs of <s, index(var_name)>
-  int aIndex = db.getVarIndex("a");
-  int bIndex = db.getVarIndex("b");
-  int cIndex = db.getVarIndex("c");
-  int dIndex = db.getVarIndex("d");
+  int aIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "a");
+  int bIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "b");
+  int cIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "c");
+  int dIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "d");
   REQUIRE(db.getIfStmtVarPairs() == vector({
     vector({1, aIndex}),
     vector({2, aIndex}),
@@ -150,10 +150,10 @@ TEST_CASE("WHILE_PATTERN") {
   REQUIRE(db.getWhileStmtForVar("d") == unordered_set({5}));
 
   // w("_", _) = All possible pairs of <s, index(var_name)>
-  int aIndex = db.getVarIndex("a");
-  int bIndex = db.getVarIndex("b");
-  int cIndex = db.getVarIndex("c");
-  int dIndex = db.getVarIndex("d");
+  int aIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "a");
+  int bIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "b");
+  int cIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "c");
+  int dIndex = db.getIndexOf(TABLE_ENUM::VAR_TABLE, "d");
   REQUIRE(db.getWhileStmtVarPairs() == vector({
     vector({1, aIndex}),
     vector({2, aIndex}),

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <PKB/ProcTable.h>
-#include <PKB/VarTable.h>
+#include <PKB/Table.h>
 
 #include <iostream>
 #include <string>
@@ -12,11 +11,11 @@
 
 typedef int STMT_NO;
 typedef std::string VAR_NAME, PROC_NAME;
-typedef int VAR_IDX;
+typedef int VAR_IDX, PROC_IDX;
 
 class UsesKB {
  public:
-  explicit UsesKB(VarTable* varTable, ProcTable* procTable);
+  explicit UsesKB(Table* varTable, Table* procTable);
 
   // API for DE
   void addUsesS(STMT_NO s, VAR_NAME var);
@@ -34,8 +33,8 @@ class UsesKB {
   std::vector<std::pair<PROC_IDX, std::vector<VAR_IDX>>> getAllUsesPPairs();
 
  private:
-  VarTable* varTable;
-  ProcTable* procTable;
+  Table* varTable;
+  Table* procTable;
   std::unordered_map<STMT_NO, std::unordered_set<VAR_IDX>> tableS;
   std::unordered_map<VAR_IDX, std::unordered_set<STMT_NO>> invTableS;
   std::unordered_map<PROC_IDX, std::unordered_set<VAR_IDX>> tableP;

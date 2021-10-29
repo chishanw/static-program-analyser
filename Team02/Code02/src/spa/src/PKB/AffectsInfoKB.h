@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PKB/ProcTable.h>
+#include <PKB/Table.h>
 
 #include <string>
 #include <unordered_map>
@@ -8,11 +8,12 @@
 #include <vector>
 
 typedef int STMT_NO, PROC_IDX;
+typedef std::string PROC_NAME;
 
 class AffectsInfoKB {
  public:
   // Constructor
-  explicit AffectsInfoKB(ProcTable* procTable);
+  explicit AffectsInfoKB(Table* procTable);
 
   // Methods for DE
   void addNextStmtForIfStmt(STMT_NO ifStmt, STMT_NO nextStmtForIfStmt);
@@ -25,7 +26,7 @@ class AffectsInfoKB {
   std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> getCallGraph();
 
  private:
-  ProcTable* procTable;
+  Table* procTable;
   std::unordered_map<PROC_IDX, STMT_NO> tableOfProcFirstStmts;
   std::unordered_map<STMT_NO, STMT_NO> tableOfNextStmtForIfStmts;
   std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> callGraph;

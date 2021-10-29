@@ -14,17 +14,17 @@ TEST_CASE("Project each design entity correctly") {
   pkb->addStmt(2);
   pkb->addStmt(3);
 
-  pkb->insertVar("x");
-  pkb->insertVar("y");
-  pkb->insertVar("z");
+  pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+  pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
+  pkb->insertAt(TABLE_ENUM::VAR_TABLE, "z");
 
-  pkb->insertProc("procA");
-  pkb->insertProc("procB");
-  pkb->insertProc("procC");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procC");
 
-  pkb->insertConst("1");
-  pkb->insertConst("3");
-  pkb->insertConst("5");
+  pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
+  pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
+  pkb->insertAt(TABLE_ENUM::CONST_TABLE, "5");
 
   ResultProjector projector(pkb);
 
@@ -95,10 +95,10 @@ TEST_CASE("Project tuple results") {
   pkb->addAssignStmt(2);
   pkb->addAssignStmt(4);
   pkb->addAssignStmt(6);
-  int xVarIdx = pkb->insertVar("x");
-  int yVarIdx = pkb->insertVar("y");
-  int aProcIdx = pkb->insertProc("procA");
-  int bProcIdx = pkb->insertProc("procB");
+  int xVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+  int yVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
+  int aProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
+  int bProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
 
   ResultProjector projector(pkb);
 
@@ -147,12 +147,12 @@ TEST_CASE("Project with attributes") {
   pkb->addWhileStmt(4);
   pkb->addIfStmt(5);
   pkb->addAssignStmt(6);
-  int xVarIdx = pkb->insertVar("x");
-  int yVarIdx = pkb->getVarIndex("y");
-  int zVarIdx = pkb->getVarIndex("z");
-  int aProcIdx = pkb->insertProc("procA");
-  int bProcIdx = pkb->insertProc("procB");
-  int const1Idx = pkb->insertConst("1");
+  int xVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+  int yVarIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "y");
+  int zVarIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "z");
+  int aProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
+  int bProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
+  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
 
   ResultProjector projector(pkb);
 

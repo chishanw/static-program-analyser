@@ -1012,11 +1012,11 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
     case DesignEntity::ASSIGN:
       return pkb->getAllAssignStmts();
     case DesignEntity::VARIABLE:
-      return pkb->getAllVariables();
+      return pkb->getAllElementsAt(TABLE_ENUM::VAR_TABLE);
     case DesignEntity::PROCEDURE:
-      return pkb->getAllProcedures();
+      return pkb->getAllElementsAt(TABLE_ENUM::PROC_TABLE);
     case DesignEntity::CONSTANT:
-      return pkb->getAllConstants();
+      return pkb->getAllElementsAt(TABLE_ENUM::CONST_TABLE);
     default:
       DMOprintErrMsgAndExit(
           "[QE][getAllValuesOfSynonyms] invalid design entity");

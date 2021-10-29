@@ -59,15 +59,15 @@ string ResultProjector::getStringForSynonym(Synonym synonym, int result) {
 
   switch (designEntity) {
     case DesignEntity::VARIABLE:
-      return pkb->getVarName(result);
+      return pkb->getElementAt(TABLE_ENUM::VAR_TABLE, result);
     case DesignEntity::PROCEDURE:
-      return pkb->getProcName(result);
+      return pkb->getElementAt(TABLE_ENUM::PROC_TABLE, result);
     case DesignEntity::CONSTANT:
-      return pkb->getConst(result);
+      return pkb->getElementAt(TABLE_ENUM::CONST_TABLE, result);
     case DesignEntity::CALL: {
       if (hasAttribute && attribute == Attribute::PROC_NAME) {
         int procIdx = pkb->getProcCalledByCallStmt(result);
-        return pkb->getProcName(procIdx);
+        return pkb->getElementAt(TABLE_ENUM::PROC_TABLE, procIdx);
       } else {
         return to_string(result);
       }
@@ -75,7 +75,7 @@ string ResultProjector::getStringForSynonym(Synonym synonym, int result) {
     case DesignEntity::READ: {
       if (hasAttribute && attribute == Attribute::VAR_NAME) {
         int varIdx = *pkb->getVarsModifiedS(result).begin();
-        return pkb->getVarName(varIdx);
+        return pkb->getElementAt(TABLE_ENUM::VAR_TABLE, varIdx);
       } else {
         return to_string(result);
       }
@@ -83,7 +83,7 @@ string ResultProjector::getStringForSynonym(Synonym synonym, int result) {
     case DesignEntity::PRINT: {
       if (hasAttribute && attribute == Attribute::VAR_NAME) {
         int varIdx = *pkb->getVarsUsedS(result).begin();
-        return pkb->getVarName(varIdx);
+        return pkb->getElementAt(TABLE_ENUM::VAR_TABLE, varIdx);
       } else {
         return to_string(result);
       }

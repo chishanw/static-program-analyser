@@ -53,7 +53,7 @@ unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(
       throw runtime_error("2 procedures with same name detected.");
     }
     allProcs.insert(procedure->ProcName);
-    pkb->insertProc(procedure->ProcName);
+    pkb->insertAt(TABLE_ENUM::PROC_TABLE, procedure->ProcName);
 
     ExtractProcAndStmtHelper(procedure->StmtList);
   }
@@ -450,7 +450,7 @@ void DesignExtractor::ExtractConst(const ProgramAST* programAST) {
   }
 
   for (auto constant : res) {
-    pkb->insertConst(constant);
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, constant);
   }
 }
 

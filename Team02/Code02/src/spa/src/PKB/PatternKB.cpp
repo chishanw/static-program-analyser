@@ -10,7 +10,7 @@
 
 using namespace std;
 
-PatternKB::PatternKB(VarTable* varTable) {
+PatternKB::PatternKB(Table* varTable) {
   this->varTable = varTable;
   tableOfFullExpr = unordered_map<string, UNO_SET_OF_STMT_NO>();
   tableOfFullExprPtt =
@@ -29,7 +29,7 @@ PatternKB::PatternKB(VarTable* varTable) {
 }
 
 void PatternKB::addAssignPttFullExpr(STMT_NO s, string varName, string expr) {
-  VAR_IDX varIdx = varTable->insertVar(varName);
+  VAR_IDX varIdx = varTable->insert(varName);
 
   if (tableOfFullExpr.count(expr) == 0) {
     UNO_SET_OF_STMT_NO newSet({s});
@@ -78,7 +78,7 @@ void PatternKB::addAssignPttFullExpr(STMT_NO s, string varName, string expr) {
 }
 
 void PatternKB::addAssignPttSubExpr(STMT_NO s, string varName, string subExpr) {
-  VAR_IDX varIdx = varTable->insertVar(varName);
+  VAR_IDX varIdx = varTable->insert(varName);
 
   if (tableOfSubExpr.count(subExpr) == 0) {
     UNO_SET_OF_STMT_NO newSet({s});
@@ -121,7 +121,7 @@ void PatternKB::addAssignPttSubExpr(STMT_NO s, string varName, string subExpr) {
 }
 
 void PatternKB::addIfPtt(STMT_NO s, string varName) {
-  VAR_IDX varIdx = varTable->insertVar(varName);
+  VAR_IDX varIdx = varTable->insert(varName);
   if (tableOfIfPtt.count(varIdx) == 0) {
     UNO_SET_OF_STMT_NO newSet({s});
     tableOfIfPtt.insert({varIdx, newSet});
@@ -133,7 +133,7 @@ void PatternKB::addIfPtt(STMT_NO s, string varName) {
 }
 
 void PatternKB::addWhilePtt(STMT_NO s, string varName) {
-  VAR_IDX varIdx = varTable->insertVar(varName);
+  VAR_IDX varIdx = varTable->insert(varName);
   if (tableOfWhilePtt.count(varIdx) == 0) {
     UNO_SET_OF_STMT_NO newSet({s});
     tableOfWhilePtt.insert({varIdx, newSet});
@@ -181,7 +181,7 @@ unordered_set<int> PatternKB::getAssignForVarAndFullExpr(string varName,
   auto inner_table = tableOfFullExprPtt.at(expr);
 
   // Check inner table
-  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  VAR_IDX varIdx = varTable->getIndex(varName);
   if (inner_table.count(varIdx) == 0) {
     // No stmt_no? Parser error DEBUG
     return unordered_set<int>({});
@@ -202,7 +202,7 @@ unordered_set<int> PatternKB::getAssignForVarAndSubExpr(string varName,
   auto inner_table = tableOfSubExprPtt.at(subExpr);
 
   // Check inner table
-  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  VAR_IDX varIdx = varTable->getIndex(varName);
   if (inner_table.count(varIdx) == 0) {
     // No stmt_no? Parser error DEBUG
     return unordered_set<int>({});
@@ -230,7 +230,7 @@ vector<vector<int>> PatternKB::getAssignVarPairsForSubExpr(string expr) {
 
 unordered_set<int> PatternKB::getAssignForVar(string varName) {
   // Return all assignment stt for var, regardless of pattern
-  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  VAR_IDX varIdx = varTable->getIndex(varName);
 
   // Check table
   if (tableOfAssignForVar.count(varIdx) == 0) {
@@ -246,7 +246,7 @@ vector<vector<int>> PatternKB::getAssignVarPairs() {
 }
 
 unordered_set<int> PatternKB::getIfStmtForVar(string varName) {
-  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  VAR_IDX varIdx = varTable->getIndex(varName);
   if (tableOfIfPtt.count(varIdx) == 0) {
     return UNO_SET_OF_STMT_NO();
   } else {
@@ -257,7 +257,7 @@ unordered_set<int> PatternKB::getIfStmtForVar(string varName) {
 vector<vector<int>> PatternKB::getIfStmtVarPairs() { return listOfIfVarPairs; }
 
 unordered_set<int> PatternKB::getWhileStmtForVar(string varName) {
-  VAR_IDX varIdx = varTable->getVarIndex(varName);
+  VAR_IDX varIdx = varTable->getIndex(varName);
   if (tableOfWhilePtt.count(varIdx) == 0) {
     return UNO_SET_OF_STMT_NO();
   } else {

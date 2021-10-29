@@ -3,7 +3,7 @@
 
 using namespace std;
 
-ModifiesKB::ModifiesKB(VarTable* varTable, ProcTable* procTable) {
+ModifiesKB::ModifiesKB(Table* varTable, Table* procTable) {
   this->varTable = varTable;
   this->procTable = procTable;
   tableS = unordered_map<STMT_NO, unordered_set<VAR_IDX>>({});
@@ -13,7 +13,7 @@ ModifiesKB::ModifiesKB(VarTable* varTable, ProcTable* procTable) {
 }
 
 void ModifiesKB::addModifiesS(STMT_NO s, VAR_NAME var) {
-  VAR_IDX varIdx = varTable->insertVar(var);
+  VAR_IDX varIdx = varTable->insert(var);
   try {  // stmt s already exists in table
     tableS.at(s).insert(varIdx);
   }
@@ -33,8 +33,8 @@ void ModifiesKB::addModifiesS(STMT_NO s, VAR_NAME var) {
 }
 
 void ModifiesKB::addModifiesP(PROC_NAME proc, VAR_NAME var) {
-  VAR_IDX varIdx = varTable->insertVar(var);
-  PROC_IDX p = procTable->insertProc(proc);
+  VAR_IDX varIdx = varTable->insert(var);
+  PROC_IDX p = procTable->insert(proc);
   try {
     tableP.at(p).insert(varIdx);
   } catch (const out_of_range& e) {
@@ -54,7 +54,7 @@ void ModifiesKB::addModifiesP(PROC_NAME proc, VAR_NAME var) {
 bool ModifiesKB::isModifiesS(STMT_NO s, VAR_NAME v) {
   try {
     unordered_set<VAR_IDX> setAtS = tableS.at(s);
-    return setAtS.count(varTable->getVarIndex(v));
+    return setAtS.count(varTable->getIndex(v));
   }
   catch (const out_of_range& e) {
     return false;
@@ -63,9 +63,9 @@ bool ModifiesKB::isModifiesS(STMT_NO s, VAR_NAME v) {
 
 bool ModifiesKB::isModifiesP(PROC_NAME proc, VAR_NAME v) {
   try {
-    PROC_IDX p = procTable->getProcIndex(proc);
+    PROC_IDX p = procTable->getIndex(proc);
     unordered_set<VAR_IDX> setAtP = tableP.at(p);
-    return setAtP.count(varTable->getVarIndex(v));
+    return setAtP.count(varTable->getIndex(v));
   } catch (const out_of_range& e) {
     return false;
   }
@@ -83,7 +83,7 @@ unordered_set<VAR_IDX> ModifiesKB::getVarsModifiedS(STMT_NO s) {
 
 unordered_set<VAR_IDX> ModifiesKB::getVarsModifiedP(PROC_NAME proc) {
   try {
-    PROC_IDX p = procTable->getProcIndex(proc);
+    PROC_IDX p = procTable->getIndex(proc);
     return tableP.at(p);
   } catch (const out_of_range& e) {
     unordered_set<int> emptySet({});
@@ -92,7 +92,7 @@ unordered_set<VAR_IDX> ModifiesKB::getVarsModifiedP(PROC_NAME proc) {
 }
 
 unordered_set<STMT_NO> ModifiesKB::getModifiesS(VAR_NAME v) {
-  VAR_IDX varIdx = varTable->getVarIndex(v);
+  VAR_IDX varIdx = varTable->getIndex(v);
   try {
     return invTableS.at(varIdx);
   }
@@ -103,7 +103,7 @@ unordered_set<STMT_NO> ModifiesKB::getModifiesS(VAR_NAME v) {
 }
 
 unordered_set<PROC_IDX> ModifiesKB::getModifiesP(VAR_NAME v) {
-  VAR_IDX varIdx = varTable->getVarIndex(v);
+  VAR_IDX varIdx = varTable->getIndex(v);
   try {
     return invTableP.at(varIdx);
   } catch (const out_of_range& e) {

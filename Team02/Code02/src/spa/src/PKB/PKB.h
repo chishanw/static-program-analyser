@@ -10,15 +10,28 @@
 
 #include "AffectsInfoKB.h"
 #include "CallsKB.h"
-#include "ConstTable.h"
 #include "FollowKB.h"
 #include "ModifiesKB.h"
 #include "NextKB.h"
 #include "ParentKB.h"
 #include "PatternKB.h"
-#include "ProcTable.h"
 #include "UsesKB.h"
-#include "VarTable.h"
+#include "Table.h"
+
+typedef int CONST_IDX;
+
+enum class TABLE_ENUM {
+    VAR_TABLE,
+    CONST_TABLE,
+    PROC_TABLE
+};
+
+struct EnumClassHash {
+  template <typename T>
+  std::size_t operator()(T t) const {
+    return static_cast<std::size_t>(t);
+  }
+};
 
 class PKB {
  public:
@@ -148,40 +161,34 @@ class PKB {
   std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> getCallGraph();
 
   // Table API
-  CONST_IDX insertConst(std::string constant);
-  std::string getConst(CONST_IDX index);
-  CONST_IDX getConstIndex(std::string constant);
-  std::unordered_set<CONST_IDX> getAllConstants();
-  PROC_IDX insertProcedure(std::string procName);
-  std::string getProcName(PROC_IDX procIdx);
-  PROC_IDX getProcIndex(std::string procName);
-  std::unordered_set<PROC_IDX> getAllProcedures();
-  std::string getVarName(VAR_IDX varIdx);
-  VAR_IDX getVarIndex(std::string varName);
-  std::unordered_set<VAR_IDX> getAllVariables();
-
-  // Table API for tests
-  PROC_IDX insertProc(std::string procName);
-  VAR_IDX insertVar(std::string varName);
+  TABLE_ELEM_IDX insertAt(TABLE_ENUM type, std::string element);
+  std::string getElementAt(TABLE_ENUM type, TABLE_ELEM_IDX index);
+  TABLE_ELEM_IDX getIndexOf(TABLE_ENUM type, std::string element);
+  std::unordered_set<TABLE_ELEM_IDX> getAllElementsAt(TABLE_ENUM type);
 
  private:
-  // Design Abstractions
-  FollowKB followKB;
-  ParentKB parentKB;
-  NextKB nextKB;
-  ModifiesKB modifiesKB = ModifiesKB(&varTable, &procTable);
-  UsesKB usesKB = UsesKB(&varTable, &procTable);
-  PatternKB patternKB = PatternKB(&varTable);
-  CallsKB callsKB = CallsKB(&procTable);
-  AffectsInfoKB affectsInfoKB = AffectsInfoKB(&procTable);
-
   // Members
   UNO_SET_OF_STMT_NO allReadStmtNo;
   UNO_SET_OF_STMT_NO allPrintStmtNo;
   UNO_SET_OF_STMT_NO allWhileStmtNo;
   UNO_SET_OF_STMT_NO allIfStmtNo;
   UNO_SET_OF_STMT_NO allAssignStmtNo;
-  VarTable varTable;
-  ProcTable procTable;
-  ConstTable constTable;
+  std::unordered_map<TABLE_ENUM, Table, EnumClassHash> tables = {
+    { TABLE_ENUM::VAR_TABLE, Table() },
+    { TABLE_ENUM::CONST_TABLE, Table() },
+    { TABLE_ENUM::PROC_TABLE, Table() }
+  };
+
+  // Design Abstractions
+  FollowKB followKB;
+  ParentKB parentKB;
+  NextKB nextKB;
+  ModifiesKB modifiesKB = ModifiesKB(&tables.at(TABLE_ENUM::VAR_TABLE),
+                                     &tables.at(TABLE_ENUM::PROC_TABLE));
+  UsesKB usesKB = UsesKB(&tables.at(TABLE_ENUM::VAR_TABLE),
+                         &tables.at(TABLE_ENUM::PROC_TABLE));
+  PatternKB patternKB = PatternKB(&tables.at(TABLE_ENUM::VAR_TABLE));
+  CallsKB callsKB = CallsKB(&tables.at(TABLE_ENUM::PROC_TABLE));
+  AffectsInfoKB affectsInfoKB = AffectsInfoKB(&tables.at(
+      TABLE_ENUM::PROC_TABLE));
 };

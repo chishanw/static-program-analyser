@@ -1224,9 +1224,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertProc("proc1");
-  int proc2Idx = pkb->insertProc("proc2");
-  int proc3Idx = pkb->insertProc("proc3");
+  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
   pkb->addUsesP("proc1", "x");
   pkb->addUsesP("proc1", "y");
   pkb->addUsesP("proc2", "z");
@@ -1400,9 +1400,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->insertProc("proc1");
-  pkb->insertProc("proc2");
-  pkb->insertProc("proc3");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p", DesignEntity::PROCEDURE}, {"v", DesignEntity::VARIABLE}};
@@ -1861,9 +1861,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertProc("proc1");
-  int proc2Idx = pkb->insertProc("proc2");
-  int proc3Idx = pkb->insertProc("proc3");
+  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
   pkb->addModifiesP("proc1", "x");
   pkb->addModifiesP("proc1", "y");
   pkb->addModifiesP("proc2", "z");
@@ -2235,9 +2235,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertProc("proc1");
-  int proc2Idx = pkb->insertProc("proc2");
-  int proc3Idx = pkb->insertProc("proc3");
+  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
   pkb->addCalls(1, "proc1", "proc2");
   pkb->addCalls(2, "proc1", "proc3");
   pkb->addCalls(3, "proc2", "proc3");
@@ -2369,9 +2369,9 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->insertProc("proc1");
-  pkb->insertProc("proc2");
-  pkb->insertProc("proc3");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
@@ -2515,11 +2515,11 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertProc("proc1");
-  int proc2Idx = pkb->insertProc("proc2");
-  int proc3Idx = pkb->insertProc("proc3");
-  int proc4Idx = pkb->insertProc("proc4");
-  int proc5Idx = pkb->insertProc("proc5");
+  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
+  int proc4Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc4");
+  int proc5Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc5");
   pkb->addCalls(1, "proc1", "proc2");
   pkb->addCalls(2, "proc2", "proc3");
   pkb->addCalls(4, "proc4", "proc5");
@@ -2668,9 +2668,9 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->insertProc("proc1");
-  pkb->insertProc("proc2");
-  pkb->insertProc("proc3");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
@@ -4057,10 +4057,10 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
   PKB* pkb = new PKB();
-  int procAIdx = pkb->insertProc("A");
-  int procBIdx = pkb->insertProc("B");
-  int varAIdx = pkb->insertVar("A");
-  int varBIdx = pkb->insertVar("B");
+  int procAIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  int procBIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
+  int varAIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "A");
+  int varBIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "B");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -4179,8 +4179,8 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select p1 with p1.procName = v1.varName") {
-    pkb->insertProc("A");
-    pkb->insertVar("x");
+    pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
@@ -4193,8 +4193,8 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select v1 with p1.procName = v1.varName") {
-    pkb->insertProc("A");
-    pkb->insertVar("x");
+    pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
@@ -4207,7 +4207,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select p1 with p1.procName = 'aaa'") {
-    pkb->insertProc("AAA");
+    pkb->insertAt(TABLE_ENUM::PROC_TABLE, "AAA");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
@@ -4220,7 +4220,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select v1 with v1.varName = 'xxx'") {
-    pkb->insertVar("x");
+    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_VAR_NAME, "v1"},
@@ -4233,7 +4233,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select v1 with 'A' = 'a'") {
-    pkb->insertVar("x");
+    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::NAME_LITERAL, "A"},
@@ -4252,8 +4252,8 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
   pkb->addStmt(2);
   pkb->addStmt(3);
   pkb->addStmt(4);
-  int const1Idx = pkb->insertConst("1");
-  int const2Idx = pkb->insertConst("2");
+  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
+  int const2Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -4447,7 +4447,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
 
   SECTION("Select n1 with n1 = c1.value") {
     pkb->addStmt(1);
-    pkb->insertConst("2");
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::SYNONYM, "n1"},
@@ -4488,7 +4488,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   SECTION("Select s1 with s1.stmt# = c1.value") {
     pkb->addStmt(1);
     pkb->addStmt(2);
-    pkb->insertConst("3");
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
@@ -4526,7 +4526,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   }
 
   SECTION("Select c1 with c1.value = 2") {
-    pkb->insertConst("1");
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},

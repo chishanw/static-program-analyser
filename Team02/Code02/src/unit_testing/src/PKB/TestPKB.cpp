@@ -82,45 +82,47 @@ TEST_CASE("PKB_FOLLOW_API_TEST") {
 
 TEST_CASE("PKB_CONSTANTS_TEST") {
   PKB db = PKB();
-  REQUIRE(db.getAllConstants() == unordered_set<int>());
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::CONST_TABLE) == unordered_set<int>());
 
-  db.insertConst("1");
-  db.insertConst("2");
-  db.insertConst("3");
-  REQUIRE(db.getAllConstants() == unordered_set<CONST_IDX>({ 0, 1, 2 }));
+  db.insertAt(TABLE_ENUM::CONST_TABLE, "1");
+  db.insertAt(TABLE_ENUM::CONST_TABLE, "2");
+  db.insertAt(TABLE_ENUM::CONST_TABLE, "3");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::CONST_TABLE) ==
+          unordered_set<CONST_IDX>({ 0, 1, 2 }));
 
   // duplicate insert
-  db.insertConst("2");
-  REQUIRE(db.getAllConstants() == unordered_set<CONST_IDX>({ 0, 1, 2 }));
+  db.insertAt(TABLE_ENUM::CONST_TABLE, "2");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::CONST_TABLE) ==
+          unordered_set<CONST_IDX>({ 0, 1, 2 }));
 }
 
 TEST_CASE("PKB_TABLES_TEST") {
   PKB db = PKB();
 
   // invalid queries when empty
-  REQUIRE(db.getProcName(1) == "");
-  REQUIRE(db.getAllProcedures() == unordered_set<int>());
-  REQUIRE(db.getVarName(1) == "");
-  REQUIRE(db.getAllVariables() == unordered_set<int>());
+  REQUIRE(db.getElementAt(TABLE_ENUM::PROC_TABLE, 1) == "");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::PROC_TABLE) == unordered_set<int>());
+  REQUIRE(db.getElementAt(TABLE_ENUM::VAR_TABLE, 1) == "");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::VAR_TABLE) == unordered_set<int>());
 
-  db.insertProc("ComputeCentroid");
-  db.insertProc("main");
+  db.insertAt(TABLE_ENUM::PROC_TABLE, "ComputeCentroid");
+  db.insertAt(TABLE_ENUM::PROC_TABLE, "main");
   db.addUsesS(1, "a");
   db.addUsesS(2, "b");
 
   // valid queries
   unordered_set<int> answer({ 0, 1 });
-  REQUIRE(db.getProcName(0) == "ComputeCentroid");
-  REQUIRE(db.getAllProcedures() == answer);
-  REQUIRE(db.getVarName(1) == "b");
-  REQUIRE(db.getAllVariables() == answer);
+  REQUIRE(db.getElementAt(TABLE_ENUM::PROC_TABLE, 0) == "ComputeCentroid");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::PROC_TABLE) == answer);
+  REQUIRE(db.getElementAt(TABLE_ENUM::VAR_TABLE, 1) == "b");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::VAR_TABLE) == answer);
 
   // duplicate entries
-  db.insertProc("main");
+  db.insertAt(TABLE_ENUM::PROC_TABLE, "main");
   db.addUsesS(1, "a");
 
-  REQUIRE(db.getProcName(1) == "main");
-  REQUIRE(db.getAllProcedures() == answer);
-  REQUIRE(db.getVarName(0) == "a");
-  REQUIRE(db.getAllVariables() == answer);
+  REQUIRE(db.getElementAt(TABLE_ENUM::PROC_TABLE, 1) == "main");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::PROC_TABLE) == answer);
+  REQUIRE(db.getElementAt(TABLE_ENUM::VAR_TABLE, 0) == "a");
+  REQUIRE(db.getAllElementsAt(TABLE_ENUM::VAR_TABLE) == answer);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PKB/ProcTable.h>
+#include <PKB/Table.h>
 
 #include <iostream>
 #include <string>
@@ -9,11 +9,12 @@
 #include <utility>
 #include <vector>
 
-typedef int STMT_NO;
+typedef int STMT_NO, PROC_IDX;
+typedef std::string PROC_NAME;
 
 class CallsKB {
  public:
-  explicit CallsKB(ProcTable* procTable);
+  explicit CallsKB(Table* procTable);
 
   // API for DE
   void addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee);
@@ -34,7 +35,7 @@ class CallsKB {
   std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsTPairs();
 
  private:
-  ProcTable* procTable;
+  Table* procTable;
   std::unordered_map<STMT_NO, PROC_IDX> stmtToCallee;
   std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> table;
   std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> invTable;

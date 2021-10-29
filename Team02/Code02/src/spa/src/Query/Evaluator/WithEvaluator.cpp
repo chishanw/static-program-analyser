@@ -272,7 +272,8 @@ void WithEvaluator::evaluateIndexes(string firstSyn, string secondSyn) {
 
 void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
   for (auto results : currentQueryResults) {
-    string constValue = pkb->getConst(results.at(constSyn));
+    string constValue = pkb->getElementAt(TABLE_ENUM::CONST_TABLE,
+        results.at(constSyn));
     string stmtNum = to_string(results.at(stmtSyn));
 
     if (constValue == stmtNum) {
@@ -285,7 +286,8 @@ void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
 void WithEvaluator::evaluateValueAndIntegerLiteral(string constSyn,
                                                    string integerLiteral) {
   for (auto results : currentQueryResults) {
-    string constValue = pkb->getConst(results.at(constSyn));
+    string constValue = pkb->getElementAt(TABLE_ENUM::CONST_TABLE,
+        results.at(constSyn));
 
     if (constValue == integerLiteral) {
       isClauseTrue = true;
@@ -351,12 +353,12 @@ string WithEvaluator::getProcNameAttrOfSynonym(
     int valueOfSynonym, DesignEntity designEntityOfSynonym) {
   int procIdx =
       getIndexOfProcNameAttrOfSynonym(valueOfSynonym, designEntityOfSynonym);
-  return pkb->getProcName(procIdx);
+  return pkb->getElementAt(TABLE_ENUM::PROC_TABLE, procIdx);
 }
 
 string WithEvaluator::getVarNameAttrOfSynonym(
     int valueOfSynonym, DesignEntity designEntityOfSynonym) {
   int varIdx =
       getIndexOfVarNameAttrOfSynonym(valueOfSynonym, designEntityOfSynonym);
-  return pkb->getVarName(varIdx);
+  return pkb->getElementAt(TABLE_ENUM::VAR_TABLE, varIdx);
 }

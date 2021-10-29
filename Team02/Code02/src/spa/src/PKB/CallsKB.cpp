@@ -3,7 +3,7 @@
 
 using namespace std;
 
-CallsKB::CallsKB(ProcTable* procTable) {
+CallsKB::CallsKB(Table* procTable) {
   this->procTable = procTable;
   stmtToCallee = unordered_map<STMT_NO, PROC_IDX>({});
   table = unordered_map<PROC_IDX, unordered_set<PROC_IDX>>({});
@@ -13,8 +13,8 @@ CallsKB::CallsKB(ProcTable* procTable) {
 }
 
 void CallsKB::addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee) {
-  PROC_IDX p1 = procTable->insertProc(caller);
-  PROC_IDX p2 = procTable->insertProc(callee);
+  PROC_IDX p1 = procTable->insert(caller);
+  PROC_IDX p2 = procTable->insert(callee);
   stmtToCallee.insert({ s, p2 });
   try {  // caller already exists in table
     table.at(p1).insert(p2);
@@ -36,8 +36,8 @@ void CallsKB::addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee) {
 
 // indices guaranteed to be valid
 void CallsKB::addCallsT(PROC_NAME caller, PROC_NAME callee) {
-    PROC_IDX p1 = procTable->getProcIndex(caller);
-    PROC_IDX p2 = procTable->getProcIndex(callee);
+    PROC_IDX p1 = procTable->getIndex(caller);
+    PROC_IDX p2 = procTable->getIndex(callee);
     try {
         tableT.at(p1).insert(p2);
     }
@@ -58,9 +58,9 @@ void CallsKB::addCallsT(PROC_NAME caller, PROC_NAME callee) {
 
 bool CallsKB::isCalls(PROC_NAME caller, PROC_NAME callee) {
   try {
-    unordered_set<PROC_IDX> setAtCaller = table.at(procTable->getProcIndex(
+    unordered_set<PROC_IDX> setAtCaller = table.at(procTable->getIndex(
         caller));
-    return setAtCaller.count(procTable->getProcIndex(callee));
+    return setAtCaller.count(procTable->getIndex(callee));
   }
   catch (const out_of_range& e) {
     return false;
@@ -69,9 +69,9 @@ bool CallsKB::isCalls(PROC_NAME caller, PROC_NAME callee) {
 
 bool CallsKB::isCallsT(PROC_NAME caller, PROC_NAME callee) {
   try {
-    unordered_set<PROC_IDX> setTAtCaller = tableT.at(procTable->getProcIndex(
+    unordered_set<PROC_IDX> setTAtCaller = tableT.at(procTable->getIndex(
         caller));
-    return setTAtCaller.count(procTable->getProcIndex(callee));
+    return setTAtCaller.count(procTable->getIndex(callee));
   }
   catch (const out_of_range& e) {
     return false;
@@ -80,7 +80,7 @@ bool CallsKB::isCallsT(PROC_NAME caller, PROC_NAME callee) {
 
 unordered_set<PROC_IDX> CallsKB::getProcsCalledBy(PROC_NAME proc) {
   try {
-    return table.at(procTable->getProcIndex(proc));
+    return table.at(procTable->getIndex(proc));
   }
   catch (const out_of_range& e) {
     unordered_set<int> emptySet({});
@@ -90,7 +90,7 @@ unordered_set<PROC_IDX> CallsKB::getProcsCalledBy(PROC_NAME proc) {
 
 unordered_set<PROC_IDX> CallsKB::getProcsCalledTBy(PROC_NAME proc) {
   try {
-    return tableT.at(procTable->getProcIndex(proc));
+    return tableT.at(procTable->getIndex(proc));
   }
   catch (const out_of_range& e) {
     unordered_set<int> emptySet({});
@@ -100,7 +100,7 @@ unordered_set<PROC_IDX> CallsKB::getProcsCalledTBy(PROC_NAME proc) {
 
 unordered_set<PROC_IDX> CallsKB::getCallerProcs(PROC_NAME proc) {
   try {
-    return invTable.at(procTable->getProcIndex(proc));
+    return invTable.at(procTable->getIndex(proc));
   }
   catch (const out_of_range& e) {
     unordered_set<int> emptySet({});
@@ -110,7 +110,7 @@ unordered_set<PROC_IDX> CallsKB::getCallerProcs(PROC_NAME proc) {
 
 unordered_set<PROC_IDX> CallsKB::getCallerTProcs(PROC_NAME proc) {
   try {
-    return invTableT.at(procTable->getProcIndex(proc));
+    return invTableT.at(procTable->getIndex(proc));
   }
   catch (const out_of_range& e) {
     unordered_set<int> emptySet({});

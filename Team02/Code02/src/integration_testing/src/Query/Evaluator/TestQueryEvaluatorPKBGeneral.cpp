@@ -51,9 +51,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("procedure p; Select p") {
     PKB* pkb = new PKB();
-    int aIdx = pkb->insertProc("procA");
-    int bIdx = pkb->insertProc("procB");
-    int cIdx = pkb->insertProc("procC");
+    int aIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
+    int bIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
+    int cIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procC");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -70,9 +70,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("variable v; Select v") {
     PKB* pkb = new PKB();
-    int xIdx = pkb->insertVar("x");
-    int yIdx = pkb->insertVar("y");
-    int zIdx = pkb->insertVar("z");
+    int xIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+    int yIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
+    int zIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "z");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -89,9 +89,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("constant c; Select c") {
     PKB* pkb = new PKB();
-    pkb->insertConst("1");
-    pkb->insertConst("3");
-    pkb->insertConst("5");
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
+    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "5");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {

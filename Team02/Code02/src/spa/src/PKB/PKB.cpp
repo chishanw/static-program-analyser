@@ -318,35 +318,15 @@ unordered_map<PROC_IDX, unordered_set<PROC_IDX>> PKB::getCallGraph() {
 }
 
 // Table API
-CONST_IDX PKB::insertConst(string constant) {
-  return constTable.insertConst(constant);
+TABLE_ELEM_IDX PKB::insertAt(TABLE_ENUM type, string element) {
+  return tables.at(type).insert(element);
 }
-string PKB::getConst(CONST_IDX constIdx) {
-  return constTable.getConst(constIdx);
+string PKB::getElementAt(TABLE_ENUM type, TABLE_ELEM_IDX index) {
+  return tables.at(type).getElement(index);
 }
-CONST_IDX PKB::getConstIndex(std::string constant) {
-  return constTable.getConstIndex(constant);
+TABLE_ELEM_IDX PKB::getIndexOf(TABLE_ENUM type, string element) {
+  return tables.at(type).getIndex(element);
 }
-unordered_set<CONST_IDX> PKB::getAllConstants() {
-  return constTable.getAllConstants();
-}
-PROC_IDX PKB::insertProc(string procName) {
-  return procTable.insertProc(procName);
-}
-string PKB::getProcName(PROC_IDX procIdx) {
-  return procTable.getProcName(procIdx);
-}
-PROC_IDX PKB::getProcIndex(std::string procName) {
-  return procTable.getProcIndex(procName);
-}
-unordered_set<PROC_IDX> PKB::getAllProcedures() {
-  return procTable.getAllProcedures();
-}
-VAR_IDX PKB::insertVar(string varName) { return varTable.insertVar(varName); }
-string PKB::getVarName(VAR_IDX varIdx) { return varTable.getVarName(varIdx); }
-VAR_IDX PKB::getVarIndex(std::string varName) {
-  return varTable.getVarIndex(varName);
-}
-unordered_set<VAR_IDX> PKB::getAllVariables() {
-  return varTable.getAllVariables();
+unordered_set<TABLE_ELEM_IDX> PKB::getAllElementsAt(TABLE_ENUM type) {
+  return tables.at(type).getAllElements();
 }

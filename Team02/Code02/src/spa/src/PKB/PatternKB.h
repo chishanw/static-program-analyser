@@ -6,7 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "VarTable.h"
+#include "Table.h"
 
 typedef int STMT_NO, VAR_IDX;
 typedef std::unordered_set<STMT_NO> UNO_SET_OF_STMT_NO;
@@ -14,7 +14,7 @@ typedef std::unordered_set<STMT_NO> UNO_SET_OF_STMT_NO;
 class PatternKB {
  public:
   // constructor
-  explicit PatternKB(VarTable* vartable);
+  explicit PatternKB(Table* vartable);
 
   // Methods for DE
   void addAssignPttFullExpr(STMT_NO s, std::string var, std::string expr);
@@ -65,5 +65,5 @@ class PatternKB {
   std::vector<std::vector<int>> listOfIfVarPairs;
   std::vector<std::vector<int>> listOfWhileVarPairs;
 
-  VarTable* varTable;
+  Table* varTable;
 };

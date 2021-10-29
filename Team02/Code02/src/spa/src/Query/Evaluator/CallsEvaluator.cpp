@@ -21,8 +21,8 @@ bool CallsEvaluator::evaluateBoolCalls(const Param& left, const Param& right) {
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
     unordered_set<PROC_IDX> procsCalled = pkb->getProcsCalledBy(left.value);
-    return procsCalled.find(pkb->getProcIndex(right.value)) !=
-           procsCalled.end();
+    return procsCalled.find(pkb->getIndexOf(TABLE_ENUM::PROC_TABLE,
+        right.value)) != procsCalled.end();
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
@@ -88,8 +88,8 @@ bool CallsEvaluator::evaluateBoolCallsT(const Param& left, const Param& right) {
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
     unordered_set<PROC_IDX> procsCalledT = pkb->getProcsCalledTBy(left.value);
-    return procsCalledT.find(pkb->getProcIndex(right.value)) !=
-           procsCalledT.end();
+    return procsCalledT.find(pkb->getIndexOf(TABLE_ENUM::PROC_TABLE,
+        right.value)) != procsCalledT.end();
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {

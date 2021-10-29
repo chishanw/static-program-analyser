@@ -4,7 +4,7 @@
 
 using namespace std;
 
-AffectsInfoKB::AffectsInfoKB(ProcTable* procTable) {
+AffectsInfoKB::AffectsInfoKB(Table* procTable) {
   this->procTable = procTable;
 }
 
@@ -16,14 +16,14 @@ void AffectsInfoKB::addNextStmtForIfStmt(STMT_NO ifStmt,
 
 void AffectsInfoKB::addFirstStmtOfProc(PROC_NAME procName,
                                        STMT_NO firstStmtOfProc) {
-  PROC_IDX procIdx = procTable->insertProc(procName);
+  PROC_IDX procIdx = procTable->insert(procName);
   tableOfProcFirstStmts[procIdx] = firstStmtOfProc;
 }
 
 void AffectsInfoKB::addProcCallEdge(PROC_NAME callerProcName,
                                     PROC_NAME calleeProcName) {
-  PROC_IDX callerProcIdx = procTable->insertProc(callerProcName);
-  PROC_IDX calleeProcIdx = procTable->insertProc(calleeProcName);
+  PROC_IDX callerProcIdx = procTable->insert(callerProcName);
+  PROC_IDX calleeProcIdx = procTable->insert(calleeProcName);
   if (callGraph.count(callerProcIdx) == 0) {
     callGraph[callerProcIdx] = unordered_set<PROC_IDX>{};
   }
