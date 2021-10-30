@@ -5,6 +5,7 @@
 #include <DesignExtractor/DesignExtractor.h>
 #include <Parser/Parser.h>
 #include <Query/Evaluator/QueryEvaluator.h>
+#include <Query/Optimizer/QueryOptimizer.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
 #include <Query/Projector/ResultProjector.h>
@@ -65,6 +66,8 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
   try {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
     DMOprintInfoMsg("Query Parser was successful");
+
+    QueryOptimizer(pkb).PreprocessClauses(get<0>(parsedQuery), get<1>(parsedQuery));
 
     std::vector<std::vector<int>> evaluatedResult =
         QueryEvaluator(pkb).evaluateQuery(get<0>(parsedQuery),

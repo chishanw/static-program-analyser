@@ -133,6 +133,15 @@ struct SelectClause {
   }
 };
 
+struct GroupDetails {
+  const bool isBooleanGroup;
+  const std::vector<Synonym> selectedSynonyms;
+  bool operator==(const GroupDetails& other) const {
+    return isBooleanGroup == other.isBooleanGroup &&
+    selectedSynonyms == other.selectedSynonyms;
+  }
+};
+
 const int FALSE_SELECT_BOOL_RESULT = 0;
 const int TRUE_SELECT_BOOL_RESULT = 1;
 
