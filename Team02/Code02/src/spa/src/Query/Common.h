@@ -33,7 +33,9 @@ enum class RelationshipType {
   CALLS,
   CALLS_T,
   NEXT,
-  NEXT_T
+  NEXT_T,
+  AFFECTS,
+  AFFECTS_T
 };
 
 enum class ParamType {

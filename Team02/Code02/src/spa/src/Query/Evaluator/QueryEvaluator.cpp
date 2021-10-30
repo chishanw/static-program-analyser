@@ -23,6 +23,7 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
       modifiesEvaluator(pkb),
       callsEvaluator(pkb),
       nextEvaluator(pkb),
+      affectsEvaluator(pkb),
       patternEvaluator(pkb),
       withEvaluator(pkb) {
   this->pkb = pkb;
@@ -96,6 +97,8 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
       return evaluateNextClause(clause);
     case RelationshipType::NEXT_T:
       return evaluateNextTClause(clause);
+    case RelationshipType::AFFECTS:
+      return evaluateAffectsClause(clause);
     default:
       DMOprintErrMsgAndExit(
           "[QueryEvaluator][evaluateSuchThatClause] invalid relationship type");
@@ -509,6 +512,42 @@ void QueryEvaluator::evaluateNextTClause(SuchThatClause clause) {
         formatRefResults(nextEvaluator.evaluateNextT(left, right));
   } else {
     incomingResults = nextEvaluator.evaluatePairNextT(left, right);
+  }
+
+  filterAndAddIncomingResults(incomingResults, left, right);
+}
+
+void QueryEvaluator::evaluateAffectsClause(SuchThatClause clause) {
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+
+  bool isBoolClause =
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+  bool isRefClause =
+      (left.type == ParamType::SYNONYM &&
+       right.type == ParamType::INTEGER_LITERAL) ||
+      (left.type == ParamType::INTEGER_LITERAL &&
+       right.type == ParamType::SYNONYM) ||
+      (left.type == ParamType::SYNONYM && right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::SYNONYM);
+
+  if (isBoolClause) {
+    areAllClausesTrue = affectsEvaluator.evaluateBoolAffects(left, right);
+    return;
+  }
+
+  vector<vector<int>> incomingResults;
+  if (isRefClause) {
+    incomingResults =
+        formatRefResults(affectsEvaluator.evaluateStmtAffects(left, right));
+  } else {
+    incomingResults = affectsEvaluator.evaluatePairAffects();
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);

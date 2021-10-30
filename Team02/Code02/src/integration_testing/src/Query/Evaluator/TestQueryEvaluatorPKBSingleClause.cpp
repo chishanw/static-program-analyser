@@ -3452,6 +3452,413 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
   }
 }
 
+TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
+  PKB* pkb = new PKB();
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->addFirstStmtOfProc("A", 1);
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
+  pkb->addFirstStmtOfProc("B", 9);
+  for (int i = 1; i <= 13; i++) {
+    pkb->addStmt(i);
+  }
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(4, 5);
+  pkb->addNext(4, 6);
+  pkb->addNext(6, 7);
+  pkb->addNext(7, 6);
+  pkb->addNext(6, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 8);
+
+  pkb->addNext(9, 10);
+  pkb->addNext(10, 9);
+  pkb->addNext(9, 11);
+  pkb->addNext(11, 12);
+  pkb->addNext(11, 13);
+
+  unordered_set<int> whileStmts = {2, 6, 9};
+  for (int w : whileStmts) {
+    pkb->addWhileStmt(w);
+  }
+  unordered_set<int> ifStmts = {4, 11};
+  for (int ifs : ifStmts) {
+    pkb->addIfStmt(ifs);
+  }
+  pkb->addNextStmtForIfStmt(4, 2);
+  for (int i = 1; i <= 13; i++) {
+    if (whileStmts.find(i) == whileStmts.end() &&
+        ifStmts.find(i) == ifStmts.end()) {
+      pkb->addAssignStmt(i);
+    }
+  }
+
+  pkb->addModifiesS(1, "x");
+  pkb->addModifiesS(3, "x");
+  pkb->addUsesS(3, "x");
+  pkb->addUsesS(3, "y");
+  pkb->addModifiesS(5, "x");
+  pkb->addUsesS(5, "x");
+  pkb->addModifiesS(7, "x");
+  pkb->addUsesS(7, "x");
+  pkb->addModifiesS(8, "y");
+  pkb->addUsesS(8, "x");
+
+  pkb->addModifiesS(10, "x");
+  pkb->addModifiesS(12, "y");
+  pkb->addUsesS(12, "x");
+  pkb->addModifiesS(13, "y");
+
+  // procedure A {
+  // 1: x = 0;
+  // 2: while (i != 0) {
+  // 3:   x = x + 2 * y;
+  // 4:   if (i != 0) then {
+  // 5:     x = x + 2; }
+  // NA:  else {
+  // 6:     while (x != y) {
+  // 7:       x = x; } }
+  // 8: y = x + 1;
+  // }
+  // procedure B {
+  // 9: while (x == 2) {
+  // 10:  x = 3; }
+  // 11: if (z != 0) then {
+  // 12:  y = x + 3; }
+  // 13: else { y = 2; }
+  // }
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"a1", DesignEntity::ASSIGN},
+      {"a2", DesignEntity::ASSIGN}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym a1 = {DesignEntity::ASSIGN, "a1"};
+  Synonym a2 = {DesignEntity::ASSIGN, "a2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  /* Affects Bool -------------------------------------------- */
+  SECTION("Select BOOLEAN such that Affects(5, 8)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::INTEGER_LITERAL, "5"},
+                                     {ParamType::INTEGER_LITERAL, "8"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results,
+                 VectorContains(vector<int>({TRUE_SELECT_BOOL_RESULT})));
+  }
+
+  SECTION("Select BOOLEAN such that Affects(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results,
+                 VectorContains(vector<int>({TRUE_SELECT_BOOL_RESULT})));
+  }
+
+  SECTION("Select a1 such that Affects(3, 3)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::INTEGER_LITERAL, "3"},
+                                     {ParamType::INTEGER_LITERAL, "3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    vector<int> expectedResults = vector<int>({1, 3, 5, 7, 8, 10, 12, 13});
+    for (auto stmt : expectedResults) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
+    }
+  }
+
+  SECTION("Select a1 such that Affects(1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    vector<int> expectedResults = vector<int>({1, 3, 5, 7, 8, 10, 12, 13});
+    for (auto stmt : expectedResults) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
+    }
+  }
+
+  SECTION("Select s1 such that Affects(_, 8)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::INTEGER_LITERAL, "8"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    for (int stmt = 1; stmt <= 13; stmt++) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
+    }
+  }
+
+  /* Affects Stmts ------------------------------------------- */
+  SECTION("Select a1 such that Affects(a1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::SYNONYM, "a1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    vector<int> expectedResults = vector<int>({1, 3, 5, 7, 10});
+    for (auto stmt : expectedResults) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
+    }
+  }
+
+  SECTION("Select a2 such that Affects(_, a2)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "a2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    vector<int> expectedResults = vector<int>({3, 5, 7, 8, 12});
+    for (auto stmt : expectedResults) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
+    }
+  }
+
+  SECTION("Select a1 such that Affects(a1, 8)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::SYNONYM, "a1"},
+                                     {ParamType::INTEGER_LITERAL, "8"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    vector<int> expectedResults = vector<int>({1, 3, 5, 7});
+    for (auto stmt : expectedResults) {
+      REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
+    }
+  }
+
+  SECTION("Select a2 such that Affects(10, a2)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::INTEGER_LITERAL, "10"},
+                                     {ParamType::SYNONYM, "a2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results, VectorContains(vector<int>({12})));
+  }
+
+  /* Affects Pairs ------------------------------------------- */
+  SECTION("Select <a1, a2> such that Affects(a1, a2)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::SYNONYM, "a1"},
+                                     {ParamType::SYNONYM, "a2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1, a2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 7})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 7})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({10, 12})));
+
+    REQUIRE_THAT(results, !VectorContains(vector<int>({7, 5})));
+    REQUIRE_THAT(results, !VectorContains(vector<int>({10, 10})));
+    REQUIRE_THAT(results, !VectorContains(vector<int>({12, 13})));
+  }
+
+  SECTION("Select <s1, a2> such that Affects(s1, a2)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::SYNONYM, "a2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, a2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 7})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 7})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({7, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 8})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({10, 12})));
+
+    REQUIRE_THAT(results, !VectorContains(vector<int>({7, 5})));
+    REQUIRE_THAT(results, !VectorContains(vector<int>({10, 10})));
+    REQUIRE_THAT(results, !VectorContains(vector<int>({12, 13})));
+  }
+}
+
+TEST_CASE("QueryEvaluator: Affects") {
+  PKB* pkb = new PKB();
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->addFirstStmtOfProc("A", 1);
+  for (int i = 1; i <= 8; i++) {
+    pkb->addStmt(i);
+  }
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(4, 5);
+  pkb->addNext(4, 6);
+  pkb->addNext(6, 7);
+  pkb->addNext(7, 6);
+  pkb->addNext(6, 2);
+  pkb->addNext(5, 2);
+  pkb->addNext(2, 8);
+
+  unordered_set<int> whileStmts = {2, 6};
+  for (int w : whileStmts) {
+    pkb->addWhileStmt(w);
+  }
+  unordered_set<int> ifStmts = {4};
+  for (int ifs : ifStmts) {
+    pkb->addIfStmt(ifs);
+  }
+  pkb->addNextStmtForIfStmt(4, 2);
+  unordered_set<int> assignStmts = {1, 3, 7};
+  for (int a : assignStmts) {
+    pkb->addAssignStmt(a);
+  }
+
+  pkb->addModifiesS(1, "x");
+  pkb->addModifiesS(3, "x");
+  pkb->addModifiesS(5, "x");
+  pkb->addModifiesS(7, "x");
+  pkb->addUsesS(7, "y");
+  pkb->addModifiesS(8, "x");
+
+  // procedure A {
+  // 1: x = 0;
+  // 2: while (i != 0) {
+  // 3:   x = 1;
+  // 4:   if (i != 0) then {
+  // 5:     read x; }
+  // NA:  else {
+  // 6:     while (x != y) {
+  // 7:       x = y; } }
+  // 8: print x;
+  // }
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT},
+      {"s2", DesignEntity::STATEMENT},
+      {"a1", DesignEntity::ASSIGN},
+      {"a2", DesignEntity::ASSIGN}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym a1 = {DesignEntity::ASSIGN, "a1"};
+  Synonym a2 = {DesignEntity::ASSIGN, "a2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  /* Affects Bool -------------------------------------------- */
+  SECTION("Select BOOLEAN such that Affects(_, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results,
+                 VectorContains(vector<int>({FALSE_SELECT_BOOL_RESULT})));
+  }
+
+  SECTION("Select BOOLEAN such that Affects(1, 3)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{}, SelectType::BOOLEAN, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results,
+                 VectorContains(vector<int>({FALSE_SELECT_BOOL_RESULT})));
+  }
+
+  /* Affects Stmts ------------------------------------------- */
+  SECTION("Select a1 such that Affects(a1, _)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::SYNONYM, "a1"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  SECTION("Select s1 such that Affects(_, a2)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::WILDCARD, "_"},
+                                     {ParamType::SYNONYM, "a2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+
+  /* Affects Pairs ------------------------------------------- */
+  SECTION("Select <a1, a2> such that Affects(a1, a2)") {
+    SuchThatClause suchThatClause = {RelationshipType::AFFECTS,
+                                     {ParamType::SYNONYM, "a1"},
+                                     {ParamType::SYNONYM, "a2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{a1, a2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(results.empty());
+  }
+}
+
 TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->addAssignStmt(1);
