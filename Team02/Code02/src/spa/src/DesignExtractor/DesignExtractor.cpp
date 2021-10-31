@@ -41,7 +41,7 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractUses(programAST);
   ExtractModifies(programAST);
 
-  ExtractNext(programAST);
+  ExtractNextAndNextBip(programAST);
   // ... other subroutines to extract other r/s go here too
 }
 
@@ -550,34 +550,55 @@ void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
   }
 }
 
-void DesignExtractor::ExtractNext(const ProgramAST* programAST) {
+void DesignExtractor::ExtractNextAndNextBip(const ProgramAST* programAST) {
+  unordered_map<NAME, STMT_NO> procNameToItsFirstStmt;
+
   for (auto procedure : programAST->ProcedureList) {
-    ExtractNextHelper(procedure->StmtList, -1, -1);
+    procNameToItsFirstStmt[procedure->ProcName] =
+        procedure->StmtList[0]->StmtNo;
     pkb->addFirstStmtOfProc(procedure->ProcName,
                             procedure->StmtList.front()->StmtNo);
   }
+
+  for (auto procedure : programAST->ProcedureList) {
+    ExtractNextAndNextBipHelper(procNameToItsFirstStmt, procedure->StmtList, -1,
+                                -1);
+  }
 }
 
-void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
-                                        STMT_NO prevStmt,
-                                        STMT_NO nextStmtForLastStmt) {
+void DesignExtractor::ExtractNextAndNextBipHelper(
+    const unordered_map<NAME, STMT_NO>& procNameToItsFirstStmt,
+    const vector<StmtAST*> stmtList, STMT_NO prevStmt,
+    STMT_NO nextStmtForLastStmt) {
   auto addNext = [this](STMT_NO s1, STMT_NO s2) {
     if (s1 == -1 || s2 == -1) return;
     pkb->addNext(s1, s2);
+  };
+  auto addNextBip = [this](STMT_NO s1, STMT_NO s2) {
+    if (s1 == -1 || s2 == -1) return;
+    cout << "Add NextBip: " << s1 << " " << s2 << endl;
+    // TODO(gf)
+    // pkb->addNextBip(s1, s2);
   };
 
   for (size_t i = 0; i < stmtList.size(); ++i) {
     auto stmt = stmtList[i];
 
     addNext(prevStmt, stmt->StmtNo);
+    addNextBip(prevStmt, stmt->StmtNo);
 
     if (dynamic_cast<const ReadStmtAST*>(stmt) ||
         dynamic_cast<const PrintStmtAST*>(stmt) ||
-        dynamic_cast<const CallStmtAST*>(stmt) ||
         dynamic_cast<const AssignStmtAST*>(stmt)) {
       prevStmt = stmt->StmtNo;
+    } else if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
+      addNextBip(callStmt->StmtNo,
+                 procNameToItsFirstStmt.at(callStmt->ProcName));
+      prevStmt = stmt->StmtNo;
+
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
-      ExtractNextHelper(whileStmt->StmtList, stmt->StmtNo, stmt->StmtNo);
+      ExtractNextAndNextBipHelper(procNameToItsFirstStmt, whileStmt->StmtList,
+                                  stmt->StmtNo, stmt->StmtNo);
       prevStmt = stmt->StmtNo;
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       STMT_NO nextStmtForLastStmtInIf = -1;
@@ -588,16 +609,17 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
         pkb->addNextStmtForIfStmt(stmt->StmtNo, nextStmtForLastStmtInIf);
       }
 
-      ExtractNextHelper(ifStmt->ThenBlock, ifStmt->StmtNo,
-                        nextStmtForLastStmtInIf);
-      ExtractNextHelper(ifStmt->ElseBlock, ifStmt->StmtNo,
-                        nextStmtForLastStmtInIf);
+      ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ThenBlock,
+                                  ifStmt->StmtNo, nextStmtForLastStmtInIf);
+      ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ElseBlock,
+                                  ifStmt->StmtNo, nextStmtForLastStmtInIf);
 
       prevStmt = -1;  // because Next r/s between the last stmt in ifStmt's
                       // then/else block are alr handled by recursive call above
     } else {
       DMOprintErrMsgAndExit(
-          "[DE][ExtractNextHelper][for loop] shouldn't reach here.");
+          "[DE][ExtractNextAndNextBipHelper][for loop] shouldn't reach "
+          "here.");
       return;
     }
   }
@@ -607,19 +629,21 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
   if (dynamic_cast<const ReadStmtAST*>(stmt) ||
       dynamic_cast<const PrintStmtAST*>(stmt) ||
       dynamic_cast<const CallStmtAST*>(stmt) ||
-      dynamic_cast<const AssignStmtAST*>(stmt)) {
+      dynamic_cast<const AssignStmtAST*>(stmt) ||
+      dynamic_cast<const WhileStmtAST*>(stmt)) {
     addNext(stmt->StmtNo, nextStmtForLastStmt);
-  } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
-    addNext(stmt->StmtNo, nextStmtForLastStmt);
+    addNextBip(stmt->StmtNo, nextStmtForLastStmt);
   } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
     if (nextStmtForLastStmt != -1) {
       pkb->addNextStmtForIfStmt(ifStmt->StmtNo, nextStmtForLastStmt);
     }
-    ExtractNextHelper(ifStmt->ThenBlock, -1, nextStmtForLastStmt);
-    ExtractNextHelper(ifStmt->ElseBlock, -1, nextStmtForLastStmt);
+    ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ThenBlock, -1,
+                                nextStmtForLastStmt);
+    ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ElseBlock, -1,
+                                nextStmtForLastStmt);
   } else {
     DMOprintErrMsgAndExit(
-        "[DE][ExtractNextHelper][last stmt] shouldn't reach here.");
+        "[DE][ExtractNextAndNextBipHelper][last stmt] shouldn't reach here.");
     return;
   }
 }

@@ -108,6 +108,57 @@ TEST_CASE("[DE][Next R/S] nested while and if") {
   CHECK(pkb->getNextStmts(7) == unordered_set<int>{});  // out of bound
 }
 
+TEST_CASE("[DE][NextBip R/S] sample source") {
+  string program =
+      "procedure Example {        "
+      "  x = 2;                   "
+      "  z = 3;                   "
+      "  i = 5;                   "
+      "  while (i!=0) {           "
+      "    x = x - 1;             "
+      "    if (x==1) then {       "
+      "      z = x + 1; }         "
+      "    else {                 "
+      "      y = z + x; }         "
+      "    z = z + x + i;         "
+      "    call q;                "  // 10
+      "    i = i - 1; }           "
+      "  call p; }                "  // 12
+      "                           "
+      "procedure p {              "
+      "  if (x<0) then {          "  // 13
+      "    while (i>0) {          "
+      "      x = z * 3 + 2 * y;   "
+      "      call q;              "  // 16
+      "      i = i - 1; }         "
+      "    x = x + 1;             "
+      "    z = x + z; }           "
+      "  else {                   "
+      "    z = 1; }               "
+      "  z = z + x + i; }         "
+      "                           "
+      "procedure q {              "
+      "  if (x==1) then {         "  // 22
+      "    z = x + 1; }           "
+      "  else {                   "
+      "    x = z + x; } }         ";  // 24
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  // TODO(gf): when pkb is ready
+  // CHECK(pkb->getNextBip(0) == unordered_set<int>{});  // out of bound
+  // CHECK(pkb->getNextBip(10).count(22) > 0);
+  // CHECK(pkb->getNextBip(12).count(13) > 0);
+  // CHECK(pkb->getNextBip(16).count(22) > 0);
+  // CHECK(pkb->getNext(10).count(22) == 0);
+  // CHECK(pkb->getNext(12).count(13) == 0);
+  // CHECK(pkb->getNext(16).count(22) == 0);
+  // CHECK(pkb->getNextBip(25) == unordered_set<int>{});  // out of bound
+}
+
 TEST_CASE("[DE][AffectsInfo] nested if") {
   string program =
       "procedure a {            "

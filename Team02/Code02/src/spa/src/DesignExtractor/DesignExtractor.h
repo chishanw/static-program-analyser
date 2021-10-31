@@ -62,6 +62,8 @@ class DesignExtractor {
   void ExtractCallsTrans(CALL_GRAPH);
   void ExtractCallsTransHelper(CALL_GRAPH, PROC_NAME, PROC_NAME);
 
-  void ExtractNext(const ProgramAST*);
-  void ExtractNextHelper(const std::vector<StmtAST*>, STMT_NO, STMT_NO);
+  void ExtractNextAndNextBip(const ProgramAST*);
+  void ExtractNextAndNextBipHelper(const std::unordered_map<NAME, STMT_NO>&,
+                                   const std::vector<StmtAST*>, STMT_NO,
+                                   STMT_NO);
 };
