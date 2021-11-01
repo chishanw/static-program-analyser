@@ -479,18 +479,86 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
   }
 }
 
-TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
+TEST_CASE("Invalid synonyms for pattern clause throws") {
   SECTION("Invalid pattern s(_, _)") {
     string invalidQuery =
         "stmt s;"
         "Select s pattern s(_, _)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_PATTERN_SYNONYM_MSG);
+                        QueryParser::INVALID_SYNONYM_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
-                      qpp::SyntacticErrorException);
+                      qpp::SemanticSynonymErrorException);
   }
 
+  SECTION("Invalid pattern p(_, _)") {
+    string invalidQuery =
+        "print p;"
+        "Select BOOLEAN pattern p(_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticBooleanErrorException);
+  }
+
+  SECTION("Invalid pattern p(_, _\"x+y\"_)") {
+    string invalidQuery =
+        "print p;"
+        "Select BOOLEAN pattern p(_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticBooleanErrorException);
+  }
+
+  SECTION("Invalid pattern p(_, \"x+y\")") {
+    string invalidQuery =
+        "print p;"
+        "Select BOOLEAN pattern p(_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticBooleanErrorException);
+  }
+
+  SECTION("Invalid pattern p(_, _, _)") {
+    string invalidQuery =
+        "print p;"
+        "Select BOOLEAN pattern p(_, _, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticBooleanErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(_, _)") {
+    string invalidQuery =
+        "if ifs;"
+        "Select ifs pattern ifs(_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
+  }
+
+  SECTION("Invalid pattern a(_, _, _)") {
+    string invalidQuery =
+        "assign a;"
+        "Select a pattern a(_, _, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
+  }
+}
+
+TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
   SECTION("Invalid pattern a(1, _)") {
     string invalidQuery =
         "assign a;"
@@ -843,17 +911,6 @@ TEST_CASE("Invalid queries with one pattern clause for if throws") {
     string invalidQuery =
         "if ifs;"
         "Select ifs pattern ifs(_)";
-    // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
-    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
-                      qpp::SyntacticErrorException);
-  }
-
-  SECTION("Invalid pattern ifs(_, _)") {
-    string invalidQuery =
-        "if ifs;"
-        "Select ifs pattern ifs(_, _)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);

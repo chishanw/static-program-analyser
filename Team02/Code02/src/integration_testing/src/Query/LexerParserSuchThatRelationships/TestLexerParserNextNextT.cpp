@@ -404,7 +404,7 @@ TEST_CASE("Invalid Next throws") {
         "Select p such that Next(1, p)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SYNONYM_NON_PROG_LINE_MSG);
+                        QueryParser::INVALID_STMT_REF_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
                       qpp::SemanticSynonymErrorException);
   }
@@ -415,7 +415,7 @@ TEST_CASE("Invalid Next throws") {
         "Select con such that Next(1, con)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SYNONYM_NON_PROG_LINE_MSG);
+                        QueryParser::INVALID_STMT_REF_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
                       qpp::SemanticSynonymErrorException);
   }
@@ -426,7 +426,7 @@ TEST_CASE("Invalid Next throws") {
         "Select BOOLEAN such that Next(1, v)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SYNONYM_NON_PROG_LINE_MSG);
+                        QueryParser::INVALID_STMT_REF_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
                       qpp::SemanticBooleanErrorException);
   }
@@ -451,9 +451,7 @@ TEST_CASE("Invalid Next throws") {
 }
 
 // ====================== Testing Next* relationship ======================
-TEST_CASE(
-    "Valid queries with one such that clause for Next* relationship "
-    "succeeds") {
+TEST_CASE("Valid queries for Next* relationship succeeds") {
   SECTION("Valid Next*(1, 2)") {
     string validQuery = "Select BOOLEAN such that Next*(1, 2)";
 
@@ -478,13 +476,55 @@ TEST_CASE(
   }
 }
 
-TEST_CASE("Invalid queries for one such that clause for Next* throws") {
-  SECTION("Invalid Next * (1, 2)") {
-    string invalidQuery = "Select BOOLEAN such that Next * (1, 2)";
+// ====================== Testing NextBip relationship ======================
+TEST_CASE("Valid queries with NextBip relationship succeeds") {
+  SECTION("Valid NextBip(1, 2)") {
+    string validQuery = "Select BOOLEAN such that NextBip(1, 2)";
+
+    // expected
+    SynonymMap map = {};
+    std::vector<query::Synonym> resultSynonyms = {};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT_BIP,
+                                     query::ParamType::INTEGER_LITERAL, "1",
+                                     query::ParamType::INTEGER_LITERAL, "2");
+
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::BOOLEAN, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
     // test
-    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
-    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
-                      qpp::SyntacticErrorException);
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+}
+
+// ====================== Testing NextBip* relationship ======================
+TEST_CASE("Valid queries with NextBip* relationship succeeds") {
+  SECTION("Valid NextBip*(1, 2)") {
+    string validQuery = "Select BOOLEAN such that NextBip*(1, 2)";
+
+    // expected
+    SynonymMap map = {};
+    std::vector<query::Synonym> resultSynonyms = {};
+
+    vector<query::ConditionClause> clauses;
+    TestQueryUtil::AddSuchThatClause(clauses,
+                                     query::RelationshipType::NEXT_BIP_T,
+                                     query::ParamType::INTEGER_LITERAL, "1",
+                                     query::ParamType::INTEGER_LITERAL, "2");
+
+    tuple<SynonymMap, SelectClause> expected = {
+        map, {resultSynonyms, query::SelectType::BOOLEAN, clauses}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
   }
 }

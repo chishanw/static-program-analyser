@@ -4,6 +4,7 @@
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -43,12 +44,8 @@ class QueryParser {
       "QueryParser expects a valid synonym.";
   inline static const std::string INVALID_SYNONYM_NON_PROCEDURE_MSG =
       "QueryParser expects a procedure synonym";
-  inline static const std::string INVALID_SYNONYM_NON_PROG_LINE_MSG =
-      "QueryParser expects a prog_line synonym";
   inline static const std::string INVALID_SYNONYM_NON_VARIABLE_MSG =
       "QueryParser expects a variable synonym.";
-  inline static const std::string INVALID_PATTERN_SYNONYM_MSG =
-      "QueryParser expects an assignment, while or if synonym.";
 
   inline static const std::string INVALID_ATTRIBUTE =
       "QueryParser expects a valid attribute name.";
@@ -83,7 +80,11 @@ class QueryParser {
   inline static const std::string INVALID_ST_MODIFIES_SYNONYM_ENTITY_MSG =
       "QueryParser expects a read, statement, call, assign, if, while, "
       "procedure or prog_line synonym.";
+  inline static const std::string INVALID_ST_AFFECTS_MSG =
+      "QueryParser expects a assign, statement or prog_line synonym.";
 
+  inline static const std::string INVALID_P_SYNTAX =
+      "QueryParser expects the tokens to follow the pattern syntax.";
   inline static const std::string INVALID_P_EXPR_CHARA_MSG =
       "QueryParser found an invalid character in the pattern expr.";
 
@@ -130,14 +131,14 @@ class QueryParser {
   query::ConditionClause parseFollowsParentClause(const std::string&);
   query::ConditionClause parseCallsClause(const std::string&);
   query::ConditionClause parseNextClause(const std::string&);
+  query::ConditionClause parseAffectsClause(const std::string&);
   query::ConditionClause parseUsesClause();
   query::ConditionClause parseModifiesClause();
 
   void parsePatternClause(std::vector<query::ConditionClause>&);
-  query::ConditionClause parseWhilePatternClause();
-  query::ConditionClause parseIfPatternClause();
-  query::ConditionClause parseAssignPatternClause();
-  query::PatternExpr parsePatternExpr();
+  query::ConditionClause parsePatternClauseHelper(
+      query::Synonym&, query::Param&, std::unordered_set<query::DesignEntity>&);
+  query::PatternExpr parseAssignExpr(query::MatchType);
 
   void parseWithClause(std::vector<query::ConditionClause>&);
 };

@@ -187,8 +187,7 @@ TEST_CASE("Invalid synonym declarations throws") {
   }
 
   SECTION("Invalid usage of undefined synonym in condition clauses throws") {
-    string invalidQuery =
-        "Select BOOLEAN such that Follows(1, s)";
+    string invalidQuery = "Select BOOLEAN such that Follows(1, s)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_UNDECLARED_SYNONYM_MSG);
@@ -197,7 +196,7 @@ TEST_CASE("Invalid synonym declarations throws") {
   }
 }
 
-// ====================== Testing Select clause ======================
+// ====================== Testing Select result clause ======================
 TEST_CASE("Valid query using different result clauses succeeds") {
   SECTION("Valid Select BOOLEAN") {
     string validQuery =
@@ -208,6 +207,27 @@ TEST_CASE("Valid query using different result clauses succeeds") {
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {{}, query::SelectType::BOOLEAN, {}}};
+
+    // actual
+    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
+
+    // test
+    REQUIRE(get<0>(actual) == get<0>(expected));
+    REQUIRE(get<1>(actual) == get<1>(expected));
+  }
+
+  SECTION("Valid Select BOOLEAN where BOOLEAN is a synonym") {
+    string validQuery =
+        "stmt BOOLEAN;"
+        "Select BOOLEAN";
+    // expected
+    SynonymMap map = {{"BOOLEAN", query::DesignEntity::STATEMENT}};
+
+    tuple<SynonymMap, SelectClause> expected = {
+        map,
+        {{{query::DesignEntity::STATEMENT, "BOOLEAN"}},
+         query::SelectType::SYNONYMS,
+         {}}};
 
     // actual
     tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
@@ -517,6 +537,15 @@ TEST_CASE("Invalid query for result clauses throws") {
                         QueryParser::INVALID_RESULT_TYPE_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
                       qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Select undeclared synonym") {
+    string invalidQuery = "Select s1";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_UNDECLARED_SYNONYM_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SemanticSynonymErrorException);
   }
 }
 
