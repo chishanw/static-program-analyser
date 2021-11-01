@@ -254,6 +254,10 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
     }
     allVisitedStmts.insert(currStmt);
 
+    if (pkb->isReadStmt(currStmt) || pkb->isCallStmt(currStmt)) {
+      updateLastModifiedVariables(currStmt, LMT);
+    }
+
     if (pkb->isAssignStmt(currStmt)) {
       processAssignStmt(currStmt, LMT);
     }
@@ -292,21 +296,18 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
 /* Helper Methods For Affects Extraction ---------------------------- */
 void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
                                          LastModifiedTable* LMT) {
-  int modifiedVar = *(pkb->getVarsModifiedS(currStmt).begin());
-  unordered_set<int> usedVars = pkb->getVarsUsedS(currStmt);
-  for (int usedVar : usedVars) {
+  unordered_set<VAR_IDX> usedVars = pkb->getVarsUsedS(currStmt);
+  for (VAR_IDX usedVar : usedVars) {
     if (LMT->find(usedVar) != LMT->end()) {
       unordered_set<STMT_NO> LMTStmts = LMT->at(usedVar);
-      for (int LMTStmt : LMTStmts) {
-        addAffectsRelationship(LMT, LMTStmt, currStmt);
+      for (STMT_NO LMTStmt : LMTStmts) {
+        if (pkb->isAssignStmt(LMTStmt)) {
+          addAffectsRelationship(LMT, LMTStmt, currStmt);
+        }
       }
     }
   }
-
-  if (LMT->find(modifiedVar) == LMT->end()) {
-    LMT->insert({modifiedVar, {}});
-  }
-  LMT->at(modifiedVar) = {currStmt};
+  updateLastModifiedVariables(currStmt, LMT);
 }
 
 void AffectsEvaluator::processWhileLoop(STMT_NO firstStmtInWhile,
@@ -334,6 +335,17 @@ void AffectsEvaluator::processThenElseBlocks(
                    paramCombo);
   }
   *LMT = mergeLMT(&thenElseLMTs.front(), &thenElseLMTs.back());
+}
+
+void AffectsEvaluator::updateLastModifiedVariables(STMT_NO currStmt,
+                                                   LastModifiedTable* LMT) {
+  unordered_set<VAR_IDX> modifiedVars = pkb->getVarsModifiedS(currStmt);
+  for (auto modifiedVar : modifiedVars) {
+    if (LMT->find(modifiedVar) == LMT->end()) {
+      LMT->insert({modifiedVar, {}});
+    }
+    LMT->at(modifiedVar) = {currStmt};
+  }
 }
 
 void AffectsEvaluator::addAffectsRelationship(LastModifiedTable* LMT,

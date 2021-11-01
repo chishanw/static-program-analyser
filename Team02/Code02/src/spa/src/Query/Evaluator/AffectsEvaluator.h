@@ -38,7 +38,8 @@ class AffectsEvaluator {
   PKB* pkb;
 
   /* Affects Results Cache ------------------------------------------ */
-  bool isCompleteCache = false;
+  bool isCompleteCache = false;  // true when Affects(s1, _) or (_, s2)
+                                 // or (s1, s2) have been computed before
   std::unordered_set<STMT_NO> allVisitedStmts = {};
   std::unordered_set<STMT_NO> affectsStmts = {};
   std::unordered_set<STMT_NO> affectsInvStmts = {};
@@ -61,6 +62,7 @@ class AffectsEvaluator {
                              STMT_NO endStmt, STMT_NO nextStmtForIf,
                              LastModifiedTable* LMT, BoolParamCombo paramCombo);
 
+  void updateLastModifiedVariables(STMT_NO currStmt, LastModifiedTable* LMT);
   void addAffectsRelationship(LastModifiedTable* LMT, STMT_NO LMTStmt,
                               STMT_NO currStmt);
   bool shouldTerminateBoolEarly(BoolParamCombo paramCombo, STMT_NO startStmt,

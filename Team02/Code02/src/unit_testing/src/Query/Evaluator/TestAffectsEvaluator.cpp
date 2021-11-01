@@ -775,3 +775,98 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
     REQUIRE_THAT(results, !VectorContains(vector<int>({6, 6})));
   }
 }
+
+TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
+  PKB* pkb = new PKB();
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->addFirstStmtOfProc("A", 1);
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
+  pkb->addFirstStmtOfProc("B", 6);
+  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "C");
+  pkb->addFirstStmtOfProc("C", 9);
+  for (int i = 1; i <= 9; i++) {
+    pkb->addStmt(i);
+  }
+
+  pkb->addNext(1, 2);
+  pkb->addNext(2, 3);
+  pkb->addNext(3, 4);
+  pkb->addNext(3, 5);
+  pkb->addNext(6, 7);
+  pkb->addNext(7, 8);
+  pkb->addNext(8, 6);
+
+  pkb->addWhileStmt(6);
+  pkb->addIfStmt(3);
+  pkb->addReadStmt(2);
+  pkb->addCalls(8, "B", "C");
+  vector<int> assignStmts = {1, 4, 5, 7, 9};
+  for (auto stmt : assignStmts) {
+    pkb->addAssignStmt(stmt);
+  }
+
+  pkb->addModifiesS(1, "x");
+  pkb->addModifiesS(2, "x");
+  pkb->addModifiesS(4, "x");
+  pkb->addUsesS(4, "x");
+  pkb->addModifiesS(5, "y");
+  pkb->addUsesS(5, "x");
+
+  pkb->addModifiesS(7, "y");
+  pkb->addUsesS(7, "y");
+  pkb->addModifiesS(8, "y");
+
+  pkb->addModifiesS(9, "y");
+
+  // example program w/ read & call stmts
+  // procedure A {
+  // 1: x = 3;
+  // 2: read x;
+  // 3: if (x == 0) then {
+  // 4:   x = x + 1 ; }
+  // 5: else { y = x; } }
+  // procedure B {
+  // 6: while (x == 2) {
+  // 7:   y = y + 1;
+  // 8:   call C; } }
+  // procedure C {
+  // 9: y = 2; }
+
+  AffectsEvaluator ae(pkb);
+
+  // Test read stmt
+  SECTION("Affects(1, 4)") {
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
+    Param right = {ParamType::INTEGER_LITERAL, "4"};
+    bool result = ae.evaluateBoolAffects(left, right);
+    REQUIRE(result == false);
+  }
+
+  SECTION("Affects(2, 4)") {
+    Param left = {ParamType::INTEGER_LITERAL, "2"};
+    Param right = {ParamType::INTEGER_LITERAL, "4"};
+    bool result = ae.evaluateBoolAffects(left, right);
+    REQUIRE(result == false);
+  }
+
+  // Test call stmt
+  SECTION("Affects(7, 7)") {
+    Param left = {ParamType::INTEGER_LITERAL, "7"};
+    Param right = {ParamType::INTEGER_LITERAL, "7"};
+    bool result = ae.evaluateBoolAffects(left, right);
+    REQUIRE(result == false);
+  }
+
+  SECTION("Affects(7, 8)") {
+    Param left = {ParamType::INTEGER_LITERAL, "7"};
+    Param right = {ParamType::INTEGER_LITERAL, "8"};
+    bool result = ae.evaluateBoolAffects(left, right);
+    REQUIRE(result == false);
+  }
+
+  // Test all Affects generated
+  SECTION("Affects(s1, s2)") {
+    auto results = ae.evaluatePairAffects();
+    REQUIRE(results.empty());
+  }
+}
