@@ -10,24 +10,57 @@ using namespace query;
 
 QueryOptimizer::QueryOptimizer(PKB* pkb) { this->pkb = pkb; }
 
+std::optional<query::ConditionClause> QueryOptimizer::GetNextClause(
+    query::SynonymCountsTable& countTable) {
+  // TODO(Beatrice): Re sort PQ based on countTable
+  if (tempGroupDetailsAndGroupPairs.empty() ||
+      tempGroupDetailsAndGroupPairs[currentGroupIndex].second.empty()) {
+    return nullopt;
+  }
+
+  auto it = tempGroupDetailsAndGroupPairs[currentGroupIndex].second.begin();
+  ConditionClause clause = *it;
+  tempGroupDetailsAndGroupPairs[currentGroupIndex].second.erase(clause);
+  return {clause};
+}
+
+std::optional<query::GroupDetails> QueryOptimizer::GetNextGroupDetails() {
+  if (tempGroupDetailsAndGroupPairs.empty()) {
+    return nullopt;
+  }
+
+  if (isFirstGroup) {
+    isFirstGroup = false;
+    return {tempGroupDetailsAndGroupPairs[currentGroupIndex].first};
+  }
+
+  currentGroupIndex++;
+  if (currentGroupIndex >= tempGroupDetailsAndGroupPairs.size()) {
+    return nullopt;
+  }
+
+  return {tempGroupDetailsAndGroupPairs[currentGroupIndex].first};
+}
+
 void QueryOptimizer::PreprocessClauses(SynonymMap map,
                                        SelectClause selectClause) {
   Groups groups = groupClauses(selectClause.conditionClauses);
-  GroupDetailAndGroupPairs pairsOfGroupDetailAndGroup = extractGroupDetails(
+  tempGroupDetailsAndGroupPairs = extractGroupDetails(
       selectClause.selectType, selectClause.selectSynonyms, groups);
 }
 
-Groups QueryOptimizer::groupClauses(vector<CLAUSE> clauses) {
-  unordered_set<CLAUSE, CLAUSE_HASH> clausesSet(clauses.begin(), clauses.end());
+Groups QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
+  unordered_set<ConditionClause, CLAUSE_HASH> clausesSet(clauses.begin(),
+                                                         clauses.end());
 
   unordered_map<SYN_NAME, SUBSET_ID> synNameToSubsetId;
-  unordered_map<SUBSET_ID, unordered_set<CLAUSE, CLAUSE_HASH>>
+  unordered_map<SUBSET_ID, unordered_set<ConditionClause, CLAUSE_HASH>>
       subsetIdToClauses;
   unordered_map<SUBSET_ID, unordered_set<SYN_NAME>> subsetIdToSynNames;
 
   int nextOpenGrpIdx = 0;
 
-  for (CLAUSE clause : clausesSet) {
+  for (ConditionClause clause : clausesSet) {
     unordered_set<string> synonymNames = extractSynonymsUsed(clause);
     // create new subset if clause has no synonyms
     if (synonymNames.empty()) {
@@ -86,7 +119,7 @@ Groups QueryOptimizer::groupClauses(vector<CLAUSE> clauses) {
     }
   }
 
-  vector<unordered_set<CLAUSE, CLAUSE_HASH>> groupsOfClauses;
+  vector<unordered_set<ConditionClause, CLAUSE_HASH>> groupsOfClauses;
   groupsOfClauses.reserve(subsetIdToClauses.size());
   for (const auto& p : subsetIdToClauses) {
     groupsOfClauses.push_back(p.second);
@@ -109,7 +142,7 @@ GroupDetailAndGroupPairs QueryOptimizer::extractGroupDetails(
 
   for (const Group& group : groupsOfClauses) {
     unordered_set<string> groupSynonyms = {};
-    for (CLAUSE clause : group) {
+    for (ConditionClause clause : group) {
       groupSynonyms.merge(extractSynonymsUsed(clause));
     }
 

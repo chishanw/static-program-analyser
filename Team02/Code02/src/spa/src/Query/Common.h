@@ -145,5 +145,7 @@ struct GroupDetails {
 const int FALSE_SELECT_BOOL_RESULT = 0;
 const int TRUE_SELECT_BOOL_RESULT = 1;
 
+typedef std::string SYN_NAME;
 typedef std::unordered_map<std::string, int> QueryResult;
+typedef std::unordered_map<SYN_NAME , int> SynonymCountsTable;
 }  // namespace query

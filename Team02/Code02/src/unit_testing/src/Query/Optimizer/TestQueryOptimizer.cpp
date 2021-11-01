@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "./TestQueryOptimizerUtil.h"
 #include "catch.hpp"
 
 using namespace std;
@@ -16,7 +17,7 @@ namespace optimizer_unit_test {
 struct OptimizerTester {
   // to test important private methods
   static Groups groupClauses(QueryOptimizer* optimizer,
-                             vector<CLAUSE> clauses) {
+                             vector<ConditionClause> clauses) {
     return optimizer->groupClauses(clauses);
   }
   static GroupDetailAndGroupPairs extractGroupDetails(
@@ -387,11 +388,11 @@ TEST_CASE("Group details are extracted correctly") {
                                {},
                                ConditionClauseType::SUCH_THAT};
 
-  ConditionClause wSynonym = {{},
-                              {},
-                              {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
-                               {ParamType::SYNONYM, "n"}},
-                              ConditionClauseType::WITH};
+  ConditionClause wSynonym = {
+      {},
+      {},
+      {{ParamType::ATTRIBUTE_STMT_NUM, "s1"}, {ParamType::SYNONYM, "n"}},
+      ConditionClauseType::WITH};
 
   ConditionClause pattSynonym = {{},
                                  {{DesignEntity::IF, "ifs", false, {}},
@@ -400,9 +401,9 @@ TEST_CASE("Group details are extracted correctly") {
                                  {},
                                  ConditionClauseType::PATTERN};
 
-  unordered_set<CLAUSE, CLAUSE_HASH> grp1 = {stLiteral};
-  unordered_set<CLAUSE, CLAUSE_HASH> grp2 = {stSynonym, wSynonym};
-  unordered_set<CLAUSE, CLAUSE_HASH> grp3 = {pattSynonym};
+  unordered_set<ConditionClause, CLAUSE_HASH> grp1 = {stLiteral};
+  unordered_set<ConditionClause, CLAUSE_HASH> grp2 = {stSynonym, wSynonym};
+  unordered_set<ConditionClause, CLAUSE_HASH> grp3 = {pattSynonym};
 
   SECTION(
       "Select BOOLEAN for groups [(1, 2)] [(s1, s2) (s1, n)] [(ifs, "
@@ -498,5 +499,255 @@ TEST_CASE("Group details are extracted correctly") {
             &optimizer, givenSelectType, givenSelectSynonyms, givenGroups);
     // test
     REQUIRE(actual == expected);
+  }
+}
+
+// ================ Testing getters ================
+// default groups:
+// 1: st literal
+// 2: (s1, s2, n) st synonym, with synonym int
+// 3: with literal
+// 4: (a, v, w, ifs) patt a, patt w, patt ifs, with synonym name
+
+TEST_CASE("GetNextGroupDetails returns the correct group details") {
+  PKB* pkb = new PKB();
+  QueryOptimizer optimizer(pkb);
+
+  SECTION("Select BOOLEAN with no clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {{}, SelectType::BOOLEAN, {}};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+  }
+
+  SECTION("Select BOOLEAN for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {
+        {}, SelectType::BOOLEAN, TestQueryOptimizerUtil::ALL_DEFAULT_CLAUSE};
+
+    // expected
+    GroupDetails boolDetail = {true, {}};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    REQUIRE(optimizer.GetNextGroupDetails().value() == boolDetail);
+    REQUIRE(optimizer.GetNextGroupDetails().value() == boolDetail);
+    REQUIRE(optimizer.GetNextGroupDetails().value() == boolDetail);
+    REQUIRE(optimizer.GetNextGroupDetails().value() == boolDetail);
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+  }
+
+  // TODO(Beatrice): Rewrite tests after sorting is complete
+  SECTION("Select s1 for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {
+        {TestQueryOptimizerUtil::DEFAULT_S1},
+        SelectType::SYNONYMS,
+        TestQueryOptimizerUtil::ALL_DEFAULT_CLAUSE};
+
+    // expected
+    GroupDetails detail1 = {true, {}};
+    GroupDetails detail2 = {false, {TestQueryOptimizerUtil::DEFAULT_S1}};
+    GroupDetails detail3 = {true, {}};
+    GroupDetails detail4 = {true, {}};
+    vector<GroupDetails> expectedDetails = {detail1, detail2, detail3, detail4};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+    vector<GroupDetails> actualDetails;
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+
+    REQUIRE(actualDetails.size() == expectedDetails.size());
+    REQUIRE_THAT(actualDetails, Contains(expectedDetails));
+  }
+
+  SECTION("Select <s1, s2, n> for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {
+        {TestQueryOptimizerUtil::DEFAULT_S1, TestQueryOptimizerUtil::DEFAULT_S2,
+         TestQueryOptimizerUtil::DEFAULT_N},
+        SelectType::SYNONYMS,
+        TestQueryOptimizerUtil::ALL_DEFAULT_CLAUSE};
+
+    // expected
+    GroupDetails detail1 = {true, {}};
+    GroupDetails detail2 = {
+        false,
+        {TestQueryOptimizerUtil::DEFAULT_S1, TestQueryOptimizerUtil::DEFAULT_S2,
+         TestQueryOptimizerUtil::DEFAULT_N}};
+    GroupDetails detail3 = {true, {}};
+    GroupDetails detail4 = {true, {}};
+    vector<GroupDetails> expectedDetails = {detail1, detail2, detail3, detail4};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    vector<GroupDetails> actualDetails;
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+
+    REQUIRE(actualDetails.size() == expectedDetails.size());
+    REQUIRE_THAT(actualDetails, Contains(expectedDetails));
+  }
+
+  SECTION("Select <s1, a, s2, w, ifs> for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {
+        {TestQueryOptimizerUtil::DEFAULT_S1, TestQueryOptimizerUtil::DEFAULT_A,
+         TestQueryOptimizerUtil::DEFAULT_S2, TestQueryOptimizerUtil::DEFAULT_W,
+         TestQueryOptimizerUtil::DEFAULT_IFS},
+        SelectType::SYNONYMS,
+        TestQueryOptimizerUtil::ALL_DEFAULT_CLAUSE};
+
+    // expected
+    GroupDetails detail1 = {true, {}};
+    GroupDetails detail2 = {false,
+                            {TestQueryOptimizerUtil::DEFAULT_S1,
+                             TestQueryOptimizerUtil::DEFAULT_S2}};
+    GroupDetails detail3 = {true, {}};
+    GroupDetails detail4 = {
+        false,
+        {TestQueryOptimizerUtil::DEFAULT_A, TestQueryOptimizerUtil::DEFAULT_W,
+         TestQueryOptimizerUtil::DEFAULT_IFS}};
+    vector<GroupDetails> expectedDetails = {detail1, detail2, detail3, detail4};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    vector<GroupDetails> actualDetails;
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+
+    REQUIRE(actualDetails.size() == expectedDetails.size());
+    REQUIRE_THAT(actualDetails, Contains(expectedDetails));
+  }
+
+  SECTION("Select <s1, a, s2, w, ifs> for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {
+        {TestQueryOptimizerUtil::DEFAULT_S1, TestQueryOptimizerUtil::DEFAULT_A,
+         TestQueryOptimizerUtil::DEFAULT_S2, TestQueryOptimizerUtil::DEFAULT_W,
+         TestQueryOptimizerUtil::DEFAULT_IFS},
+        SelectType::SYNONYMS,
+        TestQueryOptimizerUtil::ALL_DEFAULT_CLAUSE};
+
+    // expected
+    GroupDetails detail1 = {true, {}};
+    GroupDetails detail2 = {false,
+                            {TestQueryOptimizerUtil::DEFAULT_S1,
+                             TestQueryOptimizerUtil::DEFAULT_S2}};
+    GroupDetails detail3 = {true, {}};
+    GroupDetails detail4 = {
+        false,
+        {TestQueryOptimizerUtil::DEFAULT_A, TestQueryOptimizerUtil::DEFAULT_W,
+         TestQueryOptimizerUtil::DEFAULT_IFS}};
+    vector<GroupDetails> expectedDetails = {detail1, detail2, detail3, detail4};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    vector<GroupDetails> actualDetails;
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+
+    REQUIRE(actualDetails.size() == expectedDetails.size());
+    REQUIRE_THAT(actualDetails, Contains(expectedDetails));
+  }
+
+  SECTION(
+      "Select <s1.stmt#, v.varName, s2, w.stmt#, ifs> for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    Synonym s1StmtNum = {DesignEntity::STATEMENT,
+                         TestQueryOptimizerUtil::DEFAULT_S1_NAME, true,
+                         Attribute::STMT_NUM};
+    Synonym vVarName = {DesignEntity::VARIABLE,
+                        TestQueryOptimizerUtil::DEFAULT_V_NAME, true,
+                        Attribute::VAR_NAME};
+    Synonym wStmtNum = {DesignEntity::WHILE,
+                        TestQueryOptimizerUtil::DEFAULT_W_NAME, true,
+                        Attribute::STMT_NUM};
+
+    SelectClause givenSelectClause = {
+        {s1StmtNum, vVarName, TestQueryOptimizerUtil::DEFAULT_S2, wStmtNum,
+         TestQueryOptimizerUtil::DEFAULT_IFS},
+        SelectType::SYNONYMS,
+        TestQueryOptimizerUtil::ALL_DEFAULT_CLAUSE};
+
+    // expected
+    GroupDetails detail1 = {true, {}};
+    GroupDetails detail2 = {false,
+                            {s1StmtNum, TestQueryOptimizerUtil::DEFAULT_S2}};
+    GroupDetails detail3 = {true, {}};
+    GroupDetails detail4 = {
+        false, {vVarName, wStmtNum, TestQueryOptimizerUtil::DEFAULT_IFS}};
+    vector<GroupDetails> expectedDetails = {detail1, detail2, detail3, detail4};
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    vector<GroupDetails> actualDetails;
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    actualDetails.push_back(optimizer.GetNextGroupDetails().value());
+    REQUIRE(optimizer.GetNextGroupDetails() == nullopt);
+
+    REQUIRE(actualDetails.size() == expectedDetails.size());
+    REQUIRE_THAT(actualDetails, Contains(expectedDetails));
+  }
+}
+
+// TODO(Beatrice): Add more checks after sorting is complete
+TEST_CASE("GetNextClause returns the correct clauses") {
+  PKB* pkb = new PKB();
+  QueryOptimizer optimizer(pkb);
+
+  query::SynonymCountsTable stubTable = {};
+
+  SECTION("Select BOOLEAN for default clauses") {
+    SynonymMap givenSynonymMap = TestQueryOptimizerUtil::DEFAULT_SYNONYM_MAP;
+    SelectClause givenSelectClause = {
+        {},
+        SelectType::BOOLEAN,
+        {
+            TestQueryOptimizerUtil::DEFAULT_SUCH_THAT_LITERAL,
+            TestQueryOptimizerUtil::DEFAULT_SUCH_THAT_SYNONYM,
+        }};
+
+    // expected
+    query::ConditionClause grp1clause1 =
+        TestQueryOptimizerUtil::DEFAULT_SUCH_THAT_LITERAL;
+    query::ConditionClause grp2clause1 =
+        TestQueryOptimizerUtil::DEFAULT_SUCH_THAT_SYNONYM;
+
+    // actual + test
+    optimizer.PreprocessClauses(givenSynonymMap, givenSelectClause);
+
+    // group 1
+    optimizer.GetNextGroupDetails();
+    REQUIRE(optimizer.GetNextClause(stubTable).value() == grp1clause1);
+    REQUIRE(optimizer.GetNextClause(stubTable) == nullopt);
+
+    // group 2
+    optimizer.GetNextGroupDetails();
+    REQUIRE(optimizer.GetNextClause(stubTable).value() == grp2clause1);
+    REQUIRE(optimizer.GetNextClause(stubTable) == nullopt);
   }
 }

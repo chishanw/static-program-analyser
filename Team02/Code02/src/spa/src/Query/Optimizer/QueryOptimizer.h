@@ -18,11 +18,10 @@ struct CLAUSE_HASH {
     switch (clause.conditionClauseType) {
       case query::ConditionClauseType::SUCH_THAT: {
         sum = sum * 10 +
-            static_cast<int>(clause.suchThatClause.relationshipType);
+              static_cast<int>(clause.suchThatClause.relationshipType);
+        sum = sum * 10 + static_cast<int>(clause.suchThatClause.leftParam.type);
         sum = sum * 10 +
-            static_cast<int>(clause.suchThatClause.leftParam.type);
-        sum = sum * 10 +
-            static_cast<int>(clause.suchThatClause.rightParam.type);
+              static_cast<int>(clause.suchThatClause.rightParam.type);
         s = std::to_string(sum) + clause.suchThatClause.leftParam.value +
             clause.suchThatClause.rightParam.value;
         break;
@@ -32,8 +31,7 @@ struct CLAUSE_HASH {
               static_cast<int>(clause.patternClause.matchSynonym.entity);
         sum = sum * 10 +
               static_cast<int>(clause.patternClause.matchSynonym.attribute);
-        sum = sum * 10 +
-            static_cast<int>(clause.patternClause.leftParam.type);
+        sum = sum * 10 + static_cast<int>(clause.patternClause.leftParam.type);
         sum = sum * 10 +
               static_cast<int>(clause.patternClause.patternExpr.matchType);
         s = std::to_string(sum) + clause.patternClause.matchSynonym.name +
@@ -54,11 +52,9 @@ struct CLAUSE_HASH {
 };
 
 typedef int SUBSET_ID;
-typedef std::string SYN_NAME;
-typedef query::ConditionClause CLAUSE;
 
 typedef std::unordered_map<std::string, query::DesignEntity> SynonymMap;
-typedef std::unordered_set<CLAUSE, CLAUSE_HASH> Group;
+typedef std::unordered_set<query::ConditionClause, CLAUSE_HASH> Group;
 typedef std::vector<Group> Groups;
 typedef std::vector<std::pair<query::GroupDetails, Group>>
     GroupDetailAndGroupPairs;
@@ -74,16 +70,24 @@ class QueryOptimizer {
   void PreprocessClauses(SynonymMap, query::SelectClause);
 
   std::optional<query::GroupDetails> GetNextGroupDetails();
-  std::optional<CLAUSE> GetNextClause();
+  std::optional<query::ConditionClause> GetNextClause(
+      query::SynonymCountsTable&);
 
  private:
   PKB* pkb;
   friend struct ::optimizer_unit_test::OptimizerTester;
 
-  Groups groupClauses(std::vector<CLAUSE>);
+  GroupDetailAndGroupPairs tempGroupDetailsAndGroupPairs;
+  // TODO(Beatrice): Convert to PQ for sorting
+  bool isFirstGroup = true;
+  int currentGroupIndex = 0;
+  // TODO(Beatrice): remove indexes and replace with PQ pops
+
+  Groups groupClauses(std::vector<query::ConditionClause>);
   GroupDetailAndGroupPairs extractGroupDetails(query::SelectType,
                                                std::vector<query::Synonym>,
                                                Groups);
 
-  std::unordered_set<SYN_NAME> extractSynonymsUsed(query::ConditionClause&);
+  std::unordered_set<query::SYN_NAME> extractSynonymsUsed(
+      query::ConditionClause&);
 };
