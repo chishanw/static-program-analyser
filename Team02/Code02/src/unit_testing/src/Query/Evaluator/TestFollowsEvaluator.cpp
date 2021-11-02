@@ -14,7 +14,7 @@ TEST_CASE("FollowsEvaluator: Follows") {
   pkb->addStmt(2);
 
   SECTION("Select s such that Follows(1, 2)") {
-    pkb->setFollows(1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
     FollowsEvaluator fe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -24,7 +24,7 @@ TEST_CASE("FollowsEvaluator: Follows") {
   }
 
   SECTION("Select s such that Follows(1, _)") {
-    pkb->setFollows(1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
     FollowsEvaluator fe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -34,7 +34,7 @@ TEST_CASE("FollowsEvaluator: Follows") {
   }
 
   SECTION("Select s such that Follows(1, s)") {
-    pkb->setFollows(1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
     FollowsEvaluator fe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -51,7 +51,7 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
   pkb->addStmt(3);
 
   SECTION("Select s such that FollowsT(1, 2)") {
-    pkb->addFollowsT(1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
     FollowsEvaluator fe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -61,7 +61,7 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
   }
 
   SECTION("Select s such that FollowsT(1, _)") {
-    pkb->addFollowsT(1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
     FollowsEvaluator fe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -71,8 +71,8 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
   }
 
   SECTION("Select s such that Follows(1, s)") {
-    pkb->addFollowsT(1, 2);
-    pkb->addFollowsT(1, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
     FollowsEvaluator fe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};

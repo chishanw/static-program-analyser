@@ -21,7 +21,7 @@ class FollowsEvaluator {
                             const query::Param& right);
   std::unordered_set<int> evaluateStmtFollowsT(const query::Param& left,
                                                const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluateStmtPairFollowsT(
+  std::vector<std::vector<int>> evaluateStmtPairFollowsT(
       const query::Param& left, const query::Param& right);
 
  private:

@@ -2,6 +2,7 @@
 
 #include <Common/ExprParser.h>
 #include <Common/Tokenizer.h>
+#include <Common/Common.h>
 
 #include <set>
 #include <unordered_set>

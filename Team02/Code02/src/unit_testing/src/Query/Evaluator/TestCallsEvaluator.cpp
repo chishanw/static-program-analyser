@@ -12,9 +12,9 @@ using Catch::Matchers::VectorContains;
 
 TEST_CASE("CallsEvaluator: Calls") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
+  int proc1Idx = pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TableType::PROC_TABLE, "proc3");
   pkb->addCalls(1, "proc1", "proc2");
   pkb->addCalls(2, "proc1", "proc3");
   pkb->addCalls(3, "proc2", "proc3");
@@ -75,10 +75,10 @@ TEST_CASE("CallsEvaluator: Calls") {
 
 TEST_CASE("CallsEvaluator: CallsT") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
-  int proc4Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc4");
+  int proc1Idx = pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TableType::PROC_TABLE, "proc3");
+  int proc4Idx = pkb->insertAt(TableType::PROC_TABLE, "proc4");
   pkb->addCalls(1, "proc1", "proc2");
   pkb->addCalls(2, "proc2", "proc3");
   pkb->addCalls(3, "proc3", "proc4");

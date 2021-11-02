@@ -1,5 +1,6 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -29,7 +30,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::MODIFIES_S,
+                                     RelationshipType::MODIFIES_S,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -59,7 +60,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S,
+        clauses, RelationshipType::MODIFIES_S,
         query::ParamType::INTEGER_LITERAL, "1", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -85,7 +86,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::MODIFIES_S,
+                                     RelationshipType::MODIFIES_S,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -112,7 +113,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "a", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -141,7 +142,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "a", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -167,7 +168,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "a", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -193,7 +194,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "r", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -222,7 +223,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "r", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -248,7 +249,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "r", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -274,7 +275,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "ifs", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -303,7 +304,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "ifs", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -329,7 +330,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "ifs", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -355,7 +356,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "w", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -384,7 +385,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "w", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -410,7 +411,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "w", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -436,7 +437,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "s", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -465,7 +466,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "s", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -491,7 +492,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "s", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -517,7 +518,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "c", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -546,7 +547,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "c", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -572,7 +573,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "c", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -598,7 +599,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "n", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -627,7 +628,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "n", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -653,7 +654,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_S, query::ParamType::SYNONYM,
         "n", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -728,7 +729,7 @@ TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
         "p", query::ParamType::NAME_LITERAL, "x");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -757,7 +758,7 @@ TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
         "p", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -783,7 +784,7 @@ TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
+        clauses, RelationshipType::MODIFIES_P, query::ParamType::SYNONYM,
         "p", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -809,7 +810,7 @@ TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::MODIFIES_P,
+                                     RelationshipType::MODIFIES_P,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::NAME_LITERAL, "y");
 
@@ -839,7 +840,7 @@ TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_P,
+        clauses, RelationshipType::MODIFIES_P,
         query::ParamType::NAME_LITERAL, "x", query::ParamType::SYNONYM, "v");
 
     tuple<SynonymMap, SelectClause> expected = {
@@ -865,7 +866,7 @@ TEST_CASE("Valid queries for one such that clause for ModifiesP throws") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(
-        clauses, query::RelationshipType::MODIFIES_P,
+        clauses, RelationshipType::MODIFIES_P,
         query::ParamType::NAME_LITERAL, "x", query::ParamType::WILDCARD, "_");
 
     tuple<SynonymMap, SelectClause> expected = {

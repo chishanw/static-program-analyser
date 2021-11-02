@@ -272,8 +272,8 @@ void WithEvaluator::evaluateIndexes(string firstSyn, string secondSyn) {
 
 void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
   for (auto results : currentQueryResults) {
-    string constValue = pkb->getElementAt(TABLE_ENUM::CONST_TABLE,
-        results.at(constSyn));
+    string constValue =
+        pkb->getElementAt(TableType::CONST_TABLE, results.at(constSyn));
     string stmtNum = to_string(results.at(stmtSyn));
 
     if (constValue == stmtNum) {
@@ -286,8 +286,8 @@ void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
 void WithEvaluator::evaluateValueAndIntegerLiteral(string constSyn,
                                                    string integerLiteral) {
   for (auto results : currentQueryResults) {
-    string constValue = pkb->getElementAt(TABLE_ENUM::CONST_TABLE,
-        results.at(constSyn));
+    string constValue =
+        pkb->getElementAt(TableType::CONST_TABLE, results.at(constSyn));
 
     if (constValue == integerLiteral) {
       isClauseTrue = true;
@@ -335,10 +335,12 @@ int WithEvaluator::getIndexOfVarNameAttrOfSynonym(
       varIdx = valueOfSynonym;
       break;
     case DesignEntity::READ:
-      varIdx = *(pkb->getVarsModifiedS(valueOfSynonym)).begin();
+      varIdx = *(pkb->getRight(RelationshipType::MODIFIES_S, valueOfSynonym))
+                    .begin();
       break;
     case DesignEntity::PRINT:
-      varIdx = *(pkb->getVarsUsedS(valueOfSynonym)).begin();
+      varIdx =
+          *(pkb->getRight(RelationshipType::USES_S, valueOfSynonym)).begin();
       break;
     default:
       DMOprintErrMsgAndExit(
@@ -353,12 +355,12 @@ string WithEvaluator::getProcNameAttrOfSynonym(
     int valueOfSynonym, DesignEntity designEntityOfSynonym) {
   int procIdx =
       getIndexOfProcNameAttrOfSynonym(valueOfSynonym, designEntityOfSynonym);
-  return pkb->getElementAt(TABLE_ENUM::PROC_TABLE, procIdx);
+  return pkb->getElementAt(TableType::PROC_TABLE, procIdx);
 }
 
 string WithEvaluator::getVarNameAttrOfSynonym(
     int valueOfSynonym, DesignEntity designEntityOfSynonym) {
   int varIdx =
       getIndexOfVarNameAttrOfSynonym(valueOfSynonym, designEntityOfSynonym);
-  return pkb->getElementAt(TABLE_ENUM::VAR_TABLE, varIdx);
+  return pkb->getElementAt(TableType::VAR_TABLE, varIdx);
 }

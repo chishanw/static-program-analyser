@@ -169,9 +169,7 @@ void QueryEvaluator::evaluateFollowsTClause(SuchThatClause clause) {
     incomingResults =
         formatRefResults(followsEvaluator.evaluateStmtFollowsT(left, right));
   } else {
-    incomingResults = formatRefPairResults(
-        followsEvaluator.evaluateStmtPairFollowsT(left, right), left.type,
-        right.type);
+    incomingResults = followsEvaluator.evaluateStmtPairFollowsT(left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -204,9 +202,7 @@ void QueryEvaluator::evaluateParentClause(SuchThatClause clause) {
     incomingResults =
         formatRefResults(parentEvaluator.evaluateStmtParent(left, right));
   } else {
-    incomingResults = formatRefPairResults(
-        parentEvaluator.evaluateStmtPairParent(left, right), left.type,
-        right.type);
+    incomingResults = parentEvaluator.evaluateStmtPairParent(left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -239,9 +235,7 @@ void QueryEvaluator::evaluateParentTClause(SuchThatClause clause) {
     incomingResults =
         formatRefResults(parentEvaluator.evaluateStmtParentT(left, right));
   } else {
-    incomingResults = formatRefPairResults(
-        parentEvaluator.evaluateStmtPairParentT(left, right), left.type,
-        right.type);
+    incomingResults = parentEvaluator.evaluateStmtPairParentT(left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -275,8 +269,7 @@ void QueryEvaluator::evaluateUsesSClause(SuchThatClause clause) {
         formatRefResults(usesEvaluator.evaluateUsesS(left, right));
 
   } else {
-    incomingResults = formatRefPairResults(
-        usesEvaluator.evaluatePairUsesS(left, right), left.type, right.type);
+    incomingResults = usesEvaluator.evaluatePairUsesS(left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -310,8 +303,7 @@ void QueryEvaluator::evaluateUsesPClause(SuchThatClause clause) {
         formatRefResults(usesEvaluator.evaluateUsesP(left, right));
 
   } else {
-    incomingResults = formatRefPairResults(
-        usesEvaluator.evaluatePairUsesP(left, right), left.type, right.type);
+    incomingResults = usesEvaluator.evaluatePairUsesP(left, right);
   }
   filterAndAddIncomingResults(incomingResults, left, right);
 }
@@ -343,9 +335,7 @@ void QueryEvaluator::evaluateModifiesSClause(SuchThatClause clause) {
     incomingResults =
         formatRefResults(modifiesEvaluator.evaluateModifiesS(left, right));
   } else {
-    incomingResults = formatRefPairResults(
-        modifiesEvaluator.evaluatePairModifiesS(left, right), left.type,
-        right.type);
+    incomingResults = modifiesEvaluator.evaluatePairModifiesS(left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -378,9 +368,7 @@ void QueryEvaluator::evaluateModifiesPClause(SuchThatClause clause) {
     incomingResults =
         formatRefResults(modifiesEvaluator.evaluateModifiesP(left, right));
   } else {
-    incomingResults = formatRefPairResults(
-        modifiesEvaluator.evaluatePairModifiesP(left, right), left.type,
-        right.type);
+    incomingResults = modifiesEvaluator.evaluatePairModifiesP(left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -1051,11 +1039,11 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
     case DesignEntity::ASSIGN:
       return pkb->getAllAssignStmts();
     case DesignEntity::VARIABLE:
-      return pkb->getAllElementsAt(TABLE_ENUM::VAR_TABLE);
+      return pkb->getAllElementsAt(TableType::VAR_TABLE);
     case DesignEntity::PROCEDURE:
-      return pkb->getAllElementsAt(TABLE_ENUM::PROC_TABLE);
+      return pkb->getAllElementsAt(TableType::PROC_TABLE);
     case DesignEntity::CONSTANT:
-      return pkb->getAllElementsAt(TABLE_ENUM::CONST_TABLE);
+      return pkb->getAllElementsAt(TableType::CONST_TABLE);
     default:
       DMOprintErrMsgAndExit(
           "[QE][getAllValuesOfSynonyms] invalid design entity");

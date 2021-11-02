@@ -14,13 +14,13 @@ class UsesEvaluator {
   bool evaluateBoolUsesS(const query::Param& left, const query::Param& right);
   std::unordered_set<int> evaluateUsesS(const query::Param& left,
                                         const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluatePairUsesS(
+  std::vector<std::vector<int>> evaluatePairUsesS(
       const query::Param& left, const query::Param& right);
 
   bool evaluateBoolUsesP(const query::Param& left, const query::Param& right);
   std::unordered_set<int> evaluateUsesP(const query::Param& left,
                                         const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluatePairUsesP(
+  std::vector<std::vector<int>> evaluatePairUsesP(
       const query::Param& left, const query::Param& right);
 
  private:

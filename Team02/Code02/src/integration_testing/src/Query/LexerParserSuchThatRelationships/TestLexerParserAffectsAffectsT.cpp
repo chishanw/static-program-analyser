@@ -23,7 +23,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::AFFECTS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -46,7 +46,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::AFFECTS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -69,7 +69,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::AFFECTS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::SYNONYM, "s2");
 
@@ -92,7 +92,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::AFFECTS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::SYNONYM, "n");
 
@@ -115,7 +115,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::AFFECTS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::SYNONYM, "a");
 
@@ -140,7 +140,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::AFFECTS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS,
                                      query::ParamType::SYNONYM, "s1",
                                      query::ParamType::SYNONYM, "a");
 
@@ -266,7 +266,7 @@ TEST_CASE("Valid queries for Affects* relationship succeeds") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::AFFECTS_T,
+                                     RelationshipType::AFFECTS_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -293,7 +293,7 @@ TEST_CASE("Valid queries for AffectsBip relationship succeeds") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::AFFECTS_BIP,
+                                     RelationshipType::AFFECTS_BIP,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -321,7 +321,7 @@ TEST_CASE("Valid queries for AffectsBip* relationship succeeds") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::AFFECTS_BIP_T,
+                                     RelationshipType::AFFECTS_BIP_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 

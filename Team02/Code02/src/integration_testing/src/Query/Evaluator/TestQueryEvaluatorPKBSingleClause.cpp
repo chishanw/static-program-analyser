@@ -16,11 +16,11 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
   pkb->addStmt(2);
   pkb->addStmt(3);
   pkb->addStmt(4);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(2, 3);
-  pkb->addFollowsT(1, 3);
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
   pkb->addReadStmt(1);
   pkb->addReadStmt(2);
 
@@ -186,8 +186,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Follows(3, 4)") {
-    pkb->setFollows(1, 2);
-    pkb->setFollows(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
@@ -202,8 +202,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that Follows(3, _)") {
-    pkb->setFollows(1, 2);
-    pkb->setFollows(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
@@ -218,8 +218,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that Follows(3, s1)") {
-    pkb->setFollows(1, 2);
-    pkb->setFollows(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
@@ -234,8 +234,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that Follows(s1, 4)") {
-    pkb->setFollows(1, 2);
-    pkb->setFollows(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
@@ -283,9 +283,10 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(1, 3);
-  pkb->addFollowsT(2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
+
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -397,9 +398,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that FollowsT(3, 4)") {
-    pkb->addFollowsT(1, 2);
-    pkb->addFollowsT(1, 3);
-    pkb->addFollowsT(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
@@ -414,9 +415,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that FollowsT(3, _)") {
-    pkb->addFollowsT(1, 2);
-    pkb->addFollowsT(1, 3);
-    pkb->addFollowsT(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
@@ -431,9 +432,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s2 such that FollowsT(3, s2)") {
-    pkb->addFollowsT(1, 2);
-    pkb->addFollowsT(1, 3);
-    pkb->addFollowsT(2, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+    pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
@@ -482,9 +483,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
   pkb->addStmt(2);
   pkb->addStmt(3);
   pkb->addStmt(4);
-  pkb->setParent(1, 2);
-  pkb->setParent(1, 3);
-  pkb->setParent(3, 4);
+  pkb->addRs(RelationshipType::PARENT, 1, 2);
+  pkb->addRs(RelationshipType::PARENT, 1, 3);
+  pkb->addRs(RelationshipType::PARENT, 3, 4);
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -610,8 +611,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Parent(2, 3)") {
-    pkb->setParent(1, 2);
-    pkb->setParent(1, 3);
+    pkb->addRs(RelationshipType::PARENT, 1, 2);
+    pkb->addRs(RelationshipType::PARENT, 1, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT,
@@ -626,8 +627,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that Parent(3, _)") {
-    pkb->setParent(1, 2);
-    pkb->setParent(1, 3);
+    pkb->addRs(RelationshipType::PARENT, 1, 2);
+    pkb->addRs(RelationshipType::PARENT, 1, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT,
@@ -642,8 +643,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that Parent(3, s1)") {
-    pkb->setParent(1, 2);
-    pkb->setParent(1, 3);
+    pkb->addRs(RelationshipType::PARENT, 1, 2);
+    pkb->addRs(RelationshipType::PARENT, 1, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT,
@@ -658,8 +659,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that Parent(s1, 4)") {
-    pkb->setParent(1, 2);
-    pkb->setParent(1, 3);
+    pkb->addRs(RelationshipType::PARENT, 1, 2);
+    pkb->addRs(RelationshipType::PARENT, 1, 3);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT,
@@ -708,10 +709,10 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
   pkb->addStmt(2);
   pkb->addStmt(3);
   pkb->addStmt(4);
-  pkb->addParentT(1, 2);
-  pkb->addParentT(1, 3);
-  pkb->addParentT(3, 4);
-  pkb->addParentT(1, 4);
+  pkb->addRs(RelationshipType::PARENT_T, 1, 2);
+  pkb->addRs(RelationshipType::PARENT_T, 1, 3);
+  pkb->addRs(RelationshipType::PARENT_T, 3, 4);
+  pkb->addRs(RelationshipType::PARENT_T, 1, 4);
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -823,10 +824,10 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that ParentT(2, 3)") {
-    pkb->addParentT(1, 2);
-    pkb->addParentT(1, 3);
-    pkb->addParentT(3, 4);
-    pkb->addParentT(1, 4);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 3);
+    pkb->addRs(RelationshipType::PARENT_T, 3, 4);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 4);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT_T,
@@ -841,10 +842,10 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s1 such that ParentT(2, _)") {
-    pkb->addParentT(1, 2);
-    pkb->addParentT(1, 3);
-    pkb->addParentT(3, 4);
-    pkb->addParentT(1, 4);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 3);
+    pkb->addRs(RelationshipType::PARENT_T, 3, 4);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 4);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT_T,
@@ -859,10 +860,10 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s2 such that ParentT(2, s2)") {
-    pkb->addParentT(1, 2);
-    pkb->addParentT(1, 3);
-    pkb->addParentT(3, 4);
-    pkb->addParentT(1, 4);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 3);
+    pkb->addRs(RelationshipType::PARENT_T, 3, 4);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 4);
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::PARENT_T,
@@ -910,9 +911,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->addUsesS(1, "x");
-  pkb->addUsesS(1, "y");
-  pkb->addUsesS(2, "z");
+  pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "z");
   QueryEvaluator qe(pkb);
 
   int xVarIdx = 0;
@@ -1068,9 +1069,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s such that UsesS(3, 'x')") {
-    pkb->addUsesS(1, "x");
-    pkb->addUsesS(1, "y");
-    pkb->addUsesS(2, "z");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
@@ -1085,9 +1086,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesS(3, 'x')") {
-    pkb->addUsesS(1, "x");
-    pkb->addUsesS(1, "y");
-    pkb->addUsesS(2, "z");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
@@ -1102,9 +1103,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s such that UsesS(3, _)") {
-    pkb->addUsesS(1, "x");
-    pkb->addUsesS(1, "y");
-    pkb->addUsesS(2, "z");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
@@ -1119,9 +1120,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesS(3, _)") {
-    pkb->addUsesS(1, "x");
-    pkb->addUsesS(1, "y");
-    pkb->addUsesS(2, "z");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
@@ -1136,7 +1137,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s such that UsesS(s, 'x')") {
-    pkb->addUsesS(1, "y");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
@@ -1151,7 +1152,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesS(s, 'x')") {
-    pkb->addUsesS(1, "y");
+    pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_S,
@@ -1224,12 +1225,15 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
-  pkb->addUsesP("proc1", "x");
-  pkb->addUsesP("proc1", "y");
-  pkb->addUsesP("proc2", "z");
+  int proc1Idx = pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TableType::PROC_TABLE, "proc3");
+  pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc1",
+             TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc1",
+             TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc2",
+             TableType::VAR_TABLE, "z");
   QueryEvaluator qe(pkb);
 
   int xVarIdx = 0;
@@ -1400,9 +1404,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
+  pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  pkb->insertAt(TableType::PROC_TABLE, "proc3");
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p", DesignEntity::PROCEDURE}, {"v", DesignEntity::VARIABLE}};
@@ -1411,7 +1415,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p such that UsesP('proc2', 'x')") {
-    pkb->addUsesP("proc1", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1426,8 +1431,10 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesP('proc1', 'x')") {
-    pkb->addUsesP("proc1", "y");
-    pkb->addUsesP("proc2", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1442,8 +1449,10 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select p such that UsesP('proc1', _)") {
-    pkb->addUsesP("proc2", "x");
-    pkb->addUsesP("proc3", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc3",
+               TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1458,8 +1467,10 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesP('proc1', _)") {
-    pkb->addUsesP("proc2", "x");
-    pkb->addUsesP("proc3", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc3",
+               TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1474,7 +1485,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select p such that UsesP('proc1', v)") {
-    pkb->addUsesP("proc2", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1489,7 +1501,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesP('proc1', v)") {
-    pkb->addUsesP("proc2", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1504,7 +1517,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select p such that UsesP(p, 'x')") {
-    pkb->addUsesP("proc1", "y");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1519,7 +1533,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that UsesP(p, 'x')") {
-    pkb->addUsesP("proc1", "y");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::USES_P,
@@ -1595,9 +1610,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(1, "y");
-  pkb->addModifiesS(2, "z");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "z");
   QueryEvaluator qe(pkb);
 
   int xVarIdx = 0;
@@ -1705,9 +1720,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s such that ModifiesS(3, 'x')") {
-    pkb->addModifiesS(1, "x");
-    pkb->addModifiesS(1, "y");
-    pkb->addModifiesS(2, "z");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
@@ -1722,9 +1737,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesS(3, 'x')") {
-    pkb->addModifiesS(1, "x");
-    pkb->addModifiesS(1, "y");
-    pkb->addModifiesS(2, "z");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
@@ -1739,9 +1754,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s such that ModifiesS(3, _)") {
-    pkb->addModifiesS(1, "x");
-    pkb->addModifiesS(1, "y");
-    pkb->addModifiesS(2, "z");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
@@ -1756,9 +1771,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesS(3, _)") {
-    pkb->addModifiesS(1, "x");
-    pkb->addModifiesS(1, "y");
-    pkb->addModifiesS(2, "z");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
+    pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "z");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
@@ -1773,7 +1788,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select s such that ModifiesS(s, 'x')") {
-    pkb->addModifiesS(1, "y");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
@@ -1788,7 +1803,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesS(s, 'x')") {
-    pkb->addModifiesS(1, "y");
+    pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_S,
@@ -1861,12 +1876,15 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
-  pkb->addModifiesP("proc1", "x");
-  pkb->addModifiesP("proc1", "y");
-  pkb->addModifiesP("proc2", "z");
+  int proc1Idx = pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TableType::PROC_TABLE, "proc3");
+  pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+             TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+             TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+             TableType::VAR_TABLE, "z");
   QueryEvaluator qe(pkb);
 
   int xVarIdx = 0;
@@ -2051,8 +2069,10 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p such that ModifiesP('proc3', 'x')") {
-    pkb->addModifiesP("proc1", "x");
-    pkb->addModifiesP("proc2", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2067,8 +2087,10 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesP('proc3', 'x')") {
-    pkb->addModifiesP("proc1", "x");
-    pkb->addModifiesP("proc2", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2083,8 +2105,10 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select p such that ModifiesP('proc3', _)") {
-    pkb->addModifiesP("proc1", "x");
-    pkb->addModifiesP("proc2", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2099,8 +2123,10 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesP('proc3', _)") {
-    pkb->addModifiesP("proc1", "x");
-    pkb->addModifiesP("proc2", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2115,8 +2141,10 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select p such that ModifiesP('proc3', v)") {
-    pkb->addModifiesP("proc1", "x");
-    pkb->addModifiesP("proc2", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2131,8 +2159,10 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesP('proc3', v)") {
-    pkb->addModifiesP("proc1", "x");
-    pkb->addModifiesP("proc2", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "x");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc2",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2147,7 +2177,8 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select p such that ModifiesP(p, 'x')") {
-    pkb->addModifiesP("proc1", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2162,7 +2193,8 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v such that ModifiesP(p, 'x')") {
-    pkb->addModifiesP("proc1", "y");
+    pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "proc1",
+               TableType::VAR_TABLE, "y");
     QueryEvaluator qe(pkb);
 
     SuchThatClause suchThatClause = {RelationshipType::MODIFIES_P,
@@ -2235,9 +2267,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
+  int proc1Idx = pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TableType::PROC_TABLE, "proc3");
   pkb->addCalls(1, "proc1", "proc2");
   pkb->addCalls(2, "proc1", "proc3");
   pkb->addCalls(3, "proc2", "proc3");
@@ -2369,9 +2401,9 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
+  pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  pkb->insertAt(TableType::PROC_TABLE, "proc3");
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
@@ -2515,11 +2547,11 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
   PKB* pkb = new PKB();
-  int proc1Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  int proc2Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  int proc3Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
-  int proc4Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc4");
-  int proc5Idx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc5");
+  int proc1Idx = pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  int proc2Idx = pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  int proc3Idx = pkb->insertAt(TableType::PROC_TABLE, "proc3");
+  int proc4Idx = pkb->insertAt(TableType::PROC_TABLE, "proc4");
+  int proc5Idx = pkb->insertAt(TableType::PROC_TABLE, "proc5");
   pkb->addCalls(1, "proc1", "proc2");
   pkb->addCalls(2, "proc2", "proc3");
   pkb->addCalls(4, "proc4", "proc5");
@@ -2668,9 +2700,9 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc1");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc2");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "proc3");
+  pkb->insertAt(TableType::PROC_TABLE, "proc1");
+  pkb->insertAt(TableType::PROC_TABLE, "proc2");
+  pkb->insertAt(TableType::PROC_TABLE, "proc3");
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
@@ -3454,9 +3486,9 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
+  pkb->insertAt(TableType::PROC_TABLE, "B");
   pkb->addFirstStmtOfProc("B", 9);
   for (int i = 1; i <= 13; i++) {
     pkb->addStmt(i);
@@ -3494,21 +3526,21 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     }
   }
 
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(3, "x");
-  pkb->addUsesS(3, "x");
-  pkb->addUsesS(3, "y");
-  pkb->addModifiesS(5, "x");
-  pkb->addUsesS(5, "x");
-  pkb->addModifiesS(7, "x");
-  pkb->addUsesS(7, "x");
-  pkb->addModifiesS(8, "y");
-  pkb->addUsesS(8, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 8, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 8, TableType::VAR_TABLE, "x");
 
-  pkb->addModifiesS(10, "x");
-  pkb->addModifiesS(12, "y");
-  pkb->addUsesS(12, "x");
-  pkb->addModifiesS(13, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 10, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 12, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 13, TableType::VAR_TABLE, "y");
 
   // procedure A {
   // 1: x = 0;
@@ -3731,7 +3763,7 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Affects") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 8; i++) {
     pkb->addStmt(i);
@@ -3761,12 +3793,12 @@ TEST_CASE("QueryEvaluator: Affects") {
     pkb->addAssignStmt(a);
   }
 
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(3, "x");
-  pkb->addModifiesS(5, "x");
-  pkb->addModifiesS(7, "x");
-  pkb->addUsesS(7, "y");
-  pkb->addModifiesS(8, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 8, TableType::VAR_TABLE, "x");
 
   // procedure A {
   // 1: x = 0;
@@ -4464,10 +4496,10 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
   PKB* pkb = new PKB();
-  int procAIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
-  int procBIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
-  int varAIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "A");
-  int varBIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "B");
+  int procAIdx = pkb->insertAt(TableType::PROC_TABLE, "A");
+  int procBIdx = pkb->insertAt(TableType::PROC_TABLE, "B");
+  int varAIdx = pkb->insertAt(TableType::VAR_TABLE, "A");
+  int varBIdx = pkb->insertAt(TableType::VAR_TABLE, "B");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -4586,8 +4618,8 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select p1 with p1.procName = v1.varName") {
-    pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
-    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+    pkb->insertAt(TableType::PROC_TABLE, "A");
+    pkb->insertAt(TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
@@ -4600,8 +4632,8 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select v1 with p1.procName = v1.varName") {
-    pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
-    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+    pkb->insertAt(TableType::PROC_TABLE, "A");
+    pkb->insertAt(TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
@@ -4614,7 +4646,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select p1 with p1.procName = 'aaa'") {
-    pkb->insertAt(TABLE_ENUM::PROC_TABLE, "AAA");
+    pkb->insertAt(TableType::PROC_TABLE, "AAA");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_PROC_NAME, "p1"},
@@ -4627,7 +4659,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select v1 with v1.varName = 'xxx'") {
-    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+    pkb->insertAt(TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_VAR_NAME, "v1"},
@@ -4640,7 +4672,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
   }
 
   SECTION("Select v1 with 'A' = 'a'") {
-    pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
+    pkb->insertAt(TableType::VAR_TABLE, "x");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::NAME_LITERAL, "A"},
@@ -4659,8 +4691,8 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
   pkb->addStmt(2);
   pkb->addStmt(3);
   pkb->addStmt(4);
-  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
-  int const2Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
+  int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
+  int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -4854,7 +4886,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
 
   SECTION("Select n1 with n1 = c1.value") {
     pkb->addStmt(1);
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
+    pkb->insertAt(TableType::CONST_TABLE, "2");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::SYNONYM, "n1"},
@@ -4895,7 +4927,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   SECTION("Select s1 with s1.stmt# = c1.value") {
     pkb->addStmt(1);
     pkb->addStmt(2);
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
+    pkb->insertAt(TableType::CONST_TABLE, "3");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},
@@ -4933,7 +4965,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   }
 
   SECTION("Select c1 with c1.value = 2") {
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
+    pkb->insertAt(TableType::CONST_TABLE, "1");
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_VALUE, "c1"},

@@ -2,6 +2,7 @@
 
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <set>
 #include <string>
@@ -48,7 +49,7 @@ class TestQueryOptimizerUtil {
 
   // such that Parent(1, 2)
   inline static const query::ConditionClause DEFAULT_SUCH_THAT_LITERAL = {
-      {query::RelationshipType::FOLLOWS_T,
+      {RelationshipType::FOLLOWS_T,
        {query::ParamType::INTEGER_LITERAL, "1"},
        {query::ParamType::INTEGER_LITERAL, "2"}},
       {},
@@ -57,7 +58,7 @@ class TestQueryOptimizerUtil {
 
   // such that Follows*(s1, s2)
   inline static const query::ConditionClause DEFAULT_SUCH_THAT_SYNONYM = {
-      {query::RelationshipType::FOLLOWS_T,
+      {RelationshipType::FOLLOWS_T,
        {query::ParamType::SYNONYM, DEFAULT_S1_NAME},
        {query::ParamType::SYNONYM, DEFAULT_S2_NAME}},
       {},

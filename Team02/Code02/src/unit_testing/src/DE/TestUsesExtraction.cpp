@@ -54,72 +54,85 @@ TEST_CASE("[DE][Uses R/S] sample source") {
   de.Extract(ast);
 
   SECTION("Uses R/S") {
-    REQUIRE(pkb->isUsesS(4, "i"));  // container stmt from 4 - 11
-    REQUIRE(pkb->isUsesS(4, "x"));
-    REQUIRE(pkb->isUsesS(4, "z"));
-    REQUIRE(pkb->isUsesS(5, "x"));
-    REQUIRE(pkb->isUsesS(6, "x"));  // container stmt from 6 - 8
-    REQUIRE(pkb->isUsesS(6, "z"));
-    REQUIRE(pkb->isUsesS(7, "x"));
-    REQUIRE(pkb->isUsesS(8, "z"));
-    REQUIRE(pkb->isUsesS(8, "x"));
-    REQUIRE(pkb->isUsesS(9, "z"));
-    REQUIRE(pkb->isUsesS(9, "x"));
-    REQUIRE(pkb->isUsesS(9, "i"));
-    REQUIRE(pkb->isUsesS(11, "i"));
+    RelationshipType rs = RelationshipType::USES_S;
+    TableType rightType = TableType::VAR_TABLE;
+    TableType leftType = TableType::PROC_TABLE;
+    REQUIRE(pkb->isRs(rs, 4, rightType,
+                      "i"));  // container stmt from 4 - 11
+    REQUIRE(pkb->isRs(rs, 4, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 4, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 5, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 6, rightType,
+                      "x"));  // container stmt from 6 - 8
+    REQUIRE(pkb->isRs(rs, 6, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 7, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 8, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 8, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 9, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 9, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 9, rightType, "i"));
+    REQUIRE(pkb->isRs(rs, 11, rightType, "i"));
 
-    REQUIRE(pkb->isUsesS(13, "x"));  // container stmt from 13 - 20
-    REQUIRE(pkb->isUsesS(13, "i"));
-    REQUIRE(pkb->isUsesS(13, "z"));
-    REQUIRE(pkb->isUsesS(13, "y"));
+    REQUIRE(pkb->isRs(rs, 13, rightType, "x"));  // container stmt from 13 - 20
+    REQUIRE(pkb->isRs(rs, 13, rightType, "i"));
+    REQUIRE(pkb->isRs(rs, 13, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 13, rightType, "y"));
 
-    REQUIRE(pkb->isUsesS(14, "i"));  // container stmt from 14 - 17
-    REQUIRE(pkb->isUsesS(14, "z"));
-    REQUIRE(pkb->isUsesS(14, "y"));
-    REQUIRE(pkb->isUsesS(15, "z"));
-    REQUIRE(pkb->isUsesS(15, "y"));
-    REQUIRE(pkb->isUsesS(17, "i"));
+    REQUIRE(pkb->isRs(rs, 14, rightType, "i"));  // container stmt from 14 - 17
+    REQUIRE(pkb->isRs(rs, 14, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 14, rightType, "y"));
+    REQUIRE(pkb->isRs(rs, 15, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 15, rightType, "y"));
+    REQUIRE(pkb->isRs(rs, 17, rightType, "i"));
 
-    REQUIRE(pkb->isUsesS(18, "x"));
-    REQUIRE(pkb->isUsesS(19, "x"));
-    REQUIRE(pkb->isUsesS(19, "z"));
-    REQUIRE(pkb->isUsesS(21, "z"));
-    REQUIRE(pkb->isUsesS(21, "x"));
-    REQUIRE(pkb->isUsesS(21, "i"));
+    REQUIRE(pkb->isRs(rs, 18, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 19, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 19, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 21, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 21, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 21, rightType, "i"));
 
-    REQUIRE(pkb->isUsesS(22, "x"));  // container stmt from 22 - 24
-    REQUIRE(pkb->isUsesS(22, "z"));
-    REQUIRE(pkb->isUsesS(23, "x"));
-    REQUIRE(pkb->isUsesS(24, "z"));
-    REQUIRE(pkb->isUsesS(24, "x"));
+    REQUIRE(pkb->isRs(rs, 22, rightType, "x"));  // container stmt from 22 - 24
+    REQUIRE(pkb->isRs(rs, 22, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 23, rightType, "x"));
+    REQUIRE(pkb->isRs(rs, 24, rightType, "z"));
+    REQUIRE(pkb->isRs(rs, 24, rightType, "x"));
 
-    REQUIRE(pkb->getUsesS("x") == UNO_SET_OF_STMT_NO({ 4, 5, 6, 7, 8, 9,
-        10, 12, 13, 14, 16, 18, 19, 21, 22, 23, 24}));
-    REQUIRE(pkb->getUsesS("i") == UNO_SET_OF_STMT_NO({ 4, 9, 11, 12, 13, 14,
-        17, 21 }));
-    REQUIRE(pkb->getUsesS("z") == UNO_SET_OF_STMT_NO({ 4, 6, 8, 9, 10, 12,
-        13, 14, 15, 16, 19, 21, 22, 24}));
-    REQUIRE(pkb->getUsesS("y") == UNO_SET_OF_STMT_NO({ 12, 13, 14, 15 }));
-    REQUIRE(pkb->getUsesS("a") == UNO_SET_OF_STMT_NO({ 12, 13, 14, 15 }));
-    REQUIRE(pkb->getUsesS("b") == UNO_SET_OF_STMT_NO({ 4, 10, 12, 13, 14,
-        16, 22, 23 }));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                         "x") ==
+            UNO_SET_OF_STMT_NO({4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 18, 19,
+                                21, 22, 23, 24}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                         "i") ==
+            UNO_SET_OF_STMT_NO({4, 9, 11, 12, 13, 14, 17, 21}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                         "z") == UNO_SET_OF_STMT_NO({4, 6, 8, 9, 10, 12, 13, 14,
+                                                     15, 16, 19, 21, 22, 24}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                         "y") == UNO_SET_OF_STMT_NO({12, 13, 14, 15}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                         "a") == UNO_SET_OF_STMT_NO({12, 13, 14, 15}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                         "b") ==
+            UNO_SET_OF_STMT_NO({4, 10, 12, 13, 14, 16, 22, 23}));
 
-    REQUIRE(pkb->isUsesP("q", "z"));
-    REQUIRE(pkb->isUsesP("q", "b"));
-    REQUIRE(pkb->isUsesP("q", "x"));
+    rs = RelationshipType::USES_P;
+    REQUIRE(pkb->isRs(rs, leftType, "q", rightType, "z"));
+    REQUIRE(pkb->isRs(rs, leftType, "q", rightType, "b"));
+    REQUIRE(pkb->isRs(rs, leftType, "q", rightType, "x"));
 
-    REQUIRE(pkb->isUsesP("p", "a"));
-    REQUIRE(pkb->isUsesP("p", "y"));
-    REQUIRE(pkb->isUsesP("p", "x"));
-    REQUIRE(pkb->isUsesP("p", "i"));
-    REQUIRE(pkb->isUsesP("p", "b"));
-    REQUIRE(pkb->isUsesP("p", "z"));
+    REQUIRE(pkb->isRs(rs, leftType, "p", rightType, "a"));
+    REQUIRE(pkb->isRs(rs, leftType, "p", rightType, "y"));
+    REQUIRE(pkb->isRs(rs, leftType, "p", rightType, "x"));
+    REQUIRE(pkb->isRs(rs, leftType, "p", rightType, "i"));
+    REQUIRE(pkb->isRs(rs, leftType, "p", rightType, "b"));
+    REQUIRE(pkb->isRs(rs, leftType, "p", rightType, "z"));
 
-    REQUIRE(pkb->isUsesP("Example", "a"));
-    REQUIRE(pkb->isUsesP("Example", "x"));
-    REQUIRE(pkb->isUsesP("Example", "i"));
-    REQUIRE(pkb->isUsesP("Example", "b"));
-    REQUIRE(pkb->isUsesP("Example", "z"));
-    REQUIRE(pkb->isUsesP("Example", "y"));
+    REQUIRE(pkb->isRs(rs, leftType, "Example", rightType, "a"));
+    REQUIRE(pkb->isRs(rs, leftType, "Example", rightType, "x"));
+    REQUIRE(pkb->isRs(rs, leftType, "Example", rightType, "i"));
+    REQUIRE(pkb->isRs(rs, leftType, "Example", rightType, "b"));
+    REQUIRE(pkb->isRs(rs, leftType, "Example", rightType, "z"));
+    REQUIRE(pkb->isRs(rs, leftType, "Example", rightType, "y"));
   }
 }

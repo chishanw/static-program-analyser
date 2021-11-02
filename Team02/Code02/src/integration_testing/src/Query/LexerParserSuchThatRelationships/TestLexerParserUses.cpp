@@ -1,5 +1,6 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -26,7 +27,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -55,7 +56,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::SYNONYM, "v");
 
@@ -81,7 +82,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -107,7 +108,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "a",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -136,7 +137,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "a",
                                      query::ParamType::SYNONYM, "v");
 
@@ -162,7 +163,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "a",
                                      query::ParamType::WILDCARD, "_");
 
@@ -188,7 +189,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::PRINT, "pn", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "pn",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -217,7 +218,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::PRINT, "pn", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "pn",
                                      query::ParamType::SYNONYM, "v");
 
@@ -243,7 +244,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::PRINT, "pn", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "pn",
                                      query::ParamType::WILDCARD, "_");
 
@@ -269,7 +270,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "ifs",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -298,7 +299,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "ifs",
                                      query::ParamType::SYNONYM, "v");
 
@@ -324,7 +325,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "ifs",
                                      query::ParamType::WILDCARD, "_");
 
@@ -350,7 +351,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "w",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -379,7 +380,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "w",
                                      query::ParamType::SYNONYM, "v");
 
@@ -405,7 +406,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "w",
                                      query::ParamType::WILDCARD, "_");
 
@@ -431,7 +432,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "s",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -460,7 +461,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "s",
                                      query::ParamType::SYNONYM, "v");
 
@@ -486,7 +487,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "s",
                                      query::ParamType::WILDCARD, "_");
 
@@ -512,7 +513,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::CALL, "c", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "c",
                                      query::ParamType::WILDCARD, "_");
 
@@ -538,7 +539,7 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         {query::DesignEntity::PROG_LINE, "n", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_S,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
                                      query::ParamType::SYNONYM, "n",
                                      query::ParamType::WILDCARD, "_");
 
@@ -613,7 +614,7 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         {query::DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_P,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
                                      query::ParamType::SYNONYM, "p",
                                      query::ParamType::NAME_LITERAL, "x");
 
@@ -642,7 +643,7 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         {query::DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_P,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
                                      query::ParamType::SYNONYM, "p",
                                      query::ParamType::SYNONYM, "v");
 
@@ -668,7 +669,7 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         {query::DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_P,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
                                      query::ParamType::SYNONYM, "p",
                                      query::ParamType::WILDCARD, "_");
 
@@ -694,7 +695,7 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         {query::DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_P,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::NAME_LITERAL, "y");
 
@@ -723,7 +724,7 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         {query::DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_P,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::SYNONYM, "v");
 
@@ -749,7 +750,7 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         {query::DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::USES_P,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::WILDCARD, "_");
 

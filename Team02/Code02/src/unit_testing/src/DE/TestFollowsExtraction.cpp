@@ -1,8 +1,8 @@
 
+#include <Common/Tokenizer.h>
 #include <DesignExtractor/DesignExtractor.h>
 #include <PKB/PKB.h>
 #include <Parser/Parser.h>
-#include <Common/Tokenizer.h>
 
 #include <vector>
 
@@ -54,56 +54,80 @@ TEST_CASE("[DE][Follows(*) R/S] sample source") {
   de.Extract(ast);
 
   SECTION("Follows R/S") {
-    REQUIRE(pkb->getFollows(1) == 2);
-    REQUIRE(pkb->getFollows(2) == 3);
-    REQUIRE(pkb->getFollows(3) == 4);
-    REQUIRE(pkb->getFollows(4) == 12);
-    REQUIRE(pkb->getFollows(5) == 6);
-    REQUIRE(pkb->getFollows(6) == 9);
-    REQUIRE(pkb->getFollows(7) == -1);
-    REQUIRE(pkb->getFollows(8) == -1);
-    REQUIRE(pkb->getFollows(9) == 10);
-    REQUIRE(pkb->getFollows(10) == 11);
-    REQUIRE(pkb->getFollows(11) == -1);
-    REQUIRE(pkb->getFollows(12) == -1);
-    REQUIRE(pkb->getFollows(13) == 21);
-    REQUIRE(pkb->getFollows(14) == 18);
-    REQUIRE(pkb->getFollows(15) == 16);
-    REQUIRE(pkb->getFollows(16) == 17);
-    REQUIRE(pkb->getFollows(17) == -1);
-    REQUIRE(pkb->getFollows(18) == 19);
-    REQUIRE(pkb->getFollows(19) == -1);
-    REQUIRE(pkb->getFollows(20) == -1);
-    REQUIRE(pkb->getFollows(21) == -1);
-    REQUIRE(pkb->getFollows(22) == -1);
-    REQUIRE(pkb->getFollows(23) == -1);
-    REQUIRE(pkb->getFollows(24) == -1);
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 1, 2));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 2, 3));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 3, 4));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 4, 12));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 5, 6));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 6, 9));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 7).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 8).empty());
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 9, 10));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 10, 11));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 11).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 12).empty());
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 13, 21));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 14, 18));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 15, 16));
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 16, 17));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 17).empty());
+    REQUIRE(pkb->isRs(RelationshipType::FOLLOWS, 18, 19));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 19).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 20).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 21).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 22).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 23).empty());
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 24).empty());
   }
 
   SECTION("Follows* R/S") {
-    REQUIRE(pkb->getFollowsT(1) == UNO_SET_OF_STMT_NO({2, 3, 4, 12}));
-    REQUIRE(pkb->getFollowsT(2) == UNO_SET_OF_STMT_NO({3, 4, 12}));
-    REQUIRE(pkb->getFollowsT(3) == UNO_SET_OF_STMT_NO({4, 12}));
-    REQUIRE(pkb->getFollowsT(4) == UNO_SET_OF_STMT_NO({12}));
-    REQUIRE(pkb->getFollowsT(5) == UNO_SET_OF_STMT_NO({6, 9, 10, 11}));
-    REQUIRE(pkb->getFollowsT(6) == UNO_SET_OF_STMT_NO({9, 10, 11}));
-    REQUIRE(pkb->getFollowsT(7) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(8) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(9) == UNO_SET_OF_STMT_NO({10, 11}));
-    REQUIRE(pkb->getFollowsT(10) == UNO_SET_OF_STMT_NO({11}));
-    REQUIRE(pkb->getFollowsT(11) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(12) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(13) == UNO_SET_OF_STMT_NO({21}));
-    REQUIRE(pkb->getFollowsT(14) == UNO_SET_OF_STMT_NO({18, 19}));
-    REQUIRE(pkb->getFollowsT(15) == UNO_SET_OF_STMT_NO({16, 17}));
-    REQUIRE(pkb->getFollowsT(16) == UNO_SET_OF_STMT_NO({17}));
-    REQUIRE(pkb->getFollowsT(17) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(18) == UNO_SET_OF_STMT_NO({19}));
-    REQUIRE(pkb->getFollowsT(19) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(20) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(21) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(22) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(23) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getFollowsT(24) == UNO_SET_OF_STMT_NO({}));
-    }
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 1) ==
+            UNO_SET_OF_STMT_NO({2, 3, 4, 12}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 2) ==
+            UNO_SET_OF_STMT_NO({3, 4, 12}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 3) ==
+            UNO_SET_OF_STMT_NO({4, 12}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 4) ==
+            UNO_SET_OF_STMT_NO({12}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 5) ==
+            UNO_SET_OF_STMT_NO({6, 9, 10, 11}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 6) ==
+            UNO_SET_OF_STMT_NO({9, 10, 11}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 7) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 8) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 9) ==
+            UNO_SET_OF_STMT_NO({10, 11}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 10) ==
+            UNO_SET_OF_STMT_NO({11}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 11) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 12) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 13) ==
+            UNO_SET_OF_STMT_NO({21}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 14) ==
+            UNO_SET_OF_STMT_NO({18, 19}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 15) ==
+            UNO_SET_OF_STMT_NO({16, 17}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 16) ==
+            UNO_SET_OF_STMT_NO({17}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 17) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 18) ==
+            UNO_SET_OF_STMT_NO({19}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 19) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 20) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 21) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 22) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 23) ==
+            UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 24) ==
+            UNO_SET_OF_STMT_NO({}));
+  }
 }

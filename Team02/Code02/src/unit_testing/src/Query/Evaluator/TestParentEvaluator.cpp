@@ -13,8 +13,8 @@ TEST_CASE("ParentEvaluator: Parent") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->setParent(1, 2);
-  pkb->setParent(1, 3);
+  pkb->addRs(RelationshipType::PARENT, 1, 2);
+  pkb->addRs(RelationshipType::PARENT, 1, 3);
 
   SECTION("Evaluates both literals - Parent(1, 2)") {
     ParentEvaluator pe(pkb);
@@ -59,7 +59,7 @@ TEST_CASE("ParentEvaluator: ParentT") {
   pkb->addStmt(2);
 
   SECTION("Evaluates two literals - ParentT(1, 2)") {
-    pkb->addParentT(1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
     ParentEvaluator pe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -69,7 +69,7 @@ TEST_CASE("ParentEvaluator: ParentT") {
   }
 
   SECTION("Evaluates literal & wildcard - ParentT(1, _)") {
-    pkb->addParentT(1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
     ParentEvaluator pe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -79,8 +79,8 @@ TEST_CASE("ParentEvaluator: ParentT") {
   }
 
   SECTION("Evaluates literal & synonym - ParentT(1, s)") {
-    pkb->addParentT(1, 2);
-    pkb->addParentT(1, 3);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 3);
     ParentEvaluator pe(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -90,7 +90,7 @@ TEST_CASE("ParentEvaluator: ParentT") {
   }
 
   SECTION("Evaluates both wildcards - ParentT(_, _)") {
-    pkb->addParentT(1, 2);
+    pkb->addRs(RelationshipType::PARENT_T, 1, 2);
     ParentEvaluator pe(pkb);
 
     Param left = {ParamType::WILDCARD, "_"};

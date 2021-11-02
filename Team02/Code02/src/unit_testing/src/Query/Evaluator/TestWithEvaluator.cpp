@@ -22,17 +22,17 @@ TEST_CASE("WithEvaluator: Name Attributes") {
   pkb->addCalls(5, "C", "A");
   pkb->addReadStmt(1);
   pkb->addReadStmt(2);
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(2, "y");
-  int procAIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
-  int procBIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
-  int procCIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "C");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "y");
+  int procAIdx = pkb->insertAt(TableType::PROC_TABLE, "A");
+  int procBIdx = pkb->insertAt(TableType::PROC_TABLE, "B");
+  int procCIdx = pkb->insertAt(TableType::PROC_TABLE, "C");
   int callAIdx = 3;
   int callBIdx = 4;
   int callCIdx = 5;
-  int xVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
-  int yVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
-  int zVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "z");
+  int xVarIdx = pkb->insertAt(TableType::VAR_TABLE, "x");
+  int yVarIdx = pkb->insertAt(TableType::VAR_TABLE, "y");
+  int zVarIdx = pkb->insertAt(TableType::VAR_TABLE, "z");
   int rdXIdx = 1;
   int rdYIdx = 2;
 
@@ -108,8 +108,8 @@ TEST_CASE("WithEvaluator: Name Attributes") {
   }
 
   SECTION("with p1.procName = v1.varName") {
-    int aVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "A");
-    int bVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "B");
+    int aVarIdx = pkb->insertAt(TableType::VAR_TABLE, "A");
+    int bVarIdx = pkb->insertAt(TableType::VAR_TABLE, "B");
     Param left = {ParamType::ATTRIBUTE_PROC_NAME, "p1"};
     Param right = {ParamType::ATTRIBUTE_VAR_NAME, "v1"};
     vector<QueryResult> currentResults = {{{"p1", procAIdx}, {"v1", aVarIdx}},
@@ -130,8 +130,8 @@ TEST_CASE("WithEvaluator: Name Attributes") {
   }
 
   SECTION("with c1.procName = v1.varName") {
-    int aVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "A");
-    int dVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "D");
+    int aVarIdx = pkb->insertAt(TableType::VAR_TABLE, "A");
+    int dVarIdx = pkb->insertAt(TableType::VAR_TABLE, "D");
     Param left = {ParamType::ATTRIBUTE_PROC_NAME, "c1"};
     Param right = {ParamType::ATTRIBUTE_VAR_NAME, "v1"};
     vector<QueryResult> currentResults = {{{"c1", callCIdx}, {"v1", aVarIdx}},
@@ -285,8 +285,8 @@ TEST_CASE("WithEvaluator: Integer Attributes") {
   pkb->addStmt(4);
   pkb->addAssignStmt(1);
   pkb->addIfStmt(2);
-  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
-  int const2Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
+  int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
+  int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
 
   WithEvaluator we(pkb);
   unordered_map<string, DesignEntity> synonyms = {

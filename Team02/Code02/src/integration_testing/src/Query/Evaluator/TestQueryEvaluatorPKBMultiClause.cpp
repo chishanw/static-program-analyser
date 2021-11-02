@@ -20,12 +20,12 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   pkb->addAssignStmt(3);
   pkb->addAssignStmt(4);
 
-  pkb->setFollows(1, 2);
-  pkb->setParent(2, 3);
-  pkb->addModifiesS(3, "x");
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::PARENT, 2, 3);
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
   pkb->addAssignPttFullExpr(3, "x", "w");
   pkb->addAssignPttFullExpr(4, "y", "1");
-  pkb->addUsesS(3, "w");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "w");
 
   int xVarIdx = 0;
   int yVarIdx = 1;
@@ -623,12 +623,12 @@ TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Truthy Values") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(1, 3);
-  pkb->addFollowsT(2, 3);
-  pkb->addModifiesS(2, "x");
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "x");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -724,8 +724,9 @@ TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Falsy Values") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
+
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -900,18 +901,18 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
   pkb->addStmt(4);
   pkb->addAssignStmt(2);
   pkb->addAssignStmt(4);
-  pkb->addModifiesS(2, "a");
-  pkb->addModifiesS(4, "x");
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "a");
+  pkb->addRs(RelationshipType::MODIFIES_S, 4, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
   pkb->addCalls(3, "a", "b");
-  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
-  int const2Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "2");
-  int const3Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
-  int procAIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "a");
-  int procBIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "b");
-  int varAIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "a");
-  int varXIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "x");
+  int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
+  int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
+  int const3Idx = pkb->insertAt(TableType::CONST_TABLE, "3");
+  int procAIdx = pkb->insertAt(TableType::PROC_TABLE, "a");
+  int procBIdx = pkb->insertAt(TableType::PROC_TABLE, "b");
+  int varAIdx = pkb->getIndexOf(TableType::VAR_TABLE, "a");
+  int varXIdx = pkb->getIndexOf(TableType::VAR_TABLE, "x");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {

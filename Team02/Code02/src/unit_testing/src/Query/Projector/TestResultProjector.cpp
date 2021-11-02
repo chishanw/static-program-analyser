@@ -14,17 +14,17 @@ TEST_CASE("Project each design entity correctly") {
   pkb->addStmt(2);
   pkb->addStmt(3);
 
-  pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
-  pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
-  pkb->insertAt(TABLE_ENUM::VAR_TABLE, "z");
+  pkb->insertAt(TableType::VAR_TABLE, "x");
+  pkb->insertAt(TableType::VAR_TABLE, "y");
+  pkb->insertAt(TableType::VAR_TABLE, "z");
 
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procC");
+  pkb->insertAt(TableType::PROC_TABLE, "procA");
+  pkb->insertAt(TableType::PROC_TABLE, "procB");
+  pkb->insertAt(TableType::PROC_TABLE, "procC");
 
-  pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
-  pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
-  pkb->insertAt(TABLE_ENUM::CONST_TABLE, "5");
+  pkb->insertAt(TableType::CONST_TABLE, "1");
+  pkb->insertAt(TableType::CONST_TABLE, "3");
+  pkb->insertAt(TableType::CONST_TABLE, "5");
 
   ResultProjector projector(pkb);
 
@@ -95,10 +95,10 @@ TEST_CASE("Project tuple results") {
   pkb->addAssignStmt(2);
   pkb->addAssignStmt(4);
   pkb->addAssignStmt(6);
-  int xVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
-  int yVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
-  int aProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
-  int bProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
+  int xVarIdx = pkb->insertAt(TableType::VAR_TABLE, "x");
+  int yVarIdx = pkb->insertAt(TableType::VAR_TABLE, "y");
+  int aProcIdx = pkb->insertAt(TableType::PROC_TABLE, "procA");
+  int bProcIdx = pkb->insertAt(TableType::PROC_TABLE, "procB");
 
   ResultProjector projector(pkb);
 
@@ -141,18 +141,18 @@ TEST_CASE("Project with attributes") {
   pkb->addStmt(6);
   pkb->addCalls(1, "procA", "procB");
   pkb->addReadStmt(2);
-  pkb->addModifiesS(2, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "y");
   pkb->addPrintStmt(3);
-  pkb->addUsesS(3, "z");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "z");
   pkb->addWhileStmt(4);
   pkb->addIfStmt(5);
   pkb->addAssignStmt(6);
-  int xVarIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
-  int yVarIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "y");
-  int zVarIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "z");
-  int aProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
-  int bProcIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
-  int const1Idx = pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
+  int xVarIdx = pkb->insertAt(TableType::VAR_TABLE, "x");
+  int yVarIdx = pkb->getIndexOf(TableType::VAR_TABLE, "y");
+  int zVarIdx = pkb->getIndexOf(TableType::VAR_TABLE, "z");
+  int aProcIdx = pkb->insertAt(TableType::PROC_TABLE, "procA");
+  int bProcIdx = pkb->insertAt(TableType::PROC_TABLE, "procB");
+  int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
 
   ResultProjector projector(pkb);
 

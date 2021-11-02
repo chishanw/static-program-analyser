@@ -14,13 +14,13 @@ class ParentEvaluator {
   bool evaluateBoolParent(const query::Param& left, const query::Param& right);
   std::unordered_set<int> evaluateStmtParent(const query::Param& left,
                                              const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluateStmtPairParent(
+  std::vector<std::vector<int>> evaluateStmtPairParent(
       const query::Param& left, const query::Param& right);
 
   bool evaluateBoolParentT(const query::Param& left, const query::Param& right);
   std::unordered_set<int> evaluateStmtParentT(const query::Param& left,
                                               const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluateStmtPairParentT(
+  std::vector<std::vector<int>> evaluateStmtPairParentT(
       const query::Param& left, const query::Param& right);
 
  private:

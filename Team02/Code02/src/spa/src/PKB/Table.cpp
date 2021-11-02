@@ -9,7 +9,7 @@ Table::Table() {
   idxAsKey = vector<string>({});
 }
 
-TABLE_ELEM_IDX Table::insert(string element) {
+TableElemIdx Table::insert(string element) {
   try {  // check if variable already exists in table
     int index = nameAsKey.at(element);
     return index;
@@ -31,7 +31,7 @@ string Table::getElement(int index) {
   }
 }
 
-TABLE_ELEM_IDX Table::getIndex(string element) {
+TableElemIdx Table::getIndex(string element) {
   try {
     return nameAsKey.at(element);
   }
@@ -40,7 +40,7 @@ TABLE_ELEM_IDX Table::getIndex(string element) {
   }
 }
 
-unordered_set<TABLE_ELEM_IDX> Table::getAllElements() {
+unordered_set<TableElemIdx> Table::getAllElements() {
   unordered_set<int> result({});
   for (int i = 0; i < getSize(); i++) {
     result.insert(i);

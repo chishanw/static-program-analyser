@@ -64,9 +64,9 @@ TEST_CASE("[DE][Calls R/S] sample source") {
   REQUIRE(!pkb->isCallStmt(30));  // out of bound test, last stmt is #24
 
   SECTION("[DE][AffectsInfo] sample source") {
-    PROC_IDX exampleIdx = pkb->getIndexOf(TABLE_ENUM::PROC_TABLE, "Example");
-    PROC_IDX pIdx = pkb->getIndexOf(TABLE_ENUM::PROC_TABLE, "p");
-    PROC_IDX qIdx = pkb->getIndexOf(TABLE_ENUM::PROC_TABLE, "q");
+    PROC_IDX exampleIdx = pkb->getIndexOf(TableType::PROC_TABLE, "Example");
+    PROC_IDX pIdx = pkb->getIndexOf(TableType::PROC_TABLE, "p");
+    PROC_IDX qIdx = pkb->getIndexOf(TableType::PROC_TABLE, "q");
 
     unordered_map<PROC_IDX, unordered_set<PROC_IDX>> callGraph =
         pkb->getCallGraph();

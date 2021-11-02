@@ -21,7 +21,7 @@ bool CallsEvaluator::evaluateBoolCalls(const Param& left, const Param& right) {
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
     unordered_set<PROC_IDX> procsCalled = pkb->getProcsCalledBy(left.value);
-    return procsCalled.find(pkb->getIndexOf(TABLE_ENUM::PROC_TABLE,
+    return procsCalled.find(pkb->getIndexOf(TableType::PROC_TABLE,
         right.value)) != procsCalled.end();
   }
 
@@ -88,7 +88,7 @@ bool CallsEvaluator::evaluateBoolCallsT(const Param& left, const Param& right) {
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
     unordered_set<PROC_IDX> procsCalledT = pkb->getProcsCalledTBy(left.value);
-    return procsCalledT.find(pkb->getIndexOf(TABLE_ENUM::PROC_TABLE,
+    return procsCalledT.find(pkb->getIndexOf(TableType::PROC_TABLE,
         right.value)) != procsCalledT.end();
   }
 

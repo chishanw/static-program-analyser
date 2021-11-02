@@ -12,7 +12,7 @@ using Catch::Matchers::VectorContains;
 
 TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 12; i++) {
     pkb->addStmt(i);
@@ -51,26 +51,26 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
       pkb->addAssignStmt(i);
     }
   }
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(2, "i");
-  pkb->addModifiesS(4, "x");
-  pkb->addUsesS(4, "x");
-  pkb->addUsesS(4, "y");
-  pkb->addModifiesS(5, "i");
-  pkb->addUsesS(5, "i");
-  pkb->addModifiesS(7, "x");
-  pkb->addUsesS(7, "x");
-  pkb->addModifiesS(8, "x");
-  pkb->addModifiesS(9, "z");
-  pkb->addModifiesS(10, "z");
-  pkb->addUsesS(10, "z");
-  pkb->addUsesS(10, "x");
-  pkb->addUsesS(10, "i");
-  pkb->addModifiesS(11, "x");
-  pkb->addModifiesS(12, "x");
-  pkb->addUsesS(12, "x");
-  pkb->addUsesS(12, "y");
-  pkb->addUsesS(12, "z");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "i");
+  pkb->addRs(RelationshipType::MODIFIES_S, 4, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 4, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 4, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 5, TableType::VAR_TABLE, "i");
+  pkb->addRs(RelationshipType::USES_S, 5, TableType::VAR_TABLE, "i");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 8, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 9, TableType::VAR_TABLE, "z");
+  pkb->addRs(RelationshipType::MODIFIES_S, 10, TableType::VAR_TABLE, "z");
+  pkb->addRs(RelationshipType::USES_S, 10, TableType::VAR_TABLE, "z");
+  pkb->addRs(RelationshipType::USES_S, 10, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 10, TableType::VAR_TABLE, "i");
+  pkb->addRs(RelationshipType::MODIFIES_S, 11, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 12, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "z");
 
   AffectsEvaluator ae(pkb);
 
@@ -294,7 +294,7 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
 
 TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 13; i++) {
     pkb->addStmt(i);
@@ -333,25 +333,25 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
     }
   }
 
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(3, "x");
-  pkb->addUsesS(3, "x");
-  pkb->addUsesS(3, "y");
-  pkb->addModifiesS(5, "x");
-  pkb->addUsesS(5, "x");
-  pkb->addModifiesS(7, "x");
-  pkb->addUsesS(7, "x");
-  pkb->addModifiesS(9, "x");
-  pkb->addModifiesS(10, "y");
-  pkb->addUsesS(10, "x");
-  pkb->addModifiesS(11, "x");
-  pkb->addModifiesS(12, "z");
-  pkb->addUsesS(12, "z");
-  pkb->addUsesS(12, "x");
-  pkb->addModifiesS(13, "x");
-  pkb->addUsesS(13, "x");
-  pkb->addUsesS(13, "y");
-  pkb->addUsesS(13, "z");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 9, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 10, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 10, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 11, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 12, TableType::VAR_TABLE, "z");
+  pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "z");
+  pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 13, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 13, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 13, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 13, TableType::VAR_TABLE, "z");
 
   // example procedure
   // 1: x = 0;
@@ -477,7 +477,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
 
 TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 8; i++) {
     pkb->addStmt(i);
@@ -509,16 +509,16 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
     }
   }
 
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(3, "x");
-  pkb->addUsesS(3, "x");
-  pkb->addUsesS(3, "y");
-  pkb->addModifiesS(5, "x");
-  pkb->addUsesS(5, "x");
-  pkb->addModifiesS(7, "x");
-  pkb->addUsesS(7, "x");
-  pkb->addModifiesS(8, "y");
-  pkb->addUsesS(8, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 5, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 8, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 8, TableType::VAR_TABLE, "x");
 
   // example procedure
   // 1: x = 0;
@@ -633,9 +633,9 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
 
 TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
+  pkb->insertAt(TableType::PROC_TABLE, "B");
   pkb->addFirstStmtOfProc("B", 5);
   for (int i = 1; i <= 7; i++) {
     pkb->addStmt(i);
@@ -663,15 +663,15 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
     }
   }
 
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(3, "x");
-  pkb->addUsesS(3, "x");
-  pkb->addModifiesS(4, "y");
-  pkb->addUsesS(4, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 4, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 4, TableType::VAR_TABLE, "x");
 
-  pkb->addModifiesS(6, "y");
-  pkb->addModifiesS(7, "z");
-  pkb->addUsesS(7, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 6, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "z");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "y");
 
   // example program w/ multiple procs
   // procedure A {
@@ -778,11 +778,11 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
 
 TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   PKB* pkb = new PKB();
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "A");
+  pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "B");
+  pkb->insertAt(TableType::PROC_TABLE, "B");
   pkb->addFirstStmtOfProc("B", 6);
-  pkb->insertAt(TABLE_ENUM::PROC_TABLE, "C");
+  pkb->insertAt(TableType::PROC_TABLE, "C");
   pkb->addFirstStmtOfProc("C", 9);
   for (int i = 1; i <= 9; i++) {
     pkb->addStmt(i);
@@ -805,18 +805,18 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
     pkb->addAssignStmt(stmt);
   }
 
-  pkb->addModifiesS(1, "x");
-  pkb->addModifiesS(2, "x");
-  pkb->addModifiesS(4, "x");
-  pkb->addUsesS(4, "x");
-  pkb->addModifiesS(5, "y");
-  pkb->addUsesS(5, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 4, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::USES_S, 4, TableType::VAR_TABLE, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 5, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 5, TableType::VAR_TABLE, "x");
 
-  pkb->addModifiesS(7, "y");
-  pkb->addUsesS(7, "y");
-  pkb->addModifiesS(8, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 7, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 8, TableType::VAR_TABLE, "y");
 
-  pkb->addModifiesS(9, "y");
+  pkb->addRs(RelationshipType::MODIFIES_S, 9, TableType::VAR_TABLE, "y");
 
   // example program w/ read & call stmts
   // procedure A {

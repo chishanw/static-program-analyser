@@ -7,8 +7,10 @@
 #include <vector>
 
 #include "catch.hpp"
+#include "Query/Common.h"
 
 using namespace std;
+using namespace query;
 
 TEST_CASE("[DE][Modifies R/S] sample source") {
   REQUIRE(1 == 1);
@@ -56,32 +58,53 @@ TEST_CASE("[DE][Modifies R/S] sample source") {
   de.Extract(ast);
 
   SECTION("Modifies R/S") {
-    REQUIRE(pkb->getModifiesS("x") == UNO_SET_OF_STMT_NO({1, 4, 5, 10, 12,
-        13, 15, 16, 17, 19, 23, 26}));
-    REQUIRE(pkb->getModifiesS("i") == UNO_SET_OF_STMT_NO({3, 4, 11,
-        12, 13, 15, 18}));
-    REQUIRE(pkb->getModifiesS("z") == UNO_SET_OF_STMT_NO({2, 4, 6, 7, 9,
-        10, 12, 13, 15, 17, 20, 21, 22, 23, 24}));
-    REQUIRE(pkb->getModifiesS("y") == UNO_SET_OF_STMT_NO({4, 6, 8}));
-    REQUIRE(pkb->getModifiesS("a") == UNO_SET_OF_STMT_NO({ 12, 13, 14 }));
-    REQUIRE(pkb->getModifiesS("b") == UNO_SET_OF_STMT_NO({ 4, 10, 12, 13,
-        15, 17, 23, 25 }));
+    REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                         "x") ==
+            UNO_SET_OF_STMT_NO({1, 4, 5, 10, 12, 13, 15, 16, 17, 19, 23, 26}));
+    REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                         "i") ==
+            UNO_SET_OF_STMT_NO({3, 4, 11, 12, 13, 15, 18}));
+    REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                         "z") ==
+            UNO_SET_OF_STMT_NO(
+                {2, 4, 6, 7, 9, 10, 12, 13, 15, 17, 20, 21, 22, 23, 24}));
+    REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                         "y") == UNO_SET_OF_STMT_NO({4, 6, 8}));
+    REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                         "a") == UNO_SET_OF_STMT_NO({12, 13, 14}));
+    REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                         "b") ==
+            UNO_SET_OF_STMT_NO({4, 10, 12, 13, 15, 17, 23, 25}));
 
-    REQUIRE(pkb->isModifiesP("q", "z"));
-    REQUIRE(pkb->isModifiesP("q", "b"));
-    REQUIRE(pkb->isModifiesP("q", "x"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "q",
+                      TableType::VAR_TABLE, "z"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "q",
+                      TableType::VAR_TABLE, "b"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "q",
+                      TableType::VAR_TABLE, "x"));
 
-    REQUIRE(pkb->isModifiesP("p", "a"));
-    REQUIRE(pkb->isModifiesP("p", "x"));
-    REQUIRE(pkb->isModifiesP("p", "i"));
-    REQUIRE(pkb->isModifiesP("p", "b"));
-    REQUIRE(pkb->isModifiesP("p", "z"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "p",
+                      TableType::VAR_TABLE, "a"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "p",
+                      TableType::VAR_TABLE, "x"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "p",
+                      TableType::VAR_TABLE, "i"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "p",
+                      TableType::VAR_TABLE, "b"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "p",
+                      TableType::VAR_TABLE, "z"));
 
-    REQUIRE(pkb->isModifiesP("Example", "a"));
-    REQUIRE(pkb->isModifiesP("Example", "x"));
-    REQUIRE(pkb->isModifiesP("Example", "i"));
-    REQUIRE(pkb->isModifiesP("Example", "b"));
-    REQUIRE(pkb->isModifiesP("Example", "z"));
-    REQUIRE(pkb->isModifiesP("Example", "y"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                      "Example", TableType::VAR_TABLE, "a"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                      "Example", TableType::VAR_TABLE, "x"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                      "Example", TableType::VAR_TABLE, "i"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                      "Example", TableType::VAR_TABLE, "b"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                      "Example", TableType::VAR_TABLE, "z"));
+    REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                      "Example", TableType::VAR_TABLE, "y"));
   }
 }

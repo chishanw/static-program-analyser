@@ -8,6 +8,8 @@
 #include <utility>
 #include <vector>
 
+#include "Common/Common.h"
+
 using namespace std;
 
 struct STMT_NO_NAME_PAIR_HASH {
@@ -53,7 +55,7 @@ unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(
       throw runtime_error("2 procedures with same name detected.");
     }
     allProcs.insert(procedure->ProcName);
-    pkb->insertAt(TABLE_ENUM::PROC_TABLE, procedure->ProcName);
+    pkb->insertAt(TableType::PROC_TABLE, procedure->ProcName);
 
     ExtractProcAndStmtHelper(procedure->StmtList);
   }
@@ -128,8 +130,10 @@ void DesignExtractor::ExtractUses(const ProgramAST* programAST) {
     result = ExtractUsesHelper(procedure->StmtList, procNameToAST);
 
     for (auto p : result) {
-      pkb->addUsesS(p.first, p.second);
-      pkb->addUsesP(procedure->ProcName, p.second);
+      pkb->addRs(RelationshipType::USES_S, p.first, TableType::VAR_TABLE,
+                 p.second);
+      pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE,
+                 procedure->ProcName, TableType::VAR_TABLE, p.second);
     }
   }
 }
@@ -197,8 +201,10 @@ void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
     result = ExtractModifiesHelper(procedure->StmtList, procNameToAST);
     for (auto p : result) {
-      pkb->addModifiesS(p.first, p.second);
-      pkb->addModifiesP(procedure->ProcName, p.second);
+      pkb->addRs(RelationshipType::MODIFIES_S, p.first, TableType::VAR_TABLE,
+                 p.second);
+      pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                 procedure->ProcName, TableType::VAR_TABLE, p.second);
     }
   }
 }
@@ -251,7 +257,8 @@ void DesignExtractor::ExtractParent(const ProgramAST* programAST) {
     // parent, did this to minize duplicate code and improve code readability
     auto result = ExtractParentHelper(-1, procedure->StmtList);
 
-    for (auto p : result) pkb->setParent(p.first, p.second);
+    for (auto p : result)
+      pkb->addRs(RelationshipType::PARENT, p.first, p.second);
   }
 }
 
@@ -287,7 +294,8 @@ void DesignExtractor::ExtractParentTrans(const ProgramAST* programAST) {
     // parent, did this to minize duplicate code and improve code readability
     auto result = ExtractParentTransHelper(-1, procedure->StmtList);
 
-    for (auto p : result) pkb->addParentT(p.first, p.second);
+    for (auto p : result)
+      pkb->addRs(RelationshipType::PARENT_T, p.first, p.second);
   }
 }
 
@@ -342,7 +350,8 @@ void DesignExtractor::ExtractFollows(const ProgramAST* programAST) {
   // must be at the same nesting level and in the same stmtLst
   for (auto procedure : programAST->ProcedureList) {
     auto result = ExtractFollowsHelper(procedure->StmtList);
-    for (auto p : result) pkb->setFollows(p.first, p.second);
+    for (auto p : result)
+      pkb->addRs(RelationshipType::FOLLOWS, p.first, p.second);
   }
 }
 
@@ -382,7 +391,8 @@ vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractFollowsHelper(
 void DesignExtractor::ExtractFollowsTrans(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
     auto result = ExtractFollowsTransHelper(procedure->StmtList);
-    for (auto p : result) pkb->addFollowsT(p.first, p.second);
+    for (auto p : result)
+      pkb->addRs(RelationshipType::FOLLOWS_T, p.first, p.second);
   }
 }
 
@@ -450,7 +460,7 @@ void DesignExtractor::ExtractConst(const ProgramAST* programAST) {
   }
 
   for (auto constant : res) {
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, constant);
+    pkb->insertAt(TableType::CONST_TABLE, constant);
   }
 }
 

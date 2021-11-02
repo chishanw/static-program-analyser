@@ -51,9 +51,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("procedure p; Select p") {
     PKB* pkb = new PKB();
-    int aIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procA");
-    int bIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procB");
-    int cIdx = pkb->insertAt(TABLE_ENUM::PROC_TABLE, "procC");
+    int aIdx = pkb->insertAt(TableType::PROC_TABLE, "procA");
+    int bIdx = pkb->insertAt(TableType::PROC_TABLE, "procB");
+    int cIdx = pkb->insertAt(TableType::PROC_TABLE, "procC");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -70,9 +70,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("variable v; Select v") {
     PKB* pkb = new PKB();
-    int xIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "x");
-    int yIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "y");
-    int zIdx = pkb->insertAt(TABLE_ENUM::VAR_TABLE, "z");
+    int xIdx = pkb->insertAt(TableType::VAR_TABLE, "x");
+    int yIdx = pkb->insertAt(TableType::VAR_TABLE, "y");
+    int zIdx = pkb->insertAt(TableType::VAR_TABLE, "z");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -89,9 +89,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("constant c; Select c") {
     PKB* pkb = new PKB();
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "1");
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "3");
-    pkb->insertAt(TABLE_ENUM::CONST_TABLE, "5");
+    pkb->insertAt(TableType::CONST_TABLE, "1");
+    pkb->insertAt(TableType::CONST_TABLE, "3");
+    pkb->insertAt(TableType::CONST_TABLE, "5");
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -112,7 +112,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
   for (int i = 1; i < 8; i++) {
     pkb->addStmt(i);
     if (i != 7) {
-      pkb->setFollows(i, i + 1);
+      pkb->addRs(RelationshipType::FOLLOWS, i, i + 1);
     }
   }
   pkb->addReadStmt(1);
@@ -124,7 +124,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
   pkb->addAssignStmt(7);
   pkb->addAssignPttFullExpr(6, "x", "1");
   pkb->addAssignPttSubExpr(6, "x", "1");
-  pkb->setParent(4, 5);
+  pkb->addRs(RelationshipType::PARENT, 4, 5);
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -365,12 +365,12 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
   pkb->addStmt(4);
   pkb->addAssignStmt(3);
   pkb->addAssignStmt(4);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(3, 4);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(3, 4);
-  pkb->setParent(2, 3);
-  pkb->addParentT(2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 3, 4);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 3, 4);
+  pkb->addRs(RelationshipType::PARENT, 2, 3);
+  pkb->addRs(RelationshipType::PARENT_T, 2, 3);
 
   QueryEvaluator qe(pkb);
 
@@ -458,11 +458,11 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(1, 3);
-  pkb->addFollowsT(2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -609,11 +609,12 @@ TEST_CASE("QueryEvaluator: Select tuple") {
   pkb->addStmt(1);
   pkb->addStmt(2);
   pkb->addStmt(3);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(1, 3);
-  pkb->addFollowsT(2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
+
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -691,13 +692,14 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
   pkb->addStmt(2);
   pkb->addStmt(3);
   pkb->addAssignStmt(3);
-  pkb->setFollows(1, 2);
-  pkb->setFollows(2, 3);
-  pkb->addFollowsT(1, 2);
-  pkb->addFollowsT(1, 3);
-  pkb->addFollowsT(2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
+  pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
+
   pkb->addAssignPttFullExpr(3, "x", "x * 2");
-  pkb->addModifiesS(3, "x");
+  pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {

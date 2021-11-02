@@ -26,11 +26,12 @@ bool ModifiesEvaluator::evaluateBoolModifiesS(const Param& left,
   // if one literal + underscore - ModifiesS(2, _)
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
-    return pkb->isModifiesS(stoi(left.value), right.value);
+    return pkb->isRs(RelationshipType::MODIFIES_S, stoi(left.value),
+                     TableType::VAR_TABLE, right.value);
   }
 
   // literal + wildcard - ModifiesS(1, _)
-  return !pkb->getVarsModifiedS(stoi(left.value)).empty();
+  return !pkb->getRight(RelationshipType::MODIFIES_S, stoi(left.value)).empty();
 }
 
 // synonym & literal
@@ -41,18 +42,30 @@ UNO_SET_OF_STMT_NO ModifiesEvaluator::evaluateModifiesS(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::SYNONYM) {
-    return pkb->getModifiesS(right.value);
+    return pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
+                        right.value);
   }
 
   // rightType == ParamType::SYNONYM
-  return pkb->getVarsModifiedS(stoi(left.value));
+  return pkb->getRight(RelationshipType::MODIFIES_S, stoi(left.value));
 }
 
 // synonym & wildcard - ModifiesS(s, _) -> getAllModifiesSStmtPair()
 // synonym & synonym - ModifiesS(s, v) -> getAllModifiesSStmtPair()
-vector<pair<int, vector<int>>> ModifiesEvaluator::evaluatePairModifiesS(
+vector<vector<int>> ModifiesEvaluator::evaluatePairModifiesS(
     const Param& left, const Param& right) {
-  return pkb->getAllModifiesSPairs();
+  unordered_set<vector<int>, VectorHash> results;
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    results =
+        pkb->getMappings(RelationshipType::MODIFIES_S, ParamPosition::BOTH);
+  } else if (left.type == ParamType::SYNONYM) {
+    results =
+        pkb->getMappings(RelationshipType::MODIFIES_S, ParamPosition::LEFT);
+  } else {
+    results =
+        pkb->getMappings(RelationshipType::MODIFIES_S, ParamPosition::RIGHT);
+  }
+  return vector<vector<int>>(results.begin(), results.end());
 }
 
 bool ModifiesEvaluator::evaluateBoolModifiesP(const Param& left,
@@ -67,10 +80,13 @@ bool ModifiesEvaluator::evaluateBoolModifiesP(const Param& left,
 
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
-    return pkb->isModifiesP(left.value, right.value);
+    return pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                     left.value, TableType::VAR_TABLE, right.value);
   }
 
-  return !pkb->getVarsModifiedP(left.value).empty();
+  return !pkb->getRight(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                        left.value)
+              .empty();
 }
 
 UNO_SET_OF_STMT_NO ModifiesEvaluator::evaluateModifiesP(const Param& left,
@@ -78,13 +94,26 @@ UNO_SET_OF_STMT_NO ModifiesEvaluator::evaluateModifiesP(const Param& left,
   ParamType leftType = left.type;
 
   if (leftType == ParamType::SYNONYM) {
-    return pkb->getModifiesP(right.value);
+    return pkb->getLeft(RelationshipType::MODIFIES_P, TableType::VAR_TABLE,
+                        right.value);
   }
 
-  return pkb->getVarsModifiedP(left.value);
+  return pkb->getRight(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
+                       left.value);
 }
 
-vector<pair<int, vector<int>>> ModifiesEvaluator::evaluatePairModifiesP(
+vector<vector<int>> ModifiesEvaluator::evaluatePairModifiesP(
     const Param& left, const Param& right) {
-  return pkb->getAllModifiesPPairs();
+  unordered_set<vector<int>, VectorHash> results;
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    results =
+        pkb->getMappings(RelationshipType::MODIFIES_P, ParamPosition::BOTH);
+  } else if (left.type == ParamType::SYNONYM) {
+    results =
+        pkb->getMappings(RelationshipType::MODIFIES_P, ParamPosition::LEFT);
+  } else {
+    results =
+        pkb->getMappings(RelationshipType::MODIFIES_P, ParamPosition::RIGHT);
+  }
+  return vector<vector<int>>(results.begin(), results.end());
 }

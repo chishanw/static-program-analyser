@@ -20,19 +20,20 @@ bool FollowsEvaluator::evaluateBoolFollows(const Param& left,
   // if both underscore - Follows(_, _)
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::INTEGER_LITERAL) {
-    STMT_NO s2 = pkb->getFollows(stoi(left.value));
-    return s2 == stoi(right.value);
+    return pkb->isRs(RelationshipType::FOLLOWS, stoi(left.value),
+                     stoi(right.value));
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !(pkb->getAllFollowsStmtPairs()).empty();
+    return !(pkb->getMappings(RelationshipType::FOLLOWS, ParamPosition::BOTH))
+                .empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
-    return pkb->getFollowedBy(stoi(right.value)) != -1;
+    return !pkb->getLeft(RelationshipType::FOLLOWS, stoi(right.value)).empty();
   }
 
-  return pkb->getFollows(stoi(left.value)) != -1;
+  return !pkb->getRight(RelationshipType::FOLLOWS, stoi(left.value)).empty();
 }
 
 // synonym & literal
@@ -43,44 +44,30 @@ UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollows(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::INTEGER_LITERAL) {
-    STMT_NO s2 = pkb->getFollows(stoi(left.value));
-    if (s2 != -1) {
-      return {s2};
-    } else {
-      return {};
-    }
+    return pkb->getRight(RelationshipType::FOLLOWS, stoi(left.value));
   }
-
   // rightType == ParamType::LITERAL
-  STMT_NO s1 = pkb->getFollowedBy(stoi(right.value));
-  if (s1 != -1) {
-    return {s1};
-  } else {
-    return {};
-  }
+  return pkb->getLeft(RelationshipType::FOLLOWS, stoi(right.value));
 }
 
 // synonym & wildcard - Follows(s, _) -> getAllFollowsStmtPair()
 // synonym & synonym - Follows(s1, s2) -> getAllFollowsTStmtPair()
+// TODO(Anybody): Change return type to optimise
 vector<vector<int>> FollowsEvaluator::evaluateStmtPairFollows(
     const Param& left, const Param& right) {
+  unordered_set<vector<int>, VectorHash> results;
   if (left.type == ParamType::WILDCARD) {
-    vector<LIST_STMT_NO> results = pkb->getAllFollowsStmtPairs();
-    vector<vector<int>> formattedResults = {};
-    for (LIST_STMT_NO result : results) {
-      formattedResults.push_back({result.back()});
-    }
-    return formattedResults;
+    results = pkb->getMappings(RelationshipType::FOLLOWS, ParamPosition::RIGHT);
+
+  } else if (right.type == ParamType::WILDCARD) {
+    results = pkb->getMappings(RelationshipType::FOLLOWS, ParamPosition::LEFT);
+
+  } else {
+    results = pkb->getMappings(RelationshipType::FOLLOWS, ParamPosition::BOTH);
   }
-  if (right.type == ParamType::WILDCARD) {
-    vector<LIST_STMT_NO> results = pkb->getAllFollowsStmtPairs();
-    vector<vector<int>> formattedResults = {};
-    for (LIST_STMT_NO result : results) {
-      formattedResults.push_back({result.front()});
-    }
-    return formattedResults;
-  }
-  return pkb->getAllFollowsStmtPairs();
+
+  auto formattedResults = vector<vector<int>>(results.begin(), results.end());
+  return formattedResults;
 }
 
 bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
@@ -90,19 +77,23 @@ bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
 
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::INTEGER_LITERAL) {
-    return pkb->isFollowsT(stoi(left.value), stoi(right.value));
+    return pkb->isRs(RelationshipType::FOLLOWS_T, stoi(left.value),
+                     stoi(right.value));
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !(pkb->getAllFollowsTStmtPairs()).empty();
+    return !(pkb->getMappings(RelationshipType::FOLLOWS_T, ParamPosition::BOTH))
+                .empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
-    UNO_SET_OF_STMT_NO listOfStmts = pkb->getFollowedTBy(stoi(right.value));
+    UNO_SET_OF_STMT_NO listOfStmts =
+        pkb->getLeft(RelationshipType::FOLLOWS_T, stoi(right.value));
     return !listOfStmts.empty();
   }
 
-  UNO_SET_OF_STMT_NO listOfStmts = pkb->getFollowsT(stoi(left.value));
+  UNO_SET_OF_STMT_NO listOfStmts =
+      pkb->getRight(RelationshipType::FOLLOWS_T, stoi(left.value));
   return !listOfStmts.empty();
 }
 
@@ -113,16 +104,28 @@ UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::INTEGER_LITERAL) {
-    return pkb->getFollowsT(stoi(left.value));
+    return pkb->getRight(RelationshipType::FOLLOWS_T, stoi(left.value));
   }
 
   // rightType == ParamType::LITERAL
-  return pkb->getFollowedTBy(stoi(right.value));
+  return pkb->getLeft(RelationshipType::FOLLOWS_T, stoi(right.value));
 }
 
 // synonym & wildcard - FollowsT(s, _) -> getAllFollowsTStmtPair()
 // synonym & synonym -> getAllFollowsTStmtPair()
-vector<pair<int, vector<int>>> FollowsEvaluator::evaluateStmtPairFollowsT(
+vector<vector<int>> FollowsEvaluator::evaluateStmtPairFollowsT(
     const Param& left, const Param& right) {
-  return pkb->getAllFollowsTStmtPairs();
+  unordered_set<vector<int>, VectorHash> results;
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    results =
+        pkb->getMappings(RelationshipType::FOLLOWS_T, ParamPosition::BOTH);
+  } else if (left.type == ParamType::SYNONYM) {
+    results =
+        pkb->getMappings(RelationshipType::FOLLOWS_T, ParamPosition::LEFT);
+  } else {
+    // rightType == ParamType::SYNONYM
+    results =
+        pkb->getMappings(RelationshipType::FOLLOWS_T, ParamPosition::RIGHT);
+  }
+  return vector<vector<int>>(results.begin(), results.end());
 }

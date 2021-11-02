@@ -1,5 +1,6 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -25,7 +26,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::NAME_LITERAL, "y");
 
@@ -48,7 +49,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::WILDCARD, "_");
 
@@ -71,7 +72,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::SYNONYM, "p");
 
@@ -94,7 +95,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::NAME_LITERAL, "y");
 
@@ -117,7 +118,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::WILDCARD, "_");
 
@@ -140,7 +141,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::SYNONYM, "p");
 
@@ -164,7 +165,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::SYNONYM, "p1",
                                      query::ParamType::NAME_LITERAL, "y");
 
@@ -187,7 +188,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::SYNONYM, "p1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -212,7 +213,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS,
                                      query::ParamType::SYNONYM, "p1",
                                      query::ParamType::SYNONYM, "p2");
 
@@ -297,7 +298,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::CALLS_T,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::CALLS_T,
                                      query::ParamType::NAME_LITERAL, "x",
                                      query::ParamType::NAME_LITERAL, "y");
 

@@ -27,8 +27,8 @@ TEST_CASE("AFFECTS_INFO_TABLE") {
    *   print y; // stmt# 7
    * }
    */
-  db.insertAt(TABLE_ENUM::PROC_TABLE, "a");
-  db.insertAt(TABLE_ENUM::PROC_TABLE, "b");
+  db.insertAt(TableType::PROC_TABLE, "a");
+  db.insertAt(TableType::PROC_TABLE, "b");
   db.addFirstStmtOfProc("a", 1);
   db.addFirstStmtOfProc("b", 4);
   db.addNextStmtForIfStmt(4, 7);

@@ -15,14 +15,14 @@ class ModifiesEvaluator {
                              const query::Param& right);
   std::unordered_set<int> evaluateModifiesS(const query::Param& left,
                                             const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluatePairModifiesS(
+  std::vector<std::vector<int>> evaluatePairModifiesS(
       const query::Param& left, const query::Param& right);
 
   bool evaluateBoolModifiesP(const query::Param& left,
                              const query::Param& right);
   std::unordered_set<int> evaluateModifiesP(const query::Param& left,
                                             const query::Param& right);
-  std::vector<std::pair<int, std::vector<int>>> evaluatePairModifiesP(
+  std::vector<std::vector<int>> evaluatePairModifiesP(
       const query::Param& left, const query::Param& right);
 
  private:

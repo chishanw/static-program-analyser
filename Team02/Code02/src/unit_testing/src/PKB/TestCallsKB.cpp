@@ -86,9 +86,9 @@ TEST_CASE("CALLS_TABLE_TRANS") {
   *   // whatever
   * }
   */
-  db.insertAt(TABLE_ENUM::PROC_TABLE, "a");
-  db.insertAt(TABLE_ENUM::PROC_TABLE, "b");
-  db.insertAt(TABLE_ENUM::PROC_TABLE, "c");
+  db.insertAt(TableType::PROC_TABLE, "a");
+  db.insertAt(TableType::PROC_TABLE, "b");
+  db.insertAt(TableType::PROC_TABLE, "c");
 
   db.addCallsT("a", "b");
   db.addCallsT("a", "c");

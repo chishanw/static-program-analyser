@@ -11,7 +11,7 @@ using namespace query;
 TEST_CASE("UsesEvaluator: UsesS - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->addStmt(1);
-  pkb->addUsesS(1, "x");
+  pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
   UsesEvaluator ue(pkb);
 
   SECTION("UsesS(1, 'x')") {
@@ -38,10 +38,9 @@ TEST_CASE("UsesEvaluator: UsesS - Truthy Values") {
   SECTION("UsesS(s, v)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::SYNONYM, "v"};
-    vector<pair<int, vector<int>>> result = ue.evaluatePairUsesS(left, right);
-    pair<int, vector<int>> resultPair = result[0];
-    REQUIRE(resultPair.first == 1);
-    REQUIRE(resultPair.second == vector<int>({0}));
+    vector<vector<int>> result = ue.evaluatePairUsesS(left, right);
+    vector<int> resultPair = result[0];
+    REQUIRE(resultPair == vector<int>({1, 0}));
   }
 }
 
@@ -51,7 +50,7 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
   pkb->addStmt(2);
 
   SECTION("UsesS(1, 'x')") {
-    pkb->addUsesS(2, "x");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "x");
     UsesEvaluator ue(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -61,7 +60,7 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
   }
 
   SECTION("UsesS(1, _)") {
-    pkb->addUsesS(2, "x");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "x");
     UsesEvaluator ue(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -71,7 +70,7 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
   }
 
   SECTION("UsesS(1, v)") {
-    pkb->addUsesS(2, "x");
+    pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "x");
     UsesEvaluator ue(pkb);
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
@@ -85,7 +84,7 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
 
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::SYNONYM, "v"};
-    vector<pair<int, vector<int>>> result = ue.evaluatePairUsesS(left, right);
+    auto result = ue.evaluatePairUsesS(left, right);
     REQUIRE(result.empty());
   }
 }
@@ -93,7 +92,8 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
 TEST_CASE("UsesEvaluator: UsesP - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->addStmt(1);
-  pkb->addUsesP("someProc", "x");
+  pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "someProc",
+             TableType::VAR_TABLE, "x");
   UsesEvaluator ue(pkb);
 
   SECTION("UsesP('someProc', 'x')") {
@@ -120,10 +120,9 @@ TEST_CASE("UsesEvaluator: UsesP - Truthy Values") {
   SECTION("UsesP(p, v)") {
     Param left = {ParamType::SYNONYM, "p"};
     Param right = {ParamType::SYNONYM, "v"};
-    vector<pair<int, vector<int>>> result = ue.evaluatePairUsesP(left, right);
-    pair<int, vector<int>> resultPair = result[0];
-    REQUIRE(resultPair.first == 0);
-    REQUIRE(resultPair.second == vector<int>({0}));
+    auto result = ue.evaluatePairUsesP(left, right);
+    vector<int> resultPair = result[0];
+    REQUIRE(resultPair == vector<int>({0, 0}));
   }
 }
 
@@ -133,7 +132,8 @@ TEST_CASE("UsesEvaluator: UsesP - Falsy Values") {
   pkb->addStmt(2);
 
   SECTION("UsesP('someProc', 'x')") {
-    pkb->addUsesP("otherProc", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "otherProc",
+               TableType::VAR_TABLE, "x");
     UsesEvaluator ue(pkb);
 
     Param left = {ParamType::NAME_LITERAL, "someProc"};
@@ -143,7 +143,8 @@ TEST_CASE("UsesEvaluator: UsesP - Falsy Values") {
   }
 
   SECTION("UsesP('someProc', _)") {
-    pkb->addUsesP("otherProc", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "otherProc",
+               TableType::VAR_TABLE, "x");
     UsesEvaluator ue(pkb);
 
     Param left = {ParamType::NAME_LITERAL, "someProc"};
@@ -153,7 +154,8 @@ TEST_CASE("UsesEvaluator: UsesP - Falsy Values") {
   }
 
   SECTION("UsesP('someProc', v)") {
-    pkb->addUsesP("otherProc", "x");
+    pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "otherProc",
+               TableType::VAR_TABLE, "x");
     UsesEvaluator ue(pkb);
 
     Param left = {ParamType::NAME_LITERAL, "someProc"};
@@ -167,7 +169,7 @@ TEST_CASE("UsesEvaluator: UsesP - Falsy Values") {
 
     Param left = {ParamType::SYNONYM, "p"};
     Param right = {ParamType::SYNONYM, "v"};
-    vector<pair<int, vector<int>>> result = ue.evaluatePairUsesP(left, right);
+    auto result = ue.evaluatePairUsesP(left, right);
     REQUIRE(result.empty());
   }
 }

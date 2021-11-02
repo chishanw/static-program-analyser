@@ -7,15 +7,15 @@
 using namespace std;
 
 PKB::PKB() {
-  allStmtNo = UNO_SET_OF_STMT_NO();
-  allReadStmtNo = UNO_SET_OF_STMT_NO();
-  allPrintStmtNo = UNO_SET_OF_STMT_NO();
-  allWhileStmtNo = UNO_SET_OF_STMT_NO();
-  allIfStmtNo = UNO_SET_OF_STMT_NO();
-  allAssignStmtNo = UNO_SET_OF_STMT_NO();
+  allStmtNo = SetOfStmts();
+  allReadStmtNo = SetOfStmts();
+  allPrintStmtNo = SetOfStmts();
+  allWhileStmtNo = SetOfStmts();
+  allIfStmtNo = SetOfStmts();
+  allAssignStmtNo = SetOfStmts();
 }
 
-void PKB::addStmt(STMT_NO s) {
+void PKB::addStmt(StmtNo s) {
   if (allStmtNo.count(s) > 0) {
     return;
   }
@@ -23,7 +23,7 @@ void PKB::addStmt(STMT_NO s) {
   allStmtNo.insert(s);
 }
 
-void PKB::addReadStmt(STMT_NO s) {
+void PKB::addReadStmt(StmtNo s) {
   if (allReadStmtNo.count(s) > 0) {
     return;
   }
@@ -32,7 +32,7 @@ void PKB::addReadStmt(STMT_NO s) {
   allReadStmtNo.insert(s);
 }
 
-void PKB::addPrintStmt(STMT_NO s) {
+void PKB::addPrintStmt(StmtNo s) {
   if (allPrintStmtNo.count(s) > 0) {
     return;
   }
@@ -41,7 +41,7 @@ void PKB::addPrintStmt(STMT_NO s) {
   allPrintStmtNo.insert(s);
 }
 
-void PKB::addWhileStmt(STMT_NO s) {
+void PKB::addWhileStmt(StmtNo s) {
   if (allWhileStmtNo.count(s) > 0) {
     return;
   }
@@ -50,7 +50,7 @@ void PKB::addWhileStmt(STMT_NO s) {
   allWhileStmtNo.insert(s);
 }
 
-void PKB::addIfStmt(STMT_NO s) {
+void PKB::addIfStmt(StmtNo s) {
   if (allIfStmtNo.count(s) > 0) {
     return;
   }
@@ -59,7 +59,7 @@ void PKB::addIfStmt(STMT_NO s) {
   allIfStmtNo.insert(s);
 }
 
-void PKB::addAssignStmt(STMT_NO s) {
+void PKB::addAssignStmt(StmtNo s) {
   if (allAssignStmtNo.count(s) > 0) {
     return;
   }
@@ -68,12 +68,12 @@ void PKB::addAssignStmt(STMT_NO s) {
   allAssignStmtNo.insert(s);
 }
 
-UNO_SET_OF_STMT_NO PKB::getAllStmts() { return allStmtNo; }
-UNO_SET_OF_STMT_NO PKB::getAllReadStmts() { return allReadStmtNo; }
-UNO_SET_OF_STMT_NO PKB::getAllPrintStmts() { return allPrintStmtNo; }
-UNO_SET_OF_STMT_NO PKB::getAllWhileStmts() { return allWhileStmtNo; }
-UNO_SET_OF_STMT_NO PKB::getAllIfStmts() { return allIfStmtNo; }
-UNO_SET_OF_STMT_NO PKB::getAllAssignStmts() { return allAssignStmtNo; }
+SetOfStmts PKB::getAllStmts() { return allStmtNo; }
+SetOfStmts PKB::getAllReadStmts() { return allReadStmtNo; }
+SetOfStmts PKB::getAllPrintStmts() { return allPrintStmtNo; }
+SetOfStmts PKB::getAllWhileStmts() { return allWhileStmtNo; }
+SetOfStmts PKB::getAllIfStmts() { return allIfStmtNo; }
+SetOfStmts PKB::getAllAssignStmts() { return allAssignStmtNo; }
 
 bool PKB::isReadStmt(int s) { return allReadStmtNo.count(s) > 0; }
 bool PKB::isPrintStmt(int s) { return allPrintStmtNo.count(s) > 0; }
@@ -81,118 +81,117 @@ bool PKB::isWhileStmt(int s) { return allWhileStmtNo.count(s) > 0; }
 bool PKB::isIfStmt(int s) { return allIfStmtNo.count(s) > 0; }
 bool PKB::isAssignStmt(int s) { return allAssignStmtNo.count(s) > 0; }
 
-/* Design Abstraction API
-1. Follows/FollowsT API
-2. Parent/ParentT API
-3. ModifiesS API
-4. UsesS API*/
+void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,
+                           int right) {
+  if ((*tablesRs).count(rs) == 0) {
+    (*tablesRs)[rs] = unordered_map<int, unordered_set<int>>{};
+  }
 
-// Follows API
-void PKB::setFollows(STMT_NO s1, STMT_NO s2) { followKB.setFollows(s1, s2); }
-void PKB::addFollowsT(STMT_NO s1, STMT_NO s2) { followKB.addFollowsT(s1, s2); }
-bool PKB::isFollowsT(STMT_NO s1, STMT_NO s2) {
-  return followKB.isFollowsT(s1, s2);
-}
-STMT_NO PKB::getFollows(STMT_NO s1) { return followKB.getFollows(s1); }
-STMT_NO PKB::getFollowedBy(STMT_NO s2) { return followKB.getFollowedBy(s2); }
-UNO_SET_OF_STMT_NO PKB::getFollowsT(STMT_NO s1) {
-  return followKB.getFollowsT(s1);
-}
-UNO_SET_OF_STMT_NO PKB::getFollowedTBy(STMT_NO s2) {
-  return followKB.getFollowedTBy(s2);
-}
-vector<LIST_STMT_NO> PKB::getAllFollowsStmtPairs() {
-  return followKB.getAllFollowsStmtPairs();
-}
-vector<pair<STMT_NO, LIST_STMT_NO>> PKB::getAllFollowsTStmtPairs() {
-  return followKB.getAllFollowsTStmtPairs();
+  if ((*tablesRs)[rs].count(left) == 0) {
+    (*tablesRs)[rs][left] = unordered_set<int>{};
+  }
+
+  (*tablesRs)[rs][left].insert(right);
 }
 
-// Parent API
-void PKB::setParent(STMT_NO s1, STMT_NO s2) { parentKB.setParent(s1, s2); }
-void PKB::addParentT(STMT_NO s1, STMT_NO s2) { parentKB.addParentT(s1, s2); }
-bool PKB::isParent(STMT_NO s1, STMT_NO s2) { return parentKB.isParent(s1, s2); }
-bool PKB::isParentT(STMT_NO s1, STMT_NO s2) {
-  return parentKB.isParentT(s1, s2);
-}
-UNO_SET_OF_STMT_NO PKB::getChildren(STMT_NO s1) {
-  return parentKB.getChildren(s1);
-}
-STMT_NO PKB::getParent(STMT_NO s2) { return parentKB.getParent(s2); }
-UNO_SET_OF_STMT_NO PKB::getChildrenT(STMT_NO s1) {
-  return parentKB.getChildrenT(s1);
-}
-UNO_SET_OF_STMT_NO PKB::getParentsT(STMT_NO s2) {
-  return parentKB.getParentsT(s2);
-}
-vector<pair<STMT_NO, LIST_STMT_NO>> PKB::getAllParentsStmtPairs() {
-  return parentKB.getAllParentsStmtPairs();
-}
-vector<pair<STMT_NO, LIST_STMT_NO>> PKB::getAllParentsTStmtPairs() {
-  return parentKB.getAllParentsTStmtPairs();
+void insertToMappings(MappingsRs* mappingsRs, RelationshipType rs, int left,
+                              int right) {
+  if ((*mappingsRs).count(rs) == 0) {
+    unordered_map<ParamPosition, SetOfStmtLists> newMap(
+        {{ParamPosition::LEFT, SetOfStmtLists()},
+         {ParamPosition::RIGHT, SetOfStmtLists()},
+         {ParamPosition::BOTH, SetOfStmtLists()}});
+    (*mappingsRs)[rs] = newMap;
+  }
+
+  (*mappingsRs)[rs][ParamPosition::LEFT].insert(vector<int>({left}));
+  (*mappingsRs)[rs][ParamPosition::RIGHT].insert(vector<int>({right}));
+  (*mappingsRs)[rs][ParamPosition::BOTH].insert(vector<int>({left, right}));
 }
 
-// Modifies API
-void PKB::addModifiesS(STMT_NO s, VAR_NAME var) {
-  modifiesKB.addModifiesS(s, var);
-}
-bool PKB::isModifiesS(STMT_NO s, VAR_NAME v) {
-  return modifiesKB.isModifiesS(s, v);
-}
-unordered_set<VAR_IDX> PKB::getVarsModifiedS(STMT_NO s) {
-  return modifiesKB.getVarsModifiedS(s);
-}
-unordered_set<STMT_NO> PKB::getModifiesS(VAR_NAME v) {
-  return modifiesKB.getModifiesS(v);
-}
-vector<pair<STMT_NO, vector<VAR_IDX>>> PKB::getAllModifiesSPairs() {
-  return modifiesKB.getAllModifiesSPairs();
+void PKB::addRs(RelationshipType rs, int left, int right) {
+  insertToTableRs(&tablesRs, rs, left, right);
+  insertToTableRs(&invTablesRs, rs, right, left);
+  insertToMappings(&mappingsRs, rs, left, right);
 }
 
-void PKB::addModifiesP(PROC_NAME proc, VAR_NAME var) {
-  modifiesKB.addModifiesP(proc, var);
-}
-bool PKB::isModifiesP(PROC_NAME proc, VAR_NAME v) {
-  return modifiesKB.isModifiesP(proc, v);
-}
-unordered_set<VAR_IDX> PKB::getVarsModifiedP(PROC_NAME proc) {
-  return modifiesKB.getVarsModifiedP(proc);
-}
-unordered_set<PROC_IDX> PKB::getModifiesP(VAR_NAME v) {
-  return modifiesKB.getModifiesP(v);
-}
-vector<pair<PROC_IDX, vector<VAR_IDX>>> PKB::getAllModifiesPPairs() {
-  return modifiesKB.getAllModifiesPPairs();
+void PKB::addRs(RelationshipType rs, int left, TableType rightType,
+                string right) {
+  int rightIndex = insertAt(rightType, right);
+  addRs(rs, left, rightIndex);
 }
 
-// Uses API
-void PKB::addUsesS(STMT_NO s, VAR_NAME var) { usesKB.addUsesS(s, var); }
-bool PKB::isUsesS(STMT_NO s, VAR_NAME v) { return usesKB.isUsesS(s, v); }
-unordered_set<VAR_IDX> PKB::getVarsUsedS(STMT_NO s) {
-  return usesKB.getVarsUsedS(s);
-}
-unordered_set<STMT_NO> PKB::getUsesS(VAR_NAME v) { return usesKB.getUsesS(v); }
-vector<pair<STMT_NO, vector<VAR_IDX>>> PKB::getAllUsesSPairs() {
-  return usesKB.getAllUsesSPairs();
+void PKB::addRs(RelationshipType rs, TableType leftType, string left,
+                TableType rightType, string right) {
+  int leftIndex = insertAt(leftType, left);
+  int rightIndex = insertAt(rightType, right);
+  addRs(rs, leftIndex, rightIndex);
 }
 
-void PKB::addUsesP(PROC_NAME proc, VAR_NAME var) { usesKB.addUsesP(proc, var); }
-bool PKB::isUsesP(PROC_NAME proc, VAR_NAME v) {
-  return usesKB.isUsesP(proc, v);
+bool PKB::isRs(RelationshipType rs, int left, int right) {
+  return getRight(rs, left).count(right) > 0;
 }
-unordered_set<VAR_IDX> PKB::getVarsUsedP(PROC_NAME proc) {
-  return usesKB.getVarsUsedP(proc);
+
+bool PKB::isRs(RelationshipType rs, int left, TableType rightType,
+               string right) {
+  int rightIndex = getIndexOf(rightType, right);
+  return isRs(rs, left, rightIndex);
 }
-unordered_set<PROC_IDX> PKB::getUsesP(VAR_NAME v) { return usesKB.getUsesP(v); }
-vector<pair<PROC_IDX, vector<VAR_IDX>>> PKB::getAllUsesPPairs() {
-  return usesKB.getAllUsesPPairs();
+
+bool PKB::isRs(RelationshipType rs, TableType leftType, string left,
+               TableType rightType, string right) {
+  int leftIndex = getIndexOf(leftType, left);
+  int rightIndex = getIndexOf(rightType, right);
+  return isRs(rs, leftIndex, rightIndex);
+}
+
+unordered_set<int> PKB::getRight(RelationshipType rs, int left) {
+  if (tablesRs.count(rs) == 0) {
+    return SetOfStmts();
+  }
+
+  if (tablesRs.at(rs).count(left) == 0) {
+    return SetOfStmts();
+  }
+
+  return tablesRs.at(rs).at(left);
+}
+
+unordered_set<int> PKB::getRight(RelationshipType rs, TableType leftType,
+                                 string left) {
+  int leftIndex = getIndexOf(leftType, left);
+  return getRight(rs, leftIndex);
+}
+
+unordered_set<int> PKB::getLeft(RelationshipType rs, int right) {
+  if (invTablesRs.count(rs) == 0) {
+    return SetOfStmts();
+  }
+
+  if (invTablesRs.at(rs).count(right) == 0) {
+    return SetOfStmts();
+  }
+  return invTablesRs.at(rs).at(right);
+}
+
+unordered_set<int> PKB::getLeft(RelationshipType rs, TableType rightType,
+                                string right) {
+  int rightIndex = getIndexOf(rightType, right);
+  return getLeft(rs, rightIndex);
+}
+
+SetOfStmtLists PKB::getMappings(RelationshipType rs, ParamPosition param) {
+  if (mappingsRs.count(rs) == 0) {
+    return SetOfStmtLists();
+  }
+  return mappingsRs.at(rs).at(param);
 }
 
 // Pattern API
-void PKB::addAssignPttFullExpr(STMT_NO s, string var, string expr) {
+void PKB::addAssignPttFullExpr(StmtNo s, string var, string expr) {
   patternKB.addAssignPttFullExpr(s, var, expr);
 }
-void PKB::addAssignPttSubExpr(STMT_NO s, string var, string expr) {
+void PKB::addAssignPttSubExpr(StmtNo s, string var, string expr) {
   patternKB.addAssignPttSubExpr(s, var, expr);
 }
 unordered_set<int> PKB::getAssignForFullExpr(string expr) {
@@ -221,11 +220,11 @@ unordered_set<int> PKB::getAssignForVar(string varName) {
 vector<vector<int>> PKB::getAssignVarPairs() {
   return patternKB.getAssignVarPairs();
 }
-void PKB::addIfPtt(STMT_NO s, string varName) {
+void PKB::addIfPtt(StmtNo s, string varName) {
   patternKB.addIfPtt(s, varName);
 }
 
-void PKB::addWhilePtt(STMT_NO s, string varName) {
+void PKB::addWhilePtt(StmtNo s, string varName) {
   patternKB.addWhilePtt(s, varName);
 }
 
@@ -246,7 +245,7 @@ vector<vector<int>> PKB::getWhileStmtVarPairs() {
 }
 
 // Calls API
-void PKB::addCalls(STMT_NO s, PROC_NAME caller, PROC_NAME callee) {
+void PKB::addCalls(StmtNo s, PROC_NAME caller, PROC_NAME callee) {
   addStmt(s);
   callsKB.addCalls(s, caller, callee);
 }
@@ -280,37 +279,37 @@ unordered_set<PROC_IDX> PKB::getCallerTProcs(PROC_NAME proc) {
 vector<pair<PROC_IDX, vector<PROC_IDX>>> PKB::getAllCallsTPairs() {
   return callsKB.getAllCallsTPairs();
 }
-UNO_SET_OF_STMT_NO PKB::getAllCallStmts() { return callsKB.getAllCallStmts(); }
-bool PKB::isCallStmt(STMT_NO s) { return callsKB.isCallStmt(s); }
+SetOfStmts PKB::getAllCallStmts() { return callsKB.getAllCallStmts(); }
+bool PKB::isCallStmt(StmtNo s) { return callsKB.isCallStmt(s); }
 
 // Next API
-void PKB::addNext(STMT_NO s1, STMT_NO s2) { nextKB.addNext(s1, s2); }
-bool PKB::isNext(STMT_NO s1, STMT_NO s2) { return nextKB.isNext(s1, s2); }
-UNO_SET_OF_STMT_NO PKB::getNextStmts(STMT_NO s1) {
+void PKB::addNext(StmtNo s1, StmtNo s2) { nextKB.addNext(s1, s2); }
+bool PKB::isNext(StmtNo s1, StmtNo s2) { return nextKB.isNext(s1, s2); }
+SetOfStmts PKB::getNextStmts(StmtNo s1) {
   return nextKB.getNextStmts(s1);
 }
-UNO_SET_OF_STMT_NO PKB::getPreviousStmts(STMT_NO s2) {
+SetOfStmts PKB::getPreviousStmts(StmtNo s2) {
   return nextKB.getPreviousStmts(s2);
 }
-vector<pair<STMT_NO, vector<STMT_NO>>> PKB::getAllNextStmtPairs() {
+vector<pair<StmtNo, vector<StmtNo>>> PKB::getAllNextStmtPairs() {
   return nextKB.getAllNextStmtPairs();
 }
 
 // Affects Info API
-void PKB::addNextStmtForIfStmt(STMT_NO ifStmt, STMT_NO nextStmtForIfStmt) {
+void PKB::addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmtForIfStmt) {
   affectsInfoKB.addNextStmtForIfStmt(ifStmt, nextStmtForIfStmt);
 }
-void PKB::addFirstStmtOfProc(std::string procName, STMT_NO firstStmtOfProc) {
+void PKB::addFirstStmtOfProc(string procName, StmtNo firstStmtOfProc) {
   affectsInfoKB.addFirstStmtOfProc(procName, firstStmtOfProc);
 }
 void PKB::addProcCallEdge(PROC_NAME callerProcName, PROC_NAME calleeProcName) {
   affectsInfoKB.addProcCallEdge(callerProcName, calleeProcName);
 }
 
-STMT_NO PKB::getNextStmtForIfStmt(STMT_NO ifStmt) {
+StmtNo PKB::getNextStmtForIfStmt(StmtNo ifStmt) {
   return affectsInfoKB.getNextStmtForIfStmt(ifStmt);
 }
-vector<STMT_NO> PKB::getFirstStmtOfAllProcs() {
+vector<StmtNo> PKB::getFirstStmtOfAllProcs() {
   return affectsInfoKB.getFirstStmtOfAllProcs();
 }
 unordered_map<PROC_IDX, unordered_set<PROC_IDX>> PKB::getCallGraph() {
@@ -318,15 +317,15 @@ unordered_map<PROC_IDX, unordered_set<PROC_IDX>> PKB::getCallGraph() {
 }
 
 // Table API
-TABLE_ELEM_IDX PKB::insertAt(TABLE_ENUM type, string element) {
+TableElemIdx PKB::insertAt(TableType type, string element) {
   return tables.at(type).insert(element);
 }
-string PKB::getElementAt(TABLE_ENUM type, TABLE_ELEM_IDX index) {
+string PKB::getElementAt(TableType type, TableElemIdx index) {
   return tables.at(type).getElement(index);
 }
-TABLE_ELEM_IDX PKB::getIndexOf(TABLE_ENUM type, string element) {
+TableElemIdx PKB::getIndexOf(TableType type, string element) {
   return tables.at(type).getIndex(element);
 }
-unordered_set<TABLE_ELEM_IDX> PKB::getAllElementsAt(TABLE_ENUM type) {
+unordered_set<TableElemIdx> PKB::getAllElementsAt(TableType type) {
   return tables.at(type).getAllElements();
 }

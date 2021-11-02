@@ -1,5 +1,6 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -28,7 +29,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -54,7 +55,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -80,7 +81,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::SYNONYM, "s");
 
@@ -106,7 +107,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {selectSynonym};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::INTEGER_LITERAL, "1");
 
@@ -132,7 +133,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::WILDCARD, "_");
 
@@ -158,7 +159,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::SYNONYM, "s");
 
@@ -184,7 +185,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "s",
                                      query::ParamType::INTEGER_LITERAL, "1");
 
@@ -210,7 +211,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "s",
                                      query::ParamType::WILDCARD, "_");
 
@@ -239,7 +240,7 @@ TEST_CASE(
         {query::DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "s",
                                      query::ParamType::SYNONYM, "s1");
 
@@ -268,7 +269,7 @@ TEST_CASE(
         {query::DesignEntity::READ, "r", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "r",
                                      query::ParamType::SYNONYM, "r1");
 
@@ -297,7 +298,7 @@ TEST_CASE(
         {query::DesignEntity::PRINT, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "p",
                                      query::ParamType::SYNONYM, "p1");
 
@@ -326,7 +327,7 @@ TEST_CASE(
         {query::DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "w",
                                      query::ParamType::SYNONYM, "w1");
 
@@ -355,7 +356,7 @@ TEST_CASE(
         {query::DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "ifs",
                                      query::ParamType::SYNONYM, "ifs1");
 
@@ -384,7 +385,7 @@ TEST_CASE(
         {query::DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "a",
                                      query::ParamType::SYNONYM, "a1");
 
@@ -413,7 +414,7 @@ TEST_CASE(
         {query::DesignEntity::CALL, "c", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "c",
                                      query::ParamType::SYNONYM, "c1");
 
@@ -442,7 +443,7 @@ TEST_CASE(
         {query::DesignEntity::PROG_LINE, "n", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::FOLLOWS,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS,
                                      query::ParamType::SYNONYM, "n",
                                      query::ParamType::SYNONYM, "n1");
 
@@ -597,7 +598,7 @@ TEST_CASE(
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::FOLLOWS_T,
+                                     RelationshipType::FOLLOWS_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 

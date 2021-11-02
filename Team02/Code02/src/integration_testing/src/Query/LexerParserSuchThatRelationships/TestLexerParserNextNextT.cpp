@@ -1,5 +1,6 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -25,7 +26,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -48,7 +49,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -71,7 +72,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::SYNONYM, "n");
 
@@ -94,7 +95,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -117,7 +118,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::WILDCARD, "_");
 
@@ -140,7 +141,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::WILDCARD, "_",
                                      query::ParamType::SYNONYM, "n");
 
@@ -163,7 +164,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "n1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -186,7 +187,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "n1",
                                      query::ParamType::WILDCARD, "_");
 
@@ -211,7 +212,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "n1",
                                      query::ParamType::SYNONYM, "n2");
 
@@ -235,7 +236,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "s1",
                                      query::ParamType::SYNONYM, "s2");
 
@@ -259,7 +260,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "r1",
                                      query::ParamType::SYNONYM, "r2");
 
@@ -284,7 +285,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "pr1",
                                      query::ParamType::SYNONYM, "pr2");
 
@@ -308,7 +309,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "c1",
                                      query::ParamType::SYNONYM, "c2");
 
@@ -332,7 +333,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "w1",
                                      query::ParamType::SYNONYM, "w2");
 
@@ -357,7 +358,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "ifs1",
                                      query::ParamType::SYNONYM, "ifs2");
 
@@ -381,7 +382,7 @@ TEST_CASE(
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT,
                                      query::ParamType::SYNONYM, "a1",
                                      query::ParamType::SYNONYM, "a2");
 
@@ -460,7 +461,7 @@ TEST_CASE("Valid queries for Next* relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT_T,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -486,7 +487,7 @@ TEST_CASE("Valid queries with NextBip relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses, query::RelationshipType::NEXT_BIP,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT_BIP,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -513,7 +514,7 @@ TEST_CASE("Valid queries with NextBip* relationship succeeds") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses,
-                                     query::RelationshipType::NEXT_BIP_T,
+                                     RelationshipType::NEXT_BIP_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 

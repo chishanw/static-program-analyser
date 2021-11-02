@@ -25,11 +25,12 @@ bool UsesEvaluator::evaluateBoolUsesS(const Param& left, const Param& right) {
   // if one literal + underscore - UsesS(2, _)
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
-    return pkb->isUsesS(stoi(left.value), right.value);
+    return pkb->isRs(RelationshipType::USES_S, stoi(left.value),
+                     TableType::VAR_TABLE, right.value);
   }
 
   // literal + wildcard - UsesS(1, _)
-  return !pkb->getVarsUsedS(stoi(left.value)).empty();
+  return !pkb->getRight(RelationshipType::USES_S, stoi(left.value)).empty();
 }
 
 // synonym & literal
@@ -39,18 +40,32 @@ UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesS(const Param& left,
   ParamType leftType = left.type;
 
   if (leftType == ParamType::SYNONYM) {
-    return pkb->getUsesS(right.value);
+    return pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
+                        right.value);
   }
 
   // rightType == ParamType::SYNONYM
-  return pkb->getVarsUsedS(stoi(left.value));
+  return pkb->getRight(RelationshipType::USES_S, stoi(left.value));
 }
 
 // synonym & wildcard - UsesS(s, _) -> getAllUsesSStmtPair()
 // synonym & synonym - UsesS(s, v) -> getAllUsesSStmtPair()
-vector<pair<int, vector<int>>> UsesEvaluator::evaluatePairUsesS(
+vector<vector<int>> UsesEvaluator::evaluatePairUsesS(
     const Param& left, const Param& right) {
-  return pkb->getAllUsesSPairs();
+
+  unordered_set<vector<int>, VectorHash> results;
+
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    results = pkb->getMappings(RelationshipType::USES_S, ParamPosition::BOTH);
+  } else if (left.type == ParamType::SYNONYM) {
+    results = pkb->getMappings(RelationshipType::USES_S, ParamPosition::LEFT);
+  } else {
+    results = pkb->getMappings(RelationshipType::USES_S, ParamPosition::RIGHT);
+  }
+
+
+  // rightType == ParamType::SYNONYM
+  return vector<vector<int>>(results.begin(), results.end());
 }
 
 bool UsesEvaluator::evaluateBoolUsesP(const Param& left, const Param& right) {
@@ -65,10 +80,13 @@ bool UsesEvaluator::evaluateBoolUsesP(const Param& left, const Param& right) {
 
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
-    return pkb->isUsesP(left.value, right.value);
+    return pkb->isRs(RelationshipType::USES_P, TableType::PROC_TABLE,
+                     left.value, TableType::VAR_TABLE, right.value);
   }
 
-  return !pkb->getVarsUsedP(left.value).empty();
+  return !pkb->getRight(RelationshipType::USES_P, TableType::PROC_TABLE,
+                        left.value)
+              .empty();
 }
 
 UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesP(const Param& left,
@@ -76,13 +94,24 @@ UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesP(const Param& left,
   ParamType leftType = left.type;
 
   if (leftType == ParamType::SYNONYM) {
-    return pkb->getUsesP(right.value);
+    return pkb->getLeft(RelationshipType::USES_P, TableType::VAR_TABLE,
+                        right.value);
   }
 
-  return pkb->getVarsUsedP(left.value);
+  return pkb->getRight(RelationshipType::USES_P, TableType::PROC_TABLE,
+                       left.value);
 }
 
-vector<pair<int, vector<int>>> UsesEvaluator::evaluatePairUsesP(
+vector<vector<int>> UsesEvaluator::evaluatePairUsesP(
     const Param& left, const Param& right) {
-  return pkb->getAllUsesPPairs();
+  unordered_set<vector<int>, VectorHash> results;
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    results = pkb->getMappings(RelationshipType::USES_P, ParamPosition::BOTH);
+  } else if (left.type == ParamType::SYNONYM) {
+    results = pkb->getMappings(RelationshipType::USES_P, ParamPosition::LEFT);
+
+  } else {
+    results = pkb->getMappings(RelationshipType::USES_P, ParamPosition::RIGHT);
+  }
+  return vector<vector<int>>(results.begin(), results.end());
 }

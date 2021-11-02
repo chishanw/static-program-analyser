@@ -53,10 +53,10 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
   de.Extract(ast);
 
   SECTION("Iter 1 test (only var and const)") {
-    int xIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "x");
-    int yIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "y");
-    int zIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "z");
-    int iIdx = pkb->getIndexOf(TABLE_ENUM::VAR_TABLE, "i");
+    int xIdx = pkb->getIndexOf(TableType::VAR_TABLE, "x");
+    int yIdx = pkb->getIndexOf(TableType::VAR_TABLE, "y");
+    int zIdx = pkb->getIndexOf(TableType::VAR_TABLE, "z");
+    int iIdx = pkb->getIndexOf(TableType::VAR_TABLE, "i");
 
     // ===============
     // full expr

@@ -296,7 +296,8 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
 /* Helper Methods For Affects Extraction ---------------------------- */
 void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
                                          LastModifiedTable* LMT) {
-  unordered_set<VAR_IDX> usedVars = pkb->getVarsUsedS(currStmt);
+  unordered_set<VAR_IDX> usedVars =
+      pkb->getRight(RelationshipType::USES_S, currStmt);
   for (VAR_IDX usedVar : usedVars) {
     if (LMT->find(usedVar) != LMT->end()) {
       unordered_set<STMT_NO> LMTStmts = LMT->at(usedVar);
@@ -339,7 +340,8 @@ void AffectsEvaluator::processThenElseBlocks(
 
 void AffectsEvaluator::updateLastModifiedVariables(STMT_NO currStmt,
                                                    LastModifiedTable* LMT) {
-  unordered_set<VAR_IDX> modifiedVars = pkb->getVarsModifiedS(currStmt);
+  unordered_set<VAR_IDX> modifiedVars =
+      pkb->getRight(RelationshipType::MODIFIES_S, currStmt);
   for (auto modifiedVar : modifiedVars) {
     if (LMT->find(modifiedVar) == LMT->end()) {
       LMT->insert({modifiedVar, {}});

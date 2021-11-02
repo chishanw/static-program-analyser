@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Common/Common.h>
+
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -20,27 +22,6 @@ enum class DesignEntity {
 };
 
 enum class Attribute { PROC_NAME, VAR_NAME, VALUE, STMT_NUM };
-
-enum class RelationshipType {
-  FOLLOWS,
-  FOLLOWS_T,
-  PARENT,
-  PARENT_T,
-  USES_S,
-  USES_P,
-  MODIFIES_S,
-  MODIFIES_P,
-  CALLS,
-  CALLS_T,
-  NEXT,
-  NEXT_T,
-  NEXT_BIP,
-  NEXT_BIP_T,
-  AFFECTS,
-  AFFECTS_T,
-  AFFECTS_BIP,
-  AFFECTS_BIP_T,
-};
 
 enum class ParamType {
   SYNONYM,

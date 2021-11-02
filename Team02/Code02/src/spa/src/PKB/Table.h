@@ -6,19 +6,19 @@
 #include <unordered_set>
 #include <vector>
 
-typedef int TABLE_ELEM_IDX;
+typedef int TableElemIdx;
 
 class Table {
  public:
   Table();
 
-  TABLE_ELEM_IDX insert(std::string element);
+  TableElemIdx insert(std::string element);
   std::string getElement(int index);
-  TABLE_ELEM_IDX getIndex(std::string element);
-  std::unordered_set<TABLE_ELEM_IDX> getAllElements();
+  TableElemIdx getIndex(std::string element);
+  std::unordered_set<TableElemIdx> getAllElements();
 
  protected:
-  std::unordered_map<std::string, TABLE_ELEM_IDX> nameAsKey;
+  std::unordered_map<std::string, TableElemIdx> nameAsKey;
   std::vector<std::string> idxAsKey;
   int getSize();
 };
