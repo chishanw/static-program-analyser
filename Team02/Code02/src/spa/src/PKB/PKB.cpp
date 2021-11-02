@@ -82,7 +82,7 @@ bool PKB::isIfStmt(int s) { return allIfStmtNo.count(s) > 0; }
 bool PKB::isAssignStmt(int s) { return allAssignStmtNo.count(s) > 0; }
 
 void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,
-                           int right) {
+                     int right) {
   if ((*tablesRs).count(rs) == 0) {
     (*tablesRs)[rs] = unordered_map<int, unordered_set<int>>{};
   }
@@ -95,7 +95,7 @@ void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,
 }
 
 void insertToMappings(MappingsRs* mappingsRs, RelationshipType rs, int left,
-                              int right) {
+                      int right) {
   if ((*mappingsRs).count(rs) == 0) {
     unordered_map<ParamPosition, SetOfStmtLists> newMap(
         {{ParamPosition::LEFT, SetOfStmtLists()},
@@ -220,9 +220,7 @@ unordered_set<int> PKB::getAssignForVar(string varName) {
 vector<vector<int>> PKB::getAssignVarPairs() {
   return patternKB.getAssignVarPairs();
 }
-void PKB::addIfPtt(StmtNo s, string varName) {
-  patternKB.addIfPtt(s, varName);
-}
+void PKB::addIfPtt(StmtNo s, string varName) { patternKB.addIfPtt(s, varName); }
 
 void PKB::addWhilePtt(StmtNo s, string varName) {
   patternKB.addWhilePtt(s, varName);
@@ -281,19 +279,6 @@ vector<pair<PROC_IDX, vector<PROC_IDX>>> PKB::getAllCallsTPairs() {
 }
 SetOfStmts PKB::getAllCallStmts() { return callsKB.getAllCallStmts(); }
 bool PKB::isCallStmt(StmtNo s) { return callsKB.isCallStmt(s); }
-
-// Next API
-void PKB::addNext(StmtNo s1, StmtNo s2) { nextKB.addNext(s1, s2); }
-bool PKB::isNext(StmtNo s1, StmtNo s2) { return nextKB.isNext(s1, s2); }
-SetOfStmts PKB::getNextStmts(StmtNo s1) {
-  return nextKB.getNextStmts(s1);
-}
-SetOfStmts PKB::getPreviousStmts(StmtNo s2) {
-  return nextKB.getPreviousStmts(s2);
-}
-vector<pair<StmtNo, vector<StmtNo>>> PKB::getAllNextStmtPairs() {
-  return nextKB.getAllNextStmtPairs();
-}
 
 // Affects Info API
 void PKB::addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmtForIfStmt) {

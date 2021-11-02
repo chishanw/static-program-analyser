@@ -10,15 +10,15 @@
 
 #include "AffectsInfoKB.h"
 #include "CallsKB.h"
-#include "NextKB.h"
-#include "PatternKB.h"
 #include "Common/Common.h"
+#include "PatternKB.h"
 #include "Table.h"
 
-typedef std::unordered_map<RelationshipType, std::unordered_map<
-                           int, SetOfInts>> TablesRs;
-typedef std::unordered_map<RelationshipType, std::unordered_map<
-                            ParamPosition, SetOfStmtLists>> MappingsRs;
+typedef std::unordered_map<RelationshipType, std::unordered_map<int, SetOfInts>>
+    TablesRs;
+typedef std::unordered_map<RelationshipType,
+                           std::unordered_map<ParamPosition, SetOfStmtLists>>
+    MappingsRs;
 typedef std::unordered_map<TableType, Table, EnumClassHash> Tables;
 
 class PKB {
@@ -38,15 +38,14 @@ class PKB {
             TableType rightType, std::string right);
 
   std::unordered_set<int> getRight(RelationshipType rs, int left);
-  std::unordered_set<int> getRight(RelationshipType rs,
-                                   TableType rightType, std::string);
+  std::unordered_set<int> getRight(RelationshipType rs, TableType rightType,
+                                   std::string);
 
   std::unordered_set<int> getLeft(RelationshipType rs, int right);
-  std::unordered_set<int> getLeft(RelationshipType rs,
-                                  TableType rightType, std::string);
+  std::unordered_set<int> getLeft(RelationshipType rs, TableType rightType,
+                                  std::string);
 
-  SetOfStmtLists getMappings(RelationshipType rs,
-                             ParamPosition param);
+  SetOfStmtLists getMappings(RelationshipType rs, ParamPosition param);
 
   // Methods
   void addStmt(StmtNo s);
@@ -108,13 +107,6 @@ class PKB {
   std::unordered_set<PROC_IDX> getCallerTProcs(PROC_NAME proc);
   std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsTPairs();
 
-  // Next API
-  void addNext(StmtNo s1, StmtNo s2);
-  bool isNext(StmtNo s1, StmtNo s2);
-  SetOfStmts getNextStmts(StmtNo s1);
-  SetOfStmts getPreviousStmts(StmtNo s2);
-  std::vector<std::pair<StmtNo, std::vector<StmtNo>>> getAllNextStmtPairs();
-
   // Affects Info API
   void addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmt);
   void addFirstStmtOfProc(PROC_NAME procName, StmtNo firstStmtOfProc);
@@ -138,13 +130,11 @@ class PKB {
   SetOfStmts allWhileStmtNo;
   SetOfStmts allIfStmtNo;
   SetOfStmts allAssignStmtNo;
-  Tables tables = {
-      {TableType::VAR_TABLE, Table()},
-      {TableType::CONST_TABLE, Table()},
-      {TableType::PROC_TABLE, Table()}};
+  Tables tables = {{TableType::VAR_TABLE, Table()},
+                   {TableType::CONST_TABLE, Table()},
+                   {TableType::PROC_TABLE, Table()}};
 
   // Design Abstractions
-  NextKB nextKB;
   PatternKB patternKB = PatternKB(&tables.at(TableType::VAR_TABLE));
   CallsKB callsKB = CallsKB(&tables.at(TableType::PROC_TABLE));
   AffectsInfoKB affectsInfoKB =

@@ -549,7 +549,6 @@ void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
                                               PROC_NAME callee) {
   if (caller == callee) {
     throw runtime_error("Cyclic/Recursive loop detected.");
-    return;
   }
 
   pkb->addCallsT(caller, callee);
@@ -582,13 +581,11 @@ void DesignExtractor::ExtractNextAndNextBipHelper(
     STMT_NO nextStmtForLastStmt) {
   auto addNext = [this](STMT_NO s1, STMT_NO s2) {
     if (s1 == -1 || s2 == -1) return;
-    pkb->addNext(s1, s2);
+    pkb->addRs(RelationshipType::NEXT, s1, s2);
   };
   auto addNextBip = [this](STMT_NO s1, STMT_NO s2) {
     if (s1 == -1 || s2 == -1) return;
-    cout << "Add NextBip: " << s1 << " " << s2 << endl;
-    // TODO(gf)
-    // pkb->addNextBip(s1, s2);
+    pkb->addRs(RelationshipType::NEXT_BIP, s1, s2);
   };
 
   for (size_t i = 0; i < stmtList.size(); ++i) {

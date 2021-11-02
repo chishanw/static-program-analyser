@@ -190,12 +190,12 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(
         pkb->isRs(RelationshipType::MODIFIES_S, 9, TableType::VAR_TABLE, "x"));
     // invalid query
-    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE,
-                       "x"));
-    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE,
-                       "Y"));
-    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE,
-                       "x"));
+    REQUIRE(
+        !pkb->isRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x"));
+    REQUIRE(
+        !pkb->isRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "Y"));
+    REQUIRE(
+        !pkb->isRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x"));
     REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_S, 11, TableType::VAR_TABLE,
                        "cenX"));
 
@@ -208,10 +208,10 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "b",
                       TableType::VAR_TABLE, "x"));
     // invalid query
-    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
-                       "b", TableType::VAR_TABLE, "y"));
-    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
-                       "c", TableType::VAR_TABLE, "y"));
+    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "b",
+                       TableType::VAR_TABLE, "y"));
+    REQUIRE(!pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "c",
+                       TableType::VAR_TABLE, "y"));
 
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_S, 1) ==
             unordered_set<VAR_IDX>({0}));
@@ -276,14 +276,11 @@ TEST_CASE("Whole frontend simple test") {
         pkb->isRs(RelationshipType::USES_S, 6, TableType::VAR_TABLE, "cenX"));
     REQUIRE(pkb->isRs(RelationshipType::USES_S, 8, TableType::VAR_TABLE, "y"));
     REQUIRE(pkb->isRs(RelationshipType::USES_S, 9, TableType::VAR_TABLE, "x"));
-    REQUIRE(
-        pkb->isRs(RelationshipType::USES_S, 10, TableType::VAR_TABLE, "y"));
+    REQUIRE(pkb->isRs(RelationshipType::USES_S, 10, TableType::VAR_TABLE, "y"));
 
     // invalid query
-    REQUIRE(
-        !pkb->isRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x"));
-    REQUIRE(
-        !pkb->isRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "x"));
+    REQUIRE(!pkb->isRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x"));
+    REQUIRE(!pkb->isRs(RelationshipType::USES_S, 7, TableType::VAR_TABLE, "x"));
 
     REQUIRE(pkb->isRs(RelationshipType::USES_P, TableType::PROC_TABLE, "a",
                       TableType::VAR_TABLE, "x"));
@@ -306,14 +303,14 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(!pkb->isRs(RelationshipType::USES_P, TableType::PROC_TABLE, "c",
                        TableType::VAR_TABLE, "x"));
 
-    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "x") == unordered_set<STMT_NO>({2, 3, 4, 5, 9}));
-    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "y") == unordered_set<STMT_NO>({2, 3, 4, 5, 8, 10}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE, "x") ==
+            unordered_set<STMT_NO>({2, 3, 4, 5, 9}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE, "y") ==
+            unordered_set<STMT_NO>({2, 3, 4, 5, 8, 10}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
                          "cenX") == unordered_set<STMT_NO>({2, 3, 4, 6}));
-    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "X") == unordered_set<STMT_NO>({}));
+    REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE, "X") ==
+            unordered_set<STMT_NO>({}));
 
     REQUIRE(pkb->getRight(RelationshipType::USES_S, 2) ==
             unordered_set<VAR_IDX>({0, 1, 2}));
@@ -366,25 +363,27 @@ TEST_CASE("Whole frontend simple test") {
   }
 
   SECTION("Next/* extraction") {
-    REQUIRE(pkb->getNextStmts(1) == unordered_set<int>{2});
-    REQUIRE(pkb->getNextStmts(2) == unordered_set<int>{3});
-    REQUIRE(pkb->getNextStmts(3) == unordered_set<int>{4});
-    REQUIRE(pkb->getNextStmts(4) == unordered_set<int>{5, 6});
-    REQUIRE(pkb->getNextStmts(5) == unordered_set<int>{2});
-    REQUIRE(pkb->getNextStmts(6) == unordered_set<int>{2});
+    REQUIRE(pkb->getRight(RelationshipType::NEXT, 1) == unordered_set<int>{2});
+    REQUIRE(pkb->getRight(RelationshipType::NEXT, 2) == unordered_set<int>{3});
+    REQUIRE(pkb->getRight(RelationshipType::NEXT, 3) == unordered_set<int>{4});
+    REQUIRE(pkb->getRight(RelationshipType::NEXT, 4) ==
+            unordered_set<int>{5, 6});
+    REQUIRE(pkb->getRight(RelationshipType::NEXT, 5) == unordered_set<int>{2});
+    REQUIRE(pkb->getRight(RelationshipType::NEXT, 6) == unordered_set<int>{2});
 
-    vector<pair<STMT_NO, ListOfStmtNos>> output = pkb->getAllNextStmtPairs();
-    vector<pair<STMT_NO, ListOfStmtNos>> answer({
-        pair(1, ListOfStmtNos({2})),
-        pair(2, ListOfStmtNos({3})),
-        pair(3, ListOfStmtNos({4})),
-        pair(4, ListOfStmtNos({5, 6})),
-        pair(5, ListOfStmtNos({2})),
-        pair(6, ListOfStmtNos({2})),
-        pair(7, ListOfStmtNos({8})),
-        pair(8, ListOfStmtNos({9})),
+    SetOfStmtLists output =
+        pkb->getMappings(RelationshipType::NEXT, ParamPosition::BOTH);
+    SetOfStmtLists answer({
+        {1, 2},
+        {2, 3},
+        {3, 4},
+        {4, 5},
+        {4, 6},
+        {5, 2},
+        {6, 2},
+        {7, 8},
+        {8, 9},
     });
-    REQUIRE(set<pair<STMT_NO, ListOfStmtNos>>(output.begin(), output.end()) ==
-            set<pair<STMT_NO, ListOfStmtNos>>(answer.begin(), answer.end()));
+    REQUIRE(output == answer);
   }
 }

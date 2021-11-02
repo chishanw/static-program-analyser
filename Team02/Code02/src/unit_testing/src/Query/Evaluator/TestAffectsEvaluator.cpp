@@ -30,19 +30,19 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   // 10: z = z + x + i;
   // 11: x = 3;
   // 12: x = x * y + z;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(4, 5);
-  pkb->addNext(5, 3);
-  pkb->addNext(3, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(6, 8);
-  pkb->addNext(8, 9);
-  pkb->addNext(7, 10);
-  pkb->addNext(9, 10);
-  pkb->addNext(10, 11);
-  pkb->addNext(11, 12);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 5, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 8);
+  pkb->addRs(RelationshipType::NEXT, 8, 9);
+  pkb->addRs(RelationshipType::NEXT, 7, 10);
+  pkb->addRs(RelationshipType::NEXT, 9, 10);
+  pkb->addRs(RelationshipType::NEXT, 10, 11);
+  pkb->addRs(RelationshipType::NEXT, 11, 12);
   pkb->addWhileStmt(3);
   pkb->addIfStmt(6);
   pkb->addNextStmtForIfStmt(6, 10);
@@ -299,22 +299,22 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   for (int i = 1; i <= 13; i++) {
     pkb->addStmt(i);
   }
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(4, 5);
-  pkb->addNext(5, 4);
-  pkb->addNext(4, 2);
-  pkb->addNext(2, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(6, 11);
-  pkb->addNext(7, 8);
-  pkb->addNext(8, 9);
-  pkb->addNext(8, 10);
-  pkb->addNext(9, 12);
-  pkb->addNext(10, 12);
-  pkb->addNext(11, 12);
-  pkb->addNext(12, 13);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 5, 4);
+  pkb->addRs(RelationshipType::NEXT, 4, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 11);
+  pkb->addRs(RelationshipType::NEXT, 7, 8);
+  pkb->addRs(RelationshipType::NEXT, 8, 9);
+  pkb->addRs(RelationshipType::NEXT, 8, 10);
+  pkb->addRs(RelationshipType::NEXT, 9, 12);
+  pkb->addRs(RelationshipType::NEXT, 10, 12);
+  pkb->addRs(RelationshipType::NEXT, 11, 12);
+  pkb->addRs(RelationshipType::NEXT, 12, 13);
 
   unordered_set<int> whileStmts = {2, 4};
   for (int w : whileStmts) {
@@ -482,16 +482,16 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   for (int i = 1; i <= 8; i++) {
     pkb->addStmt(i);
   }
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(4, 5);
-  pkb->addNext(4, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(7, 6);
-  pkb->addNext(6, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 8);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 7, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 8);
 
   unordered_set<int> whileStmts = {2, 6};
   for (int w : whileStmts) {
@@ -641,12 +641,12 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
     pkb->addStmt(i);
   }
 
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(2, 4);
-  pkb->addNext(5, 6);
-  pkb->addNext(6, 5);
-  pkb->addNext(5, 7);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 2, 4);
+  pkb->addRs(RelationshipType::NEXT, 5, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 5);
+  pkb->addRs(RelationshipType::NEXT, 5, 7);
 
   unordered_set<int> whileStmts = {5};
   for (int w : whileStmts) {
@@ -788,13 +788,13 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
     pkb->addStmt(i);
   }
 
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(6, 7);
-  pkb->addNext(7, 8);
-  pkb->addNext(8, 6);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 7, 8);
+  pkb->addRs(RelationshipType::NEXT, 8, 6);
 
   pkb->addWhileStmt(6);
   pkb->addIfStmt(3);

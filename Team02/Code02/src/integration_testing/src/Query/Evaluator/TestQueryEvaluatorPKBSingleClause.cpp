@@ -2858,15 +2858,15 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
   // 6: if (z == 4) then {
   // 7:   x = y; }
   // 8: else { z = 6; }
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(6, 8);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 8);
 
   QueryEvaluator qe(pkb);
 
@@ -3000,13 +3000,13 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
   // 4:     y = 3; }
   // 5:   else { z = 4; } }
   // 6: x = 1;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 6);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 6);
   QueryEvaluator qe(pkb);
 
   unordered_map<string, DesignEntity> synonyms = {
@@ -3155,17 +3155,17 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
   // 7:   x = y; }
   // 8: else { print z; }
   // 9: read xyz;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(6, 8);
-  pkb->addNext(7, 9);
-  pkb->addNext(8, 9);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 8);
+  pkb->addRs(RelationshipType::NEXT, 7, 9);
+  pkb->addRs(RelationshipType::NEXT, 8, 9);
 
   QueryEvaluator qe(pkb);
 
@@ -3350,17 +3350,17 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
   // 7:   x = y; }
   // 8: else { print z; }
   // 9: read xyz;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(6, 8);
-  pkb->addNext(7, 9);
-  pkb->addNext(8, 9);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 8);
+  pkb->addRs(RelationshipType::NEXT, 7, 9);
+  pkb->addRs(RelationshipType::NEXT, 8, 9);
 
   QueryEvaluator qe(pkb);
 
@@ -3493,22 +3493,22 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
   for (int i = 1; i <= 13; i++) {
     pkb->addStmt(i);
   }
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(4, 5);
-  pkb->addNext(4, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(7, 6);
-  pkb->addNext(6, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 8);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 7, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 8);
 
-  pkb->addNext(9, 10);
-  pkb->addNext(10, 9);
-  pkb->addNext(9, 11);
-  pkb->addNext(11, 12);
-  pkb->addNext(11, 13);
+  pkb->addRs(RelationshipType::NEXT, 9, 10);
+  pkb->addRs(RelationshipType::NEXT, 10, 9);
+  pkb->addRs(RelationshipType::NEXT, 9, 11);
+  pkb->addRs(RelationshipType::NEXT, 11, 12);
+  pkb->addRs(RelationshipType::NEXT, 11, 13);
 
   unordered_set<int> whileStmts = {2, 6, 9};
   for (int w : whileStmts) {
@@ -3768,16 +3768,16 @@ TEST_CASE("QueryEvaluator: Affects") {
   for (int i = 1; i <= 8; i++) {
     pkb->addStmt(i);
   }
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(4, 5);
-  pkb->addNext(4, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(7, 6);
-  pkb->addNext(6, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 8);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 7, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 8);
 
   unordered_set<int> whileStmts = {2, 6};
   for (int w : whileStmts) {

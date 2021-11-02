@@ -270,7 +270,8 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
 
     if (pkb->isIfStmt(currStmt)) {
       STMT_NO nextStmtForIf = pkb->getNextStmtForIfStmt(currStmt);
-      unordered_set<STMT_NO> thenElseStmts = pkb->getNextStmts(currStmt);
+      unordered_set<STMT_NO> thenElseStmts =
+          pkb->getRight(RelationshipType::NEXT, currStmt);
       processThenElseBlocks(thenElseStmts, endStmt, nextStmtForIf, LMT,
                             paramCombo);
       for (STMT_NO stmt : thenElseStmts) {
@@ -279,7 +280,8 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
       stmtQueue.push(nextStmtForIf);
     }
 
-    unordered_set<int> allNextStmts = pkb->getNextStmts(currStmt);
+    unordered_set<int> allNextStmts =
+        pkb->getRight(RelationshipType::NEXT, currStmt);
     for (int nextStmt : allNextStmts) {
       // prevent infinite loop in CFG - don't process if/while blocks again
       if (visitedIfAndWhile.find(nextStmt) == visitedIfAndWhile.end()) {

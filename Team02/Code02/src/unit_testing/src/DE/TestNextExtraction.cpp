@@ -32,18 +32,20 @@ TEST_CASE("[DE][Next R/S] source from quiz") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  CHECK(pkb->getNextStmts(0) == unordered_set<int>{});  // out of bound
-  CHECK(pkb->getNextStmts(1) == unordered_set<int>{2});
-  CHECK(pkb->getNextStmts(2) == unordered_set<int>{3});
-  CHECK(pkb->getNextStmts(3) == unordered_set<int>{4, 7});
-  CHECK(pkb->getNextStmts(4) == unordered_set<int>{5});
-  CHECK(pkb->getNextStmts(5) == unordered_set<int>{6});
-  CHECK(pkb->getNextStmts(6) == unordered_set<int>{3});
-  CHECK(pkb->getNextStmts(7) == unordered_set<int>{8, 10});
-  CHECK(pkb->getNextStmts(8) == unordered_set<int>{9});
-  CHECK(pkb->getNextStmts(9) == unordered_set<int>{1});
-  CHECK(pkb->getNextStmts(10) == unordered_set<int>{1});
-  CHECK(pkb->getNextStmts(11) == unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT, 0) ==
+        unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT, 1) == unordered_set<int>{2});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 2) == unordered_set<int>{3});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 3) == unordered_set<int>{4, 7});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 4) == unordered_set<int>{5});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 5) == unordered_set<int>{6});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 6) == unordered_set<int>{3});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 7) == unordered_set<int>{8, 10});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 8) == unordered_set<int>{9});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 9) == unordered_set<int>{1});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 10) == unordered_set<int>{1});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 11) ==
+        unordered_set<int>{});  // out of bound
 }
 
 TEST_CASE("[DE][Next R/S] nested while") {
@@ -67,14 +69,16 @@ TEST_CASE("[DE][Next R/S] nested while") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  CHECK(pkb->getNextStmts(0) == unordered_set<int>{});  // out of bound
-  CHECK(pkb->getNextStmts(1) == unordered_set<int>{2});
-  CHECK(pkb->getNextStmts(2) == unordered_set<int>{1, 3});
-  CHECK(pkb->getNextStmts(3) == unordered_set<int>{2, 4});
-  CHECK(pkb->getNextStmts(4) == unordered_set<int>{3, 5});
-  CHECK(pkb->getNextStmts(5) == unordered_set<int>{4, 6});
-  CHECK(pkb->getNextStmts(6) == unordered_set<int>{5});
-  CHECK(pkb->getNextStmts(7) == unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT, 0) ==
+        unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT, 1) == unordered_set<int>{2});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 2) == unordered_set<int>{1, 3});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 3) == unordered_set<int>{2, 4});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 4) == unordered_set<int>{3, 5});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 5) == unordered_set<int>{4, 6});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 6) == unordered_set<int>{5});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 7) ==
+        unordered_set<int>{});  // out of bound
 }
 
 TEST_CASE("[DE][Next R/S] nested while and if") {
@@ -98,14 +102,16 @@ TEST_CASE("[DE][Next R/S] nested while and if") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  CHECK(pkb->getNextStmts(0) == unordered_set<int>{});  // out of bound
-  CHECK(pkb->getNextStmts(1) == unordered_set<int>{2});
-  CHECK(pkb->getNextStmts(2) == unordered_set<int>{3, 5});
-  CHECK(pkb->getNextStmts(3) == unordered_set<int>{4, 1});
-  CHECK(pkb->getNextStmts(4) == unordered_set<int>{3});
-  CHECK(pkb->getNextStmts(5) == unordered_set<int>{6, 1});
-  CHECK(pkb->getNextStmts(6) == unordered_set<int>{5});
-  CHECK(pkb->getNextStmts(7) == unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT, 0) ==
+        unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT, 1) == unordered_set<int>{2});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 2) == unordered_set<int>{3, 5});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 3) == unordered_set<int>{4, 1});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 4) == unordered_set<int>{3});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 5) == unordered_set<int>{6, 1});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 6) == unordered_set<int>{5});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 7) ==
+        unordered_set<int>{});  // out of bound
 }
 
 TEST_CASE("[DE][NextBip R/S] sample source") {
@@ -148,15 +154,16 @@ TEST_CASE("[DE][NextBip R/S] sample source") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  // TODO(gf): when pkb is ready
-  // CHECK(pkb->getNextBip(0) == unordered_set<int>{});  // out of bound
-  // CHECK(pkb->getNextBip(10).count(22) > 0);
-  // CHECK(pkb->getNextBip(12).count(13) > 0);
-  // CHECK(pkb->getNextBip(16).count(22) > 0);
-  // CHECK(pkb->getNext(10).count(22) == 0);
-  // CHECK(pkb->getNext(12).count(13) == 0);
-  // CHECK(pkb->getNext(16).count(22) == 0);
-  // CHECK(pkb->getNextBip(25) == unordered_set<int>{});  // out of bound
+  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 0) ==
+          unordered_set<int>{});  // out of bound
+  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 10).count(22) > 0);
+  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 12).count(13) > 0);
+  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 16).count(22) > 0);
+  REQUIRE(pkb->getRight(RelationshipType::NEXT, 10).count(22) == 0);
+  REQUIRE(pkb->getRight(RelationshipType::NEXT, 12).count(13) == 0);
+  REQUIRE(pkb->getRight(RelationshipType::NEXT, 16).count(22) == 0);
+  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 25) ==
+          unordered_set<int>{});  // out of bound
 }
 
 TEST_CASE("[DE][AffectsInfo] nested if") {

@@ -20,19 +20,21 @@ bool NextEvaluator::evaluateBoolNext(const Param& left, const Param& right) {
   // if both underscore - Next(_, _)
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::INTEGER_LITERAL) {
-    unordered_set<STMT_NO> nextStmts = pkb->getNextStmts(stoi(left.value));
+    unordered_set<STMT_NO> nextStmts =
+        pkb->getRight(RelationshipType::NEXT, stoi(left.value));
     return nextStmts.find(stoi(right.value)) != nextStmts.end();
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !(pkb->getAllNextStmtPairs()).empty();
+    return !pkb->getMappings(RelationshipType::NEXT, ParamPosition::BOTH)
+                .empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
-    return !(pkb->getPreviousStmts(stoi(right.value)).empty());
+    return !(pkb->getLeft(RelationshipType::NEXT, stoi(right.value)).empty());
   }
 
-  return !(pkb->getNextStmts(stoi(left.value)).empty());
+  return !(pkb->getRight(RelationshipType::NEXT, stoi(left.value)).empty());
 }
 
 // synonym & literal
@@ -43,40 +45,38 @@ unordered_set<int> NextEvaluator::evaluateNext(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::INTEGER_LITERAL) {
-    return pkb->getNextStmts(stoi(left.value));
+    return pkb->getRight(RelationshipType::NEXT, stoi(left.value));
   }
 
   // rightType == ParamType::LITERAL
-  return pkb->getPreviousStmts(stoi(right.value));
+  return pkb->getLeft(RelationshipType::NEXT, stoi(right.value));
 }
 
 // synonym & wildcard - Next(s, _) -> getAllNextStmtPairs()
 // synonym & synonym - Next(s1, s2) -> getAllNextStmtPairs()
 vector<vector<int>> NextEvaluator::evaluatePairNext(const Param& left,
                                                     const Param& right) {
-  vector<pair<STMT_NO, vector<STMT_NO>>> results = pkb->getAllNextStmtPairs();
   vector<vector<int>> formattedResults = {};
 
   if (left.type == ParamType::WILDCARD) {
-    for (auto result : results) {
-      for (auto second : result.second) {
-        formattedResults.push_back({second});
-      }
-    }
+    SetOfStmtLists results =
+        pkb->getMappings(RelationshipType::NEXT, ParamPosition::RIGHT);
+    formattedResults.insert(formattedResults.end(), results.begin(),
+                            results.end());
     return formattedResults;
   }
   if (right.type == ParamType::WILDCARD) {
-    for (auto result : results) {
-      formattedResults.push_back({result.first});
-    }
+    SetOfStmtLists results =
+        pkb->getMappings(RelationshipType::NEXT, ParamPosition::LEFT);
+    formattedResults.insert(formattedResults.end(), results.begin(),
+                            results.end());
     return formattedResults;
   }
   // both synonyms
-  for (auto result : results) {
-    for (auto second : result.second) {
-      formattedResults.push_back({result.first, second});
-    }
-  }
+  SetOfStmtLists results =
+      pkb->getMappings(RelationshipType::NEXT, ParamPosition::BOTH);
+  formattedResults.insert(formattedResults.end(), results.begin(),
+                          results.end());
   return formattedResults;
 }
 
@@ -104,16 +104,17 @@ bool NextEvaluator::evaluateBoolNextT(const Param& left, const Param& right) {
 
   // Wildcard + Wildcard - e.g. NextT(_, _)
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !pkb->getAllNextStmtPairs().empty();
+    return !pkb->getMappings(RelationshipType::NEXT, ParamPosition::BOTH)
+                .empty();
   }
 
   // Wildcard + Integer - e.g. NextT(_, 2)
   if (leftType == ParamType::WILDCARD) {
-    return !pkb->getPreviousStmts(stoi(right.value)).empty();
+    return !pkb->getLeft(RelationshipType::NEXT, stoi(right.value)).empty();
   }
 
   // Integer + Wildcard - e.g. NextT(1, _)
-  return !pkb->getNextStmts(stoi(left.value)).empty();
+  return !pkb->getRight(RelationshipType::NEXT, stoi(left.value)).empty();
 }
 
 unordered_set<int> NextEvaluator::evaluateNextT(const Param& left,
@@ -181,7 +182,8 @@ bool NextEvaluator::getIsNextT(int startStmt, int endStmt) {
   unordered_map<int, unordered_set<int>> visited = {};
 
   // initialization
-  unordered_set<int> allNextStmtsFromStart = pkb->getNextStmts(startStmt);
+  unordered_set<int> allNextStmtsFromStart =
+      pkb->getRight(RelationshipType::NEXT, startStmt);
   for (auto nextStmt : allNextStmtsFromStart) {
     stmtQueue.push(nextStmt);
     visited.insert({nextStmt, {startStmt}});
@@ -194,7 +196,8 @@ bool NextEvaluator::getIsNextT(int startStmt, int endStmt) {
     if (currStmt == endStmt) {
       return true;
     }
-    unordered_set<int> allNextStmts = pkb->getNextStmts(currStmt);
+    unordered_set<int> allNextStmts =
+        pkb->getRight(RelationshipType::NEXT, currStmt);
 
     for (int nextStmt : allNextStmts) {
       bool hasBeenVisited = visited.find(nextStmt) != visited.end();
@@ -223,7 +226,8 @@ unordered_set<int> NextEvaluator::getNextTStmts(int startStmt) {
   unordered_map<int, unordered_set<int>> visited = {};
 
   // initialization
-  unordered_set<int> allNextStmtsFromStart = pkb->getNextStmts(startStmt);
+  unordered_set<int> allNextStmtsFromStart =
+      pkb->getRight(RelationshipType::NEXT, startStmt);
   for (auto nextStmt : allNextStmtsFromStart) {
     stmtQueue.push(nextStmt);
     visited.insert({nextStmt, {startStmt}});
@@ -234,7 +238,8 @@ unordered_set<int> NextEvaluator::getNextTStmts(int startStmt) {
   while (!stmtQueue.empty()) {
     int currStmt = stmtQueue.front();
     stmtQueue.pop();
-    unordered_set<int> allNextStmts = pkb->getNextStmts(currStmt);
+    unordered_set<int> allNextStmts =
+        pkb->getRight(RelationshipType::NEXT, currStmt);
 
     for (int nextStmt : allNextStmts) {
       nextTStmts.insert(nextStmt);
@@ -265,7 +270,8 @@ unordered_set<int> NextEvaluator::getPrevTStmts(int endStmt) {
   unordered_map<int, unordered_set<int>> visited = {};
 
   // initialization
-  unordered_set<int> allPrevStmtsToEnd = pkb->getPreviousStmts(endStmt);
+  unordered_set<int> allPrevStmtsToEnd =
+      pkb->getLeft(RelationshipType::NEXT, endStmt);
   for (auto prevStmt : allPrevStmtsToEnd) {
     stmtQueue.push(prevStmt);
     visited.insert({prevStmt, {endStmt}});
@@ -276,7 +282,8 @@ unordered_set<int> NextEvaluator::getPrevTStmts(int endStmt) {
   while (!stmtQueue.empty()) {
     int currStmt = stmtQueue.front();
     stmtQueue.pop();
-    unordered_set<int> allPrevStmts = pkb->getPreviousStmts(currStmt);
+    unordered_set<int> allPrevStmts =
+        pkb->getLeft(RelationshipType::NEXT, currStmt);
 
     for (int prevStmt : allPrevStmts) {
       prevTStmts.insert(prevStmt);

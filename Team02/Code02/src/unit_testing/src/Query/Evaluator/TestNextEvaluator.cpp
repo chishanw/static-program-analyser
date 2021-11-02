@@ -23,14 +23,14 @@ TEST_CASE("NextEvaluator: Next") {
   // 5: while (z == 2) {
   // 6:  z = 3 }
   // 7: x = 5;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(2, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 5);
-  pkb->addNext(5, 6);
-  pkb->addNext(5, 7);
-  pkb->addNext(6, 5);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 2, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 5, 6);
+  pkb->addRs(RelationshipType::NEXT, 5, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 5);
 
   NextEvaluator ne(pkb);
 
@@ -83,14 +83,14 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   // 5: while (z == 2) {
   // 6:  z = 3 }
   // 7: x = 5;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(2, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 5);
-  pkb->addNext(5, 6);
-  pkb->addNext(5, 7);
-  pkb->addNext(6, 5);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 2, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 5);
+  pkb->addRs(RelationshipType::NEXT, 5, 6);
+  pkb->addRs(RelationshipType::NEXT, 5, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 5);
 
   NextEvaluator ne(pkb);
 
@@ -249,25 +249,25 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   // 12:  while (y == 7) {
   // 13:    z = x; } }
   // 14: x = 5;
-  pkb->addNext(1, 2);
-  pkb->addNext(2, 3);
-  pkb->addNext(3, 4);
-  pkb->addNext(3, 5);
-  pkb->addNext(4, 2);
-  pkb->addNext(5, 2);
-  pkb->addNext(2, 6);
-  pkb->addNext(6, 7);
-  pkb->addNext(6, 10);
-  pkb->addNext(10, 11);
-  pkb->addNext(7, 8);
-  pkb->addNext(7, 9);
-  pkb->addNext(8, 11);
-  pkb->addNext(9, 11);
-  pkb->addNext(11, 12);
-  pkb->addNext(12, 13);
-  pkb->addNext(13, 12);
-  pkb->addNext(12, 11);
-  pkb->addNext(11, 14);
+  pkb->addRs(RelationshipType::NEXT, 1, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 3);
+  pkb->addRs(RelationshipType::NEXT, 3, 4);
+  pkb->addRs(RelationshipType::NEXT, 3, 5);
+  pkb->addRs(RelationshipType::NEXT, 4, 2);
+  pkb->addRs(RelationshipType::NEXT, 5, 2);
+  pkb->addRs(RelationshipType::NEXT, 2, 6);
+  pkb->addRs(RelationshipType::NEXT, 6, 7);
+  pkb->addRs(RelationshipType::NEXT, 6, 10);
+  pkb->addRs(RelationshipType::NEXT, 10, 11);
+  pkb->addRs(RelationshipType::NEXT, 7, 8);
+  pkb->addRs(RelationshipType::NEXT, 7, 9);
+  pkb->addRs(RelationshipType::NEXT, 8, 11);
+  pkb->addRs(RelationshipType::NEXT, 9, 11);
+  pkb->addRs(RelationshipType::NEXT, 11, 12);
+  pkb->addRs(RelationshipType::NEXT, 12, 13);
+  pkb->addRs(RelationshipType::NEXT, 13, 12);
+  pkb->addRs(RelationshipType::NEXT, 12, 11);
+  pkb->addRs(RelationshipType::NEXT, 11, 14);
 
   NextEvaluator ne(pkb);
 
