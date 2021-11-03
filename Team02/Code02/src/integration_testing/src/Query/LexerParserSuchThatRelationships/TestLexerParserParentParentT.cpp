@@ -11,7 +11,7 @@
 
 using namespace std;
 
-typedef unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef unordered_map<std::string, DesignEntity> SynonymMap;
 typedef query::SelectClause SelectClause;
 
 // ====================== Testing Parent relationship ======================
@@ -24,9 +24,9 @@ TEST_CASE(
         "Select s such that Parent(1, 2)";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::PARENT,
@@ -55,9 +55,9 @@ TEST_CASE(
         "Select s such that Parent*(1, 2)";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::PARENT_T,

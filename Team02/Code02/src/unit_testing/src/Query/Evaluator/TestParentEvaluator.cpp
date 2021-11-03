@@ -10,9 +10,9 @@ using namespace query;
 
 TEST_CASE("ParentEvaluator: Parent") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::PARENT, 1, 2);
   pkb->addRs(RelationshipType::PARENT, 1, 3);
 
@@ -55,8 +55,8 @@ TEST_CASE("ParentEvaluator: Parent") {
 
 TEST_CASE("ParentEvaluator: ParentT") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
 
   SECTION("Evaluates two literals - ParentT(1, 2)") {
     pkb->addRs(RelationshipType::PARENT_T, 1, 2);

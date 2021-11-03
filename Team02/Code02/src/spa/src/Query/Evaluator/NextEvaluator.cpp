@@ -152,7 +152,7 @@ unordered_set<int> NextEvaluator::evaluateNextT(const Param& left,
 vector<vector<int>> NextEvaluator::evaluatePairNextT(const Param& left,
                                                      const Param& right) {
   vector<vector<int>> allNextTResults = {};
-  unordered_set<int> allStmts = pkb->getAllStmts();
+  unordered_set<int> allStmts = pkb->getAllStmts(DesignEntity::STATEMENT);
 
   for (auto stmtNum : allStmts) {
     unordered_set<int> nextTStmts;

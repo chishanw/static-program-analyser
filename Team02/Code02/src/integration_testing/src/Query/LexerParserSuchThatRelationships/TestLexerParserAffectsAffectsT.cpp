@@ -10,7 +10,7 @@
 
 using namespace std;
 
-typedef unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef unordered_map<std::string, DesignEntity> SynonymMap;
 typedef query::SelectClause SelectClause;
 
 // ====================== Testing Affects relationship ======================
@@ -65,7 +65,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     string validQuery = "stmt s2; Select BOOLEAN such that Affects(1, s2)";
 
     // expected
-    SynonymMap map = {{"s2", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s2", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -88,7 +88,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     string validQuery = "prog_line n; Select BOOLEAN such that Affects(1, n)";
 
     // expected
-    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -111,7 +111,7 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
     string validQuery = "assign a; Select BOOLEAN such that Affects(1, a)";
 
     // expected
-    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    SynonymMap map = {{"a", DesignEntity::ASSIGN}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -135,8 +135,8 @@ TEST_CASE("Valid queries for Affects relationship succeeds") {
         "stmt s1; assign a; Select BOOLEAN such that Affects(s1, a)";
 
     // expected
-    SynonymMap map = {{"s1", query::DesignEntity::STATEMENT},
-                      {"a", query::DesignEntity::ASSIGN}};
+    SynonymMap map = {{"s1", DesignEntity::STATEMENT},
+                      {"a", DesignEntity::ASSIGN}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;

@@ -12,17 +12,17 @@ using Catch::Matchers::VectorContains;
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
-  pkb->addReadStmt(1);
-  pkb->addReadStmt(2);
+  pkb->addStmt(DesignEntity::READ, 1);
+  pkb->addStmt(DesignEntity::READ, 2);
 
   QueryEvaluator qe(pkb);
 
@@ -174,10 +174,10 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
@@ -280,9 +280,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
@@ -387,9 +387,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
@@ -479,10 +479,10 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
   pkb->addRs(RelationshipType::PARENT, 1, 2);
   pkb->addRs(RelationshipType::PARENT, 1, 3);
   pkb->addRs(RelationshipType::PARENT, 3, 4);
@@ -599,10 +599,10 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
@@ -705,10 +705,10 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
   pkb->addRs(RelationshipType::PARENT_T, 1, 2);
   pkb->addRs(RelationshipType::PARENT_T, 1, 3);
   pkb->addRs(RelationshipType::PARENT_T, 3, 4);
@@ -813,9 +813,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
@@ -908,9 +908,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
   pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "y");
   pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "z");
@@ -1058,9 +1058,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
@@ -1607,9 +1607,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "y");
   pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "z");
@@ -1706,9 +1706,9 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   int xVarIdx = 0;
   int yVarIdx = 1;
   int zVarIdx = 2;
@@ -2055,9 +2055,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   int xVarIdx = 0;
   int yVarIdx = 1;
   int zVarIdx = 2;
@@ -2847,7 +2847,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
 TEST_CASE("QueryEvaluator: Next - Truthy Values") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 8; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: x = 1;
@@ -2991,7 +2991,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 TEST_CASE("QueryEvaluator: Next - Falsy Values") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 6; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: y = 2;
@@ -3134,17 +3134,17 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
 TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 9; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
-  pkb->addAssignStmt(1);
-  pkb->addWhileStmt(2);
-  pkb->addIfStmt(3);
-  pkb->addAssignStmt(4);
-  pkb->addAssignStmt(5);
-  pkb->addIfStmt(6);
-  pkb->addAssignStmt(7);
-  pkb->addPrintStmt(8);
-  pkb->addReadStmt(9);
+  pkb->addStmt(DesignEntity::ASSIGN, 1);
+  pkb->addStmt(DesignEntity::WHILE, 2);
+  pkb->addStmt(DesignEntity::IF, 3);
+  pkb->addStmt(DesignEntity::ASSIGN, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 5);
+  pkb->addStmt(DesignEntity::IF, 6);
+  pkb->addStmt(DesignEntity::ASSIGN, 7);
+  pkb->addStmt(DesignEntity::PRINT, 8);
+  pkb->addStmt(DesignEntity::READ, 9);
   // example procedure
   // 1: x = 1;
   // 2: while (x == 1) {
@@ -3329,17 +3329,17 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 9; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
-  pkb->addAssignStmt(1);
-  pkb->addWhileStmt(2);
-  pkb->addIfStmt(3);
-  pkb->addAssignStmt(4);
-  pkb->addAssignStmt(5);
-  pkb->addIfStmt(6);
-  pkb->addAssignStmt(7);
-  pkb->addPrintStmt(8);
-  pkb->addReadStmt(9);
+  pkb->addStmt(DesignEntity::ASSIGN, 1);
+  pkb->addStmt(DesignEntity::WHILE, 2);
+  pkb->addStmt(DesignEntity::IF, 3);
+  pkb->addStmt(DesignEntity::ASSIGN, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 5);
+  pkb->addStmt(DesignEntity::IF, 6);
+  pkb->addStmt(DesignEntity::ASSIGN, 7);
+  pkb->addStmt(DesignEntity::PRINT, 8);
+  pkb->addStmt(DesignEntity::READ, 9);
   // example procedure
   // 1: x = 1;
   // 2: while (x == 1) {
@@ -3491,7 +3491,7 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
   pkb->insertAt(TableType::PROC_TABLE, "B");
   pkb->addFirstStmtOfProc("B", 9);
   for (int i = 1; i <= 13; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   pkb->addRs(RelationshipType::NEXT, 1, 2);
   pkb->addRs(RelationshipType::NEXT, 2, 3);
@@ -3512,17 +3512,17 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
 
   unordered_set<int> whileStmts = {2, 6, 9};
   for (int w : whileStmts) {
-    pkb->addWhileStmt(w);
+    pkb->addStmt(DesignEntity::WHILE, w);
   }
   unordered_set<int> ifStmts = {4, 11};
   for (int ifs : ifStmts) {
-    pkb->addIfStmt(ifs);
+    pkb->addStmt(DesignEntity::IF, ifs);
   }
   pkb->addNextStmtForIfStmt(4, 2);
   for (int i = 1; i <= 13; i++) {
     if (whileStmts.find(i) == whileStmts.end() &&
         ifStmts.find(i) == ifStmts.end()) {
-      pkb->addAssignStmt(i);
+      pkb->addStmt(DesignEntity::ASSIGN, i);
     }
   }
 
@@ -3766,7 +3766,7 @@ TEST_CASE("QueryEvaluator: Affects") {
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 8; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   pkb->addRs(RelationshipType::NEXT, 1, 2);
   pkb->addRs(RelationshipType::NEXT, 2, 3);
@@ -3781,16 +3781,16 @@ TEST_CASE("QueryEvaluator: Affects") {
 
   unordered_set<int> whileStmts = {2, 6};
   for (int w : whileStmts) {
-    pkb->addWhileStmt(w);
+    pkb->addStmt(DesignEntity::WHILE, w);
   }
   unordered_set<int> ifStmts = {4};
   for (int ifs : ifStmts) {
-    pkb->addIfStmt(ifs);
+    pkb->addStmt(DesignEntity::IF, ifs);
   }
   pkb->addNextStmtForIfStmt(4, 2);
   unordered_set<int> assignStmts = {1, 3, 7};
   for (int a : assignStmts) {
-    pkb->addAssignStmt(a);
+    pkb->addStmt(DesignEntity::ASSIGN, a);
   }
 
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
@@ -3893,9 +3893,9 @@ TEST_CASE("QueryEvaluator: Affects") {
 
 TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addAssignStmt(1);
-  pkb->addAssignStmt(2);
-  pkb->addAssignStmt(3);
+  pkb->addStmt(DesignEntity::ASSIGN, 1);
+  pkb->addStmt(DesignEntity::ASSIGN, 2);
+  pkb->addStmt(DesignEntity::ASSIGN, 3);
 
   pkb->addAssignPttFullExpr(1, "x", "w");
   pkb->addAssignPttSubExpr(1, "x", "w");
@@ -4061,7 +4061,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select a pattern a ('x', 'w')") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttFullExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4076,7 +4076,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a ('x', _'w'_)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttSubExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4091,7 +4091,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a ('x', _)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttFullExpr(1, "y", "www");
     QueryEvaluator qe(pkb);
 
@@ -4106,7 +4106,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a (_, 'w')") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttFullExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4121,7 +4121,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a (_, _'w'_)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttSubExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4149,7 +4149,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a (v, 'w')") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttFullExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4164,7 +4164,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a (v, _'w'_)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttSubExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4179,7 +4179,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select a pattern a (v, _)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4193,7 +4193,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v pattern a (v, 'w')") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttFullExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4208,7 +4208,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v pattern a (v, _'w'_)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     pkb->addAssignPttSubExpr(1, "x", "www");
     QueryEvaluator qe(pkb);
 
@@ -4223,7 +4223,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v pattern a (v, _)") {
-    pkb->addAssignStmt(1);
+    pkb->addStmt(DesignEntity::ASSIGN, 1);
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4239,9 +4239,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addIfStmt(1);
-  pkb->addIfStmt(2);
-  pkb->addIfStmt(3);
+  pkb->addStmt(DesignEntity::IF, 1);
+  pkb->addStmt(DesignEntity::IF, 2);
+  pkb->addStmt(DesignEntity::IF, 3);
 
   pkb->addIfPtt(1, "x");
   pkb->addIfPtt(1, "y");
@@ -4313,7 +4313,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select ifs pattern ifs ('x', _, _)") {
-    pkb->addIfStmt(1);
+    pkb->addStmt(DesignEntity::IF, 1);
     pkb->addIfPtt(1, "y");
     QueryEvaluator qe(pkb);
 
@@ -4339,7 +4339,8 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select ifs pattern ifs (v, _, _)") {
-    pkb->addIfStmt(1);  // e.g. if condition has const but no var
+    pkb->addStmt(DesignEntity::IF,
+                 1);  // e.g. if condition has const but no var
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
@@ -4352,7 +4353,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v pattern ifs (v, _, _)") {
-    pkb->addIfStmt(1);
+    pkb->addStmt(DesignEntity::IF, 1);
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {ifs, {ParamType::SYNONYM, "v"}, {}};
@@ -4367,10 +4368,10 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addWhileStmt(1);
-  pkb->addWhileStmt(2);
-  pkb->addWhileStmt(3);
-  pkb->addWhileStmt(4);
+  pkb->addStmt(DesignEntity::WHILE, 1);
+  pkb->addStmt(DesignEntity::WHILE, 2);
+  pkb->addStmt(DesignEntity::WHILE, 3);
+  pkb->addStmt(DesignEntity::WHILE, 4);
 
   pkb->addWhilePtt(1, "x");
   pkb->addWhilePtt(1, "y");
@@ -4442,7 +4443,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select w pattern w ('x', _, _)") {
-    pkb->addWhileStmt(1);
+    pkb->addStmt(DesignEntity::WHILE, 1);
     pkb->addWhilePtt(1, "y");
     QueryEvaluator qe(pkb);
 
@@ -4468,7 +4469,8 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select w pattern w (v, _, _)") {
-    pkb->addWhileStmt(1);  // e.g. while condition has const but no var
+    pkb->addStmt(DesignEntity::WHILE,
+                 1);  // e.g. while condition has const but no var
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
@@ -4481,7 +4483,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
   }
 
   SECTION("Select v pattern w (v, _, _)") {
-    pkb->addWhileStmt(1);
+    pkb->addStmt(DesignEntity::WHILE, 1);
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {w, {ParamType::SYNONYM, "v"}, {}};
@@ -4687,10 +4689,10 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
   int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
   int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
   QueryEvaluator qe(pkb);
@@ -4885,7 +4887,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   }
 
   SECTION("Select n1 with n1 = c1.value") {
-    pkb->addStmt(1);
+    pkb->addStmt(DesignEntity::STATEMENT, 1);
     pkb->insertAt(TableType::CONST_TABLE, "2");
     QueryEvaluator qe(pkb);
 
@@ -4899,8 +4901,8 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   }
 
   SECTION("Select n1 with n1 = 3") {
-    pkb->addStmt(1);
-    pkb->addStmt(2);
+    pkb->addStmt(DesignEntity::STATEMENT, 1);
+    pkb->addStmt(DesignEntity::STATEMENT, 2);
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::SYNONYM, "n1"},
@@ -4925,8 +4927,8 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   }
 
   SECTION("Select s1 with s1.stmt# = c1.value") {
-    pkb->addStmt(1);
-    pkb->addStmt(2);
+    pkb->addStmt(DesignEntity::STATEMENT, 1);
+    pkb->addStmt(DesignEntity::STATEMENT, 2);
     pkb->insertAt(TableType::CONST_TABLE, "3");
     QueryEvaluator qe(pkb);
 
@@ -4940,7 +4942,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
   }
 
   SECTION("Select s1 with s1.stmt# = 2") {
-    pkb->addStmt(1);
+    pkb->addStmt(DesignEntity::STATEMENT, 1);
     QueryEvaluator qe(pkb);
 
     WithClause withClause = {{ParamType::ATTRIBUTE_STMT_NUM, "s1"},

@@ -21,10 +21,17 @@ typedef std::unordered_map<RelationshipType,
     MappingsRs;
 typedef std::unordered_map<TableType, Table, EnumClassHash> Tables;
 
+typedef std::unordered_map<DesignEntity, SetOfStmts> TableOfStmts;
+
 class PKB {
  public:
-  // Constructor
-  PKB();
+  void addStmt(DesignEntity de, StmtNo s);
+  SetOfStmts getAllStmts(DesignEntity de);
+  bool isStmt(DesignEntity de, StmtNo s);
+  int getNumStmts(DesignEntity de);
+
+  SetOfStmts getAllCallStmts();
+
   void addRs(RelationshipType rs, int left, int right);
   void addRs(RelationshipType rs, int left, TableType rightType,
              std::string right);
@@ -46,30 +53,6 @@ class PKB {
                                   std::string);
 
   SetOfStmtLists getMappings(RelationshipType rs, ParamPosition param);
-
-  // Methods
-  void addStmt(StmtNo s);
-  void addReadStmt(StmtNo s);
-  void addPrintStmt(StmtNo s);
-  void addWhileStmt(StmtNo s);
-  void addIfStmt(StmtNo s);
-  void addAssignStmt(StmtNo s);
-
-  SetOfStmts getAllStmts();
-  SetOfStmts getAllReadStmts();
-  SetOfStmts getAllPrintStmts();
-  SetOfStmts getAllCallStmts();
-  SetOfStmts getAllWhileStmts();
-  SetOfStmts getAllIfStmts();
-  SetOfStmts getAllAssignStmts();
-
-  bool isReadStmt(int s);
-  bool isPrintStmt(int s);
-  bool isWhileStmt(int s);
-  bool isIfStmt(int s);
-  bool isAssignStmt(int s);
-
-  SetOfStmts allStmtNo;
 
   // Pattern API
   void addAssignPttFullExpr(StmtNo s, std::string var, std::string expr);
@@ -125,11 +108,7 @@ class PKB {
   // Members
   TablesRs tablesRs, invTablesRs;
   MappingsRs mappingsRs;
-  SetOfStmts allReadStmtNo;
-  SetOfStmts allPrintStmtNo;
-  SetOfStmts allWhileStmtNo;
-  SetOfStmts allIfStmtNo;
-  SetOfStmts allAssignStmtNo;
+  TableOfStmts tableOfStmts;
   Tables tables = {{TableType::VAR_TABLE, Table()},
                    {TableType::CONST_TABLE, Table()},
                    {TableType::PROC_TABLE, Table()}};

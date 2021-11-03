@@ -20,31 +20,31 @@ class TestQueryOptimizerUtil {
   inline static std::string DEFAULT_N_NAME = "n";
 
   inline static SynonymMap DEFAULT_SYNONYM_MAP = {
-      {DEFAULT_S1_NAME, query::DesignEntity::STATEMENT},
-      {DEFAULT_S2_NAME, query::DesignEntity::STATEMENT},
-      {DEFAULT_A_NAME, query::DesignEntity::ASSIGN},
-      {DEFAULT_V_NAME, query::DesignEntity::VARIABLE},
-      {DEFAULT_W_NAME, query::DesignEntity::WHILE},
-      {DEFAULT_IFS_NAME, query::DesignEntity::IF},
-      {DEFAULT_C_NAME, query::DesignEntity::CALL},
-      {DEFAULT_N_NAME, query::DesignEntity::PROG_LINE},
+      {DEFAULT_S1_NAME, DesignEntity::STATEMENT},
+      {DEFAULT_S2_NAME, DesignEntity::STATEMENT},
+      {DEFAULT_A_NAME, DesignEntity::ASSIGN},
+      {DEFAULT_V_NAME, DesignEntity::VARIABLE},
+      {DEFAULT_W_NAME, DesignEntity::WHILE},
+      {DEFAULT_IFS_NAME, DesignEntity::IF},
+      {DEFAULT_C_NAME, DesignEntity::CALL},
+      {DEFAULT_N_NAME, DesignEntity::PROG_LINE},
   };
 
-  inline static query::Synonym DEFAULT_S1 = {query::DesignEntity::STATEMENT,
+  inline static query::Synonym DEFAULT_S1 = {DesignEntity::STATEMENT,
                                              DEFAULT_S1_NAME};
-  inline static query::Synonym DEFAULT_S2 = {query::DesignEntity::STATEMENT,
+  inline static query::Synonym DEFAULT_S2 = {DesignEntity::STATEMENT,
                                              DEFAULT_S2_NAME};
-  inline static query::Synonym DEFAULT_A = {query::DesignEntity::ASSIGN,
+  inline static query::Synonym DEFAULT_A = {DesignEntity::ASSIGN,
                                             DEFAULT_A_NAME};
-  inline static query::Synonym DEFAULT_V = {query::DesignEntity::VARIABLE,
+  inline static query::Synonym DEFAULT_V = {DesignEntity::VARIABLE,
                                             DEFAULT_V_NAME};
-  inline static query::Synonym DEFAULT_W = {query::DesignEntity::WHILE,
+  inline static query::Synonym DEFAULT_W = {DesignEntity::WHILE,
                                             DEFAULT_W_NAME};
-  inline static query::Synonym DEFAULT_IFS = {query::DesignEntity::IF,
+  inline static query::Synonym DEFAULT_IFS = {DesignEntity::IF,
                                               DEFAULT_IFS_NAME};
-  inline static query::Synonym DEFAULT_C = {query::DesignEntity::CALL,
+  inline static query::Synonym DEFAULT_C = {DesignEntity::CALL,
                                             DEFAULT_C_NAME};
-  inline static query::Synonym DEFAULT_N = {query::DesignEntity::PROG_LINE,
+  inline static query::Synonym DEFAULT_N = {DesignEntity::PROG_LINE,
                                             DEFAULT_N_NAME};
 
   // such that Parent(1, 2)
@@ -68,7 +68,7 @@ class TestQueryOptimizerUtil {
   // pattern a (v, _"x+y"_)
   inline static const query::ConditionClause DEFAULT_PATT_A_SYNONYM = {
       {},
-      {{query::DesignEntity::ASSIGN, DEFAULT_A_NAME, false, {}},
+      {{DesignEntity::ASSIGN, DEFAULT_A_NAME, false, {}},
        {query::ParamType::SYNONYM, DEFAULT_V_NAME},
        {query::MatchType::SUB_EXPRESSION, "[[x]+[y]]"}},
       {},
@@ -77,7 +77,7 @@ class TestQueryOptimizerUtil {
   // pattern w (v, _)
   inline static const query::ConditionClause DEFAULT_PATT_W_SYNONYM = {
       {},
-      {{query::DesignEntity::WHILE, DEFAULT_W_NAME, false, {}},
+      {{DesignEntity::WHILE, DEFAULT_W_NAME, false, {}},
        {query::ParamType::SYNONYM, DEFAULT_V_NAME},
        {}},
       {},
@@ -86,7 +86,7 @@ class TestQueryOptimizerUtil {
   // pattern ifs (v, _, _)
   inline static const query::ConditionClause DEFAULT_PATT_IF_SYNONYM = {
       {},
-      {{query::DesignEntity::IF, DEFAULT_IFS_NAME, false, {}},
+      {{DesignEntity::IF, DEFAULT_IFS_NAME, false, {}},
        {query::ParamType::SYNONYM, DEFAULT_V_NAME},
        {}},
       {},

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-typedef unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef unordered_map<std::string, DesignEntity> SynonymMap;
 typedef query::SelectClause SelectClause;
 
 // ================ Testing with relationship ================
@@ -43,7 +43,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = n";
 
     // expected
-    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -67,7 +67,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = con.value";
 
     // expected
-    SynonymMap map = {{"con", query::DesignEntity::CONSTANT}};
+    SynonymMap map = {{"con", DesignEntity::CONSTANT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -91,7 +91,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = s.stmt#";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -116,7 +116,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = r.stmt#";
 
     // expected
-    SynonymMap map = {{"r", query::DesignEntity::READ}};
+    SynonymMap map = {{"r", DesignEntity::READ}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -141,7 +141,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = pr.stmt#";
 
     // expected
-    SynonymMap map = {{"pr", query::DesignEntity::PRINT}};
+    SynonymMap map = {{"pr", DesignEntity::PRINT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -166,7 +166,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = c.stmt#";
 
     // expected
-    SynonymMap map = {{"c", query::DesignEntity::CALL}};
+    SynonymMap map = {{"c", DesignEntity::CALL}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -191,7 +191,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = w.stmt#";
 
     // expected
-    SynonymMap map = {{"w", query::DesignEntity::WHILE}};
+    SynonymMap map = {{"w", DesignEntity::WHILE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -216,7 +216,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = ifs.stmt#";
 
     // expected
-    SynonymMap map = {{"ifs", query::DesignEntity::IF}};
+    SynonymMap map = {{"ifs", DesignEntity::IF}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -241,7 +241,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with 1 = a.stmt#";
 
     // expected
-    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    SynonymMap map = {{"a", DesignEntity::ASSIGN}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -288,7 +288,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with \"x\" = p.procName";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -312,7 +312,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with \"x\" = c.procName";
 
     // expected
-    SynonymMap map = {{"c", query::DesignEntity::CALL}};
+    SynonymMap map = {{"c", DesignEntity::CALL}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -336,7 +336,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with \"x\" = v.varName";
 
     // expected
-    SynonymMap map = {{"v", query::DesignEntity::VARIABLE}};
+    SynonymMap map = {{"v", DesignEntity::VARIABLE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -360,7 +360,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with \"x\" = r.varName";
 
     // expected
-    SynonymMap map = {{"r", query::DesignEntity::READ}};
+    SynonymMap map = {{"r", DesignEntity::READ}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -384,7 +384,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with \"x\" = pr.varName";
 
     // expected
-    SynonymMap map = {{"pr", query::DesignEntity::PRINT}};
+    SynonymMap map = {{"pr", DesignEntity::PRINT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -408,7 +408,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with n = 2";
 
     // expected
-    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -432,7 +432,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with con.value = 2";
 
     // expected
-    SynonymMap map = {{"con", query::DesignEntity::CONSTANT}};
+    SynonymMap map = {{"con", DesignEntity::CONSTANT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -456,7 +456,7 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with s.stmt# = 2";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -480,8 +480,8 @@ TEST_CASE("Valid queries with with-clause succeeds") {
         "Select BOOLEAN with con.value = s.stmt#";
 
     // expected
-    SynonymMap map = {{"con", query::DesignEntity::CONSTANT},
-                      {"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"con", DesignEntity::CONSTANT},
+                      {"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -801,13 +801,13 @@ TEST_CASE("Valid query with multiple with clauses succeeds") {
 
     // expected
     SynonymMap map = {
-        {"n", query::DesignEntity::PROG_LINE},
-        {"v", query::DesignEntity::VARIABLE},
-        {"p", query::DesignEntity::PROCEDURE},
-        {"c", query::DesignEntity::CALL},
+        {"n", DesignEntity::PROG_LINE},
+        {"v", DesignEntity::VARIABLE},
+        {"p", DesignEntity::PROCEDURE},
+        {"c", DesignEntity::CALL},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::CALL, "c", false, {}}};
+        {DesignEntity::CALL, "c", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddWithClause(clauses, query::ParamType::INTEGER_LITERAL,

@@ -10,9 +10,9 @@ using namespace query;
 
 TEST_CASE("Project each design entity correctly") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
 
   pkb->insertAt(TableType::VAR_TABLE, "x");
   pkb->insertAt(TableType::VAR_TABLE, "y");
@@ -86,15 +86,15 @@ TEST_CASE("Project boolean results") {
 
 TEST_CASE("Project tuple results") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addStmt(5);
-  pkb->addStmt(6);
-  pkb->addAssignStmt(2);
-  pkb->addAssignStmt(4);
-  pkb->addAssignStmt(6);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::STATEMENT, 5);
+  pkb->addStmt(DesignEntity::STATEMENT, 6);
+  pkb->addStmt(DesignEntity::ASSIGN, 2);
+  pkb->addStmt(DesignEntity::ASSIGN, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 6);
   int xVarIdx = pkb->insertAt(TableType::VAR_TABLE, "x");
   int yVarIdx = pkb->insertAt(TableType::VAR_TABLE, "y");
   int aProcIdx = pkb->insertAt(TableType::PROC_TABLE, "procA");
@@ -133,20 +133,20 @@ TEST_CASE("Project tuple results") {
 
 TEST_CASE("Project with attributes") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addStmt(5);
-  pkb->addStmt(6);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::STATEMENT, 5);
+  pkb->addStmt(DesignEntity::STATEMENT, 6);
   pkb->addCalls(1, "procA", "procB");
-  pkb->addReadStmt(2);
+  pkb->addStmt(DesignEntity::READ, 2);
   pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "y");
-  pkb->addPrintStmt(3);
+  pkb->addStmt(DesignEntity::PRINT, 3);
   pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "z");
-  pkb->addWhileStmt(4);
-  pkb->addIfStmt(5);
-  pkb->addAssignStmt(6);
+  pkb->addStmt(DesignEntity::WHILE, 4);
+  pkb->addStmt(DesignEntity::IF, 5);
+  pkb->addStmt(DesignEntity::ASSIGN, 6);
   int xVarIdx = pkb->insertAt(TableType::VAR_TABLE, "x");
   int yVarIdx = pkb->getIndexOf(TableType::VAR_TABLE, "y");
   int zVarIdx = pkb->getIndexOf(TableType::VAR_TABLE, "z");

@@ -13,7 +13,7 @@ using Catch::Matchers::VectorContains;
 TEST_CASE("NextEvaluator: Next") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 7; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: x = 1;
@@ -73,7 +73,7 @@ TEST_CASE("NextEvaluator: Next") {
 TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 7; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: x = 1;
@@ -232,7 +232,7 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
 TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 14; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: x = 1;

@@ -12,16 +12,16 @@ using Catch::Matchers::VectorContains;
 
 TEST_CASE("WithEvaluator: Name Attributes") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addStmt(5);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::STATEMENT, 5);
   pkb->addCalls(3, "A", "D");
   pkb->addCalls(4, "B", "D");
   pkb->addCalls(5, "C", "A");
-  pkb->addReadStmt(1);
-  pkb->addReadStmt(2);
+  pkb->addStmt(DesignEntity::READ, 1);
+  pkb->addStmt(DesignEntity::READ, 2);
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
   pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "y");
   int procAIdx = pkb->insertAt(TableType::PROC_TABLE, "A");
@@ -279,12 +279,12 @@ TEST_CASE("WithEvaluator: Name Attributes") {
 
 TEST_CASE("WithEvaluator: Integer Attributes") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addAssignStmt(1);
-  pkb->addIfStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 1);
+  pkb->addStmt(DesignEntity::IF, 2);
   int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
   int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
 

@@ -12,7 +12,7 @@
 #include "Query/Common.h"
 #include "QueryLexer.h"
 
-typedef std::unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
 
 class QueryParser {
  public:
@@ -114,12 +114,12 @@ class QueryParser {
   std::string getNameOrKeyword();
   char getCharSymbol();
   char getExactCharSymbol(const char&);
-  query::DesignEntity getDesignEntity();
+  DesignEntity getDesignEntity();
   std::string getKeyword();
   std::string getExactKeyword(const std::string&);
   query::Attribute getAttribute(const std::string&);
 
-  query::DesignEntity getEntityFromSynonymName(const std::string&);
+  DesignEntity getEntityFromSynonymName(const std::string&);
   query::Param getRefParam();
 
   SynonymMap parseSynonymDeclarations();
@@ -137,7 +137,7 @@ class QueryParser {
 
   void parsePatternClause(std::vector<query::ConditionClause>&);
   query::ConditionClause parsePatternClauseHelper(
-      query::Synonym&, query::Param&, std::unordered_set<query::DesignEntity>&);
+      query::Synonym&, query::Param&, std::unordered_set<DesignEntity>&);
   query::PatternExpr parseAssignExpr(query::MatchType);
 
   void parseWithClause(std::vector<query::ConditionClause>&);

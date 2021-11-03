@@ -13,9 +13,9 @@ using Catch::Matchers::VectorContains;
 TEST_CASE("QueryEvaluator: Select all design entities") {
   SECTION("stmt s; Select s") {
     PKB* pkb = new PKB();
-    pkb->addStmt(1);
-    pkb->addStmt(2);
-    pkb->addStmt(3);
+    pkb->addStmt(DesignEntity::STATEMENT, 1);
+    pkb->addStmt(DesignEntity::STATEMENT, 2);
+    pkb->addStmt(DesignEntity::STATEMENT, 3);
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -32,9 +32,9 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
   SECTION("prog_line n; Select n") {
     PKB* pkb = new PKB();
-    pkb->addStmt(1);
-    pkb->addStmt(2);
-    pkb->addStmt(3);
+    pkb->addStmt(DesignEntity::STATEMENT, 1);
+    pkb->addStmt(DesignEntity::STATEMENT, 2);
+    pkb->addStmt(DesignEntity::STATEMENT, 3);
 
     QueryEvaluator qe(pkb);
     unordered_map<string, DesignEntity> synonyms = {
@@ -110,18 +110,18 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 TEST_CASE("QueryEvaluator: Different design entities") {
   PKB* pkb = new PKB();
   for (int i = 1; i < 8; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
     if (i != 7) {
       pkb->addRs(RelationshipType::FOLLOWS, i, i + 1);
     }
   }
-  pkb->addReadStmt(1);
-  pkb->addPrintStmt(2);
+  pkb->addStmt(DesignEntity::READ, 1);
+  pkb->addStmt(DesignEntity::PRINT, 2);
   pkb->addCalls(3, "test1", "test2");
-  pkb->addWhileStmt(4);
-  pkb->addIfStmt(5);
-  pkb->addAssignStmt(6);
-  pkb->addAssignStmt(7);
+  pkb->addStmt(DesignEntity::WHILE, 4);
+  pkb->addStmt(DesignEntity::IF, 5);
+  pkb->addStmt(DesignEntity::ASSIGN, 6);
+  pkb->addStmt(DesignEntity::ASSIGN, 7);
   pkb->addAssignPttFullExpr(6, "x", "1");
   pkb->addAssignPttSubExpr(6, "x", "1");
   pkb->addRs(RelationshipType::PARENT, 4, 5);
@@ -359,12 +359,12 @@ TEST_CASE("QueryEvaluator: Different design entities") {
 
 TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addAssignStmt(3);
-  pkb->addAssignStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 3);
+  pkb->addStmt(DesignEntity::ASSIGN, 4);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 3, 4);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
@@ -455,9 +455,9 @@ TEST_CASE("QueryEvaluator: Clauses with same synonym for both params") {
 
 TEST_CASE("QueryEvaluator: Test algos to add new results") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
@@ -606,9 +606,9 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
 
 TEST_CASE("QueryEvaluator: Select tuple") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
@@ -688,10 +688,10 @@ TEST_CASE("QueryEvaluator: Select tuple") {
 
 TEST_CASE("QueryEvaluator: Select BOOLEAN") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addAssignStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::ASSIGN, 3);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);

@@ -52,7 +52,8 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
       return true;
     }
 
-    if (!pkb->isAssignStmt(leftStmt) || !pkb->isAssignStmt(rightStmt)) {
+    if (!pkb->isStmt(DesignEntity::ASSIGN, leftStmt) ||
+        !pkb->isStmt(DesignEntity::ASSIGN, rightStmt)) {
       return false;
     }
 
@@ -91,7 +92,7 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
       return true;
     }
 
-    if (!pkb->isAssignStmt(leftStmt)) {
+    if (!pkb->isStmt(DesignEntity::ASSIGN, leftStmt)) {
       return false;
     }
 
@@ -110,7 +111,7 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
       return true;
     }
 
-    if (!pkb->isAssignStmt(rightStmt)) {
+    if (!pkb->isStmt(DesignEntity::ASSIGN, rightStmt)) {
       return false;
     }
 
@@ -156,7 +157,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymLiteral(
     if (isCompleteCache) {
       return getAffects(leftStmt);
     }
-    if (!pkb->isAssignStmt(leftStmt)) {
+    if (!pkb->isStmt(DesignEntity::ASSIGN, leftStmt)) {
       return {};
     }
 
@@ -169,7 +170,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymLiteral(
     if (isCompleteCache) {
       return getAffectsInv(rightStmt);
     }
-    if (!pkb->isAssignStmt(rightStmt)) {
+    if (!pkb->isStmt(DesignEntity::ASSIGN, rightStmt)) {
       return {};
     }
 
@@ -254,21 +255,22 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
     }
     allVisitedStmts.insert(currStmt);
 
-    if (pkb->isReadStmt(currStmt) || pkb->isCallStmt(currStmt)) {
+    if (pkb->isStmt(DesignEntity::READ, currStmt) ||
+        pkb->isCallStmt(currStmt)) {
       updateLastModifiedVariables(currStmt, LMT);
     }
 
-    if (pkb->isAssignStmt(currStmt)) {
+    if (pkb->isStmt(DesignEntity::ASSIGN, currStmt)) {
       processAssignStmt(currStmt, LMT);
     }
 
-    if (pkb->isWhileStmt(currStmt)) {
+    if (pkb->isStmt(DesignEntity::WHILE, currStmt)) {
       STMT_NO firstStmtInWhile = currStmt + 1;
       processWhileLoop(firstStmtInWhile, endStmt, currStmt, LMT, paramCombo);
       visitedIfAndWhile.insert(firstStmtInWhile);
     }
 
-    if (pkb->isIfStmt(currStmt)) {
+    if (pkb->isStmt(DesignEntity::IF, currStmt)) {
       STMT_NO nextStmtForIf = pkb->getNextStmtForIfStmt(currStmt);
       unordered_set<STMT_NO> thenElseStmts =
           pkb->getRight(RelationshipType::NEXT, currStmt);
@@ -304,7 +306,7 @@ void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
     if (LMT->find(usedVar) != LMT->end()) {
       unordered_set<STMT_NO> LMTStmts = LMT->at(usedVar);
       for (STMT_NO LMTStmt : LMTStmts) {
-        if (pkb->isAssignStmt(LMTStmt)) {
+        if (pkb->isStmt(DesignEntity::ASSIGN, LMTStmt)) {
           addAffectsRelationship(LMT, LMTStmt, currStmt);
         }
       }

@@ -22,12 +22,12 @@ class QueryEvaluator {
  public:
   explicit QueryEvaluator(PKB*);
   std::vector<std::vector<int>> evaluateQuery(
-      std::unordered_map<std::string, query::DesignEntity> synonymMap,
+      std::unordered_map<std::string, DesignEntity> synonymMap,
       query::SelectClause select);
 
  private:
   PKB* pkb;
-  std::unordered_map<std::string, query::DesignEntity> synonymMap;
+  std::unordered_map<std::string, DesignEntity> synonymMap;
   FollowsEvaluator followsEvaluator;
   ParentEvaluator parentEvaluator;
   UsesEvaluator usesEvaluator;
@@ -108,5 +108,5 @@ class QueryEvaluator {
       query::SelectClause selectClause);
 
   bool checkIsCorrectDesignEntity(int stmtNum,
-                                  query::DesignEntity designEntity);
+                                  DesignEntity designEntity);
 };

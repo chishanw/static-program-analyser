@@ -13,12 +13,12 @@ using namespace query;
 
 TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addAssignStmt(3);
-  pkb->addAssignStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 3);
+  pkb->addStmt(DesignEntity::ASSIGN, 4);
 
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::PARENT, 2, 3);
@@ -620,9 +620,9 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
 
 TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);
@@ -721,9 +721,9 @@ TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Truthy Values") {
 
 TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
 
@@ -819,10 +819,10 @@ TEST_CASE("QueryEvaluator: Multiple Such That Clauses - Falsy Values") {
 
 TEST_CASE("QueryEvaluator: Multiple Pattern Clauses") {
   PKB* pkb = new PKB();
-  pkb->addAssignStmt(1);
-  pkb->addAssignStmt(2);
-  pkb->addIfStmt(3);
-  pkb->addWhileStmt(4);
+  pkb->addStmt(DesignEntity::ASSIGN, 1);
+  pkb->addStmt(DesignEntity::ASSIGN, 2);
+  pkb->addStmt(DesignEntity::IF, 3);
+  pkb->addStmt(DesignEntity::WHILE, 4);
   pkb->addAssignPttFullExpr(1, "x", "y");
   pkb->addAssignPttFullExpr(2, "x", "z");
   pkb->addIfPtt(3, "y");
@@ -895,12 +895,12 @@ TEST_CASE("QueryEvaluator: Multiple Pattern Clauses") {
 
 TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
-  pkb->addStmt(4);
-  pkb->addAssignStmt(2);
-  pkb->addAssignStmt(4);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
+  pkb->addStmt(DesignEntity::STATEMENT, 4);
+  pkb->addStmt(DesignEntity::ASSIGN, 2);
+  pkb->addStmt(DesignEntity::ASSIGN, 4);
   pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "a");
   pkb->addRs(RelationshipType::MODIFIES_S, 4, TableType::VAR_TABLE, "x");
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
@@ -1159,7 +1159,7 @@ TEST_CASE("QueryEvaluator: Multiple NextT - Ensure Cache Correctness") {
 
   PKB* pkb = new PKB();
   for (int i = 1; i <= 14; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: x = 1;

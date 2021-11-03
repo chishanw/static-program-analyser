@@ -66,22 +66,22 @@ void DesignExtractor::ExtractProcAndStmtHelper(
     const vector<StmtAST*> stmtList) {
   for (auto stmt : stmtList) {
     if (dynamic_cast<const ReadStmtAST*>(stmt)) {
-      pkb->addReadStmt(stmt->StmtNo);
+      pkb->addStmt(DesignEntity::READ, stmt->StmtNo);
     } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
-      pkb->addPrintStmt(stmt->StmtNo);
+      pkb->addStmt(DesignEntity::PRINT, stmt->StmtNo);
     } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
       // handled by ExtractCalls
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
-      pkb->addWhileStmt(stmt->StmtNo);
+      pkb->addStmt(DesignEntity::WHILE, stmt->StmtNo);
 
       ExtractProcAndStmtHelper(whileStmt->StmtList);
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
-      pkb->addIfStmt(stmt->StmtNo);
+      pkb->addStmt(DesignEntity::IF, stmt->StmtNo);
 
       ExtractProcAndStmtHelper(ifStmt->ThenBlock);
       ExtractProcAndStmtHelper(ifStmt->ElseBlock);
     } else if (dynamic_cast<const AssignStmtAST*>(stmt)) {
-      pkb->addAssignStmt(stmt->StmtNo);
+      pkb->addStmt(DesignEntity::ASSIGN, stmt->StmtNo);
     } else {
       DMOprintErrMsgAndExit(
           "[DE][ExtractProcAndStmtHelper] shouldn't reach here.");

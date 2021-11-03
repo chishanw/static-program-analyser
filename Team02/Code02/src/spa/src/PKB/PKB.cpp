@@ -6,80 +6,42 @@
 
 using namespace std;
 
-PKB::PKB() {
-  allStmtNo = SetOfStmts();
-  allReadStmtNo = SetOfStmts();
-  allPrintStmtNo = SetOfStmts();
-  allWhileStmtNo = SetOfStmts();
-  allIfStmtNo = SetOfStmts();
-  allAssignStmtNo = SetOfStmts();
-}
-
-void PKB::addStmt(StmtNo s) {
-  if (allStmtNo.count(s) > 0) {
-    return;
+void PKB::addStmt(DesignEntity de, StmtNo s) {
+  if (tableOfStmts.count(DesignEntity::STATEMENT) == 0) {
+    tableOfStmts[DesignEntity::STATEMENT] = SetOfStmts();
   }
 
-  allStmtNo.insert(s);
-}
-
-void PKB::addReadStmt(StmtNo s) {
-  if (allReadStmtNo.count(s) > 0) {
-    return;
+  if (tableOfStmts.count(de) == 0) {
+    tableOfStmts[de] = SetOfStmts();
   }
 
-  addStmt(s);
-  allReadStmtNo.insert(s);
+  tableOfStmts.at(DesignEntity::STATEMENT).insert(s);
+  tableOfStmts.at(de).insert(s);
 }
 
-void PKB::addPrintStmt(StmtNo s) {
-  if (allPrintStmtNo.count(s) > 0) {
-    return;
+SetOfStmts PKB::getAllStmts(DesignEntity de) {
+  if (tableOfStmts.count(de) == 0) {
+    return SetOfStmts();
   }
 
-  addStmt(s);
-  allPrintStmtNo.insert(s);
+  return tableOfStmts.at(de);
 }
 
-void PKB::addWhileStmt(StmtNo s) {
-  if (allWhileStmtNo.count(s) > 0) {
-    return;
+bool PKB::isStmt(DesignEntity de, StmtNo s) {
+  if (tableOfStmts.count(de) == 0) {
+    return false;
   }
 
-  addStmt(s);
-  allWhileStmtNo.insert(s);
+  return tableOfStmts.at(de).count(s) > 0;
 }
 
-void PKB::addIfStmt(StmtNo s) {
-  if (allIfStmtNo.count(s) > 0) {
-    return;
+int PKB::getNumStmts(DesignEntity de) {
+  if (tableOfStmts.count(de) == 0) {
+    return 0;
   }
 
-  addStmt(s);
-  allIfStmtNo.insert(s);
+  return tableOfStmts.at(de).size();
 }
-
-void PKB::addAssignStmt(StmtNo s) {
-  if (allAssignStmtNo.count(s) > 0) {
-    return;
-  }
-
-  addStmt(s);
-  allAssignStmtNo.insert(s);
-}
-
-SetOfStmts PKB::getAllStmts() { return allStmtNo; }
-SetOfStmts PKB::getAllReadStmts() { return allReadStmtNo; }
-SetOfStmts PKB::getAllPrintStmts() { return allPrintStmtNo; }
-SetOfStmts PKB::getAllWhileStmts() { return allWhileStmtNo; }
-SetOfStmts PKB::getAllIfStmts() { return allIfStmtNo; }
-SetOfStmts PKB::getAllAssignStmts() { return allAssignStmtNo; }
-
-bool PKB::isReadStmt(int s) { return allReadStmtNo.count(s) > 0; }
-bool PKB::isPrintStmt(int s) { return allPrintStmtNo.count(s) > 0; }
-bool PKB::isWhileStmt(int s) { return allWhileStmtNo.count(s) > 0; }
-bool PKB::isIfStmt(int s) { return allIfStmtNo.count(s) > 0; }
-bool PKB::isAssignStmt(int s) { return allAssignStmtNo.count(s) > 0; }
 
 void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,
                      int right) {
@@ -244,7 +206,7 @@ vector<vector<int>> PKB::getWhileStmtVarPairs() {
 
 // Calls API
 void PKB::addCalls(StmtNo s, PROC_NAME caller, PROC_NAME callee) {
-  addStmt(s);
+  addStmt(DesignEntity::STATEMENT, s);
   callsKB.addCalls(s, caller, callee);
 }
 void PKB::addCallsT(PROC_NAME caller, PROC_NAME callee) {

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-typedef unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef unordered_map<std::string, DesignEntity> SynonymMap;
 typedef query::SelectClause SelectClause;
 
 // ====================== Testing Calls relationship ======================
@@ -68,7 +68,7 @@ TEST_CASE(
     string validQuery = "procedure p; Select BOOLEAN such that Calls(\"x\", p)";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -137,7 +137,7 @@ TEST_CASE(
     string validQuery = "procedure p; Select BOOLEAN such that Calls(_, p)";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -161,7 +161,7 @@ TEST_CASE(
         "procedure p1; Select BOOLEAN such that Calls(p1, \"y\")";
 
     // expected
-    SynonymMap map = {{"p1", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p1", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -184,7 +184,7 @@ TEST_CASE(
     string validQuery = "procedure p1; Select BOOLEAN such that Calls(p1, _)";
 
     // expected
-    SynonymMap map = {{"p1", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p1", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -208,8 +208,8 @@ TEST_CASE(
         "procedure p1, p2; Select BOOLEAN such that Calls(p1, p2)";
 
     // expected
-    SynonymMap map = {{"p1", query::DesignEntity::PROCEDURE},
-                      {"p2", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p1", DesignEntity::PROCEDURE},
+                      {"p2", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;

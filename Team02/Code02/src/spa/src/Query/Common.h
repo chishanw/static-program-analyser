@@ -7,20 +7,6 @@
 #include <vector>
 
 namespace query {
-enum class DesignEntity {
-  STATEMENT,
-  READ,
-  PRINT,
-  CALL,
-  WHILE,
-  IF,
-  ASSIGN,
-  VARIABLE,
-  CONSTANT,
-  PROCEDURE,
-  PROG_LINE
-};
-
 enum class Attribute { PROC_NAME, VAR_NAME, VALUE, STMT_NUM };
 
 enum class ParamType {

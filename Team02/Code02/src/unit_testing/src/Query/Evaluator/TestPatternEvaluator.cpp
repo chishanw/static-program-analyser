@@ -11,9 +11,9 @@ using Catch::Matchers::VectorContains;
 
 TEST_CASE("PatternEvaluator: Assign") {
   PKB* pkb = new PKB();
-  pkb->addAssignStmt(1);
-  pkb->addAssignStmt(2);
-  pkb->addAssignStmt(3);
+  pkb->addStmt(DesignEntity::ASSIGN, 1);
+  pkb->addStmt(DesignEntity::ASSIGN, 2);
+  pkb->addStmt(DesignEntity::ASSIGN, 3);
 
   pkb->addAssignPttFullExpr(1, "x", "w");
   pkb->addAssignPttSubExpr(1, "x", "w");
@@ -141,9 +141,9 @@ TEST_CASE("PatternEvaluator: Assign") {
 
 TEST_CASE("PatternEvaluator: If") {
   PKB* pkb = new PKB();
-  pkb->addIfStmt(1);
-  pkb->addIfStmt(2);
-  pkb->addIfStmt(3);
+  pkb->addStmt(DesignEntity::IF, 1);
+  pkb->addStmt(DesignEntity::IF, 2);
+  pkb->addStmt(DesignEntity::IF, 3);
 
   pkb->addIfPtt(1, "x");
   pkb->addIfPtt(1, "y");
@@ -178,9 +178,9 @@ TEST_CASE("PatternEvaluator: If") {
 
 TEST_CASE("PatternEvaluator: While") {
   PKB* pkb = new PKB();
-  pkb->addWhileStmt(1);
-  pkb->addWhileStmt(2);
-  pkb->addWhileStmt(3);
+  pkb->addStmt(DesignEntity::WHILE, 1);
+  pkb->addStmt(DesignEntity::WHILE, 2);
+  pkb->addStmt(DesignEntity::WHILE, 3);
 
   pkb->addWhilePtt(1, "x");
   pkb->addWhilePtt(1, "y");

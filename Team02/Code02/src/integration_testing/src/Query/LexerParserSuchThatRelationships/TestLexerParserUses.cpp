@@ -11,7 +11,7 @@
 
 using namespace std;
 
-typedef unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef unordered_map<std::string, DesignEntity> SynonymMap;
 typedef query::SelectClause SelectClause;
 
 // ====================== Testing UsesS relationship ======================
@@ -22,9 +22,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select s such that Uses(1, \"x\")";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -49,11 +49,11 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 
     // expected
     SynonymMap map = {
-        {"s", query::DesignEntity::STATEMENT},
-        {"v", query::DesignEntity::VARIABLE},
+        {"s", DesignEntity::STATEMENT},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -77,9 +77,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select s such that Uses(1, _)";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -103,9 +103,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select a such that Uses(a, \"x\")";
 
     // expected
-    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    SynonymMap map = {{"a", DesignEntity::ASSIGN}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::ASSIGN, "a", false, {}}};
+        {DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -130,11 +130,11 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 
     // expected
     SynonymMap map = {
-        {"a", query::DesignEntity::ASSIGN},
-        {"v", query::DesignEntity::VARIABLE},
+        {"a", DesignEntity::ASSIGN},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::ASSIGN, "a", false, {}}};
+        {DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -158,9 +158,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select a such that Uses(a, _)";
 
     // expected
-    SynonymMap map = {{"a", query::DesignEntity::ASSIGN}};
+    SynonymMap map = {{"a", DesignEntity::ASSIGN}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::ASSIGN, "a", false, {}}};
+        {DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -184,9 +184,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select pn such that Uses(pn, \"x\")";
 
     // expected
-    SynonymMap map = {{"pn", query::DesignEntity::PRINT}};
+    SynonymMap map = {{"pn", DesignEntity::PRINT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PRINT, "pn", false, {}}};
+        {DesignEntity::PRINT, "pn", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -211,11 +211,11 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 
     // expected
     SynonymMap map = {
-        {"pn", query::DesignEntity::PRINT},
-        {"v", query::DesignEntity::VARIABLE},
+        {"pn", DesignEntity::PRINT},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PRINT, "pn", false, {}}};
+        {DesignEntity::PRINT, "pn", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -239,9 +239,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select pn such that Uses(pn, _)";
 
     // expected
-    SynonymMap map = {{"pn", query::DesignEntity::PRINT}};
+    SynonymMap map = {{"pn", DesignEntity::PRINT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PRINT, "pn", false, {}}};
+        {DesignEntity::PRINT, "pn", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -265,9 +265,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select ifs such that Uses(ifs, \"x\")";
 
     // expected
-    SynonymMap map = {{"ifs", query::DesignEntity::IF}};
+    SynonymMap map = {{"ifs", DesignEntity::IF}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::IF, "ifs", false, {}}};
+        {DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -292,11 +292,11 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 
     // expected
     SynonymMap map = {
-        {"ifs", query::DesignEntity::IF},
-        {"v", query::DesignEntity::VARIABLE},
+        {"ifs", DesignEntity::IF},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::IF, "ifs", false, {}}};
+        {DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -320,9 +320,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select ifs such that Uses(ifs, _)";
 
     // expected
-    SynonymMap map = {{"ifs", query::DesignEntity::IF}};
+    SynonymMap map = {{"ifs", DesignEntity::IF}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::IF, "ifs", false, {}}};
+        {DesignEntity::IF, "ifs", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -346,9 +346,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select w such that Uses(w, \"x\")";
 
     // expected
-    SynonymMap map = {{"w", query::DesignEntity::WHILE}};
+    SynonymMap map = {{"w", DesignEntity::WHILE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::WHILE, "w", false, {}}};
+        {DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -373,11 +373,11 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 
     // expected
     SynonymMap map = {
-        {"w", query::DesignEntity::WHILE},
-        {"v", query::DesignEntity::VARIABLE},
+        {"w", DesignEntity::WHILE},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::WHILE, "w", false, {}}};
+        {DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -401,9 +401,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select w such that Uses(w, _)";
 
     // expected
-    SynonymMap map = {{"w", query::DesignEntity::WHILE}};
+    SynonymMap map = {{"w", DesignEntity::WHILE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::WHILE, "w", false, {}}};
+        {DesignEntity::WHILE, "w", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -427,9 +427,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select s such that Uses(s, \"x\")";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -454,11 +454,11 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 
     // expected
     SynonymMap map = {
-        {"s", query::DesignEntity::STATEMENT},
-        {"v", query::DesignEntity::VARIABLE},
+        {"s", DesignEntity::STATEMENT},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -482,9 +482,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select s such that Uses(s, _)";
 
     // expected
-    SynonymMap map = {{"s", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::STATEMENT, "s", false, {}}};
+        {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -508,9 +508,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select c such that Uses(c, _)";
 
     // expected
-    SynonymMap map = {{"c", query::DesignEntity::CALL}};
+    SynonymMap map = {{"c", DesignEntity::CALL}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::CALL, "c", false, {}}};
+        {DesignEntity::CALL, "c", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -534,9 +534,9 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
         "Select n such that Uses(n, _)";
 
     // expected
-    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROG_LINE, "n", false, {}}};
+        {DesignEntity::PROG_LINE, "n", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_S,
@@ -609,9 +609,9 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         "Select p such that Uses(p, \"x\")";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROCEDURE, "p", false, {}}};
+        {DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
@@ -636,11 +636,11 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
 
     // expected
     SynonymMap map = {
-        {"p", query::DesignEntity::PROCEDURE},
-        {"v", query::DesignEntity::VARIABLE},
+        {"p", DesignEntity::PROCEDURE},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROCEDURE, "p", false, {}}};
+        {DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
@@ -664,9 +664,9 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         "Select p such that Uses(p, _)";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROCEDURE, "p", false, {}}};
+        {DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
@@ -690,9 +690,9 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         "Select p such that Uses(\"x\", \"y\")";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROCEDURE, "p", false, {}}};
+        {DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
@@ -717,11 +717,11 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
 
     // expected
     SynonymMap map = {
-        {"p", query::DesignEntity::PROCEDURE},
-        {"v", query::DesignEntity::VARIABLE},
+        {"p", DesignEntity::PROCEDURE},
+        {"v", DesignEntity::VARIABLE},
     };
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROCEDURE, "p", false, {}}};
+        {DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,
@@ -745,9 +745,9 @@ TEST_CASE("Valid queries for one such that clause for UsesP throws") {
         "Select p such that Uses(\"x\", _)";
 
     // expected
-    SynonymMap map = {{"p", query::DesignEntity::PROCEDURE}};
+    SynonymMap map = {{"p", DesignEntity::PROCEDURE}};
     std::vector<query::Synonym> resultSynonyms = {
-        {query::DesignEntity::PROCEDURE, "p", false, {}}};
+        {DesignEntity::PROCEDURE, "p", false, {}}};
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::USES_P,

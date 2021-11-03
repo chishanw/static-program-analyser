@@ -10,7 +10,7 @@ using namespace query;
 
 TEST_CASE("ModifiesEvaluator: ModifiesS - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
   ModifiesEvaluator me(pkb);
 
@@ -46,8 +46,8 @@ TEST_CASE("ModifiesEvaluator: ModifiesS - Truthy Values") {
 
 TEST_CASE("ModifiesEvaluator: ModifiesS - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
 
   SECTION("ModifiesS(1, 'x')") {
     pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "x");
@@ -91,7 +91,7 @@ TEST_CASE("ModifiesEvaluator: ModifiesS - Falsy Values") {
 
 TEST_CASE("ModifiesEvaluator: ModifiesP - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
   pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "someProc",
              TableType::VAR_TABLE, "x");
   ModifiesEvaluator me(pkb);
@@ -128,8 +128,8 @@ TEST_CASE("ModifiesEvaluator: ModifiesP - Truthy Values") {
 
 TEST_CASE("ModifiesEvaluator: ModifiesP - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
 
   SECTION("ModifiesP('someProc', 'x')") {
     pkb->addRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,

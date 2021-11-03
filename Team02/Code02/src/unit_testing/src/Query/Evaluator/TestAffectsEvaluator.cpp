@@ -15,7 +15,7 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 12; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   // example procedure
   // 1: x = 0;
@@ -43,12 +43,12 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   pkb->addRs(RelationshipType::NEXT, 9, 10);
   pkb->addRs(RelationshipType::NEXT, 10, 11);
   pkb->addRs(RelationshipType::NEXT, 11, 12);
-  pkb->addWhileStmt(3);
-  pkb->addIfStmt(6);
+  pkb->addStmt(DesignEntity::WHILE, 3);
+  pkb->addStmt(DesignEntity::IF, 6);
   pkb->addNextStmtForIfStmt(6, 10);
   for (int i = 1; i <= 12; i++) {
     if (i != 3 && i != 6) {
-      pkb->addAssignStmt(i);
+      pkb->addStmt(DesignEntity::ASSIGN, i);
     }
   }
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
@@ -297,7 +297,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 13; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   pkb->addRs(RelationshipType::NEXT, 1, 2);
   pkb->addRs(RelationshipType::NEXT, 2, 3);
@@ -318,18 +318,18 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
 
   unordered_set<int> whileStmts = {2, 4};
   for (int w : whileStmts) {
-    pkb->addWhileStmt(w);
+    pkb->addStmt(DesignEntity::WHILE, w);
   }
   unordered_set<int> ifStmts = {6, 8};
   for (int ifs : ifStmts) {
-    pkb->addIfStmt(ifs);
+    pkb->addStmt(DesignEntity::IF, ifs);
   }
   pkb->addNextStmtForIfStmt(6, 12);
   pkb->addNextStmtForIfStmt(8, 12);
   for (int i = 1; i <= 13; i++) {
     if (whileStmts.find(i) == whileStmts.end() &&
         ifStmts.find(i) == ifStmts.end()) {
-      pkb->addAssignStmt(i);
+      pkb->addStmt(DesignEntity::ASSIGN, i);
     }
   }
 
@@ -480,7 +480,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
   for (int i = 1; i <= 8; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
   pkb->addRs(RelationshipType::NEXT, 1, 2);
   pkb->addRs(RelationshipType::NEXT, 2, 3);
@@ -495,17 +495,17 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
 
   unordered_set<int> whileStmts = {2, 6};
   for (int w : whileStmts) {
-    pkb->addWhileStmt(w);
+    pkb->addStmt(DesignEntity::WHILE, w);
   }
   unordered_set<int> ifStmts = {4};
   for (int ifs : ifStmts) {
-    pkb->addIfStmt(ifs);
+    pkb->addStmt(DesignEntity::IF, ifs);
   }
   pkb->addNextStmtForIfStmt(4, 2);
   for (int i = 1; i <= 8; i++) {
     if (whileStmts.find(i) == whileStmts.end() &&
         ifStmts.find(i) == ifStmts.end()) {
-      pkb->addAssignStmt(i);
+      pkb->addStmt(DesignEntity::ASSIGN, i);
     }
   }
 
@@ -638,7 +638,7 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   pkb->insertAt(TableType::PROC_TABLE, "B");
   pkb->addFirstStmtOfProc("B", 5);
   for (int i = 1; i <= 7; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
 
   pkb->addRs(RelationshipType::NEXT, 1, 2);
@@ -650,16 +650,16 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
 
   unordered_set<int> whileStmts = {5};
   for (int w : whileStmts) {
-    pkb->addWhileStmt(w);
+    pkb->addStmt(DesignEntity::WHILE, w);
   }
   unordered_set<int> ifStmts = {2};
   for (int ifs : ifStmts) {
-    pkb->addIfStmt(ifs);
+    pkb->addStmt(DesignEntity::IF, ifs);
   }
   for (int i = 1; i <= 7; i++) {
     if (whileStmts.find(i) == whileStmts.end() &&
         ifStmts.find(i) == ifStmts.end()) {
-      pkb->addAssignStmt(i);
+      pkb->addStmt(DesignEntity::ASSIGN, i);
     }
   }
 
@@ -785,7 +785,7 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   pkb->insertAt(TableType::PROC_TABLE, "C");
   pkb->addFirstStmtOfProc("C", 9);
   for (int i = 1; i <= 9; i++) {
-    pkb->addStmt(i);
+    pkb->addStmt(DesignEntity::STATEMENT, i);
   }
 
   pkb->addRs(RelationshipType::NEXT, 1, 2);
@@ -796,13 +796,13 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   pkb->addRs(RelationshipType::NEXT, 7, 8);
   pkb->addRs(RelationshipType::NEXT, 8, 6);
 
-  pkb->addWhileStmt(6);
-  pkb->addIfStmt(3);
-  pkb->addReadStmt(2);
+  pkb->addStmt(DesignEntity::WHILE, 6);
+  pkb->addStmt(DesignEntity::IF, 3);
+  pkb->addStmt(DesignEntity::READ, 2);
   pkb->addCalls(8, "B", "C");
   vector<int> assignStmts = {1, 4, 5, 7, 9};
   for (auto stmt : assignStmts) {
-    pkb->addAssignStmt(stmt);
+    pkb->addStmt(DesignEntity::ASSIGN, stmt);
   }
 
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");

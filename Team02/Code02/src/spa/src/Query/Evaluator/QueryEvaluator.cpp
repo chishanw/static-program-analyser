@@ -1023,21 +1023,21 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
   DesignEntity designEntity = synonymMap.find(synonymName)->second;
   switch (designEntity) {
     case DesignEntity::STATEMENT:
-      return pkb->getAllStmts();
+      return pkb->getAllStmts(DesignEntity::STATEMENT);
     case DesignEntity::PROG_LINE:
-      return pkb->getAllStmts();
+      return pkb->getAllStmts(DesignEntity::STATEMENT);
     case DesignEntity::READ:
-      return pkb->getAllReadStmts();
+      return pkb->getAllStmts(DesignEntity::READ);
     case DesignEntity::PRINT:
-      return pkb->getAllPrintStmts();
+      return pkb->getAllStmts(DesignEntity::PRINT);
     case DesignEntity::CALL:
       return pkb->getAllCallStmts();
     case DesignEntity::WHILE:
-      return pkb->getAllWhileStmts();
+      return pkb->getAllStmts(DesignEntity::WHILE);
     case DesignEntity::IF:
-      return pkb->getAllIfStmts();
+      return pkb->getAllStmts(DesignEntity::IF);
     case DesignEntity::ASSIGN:
-      return pkb->getAllAssignStmts();
+      return pkb->getAllStmts(DesignEntity::ASSIGN);
     case DesignEntity::VARIABLE:
       return pkb->getAllElementsAt(TableType::VAR_TABLE);
     case DesignEntity::PROCEDURE:
@@ -1090,17 +1090,17 @@ bool QueryEvaluator::checkIsCorrectDesignEntity(int result,
                                                 DesignEntity designEntity) {
   switch (designEntity) {
     case DesignEntity::READ:
-      return pkb->isReadStmt(result);
+      return pkb->isStmt(DesignEntity::READ, result);
     case DesignEntity::PRINT:
-      return pkb->isPrintStmt(result);
+      return pkb->isStmt(DesignEntity::PRINT, result);
     case DesignEntity::CALL:
       return pkb->isCallStmt(result);
     case DesignEntity::WHILE:
-      return pkb->isWhileStmt(result);
+      return pkb->isStmt(DesignEntity::WHILE, result);
     case DesignEntity::IF:
-      return pkb->isIfStmt(result);
+      return pkb->isStmt(DesignEntity::IF, result);
     case DesignEntity::ASSIGN:
-      return pkb->isAssignStmt(result);
+      return pkb->isStmt(DesignEntity::ASSIGN, result);
     default:
       return true;
   }

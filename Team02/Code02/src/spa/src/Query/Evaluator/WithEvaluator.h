@@ -14,13 +14,13 @@ class WithEvaluator {
 
   std::pair<bool, std::vector<query::QueryResult>> evaluateAttributes(
       const query::Param& left, const query::Param& right,
-      const std::unordered_map<std::string, query::DesignEntity>& synonymMap,
+      const std::unordered_map<std::string, DesignEntity>& synonymMap,
       const std::vector<query::QueryResult>& currentQueryResults);
 
  private:
   PKB* pkb;
   std::vector<query::QueryResult> newQueryResults;
-  std::unordered_map<std::string, query::DesignEntity> synonymMap;
+  std::unordered_map<std::string, DesignEntity> synonymMap;
   std::vector<query::QueryResult> currentQueryResults;
   bool isClauseTrue;
 
@@ -43,11 +43,11 @@ class WithEvaluator {
                                      std::string integerLiteral);
 
   int getIndexOfProcNameAttrOfSynonym(
-      int valueOfSynonym, query::DesignEntity designEntityOfSynonym);
+      int valueOfSynonym, DesignEntity designEntityOfSynonym);
   int getIndexOfVarNameAttrOfSynonym(int valueOfSynonym,
-                                     query::DesignEntity designEntityOfSynonym);
+                                     DesignEntity designEntityOfSynonym);
   std::string getProcNameAttrOfSynonym(
-      int valueOfSynonym, query::DesignEntity designEntityOfSynonym);
+      int valueOfSynonym, DesignEntity designEntityOfSynonym);
   std::string getVarNameAttrOfSynonym(
-      int valueOfSynonym, query::DesignEntity designEntityOfSynonym);
+      int valueOfSynonym, DesignEntity designEntityOfSynonym);
 };

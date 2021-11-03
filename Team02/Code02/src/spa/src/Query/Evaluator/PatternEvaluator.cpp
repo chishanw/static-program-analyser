@@ -34,7 +34,7 @@ unordered_set<int> PatternEvaluator::evaluateAssignPattern(
   } else if (matchType == MatchType::SUB_EXPRESSION) {
     return pkb->getAssignForSubExpr(expr);
   } else {
-    return pkb->getAllAssignStmts();
+    return pkb->getAllStmts(DesignEntity::ASSIGN);
   }
 }
 
@@ -57,7 +57,7 @@ unordered_set<int> PatternEvaluator::evaluateIfPattern(const Param& varParam) {
   if (varParam.type == ParamType::NAME_LITERAL) {
     return pkb->getIfStmtForVar(varParam.value);
   } else if (varParam.type == ParamType::WILDCARD) {
-    return pkb->getAllIfStmts();
+    return pkb->getAllStmts(DesignEntity::IF);
   } else {
     DMOprintErrMsgAndExit(
         "[PatternEvaluator][evaluateIfPattern] invalid varParam type");
@@ -81,7 +81,7 @@ unordered_set<int> PatternEvaluator::evaluateWhilePattern(
   if (varParam.type == ParamType::NAME_LITERAL) {
     return pkb->getWhileStmtForVar(varParam.value);
   } else if (varParam.type == ParamType::WILDCARD) {
-    return pkb->getAllWhileStmts();
+    return pkb->getAllStmts(DesignEntity::WHILE);
   } else {
     DMOprintErrMsgAndExit(
         "[PatternEvaluator][evaluateWhilePattern] invalid varParam type");

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-typedef unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef unordered_map<std::string, DesignEntity> SynonymMap;
 typedef query::SelectClause SelectClause;
 
 // ====================== Testing Next relationship ======================
@@ -68,7 +68,7 @@ TEST_CASE(
     string validQuery = "prog_line n; Select BOOLEAN such that Next(1, n)";
 
     // expected
-    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -137,7 +137,7 @@ TEST_CASE(
     string validQuery = "prog_line n; Select BOOLEAN such that Next(_, n)";
 
     // expected
-    SynonymMap map = {{"n", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -160,7 +160,7 @@ TEST_CASE(
     string validQuery = "prog_line n1; Select BOOLEAN such that Next(n1, 2)";
 
     // expected
-    SynonymMap map = {{"n1", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n1", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -183,7 +183,7 @@ TEST_CASE(
     string validQuery = "prog_line n1; Select BOOLEAN such that Next(n1, _)";
 
     // expected
-    SynonymMap map = {{"n1", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n1", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -207,8 +207,8 @@ TEST_CASE(
         "prog_line n1, n2; Select BOOLEAN such that Next(n1, n2)";
 
     // expected
-    SynonymMap map = {{"n1", query::DesignEntity::PROG_LINE},
-                      {"n2", query::DesignEntity::PROG_LINE}};
+    SynonymMap map = {{"n1", DesignEntity::PROG_LINE},
+                      {"n2", DesignEntity::PROG_LINE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -231,8 +231,8 @@ TEST_CASE(
     string validQuery = "stmt s1, s2; Select BOOLEAN such that Next(s1, s2)";
 
     // expected
-    SynonymMap map = {{"s1", query::DesignEntity::STATEMENT},
-                      {"s2", query::DesignEntity::STATEMENT}};
+    SynonymMap map = {{"s1", DesignEntity::STATEMENT},
+                      {"s2", DesignEntity::STATEMENT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -255,8 +255,8 @@ TEST_CASE(
     string validQuery = "read r1, r2; Select BOOLEAN such that Next(r1, r2)";
 
     // expected
-    SynonymMap map = {{"r1", query::DesignEntity::READ},
-                      {"r2", query::DesignEntity::READ}};
+    SynonymMap map = {{"r1", DesignEntity::READ},
+                      {"r2", DesignEntity::READ}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -280,8 +280,8 @@ TEST_CASE(
         "print pr1, pr2; Select BOOLEAN such that Next(pr1, pr2)";
 
     // expected
-    SynonymMap map = {{"pr1", query::DesignEntity::PRINT},
-                      {"pr2", query::DesignEntity::PRINT}};
+    SynonymMap map = {{"pr1", DesignEntity::PRINT},
+                      {"pr2", DesignEntity::PRINT}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -304,8 +304,8 @@ TEST_CASE(
     string validQuery = "call c1, c2; Select BOOLEAN such that Next(c1, c2)";
 
     // expected
-    SynonymMap map = {{"c1", query::DesignEntity::CALL},
-                      {"c2", query::DesignEntity::CALL}};
+    SynonymMap map = {{"c1", DesignEntity::CALL},
+                      {"c2", DesignEntity::CALL}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -328,8 +328,8 @@ TEST_CASE(
     string validQuery = "while w1, w2; Select BOOLEAN such that Next(w1, w2)";
 
     // expected
-    SynonymMap map = {{"w1", query::DesignEntity::WHILE},
-                      {"w2", query::DesignEntity::WHILE}};
+    SynonymMap map = {{"w1", DesignEntity::WHILE},
+                      {"w2", DesignEntity::WHILE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -353,8 +353,8 @@ TEST_CASE(
         "if ifs1, ifs2; Select BOOLEAN such that Next(ifs1, ifs2)";
 
     // expected
-    SynonymMap map = {{"ifs1", query::DesignEntity::IF},
-                      {"ifs2", query::DesignEntity::IF}};
+    SynonymMap map = {{"ifs1", DesignEntity::IF},
+                      {"ifs2", DesignEntity::IF}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -377,8 +377,8 @@ TEST_CASE(
     string validQuery = "assign a1, a2; Select BOOLEAN such that Next(a1, a2)";
 
     // expected
-    SynonymMap map = {{"a1", query::DesignEntity::ASSIGN},
-                      {"a2", query::DesignEntity::ASSIGN}};
+    SynonymMap map = {{"a1", DesignEntity::ASSIGN},
+                      {"a2", DesignEntity::ASSIGN}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;

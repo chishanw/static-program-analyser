@@ -1,8 +1,8 @@
 
+#include <Common/Tokenizer.h>
 #include <DesignExtractor/DesignExtractor.h>
 #include <PKB/PKB.h>
 #include <Parser/Parser.h>
-#include <Common/Tokenizer.h>
 
 #include <vector>
 
@@ -57,15 +57,17 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
 
   SECTION("Different type of statements") {
     REQUIRE(
-        pkb->getAllStmts() ==
+        pkb->getAllStmts(DesignEntity::STATEMENT) ==
         UNO_SET_OF_STMT_NO({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
                             13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}));
-    REQUIRE(pkb->getAllReadStmts() == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getAllPrintStmts() == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::READ) == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == UNO_SET_OF_STMT_NO({}));
     REQUIRE(pkb->getAllCallStmts() == UNO_SET_OF_STMT_NO({10, 12, 16}));
-    REQUIRE(pkb->getAllWhileStmts() == UNO_SET_OF_STMT_NO({4, 14}));
-    REQUIRE(pkb->getAllIfStmts() == UNO_SET_OF_STMT_NO({6, 13, 22}));
-    REQUIRE(pkb->getAllAssignStmts() ==
+    REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) ==
+            UNO_SET_OF_STMT_NO({4, 14}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::IF) ==
+            UNO_SET_OF_STMT_NO({6, 13, 22}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) ==
             UNO_SET_OF_STMT_NO(
                 {1, 2, 3, 5, 7, 8, 9, 11, 15, 17, 18, 19, 20, 21, 23, 24}));
   }
@@ -166,9 +168,9 @@ TEST_CASE("[DE][GetAllVarNames & GetAllConsts] complex cond expr") {
 
   REQUIRE(pkb->getAllElementsAt(TableType::CONST_TABLE) ==
           unordered_set<ConstIdx>{c0idx, c1idx, c2idx, c3idx, c4idx, c5idx,
-                                   c6idx, c7idx, c8idx, c9idx, c10idx, c11idx,
-                                   c12idx, c13idx, c14idx, c15idx, c16idx,
-                                   c17idx, c18idx});
+                                  c6idx, c7idx, c8idx, c9idx, c10idx, c11idx,
+                                  c12idx, c13idx, c14idx, c15idx, c16idx,
+                                  c17idx, c18idx});
 }
 
 TEST_CASE("Multiple procedures with same name") {

@@ -53,7 +53,7 @@ struct CLAUSE_HASH {
 
 typedef int SUBSET_ID;
 
-typedef std::unordered_map<std::string, query::DesignEntity> SynonymMap;
+typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
 typedef std::unordered_set<query::ConditionClause, CLAUSE_HASH> Group;
 typedef std::vector<Group> Groups;
 typedef std::vector<std::pair<query::GroupDetails, Group>>

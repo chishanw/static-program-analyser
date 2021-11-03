@@ -10,7 +10,7 @@ using namespace query;
 
 TEST_CASE("UsesEvaluator: UsesS - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
   pkb->addRs(RelationshipType::USES_S, 1, TableType::VAR_TABLE, "x");
   UsesEvaluator ue(pkb);
 
@@ -46,8 +46,8 @@ TEST_CASE("UsesEvaluator: UsesS - Truthy Values") {
 
 TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
 
   SECTION("UsesS(1, 'x')") {
     pkb->addRs(RelationshipType::USES_S, 2, TableType::VAR_TABLE, "x");
@@ -91,7 +91,7 @@ TEST_CASE("UsesEvaluator: UsesS - Falsy Values") {
 
 TEST_CASE("UsesEvaluator: UsesP - Truthy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
   pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "someProc",
              TableType::VAR_TABLE, "x");
   UsesEvaluator ue(pkb);
@@ -128,8 +128,8 @@ TEST_CASE("UsesEvaluator: UsesP - Truthy Values") {
 
 TEST_CASE("UsesEvaluator: UsesP - Falsy Values") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
 
   SECTION("UsesP('someProc', 'x')") {
     pkb->addRs(RelationshipType::USES_P, TableType::PROC_TABLE, "otherProc",

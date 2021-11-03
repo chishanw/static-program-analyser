@@ -10,8 +10,8 @@ using namespace query;
 
 TEST_CASE("FollowsEvaluator: Follows") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
 
   SECTION("Select s such that Follows(1, 2)") {
     pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
@@ -46,9 +46,9 @@ TEST_CASE("FollowsEvaluator: Follows") {
 
 TEST_CASE("FollowsEvaluator: FollowsT") {
   PKB* pkb = new PKB();
-  pkb->addStmt(1);
-  pkb->addStmt(2);
-  pkb->addStmt(3);
+  pkb->addStmt(DesignEntity::STATEMENT, 1);
+  pkb->addStmt(DesignEntity::STATEMENT, 2);
+  pkb->addStmt(DesignEntity::STATEMENT, 3);
 
   SECTION("Select s such that FollowsT(1, 2)") {
     pkb->addRs(RelationshipType::FOLLOWS_T, 1, 2);

@@ -12,6 +12,20 @@ typedef std::unordered_set<int> SetOfStmts, SetOfInts;
 typedef std::vector<int> ListOfInts, ListOfStmtNos;
 
 // ENUM
+enum class DesignEntity {
+  STATEMENT,
+  READ,
+  PRINT,
+  CALL,
+  WHILE,
+  IF,
+  ASSIGN,
+  VARIABLE,
+  CONSTANT,
+  PROCEDURE,
+  PROG_LINE
+};
+
 enum class RelationshipType {
   FOLLOWS,
   FOLLOWS_T,

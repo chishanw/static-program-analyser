@@ -31,14 +31,15 @@ TEST_CASE("Whole frontend simple test") {
   de.Extract(ast);
 
   SECTION("General info") {
-    REQUIRE(pkb->getAllStmts() ==
+    REQUIRE(pkb->getAllStmts(DesignEntity::STATEMENT) ==
             UNO_SET_OF_STMT_NO({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
-    REQUIRE(pkb->getAllReadStmts() == UNO_SET_OF_STMT_NO({7}));
-    REQUIRE(pkb->getAllPrintStmts() == UNO_SET_OF_STMT_NO({10}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::READ) == UNO_SET_OF_STMT_NO({7}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == UNO_SET_OF_STMT_NO({10}));
     REQUIRE(pkb->getAllCallStmts() == UNO_SET_OF_STMT_NO({5, 8}));
-    REQUIRE(pkb->getAllWhileStmts() == UNO_SET_OF_STMT_NO({2}));
-    REQUIRE(pkb->getAllIfStmts() == UNO_SET_OF_STMT_NO({4}));
-    REQUIRE(pkb->getAllAssignStmts() == UNO_SET_OF_STMT_NO({1, 3, 6, 9}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) == UNO_SET_OF_STMT_NO({2}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::IF) == UNO_SET_OF_STMT_NO({4}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) ==
+            UNO_SET_OF_STMT_NO({1, 3, 6, 9}));
   }
 
   SECTION("Calls/* extraction") {
