@@ -34,18 +34,31 @@ class AffectsEvaluator {
       const query::Param& left, const query::Param& right);
   std::vector<std::vector<STMT_NO>> evaluatePairAffects();
 
+  bool evaluateBoolAffectsT(const query::Param& left,
+                            const query::Param& right);
+  std::unordered_set<STMT_NO> evaluateStmtAffectsT(const query::Param& left,
+                                                   const query::Param& right);
+  std::unordered_set<STMT_NO> evaluateSynonymLiteralT(
+      const query::Param& left, const query::Param& right,
+      std::unordered_set<STMT_NO>* visited);
+  std::vector<std::vector<STMT_NO>> evaluatePairAffectsT();
+
  private:
   PKB* pkb;
 
   /* Affects Results Cache ------------------------------------------ */
   bool isCompleteCache = false;  // true when Affects(s1, _) or (_, s2)
                                  // or (s1, s2) have been computed before
+  bool isCompleteCacheT = false;
   std::unordered_set<STMT_NO> allVisitedStmts = {};
   std::unordered_set<STMT_NO> affectsStmts = {};
   std::unordered_set<STMT_NO> affectsInvStmts = {};
   std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>> tableOfAffects = {};
   std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>> tableOfAffectsInv =
       {};
+  std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>> tableOfAffectsT = {};
+  std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>> tableOfAffectsTInv =
+  {};
   // TODO(CS): change to unordered_set of vector later
   std::vector<std::vector<STMT_NO>> affectsStmtPairs = {};
 
@@ -69,4 +82,13 @@ class AffectsEvaluator {
                                 STMT_NO endStmt);
   LastModifiedTable mergeLMT(LastModifiedTable* firstLMT,
                              LastModifiedTable* secondLMT);
+  bool evalBoolLitAffectsT(const query::Param& left, const query::Param& right,
+                           std::unordered_set<STMT_NO>* visited);
+  void populateCacheT();
+  void populateTable(
+      std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>>* target,
+      std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>>* base);
+  void populateTableHelper(STMT_NO orig, STMT_NO affected,
+      std::unordered_set<STMT_NO>* visited,
+      std::unordered_map<STMT_NO, std::unordered_set<STMT_NO>>* base);
 };

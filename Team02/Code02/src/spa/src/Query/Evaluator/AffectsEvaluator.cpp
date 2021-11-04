@@ -236,6 +236,150 @@ vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffects() {
   return affectsStmtPairs;
 }
 
+bool AffectsEvaluator::evaluateBoolAffectsT(const query::Param& left,
+                                            const query::Param& right) {
+  if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
+    return evaluateBoolAffects(left, right);
+  }
+
+  // literals only
+  if (isCompleteCacheT) {
+    return tableOfAffectsT.at(stoi(left.value)).count(stoi(right.value)) > 0;
+  }
+  unordered_set<STMT_NO> visited;
+  return evalBoolLitAffectsT(left, right, &visited);
+}
+
+bool AffectsEvaluator::evalBoolLitAffectsT(const query::Param& left,
+                                           const query::Param& right,
+                                           unordered_set<STMT_NO>* visited) {
+  bool hasFoundAffectsT = evaluateBoolAffects(left, right);
+  bool allCombosTested = false;
+  while (!hasFoundAffectsT && !allCombosTested) {
+    unordered_set<STMT_NO> affectedStmts;
+    unordered_set<STMT_NO> visitedStmts;
+    try {
+      affectedStmts = tableOfAffects.at(stoi(left.value));
+    }
+    catch (const out_of_range& e) {
+      break;
+    }
+    for (STMT_NO affectedStmt : affectedStmts) {
+      if (affectedStmt == stoi(left.value) ||
+          visited->count(affectedStmt) > 0) {
+        continue;
+      }
+      visited->insert(affectedStmt);
+      Param newParam{ ParamType::INTEGER_LITERAL, to_string(affectedStmt) };
+      hasFoundAffectsT = evalBoolLitAffectsT(newParam, right, visited);
+      if (hasFoundAffectsT) {
+        break;
+      }
+    }
+    if (!hasFoundAffectsT) {
+      allCombosTested = true;
+    }
+  }
+  return hasFoundAffectsT;
+}
+
+unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsT(
+    const query::Param& left, const query::Param& right) {
+  if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
+    return evaluateSynonymWildcard(left, right);
+  }
+  if (isCompleteCacheT) {
+    if (left.type == ParamType::INTEGER_LITERAL) {
+      return tableOfAffectsT.at(stoi(left.value));
+    } else {
+      return tableOfAffectsTInv.at(stoi(right.value));
+    }
+  }
+  unordered_set<STMT_NO> visited;
+  return evaluateSynonymLiteralT(left, right, &visited);
+}
+
+unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymLiteralT(
+    const query::Param& left, const query::Param& right,
+    unordered_set<STMT_NO>* visited) {
+  unordered_set<STMT_NO> result;
+  unordered_set<STMT_NO> firstLayer = evaluateSynonymLiteral(left, right);
+  for (STMT_NO affected : firstLayer) {
+    if (visited->count(affected) > 0) {
+      continue;
+    }
+    result.insert(affected);
+    visited->insert(affected);
+    Param newParam = { ParamType::INTEGER_LITERAL, to_string(affected) };
+    if (left.type == ParamType::INTEGER_LITERAL) {
+      if (stoi(left.value) == affected) {
+        continue;
+      }
+      result.merge(evaluateSynonymLiteralT(newParam, right, visited));
+    } else {
+      if (stoi(right.value) == affected) {
+        continue;
+      }
+      result.merge(evaluateSynonymLiteralT(left, newParam, visited));
+    }
+  }
+  return result;
+}
+
+vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffectsT() {
+  populateCacheT();
+  vector<vector<STMT_NO>> result;
+  for (auto it : tableOfAffectsT) {
+    STMT_NO curr = it.first;
+    for (STMT_NO affectedT : it.second) {
+      vector<STMT_NO> currPair{ curr, affectedT };
+      result.push_back(currPair);
+    }
+  }
+  return result;
+}
+
+void AffectsEvaluator::populateCacheT() {
+  evaluatePairAffects();
+  populateTable(&tableOfAffectsT, &tableOfAffects);
+  populateTable(&tableOfAffectsTInv, &tableOfAffectsInv);
+  isCompleteCacheT = true;
+}
+
+void AffectsEvaluator::populateTable(
+    unordered_map<STMT_NO, unordered_set<STMT_NO>>* target,
+    unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
+  for (auto it : *base) {
+    STMT_NO currStmt = it.first;
+    unordered_set<STMT_NO> affectedStmts = it.second;
+    unordered_set<STMT_NO> visitedForCurr;
+    for (STMT_NO affectedStmt : affectedStmts) {
+      populateTableHelper(currStmt, affectedStmt, &visitedForCurr, base);
+    }
+    target->insert({currStmt, visitedForCurr});
+  }
+}
+
+void AffectsEvaluator::populateTableHelper(STMT_NO orig, STMT_NO affected,
+    unordered_set<STMT_NO>* visited,
+    unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
+  if (visited->count(affected) > 0) {
+    return;
+  }
+  visited->insert(affected);
+  if (orig != affected) {
+    unordered_set<STMT_NO> nextLayer;
+    if (base->find(affected) != base->end()) {
+      nextLayer = base->at(affected);
+      for (STMT_NO nextLayerAffects : nextLayer) {
+        if (affected != nextLayerAffects) {
+            populateTableHelper(orig, nextLayerAffects, visited, base);
+        }
+      }
+    }
+  }
+}
+
 /* Affects Extraction Method ---------------------------------------------- */
 void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
                                       STMT_NO stmtAfterIfOrWhile,

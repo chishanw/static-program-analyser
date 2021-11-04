@@ -217,6 +217,8 @@ bool QueryEvaluator::callSubEvaluatorBool(RelationshipType relationshipType,
                                                      right);
     case RelationshipType::AFFECTS:
       return affectsEvaluator.evaluateBoolAffects(left, right);
+    case RelationshipType::AFFECTS_T:
+      return affectsEvaluator.evaluateBoolAffectsT(left, right);
     default:
       return false;
   }
@@ -269,6 +271,9 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorRef(
     case RelationshipType::AFFECTS:
       refResults = affectsEvaluator.evaluateStmtAffects(left, right);
       break;
+    case RelationshipType::AFFECTS_T:
+      refResults = affectsEvaluator.evaluateStmtAffectsT(left, right);
+      break;
     default:
       return {};
   }
@@ -307,6 +312,8 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorPair(
       return nextEvaluator.evaluatePairNextTNextBipT(relationshipType, left,
                                                      right);
     case RelationshipType::AFFECTS:
+      return affectsEvaluator.evaluatePairAffects();
+    case RelationshipType::AFFECTS_T:
       return affectsEvaluator.evaluatePairAffects();
     default:
       return {};
@@ -878,6 +885,7 @@ bool QueryEvaluator::getIsBoolClause(
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
     case RelationshipType::AFFECTS:
+    case RelationshipType::AFFECTS_T:
       boolParamTypesCombos = {
           {ParamType::INTEGER_LITERAL, ParamType::INTEGER_LITERAL},
           {ParamType::INTEGER_LITERAL, ParamType::WILDCARD},
