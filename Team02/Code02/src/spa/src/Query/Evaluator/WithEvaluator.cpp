@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -14,14 +15,16 @@ using namespace query;
 
 WithEvaluator::WithEvaluator(PKB* pkb) { this->pkb = pkb; }
 
-pair<bool, vector<QueryResult>> WithEvaluator::evaluateAttributes(
+tuple<bool, vector<IntermediateQueryResult>, SynonymValuesTable>
+WithEvaluator::evaluateAttributes(
     const Param& left, const Param& right,
     const unordered_map<string, DesignEntity>& synonymMap,
-    const vector<QueryResult>& currentQueryResults) {
+    const vector<IntermediateQueryResult>& currentQueryResults) {
   this->newQueryResults = {};
   this->isClauseTrue = false;
   this->synonymMap = synonymMap;
   this->currentQueryResults = currentQueryResults;
+  this->clauseSynonymValuesTable = {};
 
   unordered_set<ParamType> nameParamTypes = {ParamType::ATTRIBUTE_PROC_NAME,
                                              ParamType::ATTRIBUTE_VAR_NAME,
@@ -47,7 +50,7 @@ pair<bool, vector<QueryResult>> WithEvaluator::evaluateAttributes(
     isClauseTrue = isClauseTrue && !newQueryResults.empty();
   }
 
-  return make_pair(isClauseTrue, newQueryResults);
+  return make_tuple(isClauseTrue, newQueryResults, clauseSynonymValuesTable);
 }
 
 // ATTRIBUTE_PROC_NAME, ATTRIBUTE_VAR_NAME, NAME_LITERAL
@@ -71,7 +74,7 @@ void WithEvaluator::evaluateNameAttributes(const Param& left,
 
       if (leftProcIdx == rightProcIdx) {
         isClauseTrue = true;
-        newQueryResults.push_back(results);
+        addClauseResultAndUpdateCount(results);
       }
     }
   }
@@ -86,7 +89,7 @@ void WithEvaluator::evaluateNameAttributes(const Param& left,
           getVarNameAttrOfSynonym(results.at(rightValue), rightDesignEntity);
       if (leftVarName == rightVarName) {
         isClauseTrue = true;
-        newQueryResults.push_back(results);
+        addClauseResultAndUpdateCount(results);
       }
     }
   }
@@ -205,6 +208,19 @@ void WithEvaluator::evaluateIntegerAttributes(const Param& left,
   }
 }
 
+void WithEvaluator::addClauseResultAndUpdateCount(
+    const query::IntermediateQueryResult& queryResult) {
+  newQueryResults.push_back(queryResult);
+  for (auto synonymValuePair : queryResult) {
+    string synonym = synonymValuePair.first;
+    if (clauseSynonymValuesTable.find(synonym) ==
+        clauseSynonymValuesTable.end()) {
+      clauseSynonymValuesTable[synonym] = {};
+    }
+    clauseSynonymValuesTable[synonym].insert(synonymValuePair.second);
+  }
+}
+
 void WithEvaluator::evaluateProcNameAndVarName(string synWithProcName,
                                                string synWithVarName) {
   DesignEntity designEntOfSynWithProcName = synonymMap.at(synWithProcName);
@@ -221,7 +237,7 @@ void WithEvaluator::evaluateProcNameAndVarName(string synWithProcName,
 
     if (procName == varName) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }
@@ -237,7 +253,7 @@ void WithEvaluator::evaluateProcNameAndNameLiteral(string synWithProcName,
 
     if (procName == nameLiteral) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }
@@ -253,7 +269,7 @@ void WithEvaluator::evaluateVarNameAndNameLiteral(string synWithVarName,
 
     if (varName == nameLiteral) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }
@@ -265,7 +281,7 @@ void WithEvaluator::evaluateIndexes(string firstSyn, string secondSyn) {
 
     if (firstIndex == secondIndex) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }
@@ -278,7 +294,7 @@ void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
 
     if (constValue == stmtNum) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }
@@ -291,7 +307,7 @@ void WithEvaluator::evaluateValueAndIntegerLiteral(string constSyn,
 
     if (constValue == integerLiteral) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }
@@ -303,7 +319,7 @@ void WithEvaluator::evaluateStmtAndIntegerLiteral(string stmtSyn,
 
     if (stmtNum == integerLiteral) {
       isClauseTrue = true;
-      newQueryResults.push_back(results);
+      addClauseResultAndUpdateCount(results);
     }
   }
 }

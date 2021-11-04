@@ -2,7 +2,6 @@
 
 #include <PKB/PKB.h>
 #include <Query/Common.h>
-#include <Query/Evaluator/QueryEvaluator.h>
 
 #include <optional>
 #include <string>

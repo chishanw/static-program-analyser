@@ -43,6 +43,19 @@ void TestQueryUtil::AddWithClause(vector<ConditionClause>& clauses,
   clauses.push_back(conditionClause);
 }
 
+vector<vector<int>> TestQueryUtil::EvaluateQuery(
+    PKB* pkb, vector<ConditionClause> clauses, SelectType selectType,
+    unordered_map<string, DesignEntity> synonymMap,
+    vector<Synonym> selectSynonyms) {
+  SelectClause select = {{selectSynonyms}, selectType, clauses};
+
+  QueryOptimizer* opt = new QueryOptimizer(pkb);
+  opt->PreprocessClauses(synonymMap, select);
+
+  QueryEvaluator qe(pkb, opt);
+  return qe.evaluateQuery(synonymMap, select);
+}
+
 set<int> TestQueryUtil::getUniqueSelectSingleQEResults(
     vector<vector<int>> results) {
   // used for QE testing to prevent macOS tests from failing

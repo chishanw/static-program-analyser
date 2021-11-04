@@ -67,11 +67,12 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     tuple<SynonymMap, SelectClause> parsedQuery = QueryParser().Parse(query);
     DMOprintInfoMsg("Query Parser was successful");
 
-    QueryOptimizer(pkb).PreprocessClauses(get<0>(parsedQuery), get<1>(parsedQuery));
+    QueryOptimizer* queryOptimizer = new QueryOptimizer(pkb);
+    queryOptimizer->PreprocessClauses(get<0>(parsedQuery), get<1>(parsedQuery));
 
     std::vector<std::vector<int>> evaluatedResult =
-        QueryEvaluator(pkb).evaluateQuery(get<0>(parsedQuery),
-                                          get<1>(parsedQuery));
+        QueryEvaluator(pkb, queryOptimizer)
+            .evaluateQuery(get<0>(parsedQuery), get<1>(parsedQuery));
     DMOprintInfoMsg("Query Evaluator was successful");
 
     SelectClause selectClause = get<1>(parsedQuery);

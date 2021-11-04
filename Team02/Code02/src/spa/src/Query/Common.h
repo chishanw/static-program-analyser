@@ -4,6 +4,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace query {
@@ -109,7 +110,7 @@ struct GroupDetails {
   const std::vector<Synonym> selectedSynonyms;
   bool operator==(const GroupDetails& other) const {
     return isBooleanGroup == other.isBooleanGroup &&
-    selectedSynonyms == other.selectedSynonyms;
+           selectedSynonyms == other.selectedSynonyms;
   }
 };
 
@@ -118,5 +119,10 @@ const int TRUE_SELECT_BOOL_RESULT = 1;
 
 typedef std::string SYN_NAME;
 typedef std::unordered_map<std::string, int> QueryResult;
-typedef std::unordered_map<SYN_NAME , int> SynonymCountsTable;
+typedef std::unordered_map<std::string, int> IntermediateQueryResult;
+typedef std::vector<std::vector<int>> ClauseIncomingResults, FinalQueryResults;
+typedef std::unordered_map<std::string, int> SynonymCountsTable;
+typedef std::unordered_map<std::string, std::unordered_set<int>>
+    SynonymValuesTable;
+typedef std::unordered_map<SYN_NAME, int> SynonymCountsTable;
 }  // namespace query

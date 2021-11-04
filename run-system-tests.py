@@ -12,6 +12,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-w", "--win_mode", help="switch to win mode",
                         action="store_true")
+    parser.add_argument("-wl", "--win_local_mode", help="switch to win local mode",
+                        action="store_true")
     parser.add_argument("-v", "--verbose", help="print passed queries too",
                         action="store_true")
     args = parser.parse_args()
@@ -25,9 +27,12 @@ def main():
 
     autotester_path_mac = "Team02/Code02/build/src/autotester/autotester"
     autotester_path_win = "Team02/Code02/build/src/autotester/Release/autotester"
+    autotester_path_win_local= "Team02/Code02/build_win/x86-Debug/src/autotester/autotester"
 
     if args.win_mode:
         autotester_path = autotester_path_win
+    elif args.win_local_mode:
+        autotester_path = autotester_path_win_local
     else:
         autotester_path = autotester_path_mac
 
