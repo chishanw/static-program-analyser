@@ -3521,6 +3521,267 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
   }
 }
 
+TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 6; i++) {
+    pkb->addStmt(DesignEntity::STATEMENT, i);
+  }
+  // proc A {
+  // 1: while (x != 0) {
+  // 2:   x = x - 1; }}
+  // proc B {
+  // 3: if (x == 2) then {
+  // 4:   read x; }
+  // 5: else { x = 3; } }
+  // proc C {
+  // 6: y = 2; }
+
+  RelationshipType nextBipRsType = RelationshipType::NEXT_BIP;
+  RelationshipType nextBipTRsType = RelationshipType::NEXT_BIP_T;
+  pkb->addRs(nextBipRsType, 1, 2);
+  pkb->addRs(nextBipRsType, 2, 1);
+  pkb->addRs(nextBipRsType, 1, 3);
+  pkb->addRs(nextBipRsType, 3, 4);
+  pkb->addRs(nextBipRsType, 3, 5);
+  pkb->addRs(nextBipRsType, 4, 6);
+  pkb->addRs(nextBipRsType, 5, 6);
+
+  QueryEvaluator qe(pkb);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  vector<ConditionClause> conditionClauses = {};
+
+  /* NextBip ------------------------------------------------------ */
+  SECTION("Select s1 such that NextBip(1, 3)") {
+    SuchThatClause suchThatClause = {nextBipRsType,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "3"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s1 such that NextBip(_, _)") {
+    SuchThatClause suchThatClause = {
+        nextBipRsType, {ParamType::WILDCARD, "_"}, {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s1 such that NextBip(4, _)") {
+    SuchThatClause suchThatClause = {nextBipRsType,
+                                     {ParamType::INTEGER_LITERAL, "4"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s1 such that NextBip(s1, 6)") {
+    SuchThatClause suchThatClause = {nextBipRsType,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "6"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({4, 5}));
+  }
+
+  SECTION("Select s2 such that NextBip(1, s2)") {
+    SuchThatClause suchThatClause = {nextBipRsType,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({2, 3}));
+  }
+
+  SECTION("Select s1 such that NextBip(s1, _)") {
+    SuchThatClause suchThatClause = {
+        nextBipRsType, {ParamType::SYNONYM, "s1"}, {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5}));
+  }
+
+  SECTION("Select s2 such that NextBip(_, s2)") {
+    SuchThatClause suchThatClause = {
+        nextBipRsType, {ParamType::WILDCARD, "_"}, {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select <s1, s2> such that NextBip(s1, s2)") {
+    SuchThatClause suchThatClause = {
+        nextBipRsType, {ParamType::SYNONYM, "s1"}, {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 2})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({2, 1})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 4})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({4, 6})));
+    REQUIRE_THAT(results, VectorContains(vector<int>({5, 6})));
+  }
+
+  /* NextBipT ------------------------------------------------------ */
+  SECTION("Select s1 such that NextBipT(1, 4)") {
+    SuchThatClause suchThatClause = {nextBipTRsType,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::INTEGER_LITERAL, "4"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s1 such that NextBipT(_, _)") {
+    SuchThatClause suchThatClause = {
+        nextBipTRsType, {ParamType::WILDCARD, "_"}, {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s1 such that NextBipT(4, _)") {
+    SuchThatClause suchThatClause = {nextBipTRsType,
+                                     {ParamType::INTEGER_LITERAL, "4"},
+                                     {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s1 such that NextBipT(s1, 6)") {
+    SuchThatClause suchThatClause = {nextBipTRsType,
+                                     {ParamType::SYNONYM, "s1"},
+                                     {ParamType::INTEGER_LITERAL, "6"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5}));
+  }
+
+  SECTION("Select s2 such that NextBipT(1, s2)") {
+    SuchThatClause suchThatClause = {nextBipTRsType,
+                                     {ParamType::INTEGER_LITERAL, "1"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select s2 such that NextBipT(4, s2)") {
+    SuchThatClause suchThatClause = {nextBipTRsType,
+                                     {ParamType::INTEGER_LITERAL, "4"},
+                                     {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({6}));
+  }
+
+  SECTION("Select s1 such that NextBipT(s1, _)") {
+    SuchThatClause suchThatClause = {
+        nextBipTRsType, {ParamType::SYNONYM, "s1"}, {ParamType::WILDCARD, "_"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5}));
+  }
+
+  SECTION("Select s2 such that NextBipT(_, s2)") {
+    SuchThatClause suchThatClause = {
+        nextBipTRsType, {ParamType::WILDCARD, "_"}, {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+            set<int>({1, 2, 3, 4, 5, 6}));
+  }
+
+  SECTION("Select <s1, s2> such that NextBipT(s1, s2)") {
+    SuchThatClause suchThatClause = {
+        nextBipTRsType, {ParamType::SYNONYM, "s1"}, {ParamType::SYNONYM, "s2"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    SelectClause select = {{s1, s2}, SelectType::SYNONYMS, conditionClauses};
+    vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
+    for (int i = 1; i < 6; i++) {
+      for (int j = i + 1; j <= 6; j++) {
+        if (i == 4 && j == 5) {
+          REQUIRE_THAT(results, !VectorContains(vector<int>({i, j})));
+        } else {
+          REQUIRE_THAT(results, VectorContains(vector<int>({i, j})));
+        }
+      }
+    }
+  }
+}
+
 TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");

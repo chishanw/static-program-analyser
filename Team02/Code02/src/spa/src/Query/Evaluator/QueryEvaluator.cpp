@@ -31,6 +31,9 @@ QueryEvaluator::QueryEvaluator(PKB* pkb)
   queryResults = {};
   currentQueryResults = {};
   queryResultsSynonyms = {};
+
+  QueryEvaluatorCache* onDemandRsCache = new QueryEvaluatorCache();
+  nextEvaluator.attachCache(onDemandRsCache);
 }
 
 vector<vector<int>> QueryEvaluator::evaluateQuery(
@@ -94,8 +97,10 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
     case RelationshipType::CALLS_T:
       return evaluateCallsTClause(clause);
     case RelationshipType::NEXT:
+    case RelationshipType::NEXT_BIP:
       return evaluateNextClause(clause);
     case RelationshipType::NEXT_T:
+    case RelationshipType::NEXT_BIP_T:
       return evaluateNextTClause(clause);
     case RelationshipType::AFFECTS:
       return evaluateAffectsClause(clause);
@@ -443,6 +448,7 @@ void QueryEvaluator::evaluateCallsTClause(SuchThatClause clause) {
 void QueryEvaluator::evaluateNextClause(SuchThatClause clause) {
   auto left = clause.leftParam;
   auto right = clause.rightParam;
+  auto rsType = clause.relationshipType;
 
   bool isBoolClause =
       (left.type == ParamType::INTEGER_LITERAL &&
@@ -458,15 +464,18 @@ void QueryEvaluator::evaluateNextClause(SuchThatClause clause) {
                       right.type == ParamType::SYNONYM);
 
   if (isBoolClause) {
-    areAllClausesTrue = nextEvaluator.evaluateBoolNext(left, right);
+    areAllClausesTrue =
+        nextEvaluator.evaluateBoolNextNextBip(rsType, left, right);
     return;
   }
 
   vector<vector<int>> incomingResults;
   if (isRefClause) {
-    incomingResults = formatRefResults(nextEvaluator.evaluateNext(left, right));
+    incomingResults = formatRefResults(
+        nextEvaluator.evaluateNextNextBip(rsType, left, right));
   } else {
-    incomingResults = nextEvaluator.evaluatePairNext(left, right);
+    incomingResults =
+        nextEvaluator.evaluatePairNextNextBip(rsType, left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
@@ -475,6 +484,7 @@ void QueryEvaluator::evaluateNextClause(SuchThatClause clause) {
 void QueryEvaluator::evaluateNextTClause(SuchThatClause clause) {
   auto left = clause.leftParam;
   auto right = clause.rightParam;
+  auto rsType = clause.relationshipType;
 
   bool isBoolClause =
       (left.type == ParamType::INTEGER_LITERAL &&
@@ -490,16 +500,18 @@ void QueryEvaluator::evaluateNextTClause(SuchThatClause clause) {
                       right.type == ParamType::SYNONYM);
 
   if (isBoolClause) {
-    areAllClausesTrue = nextEvaluator.evaluateBoolNextT(left, right);
+    areAllClausesTrue =
+        nextEvaluator.evaluateBoolNextTNextBipT(rsType, left, right);
     return;
   }
 
   vector<vector<int>> incomingResults;
   if (isRefClause) {
-    incomingResults =
-        formatRefResults(nextEvaluator.evaluateNextT(left, right));
+    incomingResults = formatRefResults(
+        nextEvaluator.evaluateNextTNextBipT(rsType, left, right));
   } else {
-    incomingResults = nextEvaluator.evaluatePairNextT(left, right);
+    incomingResults =
+        nextEvaluator.evaluatePairNextTNextBipT(rsType, left, right);
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);

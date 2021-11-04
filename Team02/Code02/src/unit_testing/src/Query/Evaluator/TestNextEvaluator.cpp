@@ -32,33 +32,36 @@ TEST_CASE("NextEvaluator: Next") {
   pkb->addRs(RelationshipType::NEXT, 5, 7);
   pkb->addRs(RelationshipType::NEXT, 6, 5);
 
+  RelationshipType rsType = RelationshipType::NEXT;
+
   NextEvaluator ne(pkb);
 
   SECTION("Next(1, 2)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::INTEGER_LITERAL, "2"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextNextBip(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("Next(1, _)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextNextBip(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("Next(s, 5)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::INTEGER_LITERAL, "5"};
-    unordered_set<int> result = ne.evaluateNext(left, right);
+    unordered_set<int> result = ne.evaluateNextNextBip(rsType, left, right);
     REQUIRE(result == unordered_set<int>({3, 4, 6}));
   }
 
   SECTION("Next(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result = ne.evaluatePairNext(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextNextBip(rsType, left, right);
     REQUIRE_THAT(result, VectorContains(vector<int>({1, 2})));
     REQUIRE_THAT(result, VectorContains(vector<int>({2, 3})));
     REQUIRE_THAT(result, VectorContains(vector<int>({2, 4})));
@@ -92,41 +95,43 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   pkb->addRs(RelationshipType::NEXT, 5, 7);
   pkb->addRs(RelationshipType::NEXT, 6, 5);
 
+  RelationshipType rsType = RelationshipType::NEXT_T;
+
   NextEvaluator ne(pkb);
 
   /* Integer and Integer --------------------------- */
   SECTION("NextT(1, 3)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::INTEGER_LITERAL, "3"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(3, 5)") {
     Param left = {ParamType::INTEGER_LITERAL, "3"};
     Param right = {ParamType::INTEGER_LITERAL, "5"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(5, 5)") {
     Param left = {ParamType::INTEGER_LITERAL, "5"};
     Param right = {ParamType::INTEGER_LITERAL, "5"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(6, 7)") {
     Param left = {ParamType::INTEGER_LITERAL, "6"};
     Param right = {ParamType::INTEGER_LITERAL, "7"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(3, 4)") {
     Param left = {ParamType::INTEGER_LITERAL, "3"};
     Param right = {ParamType::INTEGER_LITERAL, "4"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == false);
   }
 
@@ -134,21 +139,21 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(7, _)") {
     Param left = {ParamType::INTEGER_LITERAL, "7"};
     Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == false);
   }
 
   SECTION("NextT(_, 7)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::INTEGER_LITERAL, "7"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(_, 1)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::INTEGER_LITERAL, "1"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == false);
   }
 
@@ -156,7 +161,7 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(_, _)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
@@ -164,14 +169,14 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(5, s)") {
     Param left = {ParamType::INTEGER_LITERAL, "5"};
     Param right = {ParamType::SYNONYM, "s"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result == unordered_set<int>({5, 6, 7}));
   }
 
   SECTION("NextT(s, 7)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::INTEGER_LITERAL, "7"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result == unordered_set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -179,7 +184,8 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(s, _)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::WILDCARD, "_"};
-    vector<vector<int>> result = ne.evaluatePairNextT(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(rsType, left, right);
     for (int i = 1; i < 7; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -189,7 +195,8 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(_, s)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s"};
-    vector<vector<int>> result = ne.evaluatePairNextT(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(rsType, left, right);
     for (int i = 2; i <= 7; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -200,7 +207,8 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result = ne.evaluatePairNextT(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(rsType, left, right);
     // check NextT(1, _)
     for (int i = 2; i <= 7; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({1, i})));
@@ -269,69 +277,71 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   pkb->addRs(RelationshipType::NEXT, 12, 11);
   pkb->addRs(RelationshipType::NEXT, 11, 14);
 
+  RelationshipType rsType = RelationshipType::NEXT_T;
+
   NextEvaluator ne(pkb);
 
   /* Integer and Integer --------------------------- */
   SECTION("NextT(2, 2)") {
     Param left = {ParamType::INTEGER_LITERAL, "2"};
     Param right = {ParamType::INTEGER_LITERAL, "2"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(4, 5)") {
     Param left = {ParamType::INTEGER_LITERAL, "4"};
     Param right = {ParamType::INTEGER_LITERAL, "5"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(5, 4)") {
     Param left = {ParamType::INTEGER_LITERAL, "5"};
     Param right = {ParamType::INTEGER_LITERAL, "4"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(4, 1)") {
     Param left = {ParamType::INTEGER_LITERAL, "4"};
     Param right = {ParamType::INTEGER_LITERAL, "1"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == false);
   }
 
   SECTION("NextT(4, 6)") {
     Param left = {ParamType::INTEGER_LITERAL, "4"};
     Param right = {ParamType::INTEGER_LITERAL, "6"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(6, 8)") {
     Param left = {ParamType::INTEGER_LITERAL, "6"};
     Param right = {ParamType::INTEGER_LITERAL, "8"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(7, 10)") {
     Param left = {ParamType::INTEGER_LITERAL, "7"};
     Param right = {ParamType::INTEGER_LITERAL, "10"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == false);
   }
 
   SECTION("NextT(11, 11)") {
     Param left = {ParamType::INTEGER_LITERAL, "11"};
     Param right = {ParamType::INTEGER_LITERAL, "11"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(13, 11)") {
     Param left = {ParamType::INTEGER_LITERAL, "13"};
     Param right = {ParamType::INTEGER_LITERAL, "11"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
@@ -339,14 +349,14 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(2, _)") {
     Param left = {ParamType::INTEGER_LITERAL, "2"};
     Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
   SECTION("NextT(14, _)") {
     Param left = {ParamType::INTEGER_LITERAL, "14"};
     Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == false);
   }
 
@@ -354,7 +364,7 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(_, _)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextT(left, right);
+    bool result = ne.evaluateBoolNextTNextBipT(rsType, left, right);
     REQUIRE(result == true);
   }
 
@@ -362,7 +372,7 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(1, s)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result ==
             unordered_set<int>({2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
   }
@@ -370,7 +380,7 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(2, s)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result ==
             unordered_set<int>({2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
   }
@@ -378,7 +388,7 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(4, s)") {
     Param left = {ParamType::INTEGER_LITERAL, "4"};
     Param right = {ParamType::SYNONYM, "s"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result ==
             unordered_set<int>({2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
   }
@@ -386,14 +396,14 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(s, 4)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::INTEGER_LITERAL, "4"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result == unordered_set<int>({1, 2, 3, 4, 5}));
   }
 
   SECTION("NextT(s, 1)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::INTEGER_LITERAL, "1"};
-    unordered_set<int> result = ne.evaluateNextT(left, right);
+    unordered_set<int> result = ne.evaluateNextTNextBipT(rsType, left, right);
     REQUIRE(result.empty());
   }
 
@@ -401,7 +411,8 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(s, _)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::WILDCARD, "_"};
-    vector<vector<int>> result = ne.evaluatePairNextT(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(rsType, left, right);
     for (int i = 1; i < 14; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -411,7 +422,8 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(_, s)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s"};
-    vector<vector<int>> result = ne.evaluatePairNextT(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(rsType, left, right);
     for (int i = 2; i <= 14; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -422,7 +434,8 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result = ne.evaluatePairNextT(left, right);
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(rsType, left, right);
 
     // check NextT(1, _)
     for (int i = 2; i <= 14; i++) {
@@ -481,5 +494,114 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
     for (int i = 13; i <= 14; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({13, i})));
     }
+  }
+}
+
+TEST_CASE("NextEvaluator: NextBip & NextBipT") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i <= 6; i++) {
+    pkb->addStmt(DesignEntity::STATEMENT, i);
+  }
+  // proc A {
+  // 1: x = 1;
+  // 2: x = 5; }
+  // proc B {
+  // 3: if (x == 2) then {
+  // 4:   read x; }
+  // 5: else { x = 3; } }
+  // proc C {
+  // 6: y = 2; }
+
+  RelationshipType nextBipRsType = RelationshipType::NEXT_BIP;
+  RelationshipType nextBipTRsType = RelationshipType::NEXT_BIP_T;
+
+  pkb->addRs(nextBipRsType, 1, 2);
+  pkb->addRs(nextBipRsType, 2, 3);
+  pkb->addRs(nextBipRsType, 3, 4);
+  pkb->addRs(nextBipRsType, 3, 5);
+  pkb->addRs(nextBipRsType, 4, 6);
+  pkb->addRs(nextBipRsType, 5, 6);
+
+  NextEvaluator ne(pkb);
+
+  /* NextBip --------------------------------------------------------- */
+  SECTION("NextBip(2, 3))") {
+    Param left = {ParamType::INTEGER_LITERAL, "2"};
+    Param right = {ParamType::INTEGER_LITERAL, "3"};
+    bool result = ne.evaluateBoolNextNextBip(nextBipRsType, left, right);
+    REQUIRE(result == true);
+  }
+
+  SECTION("NextBip(2, _)") {
+    Param left = {ParamType::INTEGER_LITERAL, "2"};
+    Param right = {ParamType::WILDCARD, "_"};
+    bool result = ne.evaluateBoolNextNextBip(nextBipRsType, left, right);
+    REQUIRE(result == true);
+  }
+
+  SECTION("NextBip(s, 6)") {
+    Param left = {ParamType::SYNONYM, "s"};
+    Param right = {ParamType::INTEGER_LITERAL, "6"};
+    unordered_set<int> result =
+        ne.evaluateNextNextBip(nextBipRsType, left, right);
+    REQUIRE(result == unordered_set<int>({4, 5}));
+  }
+
+  SECTION("NextBip(s1, s2)") {
+    Param left = {ParamType::SYNONYM, "s1"};
+    Param right = {ParamType::SYNONYM, "s2"};
+    vector<vector<int>> result =
+        ne.evaluatePairNextNextBip(nextBipRsType, left, right);
+    REQUIRE_THAT(result, VectorContains(vector<int>({1, 2})));
+    REQUIRE_THAT(result, VectorContains(vector<int>({2, 3})));
+    REQUIRE_THAT(result, VectorContains(vector<int>({3, 4})));
+    REQUIRE_THAT(result, VectorContains(vector<int>({4, 6})));
+    REQUIRE_THAT(result, VectorContains(vector<int>({5, 6})));
+  }
+
+  /* NextBip* -------------------------------------------------------- */
+  SECTION("NextBipT(1, 3))") {
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
+    Param right = {ParamType::INTEGER_LITERAL, "3"};
+    bool result = ne.evaluateBoolNextTNextBipT(nextBipTRsType, left, right);
+    REQUIRE(result == true);
+  }
+
+  SECTION("NextBipT(2, _)") {
+    Param left = {ParamType::INTEGER_LITERAL, "2"};
+    Param right = {ParamType::WILDCARD, "_"};
+    bool result = ne.evaluateBoolNextTNextBipT(nextBipTRsType, left, right);
+    REQUIRE(result == true);
+  }
+
+  SECTION("NextBipT(s, 6)") {
+    Param left = {ParamType::SYNONYM, "s"};
+    Param right = {ParamType::INTEGER_LITERAL, "6"};
+    unordered_set<int> result =
+        ne.evaluateNextTNextBipT(nextBipTRsType, left, right);
+    REQUIRE(result == unordered_set<int>({1, 2, 3, 4, 5}));
+  }
+
+  SECTION("NextBipT(1, s)") {
+    Param left = {ParamType::INTEGER_LITERAL, "1"};
+    Param right = {ParamType::SYNONYM, "s"};
+    unordered_set<int> result =
+        ne.evaluateNextTNextBipT(nextBipTRsType, left, right);
+    REQUIRE(result == unordered_set<int>({2, 3, 4, 5, 6}));
+  }
+
+  SECTION("NextBipT(s1, s2)") {
+    Param left = {ParamType::SYNONYM, "s1"};
+    Param right = {ParamType::SYNONYM, "s2"};
+    vector<vector<int>> result =
+        ne.evaluatePairNextTNextBipT(nextBipTRsType, left, right);
+    for (int i = 1; i < 5; i++) {
+      for (int j = i + 1; j <= 6; j++) {
+        if (!(i == 4 && j == 5)) {
+          REQUIRE_THAT(result, VectorContains(vector<int>({i, j})));
+        }
+      }
+    }
+    REQUIRE_THAT(result, !VectorContains(vector<int>({4, 5})));
   }
 }

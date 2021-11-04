@@ -1,34 +1,45 @@
 #pragma once
 
+#include <Common/Common.h>
 #include <PKB/PKB.h>
 #include <Query/Common.h>
+#include <Query/Evaluator/QueryEvaluatorCache.h>
 
 #include <unordered_set>
-#include <unordered_map>
-#include <utility>
 #include <vector>
 
 class NextEvaluator {
  public:
-  explicit NextEvaluator(PKB*);
+  explicit NextEvaluator(PKB* pkb);
+  void attachCache(QueryEvaluatorCache* cache);
 
-  bool evaluateBoolNext(const query::Param& left, const query::Param& right);
-  std::unordered_set<int> evaluateNext(const query::Param& left,
-                                       const query::Param& right);
-  std::vector<std::vector<int>> evaluatePairNext(const query::Param& left,
-                                                 const query::Param& right);
+  bool evaluateBoolNextNextBip(RelationshipType rsType,
+                               const query::Param& left,
+                               const query::Param& right);
+  std::unordered_set<int> evaluateNextNextBip(RelationshipType rsType,
+                                              const query::Param& left,
+                                              const query::Param& right);
+  std::vector<std::vector<int>> evaluatePairNextNextBip(
+      RelationshipType rsType, const query::Param& left,
+      const query::Param& right);
 
-  bool evaluateBoolNextT(const query::Param& left, const query::Param& right);
-  std::unordered_set<int> evaluateNextT(const query::Param& left,
-                                        const query::Param& right);
-  std::vector<std::vector<int>> evaluatePairNextT(const query::Param& left,
-                                                  const query::Param& right);
+  bool evaluateBoolNextTNextBipT(RelationshipType rsType,
+                                 const query::Param& left,
+                                 const query::Param& right);
+  std::unordered_set<int> evaluateNextTNextBipT(RelationshipType rsType,
+                                                const query::Param& left,
+                                                const query::Param& right);
+  std::vector<std::vector<int>> evaluatePairNextTNextBipT(
+      RelationshipType rsType, const query::Param& left,
+      const query::Param& right);
 
  private:
   PKB* pkb;
-  std::unordered_map<STMT_NO, SetOfStmts> nextTCache;
-  std::unordered_map<STMT_NO, SetOfStmts> reverseNextTCache;
-  bool getIsNextT(int startStmt, int endStmt);
-  std::unordered_set<int> getNextTStmts(int startStmt);
-  std::unordered_set<int> getPrevTStmts(int endStmt);
+  QueryEvaluatorCache* cache;
+  RelationshipType getNonTransitiveRsType(RelationshipType rsType);
+  bool getIsNextTNextBipT(RelationshipType rsType, int startStmt, int endStmt);
+  std::unordered_set<int> getNextTNextBipTStmts(RelationshipType rsType,
+                                                int startStmt);
+  std::unordered_set<int> getInvNextTNextBipTStmts(RelationshipType rsType,
+                                                   int endStmt);
 };
