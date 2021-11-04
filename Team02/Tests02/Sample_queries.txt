@@ -53,6 +53,11 @@ assign a;
 Select a such that Affects(a, 9)
 2, 3, 5, 7, 11
 5000
+12 - comment
+assign a;
+Select a such that Affects*(11, a)
+9, 11
+5000
 13 - comment
 assign a;
 Select a pattern a("z", _"x+i")
@@ -93,6 +98,11 @@ prog_line n; stmt s;
 Select s such that Next*(16, n) and Parent*(s, n)
 13, 14
 5000
+21 - comment
+prog_line n; assign a;
+Select a such that Affects*(a, n) and Next*(13, n)
+17, 18, 19, 20
+5000
 22 - comment
 procedure p, q; variable v;
 Select <p, q, v> such that Modifies(p, v) and Calls(p, q)
@@ -102,6 +112,11 @@ Example p i, Example p x, Example p y, Example p z, Example q i, Example q x, Ex
 call c; assign a1, a2;
 Select BOOLEAN such that Follows*(_, c) and Affects(a1, a2) and Uses(a2, _)
 TRUE
+5000
+24 - comment
+assign a1, a2; variable v;
+Select v pattern a1(v, _) such that Affects*(a1, a2) and Uses(a2, v)
+i, x, z
 5000
 25 - comment
 prog_line n1, n2; variable v; call c;

@@ -373,7 +373,7 @@ void AffectsEvaluator::populateTableHelper(STMT_NO orig, STMT_NO affected,
       nextLayer = base->at(affected);
       for (STMT_NO nextLayerAffects : nextLayer) {
         if (affected != nextLayerAffects) {
-            populateTableHelper(orig, nextLayerAffects, visited, base);
+          populateTableHelper(orig, nextLayerAffects, visited, base);
         }
       }
     }

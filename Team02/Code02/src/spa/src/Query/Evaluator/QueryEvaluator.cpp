@@ -314,7 +314,7 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorPair(
     case RelationshipType::AFFECTS:
       return affectsEvaluator.evaluatePairAffects();
     case RelationshipType::AFFECTS_T:
-      return affectsEvaluator.evaluatePairAffects();
+      return affectsEvaluator.evaluatePairAffectsT();
     default:
       return {};
   }
