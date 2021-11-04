@@ -480,6 +480,39 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
 }
 
 TEST_CASE("Invalid synonyms for pattern clause throws") {
+  SECTION("Invalid pattern a.stmt# (_, _)") {
+    string invalidQuery =
+        "assign a;"
+        "Select a pattern a.stmt# (_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs.stmt# (_, _)") {
+    string invalidQuery =
+        "if ifs;"
+        "Select ifs pattern ifs.stmt# (_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern w.stmt# (_, _)") {
+    string invalidQuery =
+        "while w;"
+        "Select w pattern w.stmt# (_, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid pattern s(_, _)") {
     string invalidQuery =
         "stmt s;"
@@ -559,6 +592,71 @@ TEST_CASE("Invalid synonyms for pattern clause throws") {
 }
 
 TEST_CASE("Invalid queries with one pattern clause for assignment throws") {
+  SECTION("Invalid pattern a(v.varName, _)") {
+    string invalidQuery =
+        "assign a; variable v;"
+        "Select a pattern a(v.varName, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern a(p.procName, _)") {
+    string invalidQuery =
+        "assign a; procedure p;"
+        "Select a pattern a(p.procName, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern a(s.stmt#, _)") {
+    string invalidQuery =
+        "assign a; stmt s;"
+        "Select a pattern a(s.stmt#, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+  SECTION("Invalid pattern a(_, v.varName)") {
+    string invalidQuery =
+        "assign a; variable v;"
+        "Select a pattern a(_, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern a(v.varName, s.stmt#)") {
+    string invalidQuery =
+        "assign a; variable v; stmt s;"
+        "Select a pattern a(v.varName, s.stmt#)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern a(_.stmt#, _)") {
+    string invalidQuery =
+        "assign a;"
+        "Select a pattern a(_.stmt#, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid pattern a(1, _)") {
     string invalidQuery =
         "assign a;"
@@ -784,6 +882,60 @@ TEST_CASE("Valid queries with one pattern clause for while succeeds") {
 }
 
 TEST_CASE("Invalid queries with one pattern clause for while throws") {
+  SECTION("Invalid pattern w(v.varName, _)") {
+    string invalidQuery =
+        "while w; variable v;"
+        "Select w pattern w(v.varName, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern w(p.procName, _)") {
+    string invalidQuery =
+        "while w; procedure p;"
+        "Select w pattern w(p.procName, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern w(s.stmt#, _)") {
+    string invalidQuery =
+        "assign a; while w;"
+        "Select a pattern a(w.stmt#, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+  SECTION("Invalid pattern w(_, v.varName)") {
+    string invalidQuery =
+        "while w; variable v;"
+        "Select w pattern w(_, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern w(v.varName, s.stmt#)") {
+    string invalidQuery =
+        "while w; variable v; stmt s;"
+        "Select w pattern w(v.varName, s.stmt#)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid pattern w(_)") {
     string invalidQuery =
         "while w;"
@@ -907,6 +1059,83 @@ TEST_CASE("Valid queries with one pattern clause for if succeeds") {
 }
 
 TEST_CASE("Invalid queries with one pattern clause for if throws") {
+  SECTION("Invalid pattern ifs(v.varName, _, _)") {
+    string invalidQuery =
+        "if ifs; variable v;"
+        "Select ifs pattern ifs(v.varName, _, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(p.procName, _, _)") {
+    string invalidQuery =
+        "if ifs; procedure p;"
+        "Select ifs pattern ifs(p.procName, _, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(s.stmt#, _, _)") {
+    string invalidQuery =
+        "if ifs; stmt s;"
+        "Select ifs pattern ifs(s.stmt#, _, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(_, v.varName, _)") {
+    string invalidQuery =
+        "if ifs; variable v;"
+        "Select ifs pattern ifs(_, v.varName, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(_, _, v.varName)") {
+    string invalidQuery =
+        "if ifs; variable v;"
+        "Select ifs pattern ifs(_, _, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(v.varName, s.stmt#, _)") {
+    string invalidQuery =
+        "if ifs; variable v; stmt s;"
+        "Select ifs pattern ifs(v.varName, s.stmt#, _)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid pattern ifs(v.varName, s.stmt#, p.procName)") {
+    string invalidQuery =
+        "if ifs; variable v; stmt s; procedure p;"
+        "Select ifs pattern ifs(v.varName, s.stmt#, p.procName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid pattern ifs(_)") {
     string invalidQuery =
         "if ifs;"

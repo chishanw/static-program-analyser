@@ -136,6 +136,15 @@ TEST_CASE("Invalid synonym declarations throws") {
                       qpp::SyntacticErrorException);
   }
 
+  SECTION("Invalid attribute name throws") {
+    string invalidQuery = "stmt s.stmt#; Select s.stmt#";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_SPECIFIC_CHAR_SYMBOL_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid symbol throws") {
     string invalidQuery =
         "stmt s; s1;"

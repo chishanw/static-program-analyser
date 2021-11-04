@@ -395,6 +395,61 @@ TEST_CASE(
 }
 
 TEST_CASE("Invalid Next throws") {
+  SECTION("Invalid Next(s.stmt#, 2)") {
+    string invalidQuery =
+        "stmt s;"
+        "Select s such that Next(s.stmt#, 2)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_LINE_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Next(1, v.varName)") {
+    string invalidQuery =
+        "variable v;"
+        "Select v.varName such that Next(1, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_LINE_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Next(1, c.procName)") {
+    string invalidQuery =
+        "call c;"
+        "Select v.varName such that Next(1, c.procName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_LINE_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Next(1, con.value)") {
+    string invalidQuery =
+        "constant con;"
+        "Select BOOLEAN such that Next(1, con.value)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_LINE_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Next(s.stmt#, con.value)") {
+    string invalidQuery =
+        "constant con; stmt s;"
+        "Select BOOLEAN such that Next(s.stmt#, con.value)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_LINE_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid Next(1, p)") {
     string invalidQuery =
         "procedure p;"

@@ -668,6 +668,61 @@ TEST_CASE(
 }
 
 TEST_CASE("Invalid queries for one such that clause for ModifiesS throws") {
+  SECTION("Invalid Modifies(s.stmt#, 2)") {
+    string invalidQuery =
+        "stmt s;"
+        "Select s such that Modifies(s.stmt#, 2)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Modifies(1, v.varName)") {
+    string invalidQuery =
+        "variable v;"
+        "Select v.varName such that Modifies(1, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Modifies(1, c.procName)") {
+    string invalidQuery =
+        "call c;"
+        "Select v.varName such that Modifies(1, c.procName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Modifies(1, con.value)") {
+    string invalidQuery =
+        "constant con;"
+        "Select BOOLEAN such that Modifies(1, con.value)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Modifies(s.stmt#, v.varName)") {
+    string invalidQuery =
+        "constant con; variable v;"
+        "Select BOOLEAN such that Modifies(s.stmt#, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid Modifies(pn, \"x\")") {
     string invalidQuery =
         "print pn;"
@@ -696,7 +751,7 @@ TEST_CASE("Invalid queries for one such that clause for ModifiesS throws") {
         "Select s such that Modifies(1, 2)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_USES_MODIFIES_INTEGER_MSG);
+                        QueryParser::INVALID_ENT_REF_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
                       qpp::SyntacticErrorException);
   }

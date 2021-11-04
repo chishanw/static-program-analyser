@@ -80,6 +80,12 @@ const set<ParamType> stringParamTypes = {ParamType::NAME_LITERAL,
                                          ParamType::ATTRIBUTE_VAR_NAME,
                                          ParamType::ATTRIBUTE_PROC_NAME};
 
+const set<ParamType> validStmtRefParamTypes = {
+    ParamType::INTEGER_LITERAL, ParamType::SYNONYM, ParamType::WILDCARD};
+
+const set<ParamType> validEntRefParamTypes = {
+    ParamType::NAME_LITERAL, ParamType::SYNONYM, ParamType::WILDCARD};
+
 // ============ Helpers (Token) ============
 QueryToken QueryParser::consumeToken() {
   if (it == endIt) {
@@ -446,8 +452,8 @@ query::ConditionClause QueryParser::parseFollowsParentClause(
   getExactCharSymbol(')');
 
   // Validate parameters
-  if (left.type == ParamType::NAME_LITERAL ||
-      right.type == ParamType::NAME_LITERAL) {
+  if (validStmtRefParamTypes.find(left.type) == validStmtRefParamTypes.end() ||
+      validStmtRefParamTypes.find(right.type) == validStmtRefParamTypes.end()) {
     throw SyntacticErrorException(INVALID_STMT_REF_MSG);
   }
 
@@ -482,8 +488,8 @@ query::ConditionClause QueryParser::parseCallsClause(
   getExactCharSymbol(')');
 
   // Validate parameters
-  if (left.type == ParamType::INTEGER_LITERAL ||
-      right.type == ParamType::INTEGER_LITERAL) {
+  if (validEntRefParamTypes.find(left.type) == validEntRefParamTypes.end() ||
+      validEntRefParamTypes.find(right.type) == validEntRefParamTypes.end()) {
     throw SyntacticErrorException(INVALID_ENT_REF_MSG);
   }
 
@@ -518,8 +524,8 @@ query::ConditionClause QueryParser::parseNextClause(
   getExactCharSymbol(')');
 
   // Validate parameters
-  if (left.type == ParamType::NAME_LITERAL ||
-      right.type == ParamType::NAME_LITERAL) {
+  if (validStmtRefParamTypes.find(left.type) == validStmtRefParamTypes.end() ||
+      validStmtRefParamTypes.find(right.type) == validStmtRefParamTypes.end()) {
     throw SyntacticErrorException(INVALID_LINE_REF_MSG);
   }
 
@@ -554,8 +560,8 @@ query::ConditionClause QueryParser::parseAffectsClause(
   getExactCharSymbol(')');
 
   // Validate parameters
-  if (left.type == ParamType::NAME_LITERAL ||
-      right.type == ParamType::NAME_LITERAL) {
+  if (validStmtRefParamTypes.find(left.type) == validStmtRefParamTypes.end() ||
+      validStmtRefParamTypes.find(right.type) == validStmtRefParamTypes.end()) {
     throw SyntacticErrorException(INVALID_STMT_REF_MSG);
   }
 
@@ -620,12 +626,12 @@ query::ConditionClause QueryParser::parseUsesClause() {
       break;
     }
     default:
-      throw SyntacticErrorException(INVALID_PARAM_TYPE_MSG);
+      throw SyntacticErrorException(INVALID_STMT_ENT_REF_MSG);
   }
 
   // Validate right param
-  if (right.type == ParamType::INTEGER_LITERAL) {
-    throw SyntacticErrorException(INVALID_ST_USES_MODIFIES_INTEGER_MSG);
+  if (validEntRefParamTypes.find(right.type) == validEntRefParamTypes.end()) {
+    throw SyntacticErrorException(INVALID_ENT_REF_MSG);
   }
 
   if (right.type == ParamType::SYNONYM &&
@@ -677,12 +683,12 @@ query::ConditionClause QueryParser::parseModifiesClause() {
       break;
     }
     default:
-      throw SyntacticErrorException(INVALID_PARAM_TYPE_MSG);
+      throw SyntacticErrorException(INVALID_STMT_ENT_REF_MSG);
   }
 
   // Validate right param
-  if (right.type == ParamType::INTEGER_LITERAL) {
-    throw SyntacticErrorException(INVALID_ST_USES_MODIFIES_INTEGER_MSG);
+  if (validEntRefParamTypes.find(right.type) == validEntRefParamTypes.end()) {
+    throw SyntacticErrorException(INVALID_ENT_REF_MSG);
   }
 
   if (right.type == ParamType::SYNONYM &&
@@ -713,7 +719,7 @@ void QueryParser::parsePatternClause(vector<ConditionClause>& results) {
     getExactCharSymbol(',');
 
     // validate left param
-    if (left.type == ParamType::INTEGER_LITERAL) {
+    if (validEntRefParamTypes.find(left.type) == validEntRefParamTypes.end()) {
       throw SyntacticErrorException(INVALID_ENT_REF_MSG);
     }
     if (left.type == ParamType::SYNONYM &&

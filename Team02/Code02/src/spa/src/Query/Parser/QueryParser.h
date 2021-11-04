@@ -71,9 +71,6 @@ class QueryParser {
       "QueryParser expects a valid such-that relationship.";
   inline static const std::string INVALID_ST_USES_MODIFIES_WILDCARD_MSG =
       "QueryParser expects SYNONYM or LITERAL param type but got WILDCARD.";
-  inline static const std::string INVALID_ST_USES_MODIFIES_INTEGER_MSG =
-      "QueryParser expects SYNONYM, WILDCARD, or IDENT param type but got "
-      "INTEGER.";
   inline static const std::string INVALID_ST_USES_SYNONYM_ENTITY_MSG =
       "QueryParser expects a print, statement, call, assign, if, while, "
       "procedure or prog_line synonym.";

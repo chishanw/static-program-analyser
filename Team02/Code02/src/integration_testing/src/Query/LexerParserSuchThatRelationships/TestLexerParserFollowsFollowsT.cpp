@@ -460,6 +460,61 @@ TEST_CASE(
 }
 
 TEST_CASE("Invalid queries for one such that clause for Follows throws") {
+  SECTION("Invalid Follows(s.stmt#, 2)") {
+    string invalidQuery =
+        "stmt s;"
+        "Select s such that Follows(s.stmt#, 2)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Follows(1, v.varName)") {
+    string invalidQuery =
+        "variable v;"
+        "Select v.varName such that Follows(1, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Follows(1, c.procName)") {
+    string invalidQuery =
+        "call c;"
+        "Select v.varName such that Follows(1, c.procName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Follows(1, con.value)") {
+    string invalidQuery =
+        "constant con;"
+        "Select BOOLEAN such that Follows(1, con.value)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Follows(s.stmt#, con.value)") {
+    string invalidQuery =
+        "constant con; stmt s;"
+        "Select BOOLEAN such that Follows(s.stmt#, con.value)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid Follows(\"x\", 2)") {
     string invalidQuery =
         "stmt s;"

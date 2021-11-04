@@ -556,6 +556,61 @@ TEST_CASE("Valid queries for one such that clause for UsesS succeeds") {
 }
 
 TEST_CASE("Invalid queries for one such that clause for UsesS throws") {
+  SECTION("Invalid Uses(s.stmt#, 2)") {
+    string invalidQuery =
+        "stmt s;"
+        "Select s such that Uses(s.stmt#, 2)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Uses(1, v.varName)") {
+    string invalidQuery =
+        "variable v;"
+        "Select v.varName such that Uses(1, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Uses(1, c.procName)") {
+    string invalidQuery =
+        "call c;"
+        "Select v.varName such that Uses(1, c.procName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Uses(1, con.value)") {
+    string invalidQuery =
+        "constant con;"
+        "Select BOOLEAN such that Uses(1, con.value)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
+  SECTION("Invalid Uses(s.stmt#, v.varName)") {
+    string invalidQuery =
+        "stmt s; variable v;"
+        "Select BOOLEAN such that Uses(s.stmt#, v.varName)";
+    // test
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_STMT_ENT_REF_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
+  }
+
   SECTION("Invalid Uses(r, \"x\")") {
     string invalidQuery =
         "read r;"
@@ -584,7 +639,7 @@ TEST_CASE("Invalid queries for one such that clause for UsesS throws") {
         "Select s such that Uses(1, 2)";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
-                        QueryParser::INVALID_ST_USES_MODIFIES_INTEGER_MSG);
+                        QueryParser::INVALID_ENT_REF_MSG);
     REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
                       qpp::SyntacticErrorException);
   }
