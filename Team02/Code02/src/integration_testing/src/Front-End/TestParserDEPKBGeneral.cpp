@@ -32,14 +32,14 @@ TEST_CASE("Whole frontend simple test") {
 
   SECTION("General info") {
     REQUIRE(pkb->getAllStmts(DesignEntity::STATEMENT) ==
-            UNO_SET_OF_STMT_NO({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::READ) == UNO_SET_OF_STMT_NO({7}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == UNO_SET_OF_STMT_NO({10}));
-    REQUIRE(pkb->getAllCallStmts() == UNO_SET_OF_STMT_NO({5, 8}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) == UNO_SET_OF_STMT_NO({2}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::IF) == UNO_SET_OF_STMT_NO({4}));
+            SetOfStmts({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::READ) == SetOfStmts({7}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == SetOfStmts({10}));
+    REQUIRE(pkb->getAllCallStmts() == SetOfStmts({5, 8}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) == SetOfStmts({2}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::IF) == SetOfStmts({4}));
     REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) ==
-            UNO_SET_OF_STMT_NO({1, 3, 6, 9}));
+            SetOfStmts({1, 3, 6, 9}));
   }
 
   SECTION("Calls/* extraction") {
@@ -55,17 +55,17 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(!pkb->isCalls("a", "B"));
     REQUIRE(!pkb->isCalls("A", "B"));
 
-    REQUIRE(pkb->getProcsCalledBy("a") == UNO_SET_OF_STMT_NO({1}));
-    REQUIRE(pkb->getProcsCalledBy("b") == UNO_SET_OF_STMT_NO({2}));
-    REQUIRE(pkb->getProcsCalledBy("c") == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getProcsCalledBy("a") == SetOfStmts({1}));
+    REQUIRE(pkb->getProcsCalledBy("b") == SetOfStmts({2}));
+    REQUIRE(pkb->getProcsCalledBy("c") == SetOfStmts({}));
     // invalid query
-    REQUIRE(pkb->getProcsCalledBy("A") == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getProcsCalledBy("A") == SetOfStmts({}));
 
-    REQUIRE(pkb->getCallerProcs("a") == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getCallerProcs("b") == UNO_SET_OF_STMT_NO({0}));
-    REQUIRE(pkb->getCallerProcs("c") == UNO_SET_OF_STMT_NO({1}));
+    REQUIRE(pkb->getCallerProcs("a") == SetOfStmts({}));
+    REQUIRE(pkb->getCallerProcs("b") == SetOfStmts({0}));
+    REQUIRE(pkb->getCallerProcs("c") == SetOfStmts({1}));
     // invalid query
-    REQUIRE(pkb->getCallerProcs("A") == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getCallerProcs("A") == SetOfStmts({}));
 
     vector<PROC_IDX> calledByA({1});
     pair<PROC_IDX, vector<PROC_IDX>> aRes(0, calledByA);
@@ -84,17 +84,17 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(!pkb->isCallsT("a", "B"));
     REQUIRE(!pkb->isCallsT("A", "B"));
 
-    REQUIRE(pkb->getProcsCalledTBy("a") == UNO_SET_OF_STMT_NO({1, 2}));
-    REQUIRE(pkb->getProcsCalledTBy("b") == UNO_SET_OF_STMT_NO({2}));
-    REQUIRE(pkb->getProcsCalledTBy("c") == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getProcsCalledTBy("a") == SetOfStmts({1, 2}));
+    REQUIRE(pkb->getProcsCalledTBy("b") == SetOfStmts({2}));
+    REQUIRE(pkb->getProcsCalledTBy("c") == SetOfStmts({}));
     // invalid query
-    REQUIRE(pkb->getProcsCalledTBy("A") == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getProcsCalledTBy("A") == SetOfStmts({}));
 
-    REQUIRE(pkb->getCallerTProcs("a") == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getCallerTProcs("b") == UNO_SET_OF_STMT_NO({0}));
-    REQUIRE(pkb->getCallerTProcs("c") == UNO_SET_OF_STMT_NO({0, 1}));
+    REQUIRE(pkb->getCallerTProcs("a") == SetOfStmts({}));
+    REQUIRE(pkb->getCallerTProcs("b") == SetOfStmts({0}));
+    REQUIRE(pkb->getCallerTProcs("c") == SetOfStmts({0, 1}));
     // invalid query
-    REQUIRE(pkb->getCallerTProcs("A") == UNO_SET_OF_STMT_NO({}));
+    REQUIRE(pkb->getCallerTProcs("A") == SetOfStmts({}));
 
     vector<PROC_IDX> calledTByA({1, 2});
     pair<PROC_IDX, vector<PROC_IDX>> aTRes(0, calledTByA);
@@ -114,50 +114,50 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(!pkb->isRs(RelationshipType::FOLLOWS_T, 2, 3));
 
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 1) ==
-            UNO_SET_OF_STMT_NO({2}));
+            SetOfStmts({2}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 3) ==
-            UNO_SET_OF_STMT_NO({4}));
+            SetOfStmts({4}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 7) ==
-            UNO_SET_OF_STMT_NO({8}));
+            SetOfStmts({8}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 8) ==
-            UNO_SET_OF_STMT_NO({9}));
+            SetOfStmts({9}));
     // invalid query
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 11) ==
-            UNO_SET_OF_STMT_NO({}));
+            SetOfStmts({}));
 
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 2) ==
-            UNO_SET_OF_STMT_NO({1}));
+            SetOfStmts({1}));
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 9) ==
-            UNO_SET_OF_STMT_NO({8}));
+            SetOfStmts({8}));
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 8) ==
-            UNO_SET_OF_STMT_NO({7}));
+            SetOfStmts({7}));
     // invalid query
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 1) ==
-            UNO_SET_OF_STMT_NO({}));
+            SetOfStmts({}));
 
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 1) ==
-            UNO_SET_OF_STMT_NO({2}));
+            SetOfStmts({2}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 3) ==
-            UNO_SET_OF_STMT_NO({4}));
+            SetOfStmts({4}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 7) ==
-            UNO_SET_OF_STMT_NO({8, 9}));
+            SetOfStmts({8, 9}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 8) ==
-            UNO_SET_OF_STMT_NO({9}));
+            SetOfStmts({9}));
     // invalid query
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 11) ==
-            UNO_SET_OF_STMT_NO({}));
+            SetOfStmts({}));
 
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 2) ==
-            UNO_SET_OF_STMT_NO({1}));
+            SetOfStmts({1}));
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 4) ==
-            UNO_SET_OF_STMT_NO({3}));
+            SetOfStmts({3}));
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 9) ==
-            UNO_SET_OF_STMT_NO({7, 8}));
+            SetOfStmts({7, 8}));
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 8) ==
-            UNO_SET_OF_STMT_NO({7}));
+            SetOfStmts({7}));
     // invalid query
     REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 1) ==
-            UNO_SET_OF_STMT_NO({}));
+            SetOfStmts({}));
 
     auto output =
         pkb->getMappings(RelationshipType::FOLLOWS_T, ParamPosition::BOTH);
@@ -215,20 +215,20 @@ TEST_CASE("Whole frontend simple test") {
                        TableType::VAR_TABLE, "y"));
 
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_S, 1) ==
-            unordered_set<VAR_IDX>({0}));
+            unordered_set<VarIdx>({0}));
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_S, 6) ==
-            unordered_set<VAR_IDX>({1}));
+            unordered_set<VarIdx>({1}));
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_S, 7) ==
-            unordered_set<VAR_IDX>({2}));
+            unordered_set<VarIdx>({2}));
     // invalid query
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_S, 10) ==
-            unordered_set<VAR_IDX>({}));
+            unordered_set<VarIdx>({}));
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
-                          "a") == unordered_set<VAR_IDX>({0, 1, 2}));
+                          "a") == unordered_set<VarIdx>({0, 1, 2}));
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
-                          "b") == unordered_set<VAR_IDX>({2}));
+                          "b") == unordered_set<VarIdx>({2}));
     REQUIRE(pkb->getRight(RelationshipType::MODIFIES_P, TableType::PROC_TABLE,
-                          "c") == unordered_set<VAR_IDX>({}));
+                          "c") == unordered_set<VarIdx>({}));
 
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
                          "x") == unordered_set<STMT_NO>({2, 4, 5, 7, 9}));
@@ -314,15 +314,15 @@ TEST_CASE("Whole frontend simple test") {
             unordered_set<STMT_NO>({}));
 
     REQUIRE(pkb->getRight(RelationshipType::USES_S, 2) ==
-            unordered_set<VAR_IDX>({0, 1, 2}));
+            unordered_set<VarIdx>({0, 1, 2}));
     REQUIRE(pkb->getRight(RelationshipType::USES_S, 3) ==
-            unordered_set<VAR_IDX>({0, 1, 2}));
+            unordered_set<VarIdx>({0, 1, 2}));
     REQUIRE(pkb->getRight(RelationshipType::USES_P, TableType::PROC_TABLE,
-                          "a") == unordered_set<VAR_IDX>({0, 1, 2}));
+                          "a") == unordered_set<VarIdx>({0, 1, 2}));
     REQUIRE(pkb->getRight(RelationshipType::USES_P, TableType::PROC_TABLE,
-                          "b") == unordered_set<VAR_IDX>({0, 2}));
+                          "b") == unordered_set<VarIdx>({0, 2}));
     REQUIRE(pkb->getRight(RelationshipType::USES_P, TableType::PROC_TABLE,
-                          "c") == unordered_set<VAR_IDX>({0}));
+                          "c") == unordered_set<VarIdx>({0}));
   }
 
   SECTION("Parent/* extraction") {

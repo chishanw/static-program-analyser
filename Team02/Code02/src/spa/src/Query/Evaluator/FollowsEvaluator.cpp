@@ -37,7 +37,7 @@ bool FollowsEvaluator::evaluateBoolFollows(const Param& left,
 }
 
 // synonym & literal
-UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollows(const Param& left,
+SetOfStmts FollowsEvaluator::evaluateStmtFollows(const Param& left,
                                                          const Param& right) {
   // if one literal + synonym - Follows(s, 2), Follows(1, s)
   ParamType leftType = left.type;
@@ -87,18 +87,18 @@ bool FollowsEvaluator::evaluateBoolFollowsT(const Param& left,
   }
 
   if (leftType == ParamType::WILDCARD) {
-    UNO_SET_OF_STMT_NO listOfStmts =
+    SetOfStmts listOfStmts =
         pkb->getLeft(RelationshipType::FOLLOWS_T, stoi(right.value));
     return !listOfStmts.empty();
   }
 
-  UNO_SET_OF_STMT_NO listOfStmts =
+  SetOfStmts listOfStmts =
       pkb->getRight(RelationshipType::FOLLOWS_T, stoi(left.value));
   return !listOfStmts.empty();
 }
 
 // synonym & literal
-UNO_SET_OF_STMT_NO FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
+SetOfStmts FollowsEvaluator::evaluateStmtFollowsT(const Param& left,
                                                           const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;

@@ -34,7 +34,7 @@ bool UsesEvaluator::evaluateBoolUsesS(const Param& left, const Param& right) {
 }
 
 // synonym & literal
-UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesS(const Param& left,
+SetOfStmts UsesEvaluator::evaluateUsesS(const Param& left,
                                                 const Param& right) {
   // if one literal + synonym - UsesS(s, "x"), UsesS(1, v)
   ParamType leftType = left.type;
@@ -89,7 +89,7 @@ bool UsesEvaluator::evaluateBoolUsesP(const Param& left, const Param& right) {
               .empty();
 }
 
-UNO_SET_OF_STMT_NO UsesEvaluator::evaluateUsesP(const Param& left,
+SetOfStmts UsesEvaluator::evaluateUsesP(const Param& left,
                                                 const Param& right) {
   ParamType leftType = left.type;
 

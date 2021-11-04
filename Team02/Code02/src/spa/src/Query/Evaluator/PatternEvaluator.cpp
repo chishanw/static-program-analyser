@@ -20,19 +20,22 @@ unordered_set<int> PatternEvaluator::evaluateAssignPattern(
 
   if (varParam.type == ParamType::NAME_LITERAL) {
     if (matchType == MatchType::EXACT) {
-      return pkb->getAssignForVarAndFullExpr(varParam.value, expr);
+      return pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                        varParam.value, expr);
     } else if (matchType == MatchType::SUB_EXPRESSION) {
-      return pkb->getAssignForVarAndSubExpr(varParam.value, expr);
+      return pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR,
+                                        varParam.value, expr);
     } else {
-      return pkb->getAssignForVar(varParam.value);
+      return pkb->getStmtsForVar(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 varParam.value);
     }
   }
 
   // varParam.type == ParamType::WILDCARD
   if (matchType == MatchType::EXACT) {
-    return pkb->getAssignForFullExpr(expr);
+    return pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR, expr);
   } else if (matchType == MatchType::SUB_EXPRESSION) {
-    return pkb->getAssignForSubExpr(expr);
+    return pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, expr);
   } else {
     return pkb->getAllStmts(DesignEntity::ASSIGN);
   }
@@ -44,18 +47,24 @@ vector<vector<int>> PatternEvaluator::evaluateAssignPairPattern(
   MatchType matchType = patternExpr.matchType;
   string expr = patternExpr.expr;
 
+  SetOfIntLists results;
+
   if (matchType == MatchType::EXACT) {
-    return pkb->getAssignVarPairsForFullExpr(expr);
+    results = pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                         expr);
   } else if (matchType == MatchType::SUB_EXPRESSION) {
-    return pkb->getAssignVarPairsForSubExpr(expr);
+    results =
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, expr);
   } else {
-    return pkb->getAssignVarPairs();
+    results = pkb->getVarMappings(RelationshipType::PTT_ASSIGN_FULL_EXPR);
   }
+
+  return vector<vector<int>>(results.begin(), results.end());
 }
 
 unordered_set<int> PatternEvaluator::evaluateIfPattern(const Param& varParam) {
   if (varParam.type == ParamType::NAME_LITERAL) {
-    return pkb->getIfStmtForVar(varParam.value);
+    return pkb->getStmtsForVar(RelationshipType::PTT_IF, varParam.value);
   } else if (varParam.type == ParamType::WILDCARD) {
     return pkb->getAllStmts(DesignEntity::IF);
   } else {
@@ -68,7 +77,8 @@ unordered_set<int> PatternEvaluator::evaluateIfPattern(const Param& varParam) {
 vector<vector<int>> PatternEvaluator::evaluateIfPairPattern(
     const Param& varParam) {
   if (varParam.type == ParamType::SYNONYM) {
-    return pkb->getIfStmtVarPairs();
+    auto results = pkb->getVarMappings(RelationshipType::PTT_IF);
+    return vector<vector<int>>(results.begin(), results.end());
   } else {
     DMOprintErrMsgAndExit(
         "[PatternEvaluator][evaluateIfPairPattern] invalid varParam type");
@@ -79,7 +89,7 @@ vector<vector<int>> PatternEvaluator::evaluateIfPairPattern(
 unordered_set<int> PatternEvaluator::evaluateWhilePattern(
     const Param& varParam) {
   if (varParam.type == ParamType::NAME_LITERAL) {
-    return pkb->getWhileStmtForVar(varParam.value);
+    return pkb->getStmtsForVar(RelationshipType::PTT_WHILE, varParam.value);
   } else if (varParam.type == ParamType::WILDCARD) {
     return pkb->getAllStmts(DesignEntity::WHILE);
   } else {
@@ -92,7 +102,8 @@ unordered_set<int> PatternEvaluator::evaluateWhilePattern(
 vector<vector<int>> PatternEvaluator::evaluateWhilePairPattern(
     const Param& varParam) {
   if (varParam.type == ParamType::SYNONYM) {
-    return pkb->getWhileStmtVarPairs();
+    auto results = pkb->getVarMappings(RelationshipType::PTT_WHILE);
+    return vector<vector<int>>(results.begin(), results.end());
   } else {
     DMOprintErrMsgAndExit(
         "[PatternEvaluator][evaluateWhilePairPattern] invalid varParam type");

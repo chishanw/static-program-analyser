@@ -31,25 +31,25 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
 
   // Check if set is correct
   REQUIRE(db.getAllStmts(DesignEntity::STATEMENT) ==
-          UNO_SET_OF_STMT_NO({1, 2, 3, 4, 5, 6}));
-  REQUIRE(db.getAllStmts(DesignEntity::READ) == UNO_SET_OF_STMT_NO({1}));
-  REQUIRE(db.getAllStmts(DesignEntity::PRINT) == UNO_SET_OF_STMT_NO({2}));
-  REQUIRE(db.getAllCallStmts() == UNO_SET_OF_STMT_NO({3}));
-  REQUIRE(db.getAllStmts(DesignEntity::WHILE) == UNO_SET_OF_STMT_NO({4}));
-  REQUIRE(db.getAllStmts(DesignEntity::IF) == UNO_SET_OF_STMT_NO({5}));
-  REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == UNO_SET_OF_STMT_NO({6}));
+          SetOfStmts({1, 2, 3, 4, 5, 6}));
+  REQUIRE(db.getAllStmts(DesignEntity::READ) == SetOfStmts({1}));
+  REQUIRE(db.getAllStmts(DesignEntity::PRINT) == SetOfStmts({2}));
+  REQUIRE(db.getAllCallStmts() == SetOfStmts({3}));
+  REQUIRE(db.getAllStmts(DesignEntity::WHILE) == SetOfStmts({4}));
+  REQUIRE(db.getAllStmts(DesignEntity::IF) == SetOfStmts({5}));
+  REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({6}));
 }
 
 TEST_CASE("GET_ALL_STATEMENTS_EMPTY_TEST") {
   // Init
   PKB db = PKB();
-  REQUIRE(db.getAllStmts(DesignEntity::STATEMENT) == UNO_SET_OF_STMT_NO({}));
-  REQUIRE(db.getAllStmts(DesignEntity::READ) == UNO_SET_OF_STMT_NO({}));
-  REQUIRE(db.getAllStmts(DesignEntity::PRINT) == UNO_SET_OF_STMT_NO({}));
-  REQUIRE(db.getAllCallStmts() == UNO_SET_OF_STMT_NO({}));
-  REQUIRE(db.getAllStmts(DesignEntity::WHILE) == UNO_SET_OF_STMT_NO({}));
-  REQUIRE(db.getAllStmts(DesignEntity::IF) == UNO_SET_OF_STMT_NO({}));
-  REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == UNO_SET_OF_STMT_NO({}));
+  REQUIRE(db.getAllStmts(DesignEntity::STATEMENT) == SetOfStmts({}));
+  REQUIRE(db.getAllStmts(DesignEntity::READ) == SetOfStmts({}));
+  REQUIRE(db.getAllStmts(DesignEntity::PRINT) == SetOfStmts({}));
+  REQUIRE(db.getAllCallStmts() == SetOfStmts({}));
+  REQUIRE(db.getAllStmts(DesignEntity::WHILE) == SetOfStmts({}));
+  REQUIRE(db.getAllStmts(DesignEntity::IF) == SetOfStmts({}));
+  REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({}));
 }
 
 TEST_CASE("PKB_CONSTANTS_TEST") {

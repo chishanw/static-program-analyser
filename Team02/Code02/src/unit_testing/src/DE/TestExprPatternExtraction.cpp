@@ -61,91 +61,118 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
     // ===============
     // full expr
     // ===============
-    REQUIRE(pkb->getAssignForVarAndFullExpr("x", "[2]") ==
-            UNO_SET_OF_STMT_NO{1});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[3]") ==
-            UNO_SET_OF_STMT_NO{2});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("i", "[5]") ==
-            UNO_SET_OF_STMT_NO{3});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("x", "[[x]-[1]]") ==
-            UNO_SET_OF_STMT_NO{5});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[[x]+[1]]") ==
-            UNO_SET_OF_STMT_NO{7, 23});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("y", "[[z]+[x]]") ==
-            UNO_SET_OF_STMT_NO{8});
-    REQUIRE(pkb->getAssignForVarAndFullExpr("z", "[[[z]+[x]]+[i]]") ==
-            UNO_SET_OF_STMT_NO{9, 21});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "x", "[2]") == SetOfStmts{1});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "z", "[3]") == SetOfStmts{2});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "i", "[5]") == SetOfStmts{3});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "x", "[[x]-[1]]") == SetOfStmts{5});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "z", "[[x]+[1]]") == SetOfStmts{7, 23});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "y", "[[z]+[x]]") == SetOfStmts{8});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "z",
+                                       "[[[z]+[x]]+[i]]") == SetOfStmts{9, 21});
 
-    REQUIRE(pkb->getAssignForFullExpr("[2]") == UNO_SET_OF_STMT_NO{1});
-    REQUIRE(pkb->getAssignForFullExpr("[3]") == UNO_SET_OF_STMT_NO{2});
-    REQUIRE(pkb->getAssignForFullExpr("[5]") == UNO_SET_OF_STMT_NO{3});
-    REQUIRE(pkb->getAssignForFullExpr("[[x]-[1]]") == UNO_SET_OF_STMT_NO{5});
-    REQUIRE(pkb->getAssignForFullExpr("[[x]+[1]]") ==
-            UNO_SET_OF_STMT_NO{7, 18, 23});
-    REQUIRE(pkb->getAssignForFullExpr("[[z]+[x]]") ==
-            UNO_SET_OF_STMT_NO{8, 24});
-    REQUIRE(pkb->getAssignForFullExpr("[[[z]+[x]]+[i]]") ==
-            UNO_SET_OF_STMT_NO{9, 21});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[2]") == SetOfStmts{1});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[3]") == SetOfStmts{2});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[5]") == SetOfStmts{3});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[[x]-[1]]") == SetOfStmts{5});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[[x]+[1]]") == SetOfStmts{7, 18, 23});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[[z]+[x]]") == SetOfStmts{8, 24});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                 "[[[z]+[x]]+[i]]") == SetOfStmts{9, 21});
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[2]"),
-                 VectorContains(vector<int>{1, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[3]"),
-                 VectorContains(vector<int>{2, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[5]"),
-                 VectorContains(vector<int>{3, iIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]-[1]]"),
-                 VectorContains(vector<int>{5, xIdx}));
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[2]")
+                .count(vector<int>{1, xIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[3]")
+                .count(vector<int>{2, zIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[5]")
+                .count(vector<int>{3, iIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[x]-[1]]")
+                .count(vector<int>{5, xIdx}) != 0);
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]+[1]]"),
-                 VectorContains(vector<int>{7, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]+[1]]"),
-                 VectorContains(vector<int>{18, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[x]+[1]]"),
-                 VectorContains(vector<int>{23, zIdx}));
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[x]+[1]]")
+                .count(vector<int>{7, zIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[x]+[1]]")
+                .count(vector<int>{18, xIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[x]+[1]]")
+                .count(vector<int>{23, zIdx}) != 0);
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[z]+[x]]"),
-                 VectorContains(vector<int>{8, yIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[z]+[x]]"),
-                 VectorContains(vector<int>{24, xIdx}));
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[z]+[x]]")
+                .count(vector<int>{8, yIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[z]+[x]]")
+                .count(vector<int>{24, xIdx}) != 0);
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[[z]+[x]]+[i]]"),
-                 VectorContains(vector<int>{9, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForFullExpr("[[[z]+[x]]+[i]]"),
-                 VectorContains(vector<int>{21, zIdx}));
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[[z]+[x]]+[i]]")
+                .count(vector<int>{9, zIdx}) != 0);
+    REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+                                       "[[[z]+[x]]+[i]]")
+                .count(vector<int>{21, zIdx}) != 0);
 
     // ===============
     // sub expr
     // ===============
 
-    REQUIRE(pkb->getAssignForVarAndSubExpr("x", "[2]") ==
-            UNO_SET_OF_STMT_NO{1, 15});
+    REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR,
+                                       "x", "[2]") == SetOfStmts{1, 15});
 
-    REQUIRE(pkb->getAssignForSubExpr("[2]") == UNO_SET_OF_STMT_NO{1, 15});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR,
+                                 "[2]") == SetOfStmts{1, 15});
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[2]"),
-                 VectorContains(vector<int>{1, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[2]"),
-                 VectorContains(vector<int>{15, xIdx}));
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[2]")
+            .count(vector<int>{1, xIdx}) != 0);
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[2]")
+            .count(vector<int>{15, xIdx}) != 0);
 
-    REQUIRE(pkb->getAssignForSubExpr("[x]") ==
-            UNO_SET_OF_STMT_NO{5, 7, 8, 9, 18, 19, 21, 23, 24});
-    REQUIRE(pkb->getAssignForSubExpr("[1]") ==
-            UNO_SET_OF_STMT_NO{5, 7, 11, 17, 18, 20, 23});
-    REQUIRE(pkb->getAssignForSubExpr("[z]") ==
-            UNO_SET_OF_STMT_NO{8, 9, 15, 19, 21, 24});
+    REQUIRE(
+        pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[x]") ==
+        SetOfStmts{5, 7, 8, 9, 18, 19, 21, 23, 24});
+    REQUIRE(
+        pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[1]") ==
+        SetOfStmts{5, 7, 11, 17, 18, 20, 23});
+    REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR,
+                                 "[z]") == SetOfStmts{8, 9, 15, 19, 21, 24});
 
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
-                 VectorContains(vector<int>{8, yIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
-                 VectorContains(vector<int>{9, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
-                 VectorContains(vector<int>{15, xIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
-                 VectorContains(vector<int>{19, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
-                 VectorContains(vector<int>{21, zIdx}));
-    REQUIRE_THAT(pkb->getAssignVarPairsForSubExpr("[z]"),
-                 VectorContains(vector<int>{24, xIdx}));
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[z]")
+            .count(vector<int>{8, yIdx}) != 0);
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[z]")
+            .count(vector<int>{9, zIdx}) != 0);
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[z]")
+            .count(vector<int>{15, xIdx}) != 0);
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[z]")
+            .count(vector<int>{19, zIdx}) != 0);
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[z]")
+            .count(vector<int>{21, zIdx}) != 0);
+    REQUIRE(
+        pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[z]")
+            .count(vector<int>{24, xIdx}) != 0);
   }
 }
 
@@ -165,15 +192,32 @@ TEST_CASE("[DE][Expr Pattern] expr as a factor") {
   string s1234 = string("[") + "[1]" + "+" + s234 + "]";
   string s12345 = string("[") + s1234 + "+" + "[5]" + "]";
 
-  REQUIRE(pkb->getAssignVarPairsForSubExpr("[1]").size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr("[2]").size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr("[3]").size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr("[4]").size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr("[5]").size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr(s23).size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr(s234).size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr(s1234).size() != 0);
-  REQUIRE(pkb->getAssignVarPairsForSubExpr(s12345).size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[1]")
+          .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[2]")
+          .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[3]")
+          .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[4]")
+          .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[5]")
+          .size() != 0);
+  REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, s23)
+              .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, s234)
+          .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, s1234)
+          .size() != 0);
+  REQUIRE(
+      pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, s12345)
+          .size() != 0);
 }
 
 TEST_CASE("[ExprParser] compare ASTs of diff expr with same AST") {

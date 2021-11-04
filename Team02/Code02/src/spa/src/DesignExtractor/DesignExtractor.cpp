@@ -158,7 +158,8 @@ DesignExtractor::ExtractUsesHelper(
 
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
       for (auto varName : ifStmt->CondExpr->GetAllVarNames()) {
-        pkb->addIfPtt(ifStmt->StmtNo, varName);  // for if pattern
+        pkb->addPatternRs(RelationshipType::PTT_IF, ifStmt->StmtNo,
+                          varName);  // for if pattern
         result.insert(make_pair(ifStmt->StmtNo, varName));
       }
 
@@ -172,7 +173,8 @@ DesignExtractor::ExtractUsesHelper(
 
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
       for (auto varName : whileStmt->CondExpr->GetAllVarNames()) {
-        pkb->addWhilePtt(whileStmt->StmtNo, varName);  // for while pattern
+        pkb->addPatternRs(RelationshipType::PTT_WHILE, whileStmt->StmtNo,
+                          varName);  // for while pattern
         result.insert(make_pair(whileStmt->StmtNo, varName));
       }
 
@@ -437,10 +439,12 @@ void DesignExtractor::ExtractExprPatternsHelper(vector<StmtAST*> stmtList) {
       string varName = assignStmt->VarName;
 
       string fullExpr = assignStmt->Expr->GetFullExprPatternStr();
-      pkb->addAssignPttFullExpr(stmt->StmtNo, varName, fullExpr);
+      pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, stmt->StmtNo,
+                        varName, fullExpr);
 
       for (string subExpr : expr->GetSubExprPatternStrs()) {
-        pkb->addAssignPttSubExpr(stmt->StmtNo, varName, subExpr);
+        pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, stmt->StmtNo,
+                          varName, subExpr);
       }
 
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {

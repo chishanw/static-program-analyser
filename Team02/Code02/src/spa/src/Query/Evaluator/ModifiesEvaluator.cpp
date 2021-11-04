@@ -35,7 +35,7 @@ bool ModifiesEvaluator::evaluateBoolModifiesS(const Param& left,
 }
 
 // synonym & literal
-UNO_SET_OF_STMT_NO ModifiesEvaluator::evaluateModifiesS(const Param& left,
+SetOfStmts ModifiesEvaluator::evaluateModifiesS(const Param& left,
                                                         const Param& right) {
   // if one literal + synonym - ModifiesS(s, "x"), ModifiesS(1, v)
   ParamType leftType = left.type;
@@ -89,7 +89,7 @@ bool ModifiesEvaluator::evaluateBoolModifiesP(const Param& left,
               .empty();
 }
 
-UNO_SET_OF_STMT_NO ModifiesEvaluator::evaluateModifiesP(const Param& left,
+SetOfStmts ModifiesEvaluator::evaluateModifiesP(const Param& left,
                                                         const Param& right) {
   ParamType leftType = left.type;
 

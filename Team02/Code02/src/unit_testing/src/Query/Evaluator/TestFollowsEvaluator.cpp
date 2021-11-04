@@ -39,8 +39,8 @@ TEST_CASE("FollowsEvaluator: Follows") {
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
-    UNO_SET_OF_STMT_NO result = fe.evaluateStmtFollows(left, right);
-    REQUIRE(result == UNO_SET_OF_STMT_NO({2}));
+    SetOfStmts result = fe.evaluateStmtFollows(left, right);
+    REQUIRE(result == SetOfStmts({2}));
   }
 }
 
@@ -77,7 +77,7 @@ TEST_CASE("FollowsEvaluator: FollowsT") {
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
-    UNO_SET_OF_STMT_NO result = fe.evaluateStmtFollowsT(left, right);
-    REQUIRE(result == UNO_SET_OF_STMT_NO({2, 3}));
+    SetOfStmts result = fe.evaluateStmtFollowsT(left, right);
+    REQUIRE(result == SetOfStmts({2, 3}));
   }
 }

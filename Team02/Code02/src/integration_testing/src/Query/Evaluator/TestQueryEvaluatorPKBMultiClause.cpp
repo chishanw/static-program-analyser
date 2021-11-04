@@ -23,8 +23,8 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::PARENT, 2, 3);
   pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
-  pkb->addAssignPttFullExpr(3, "x", "w");
-  pkb->addAssignPttFullExpr(4, "y", "1");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 3, "x", "w");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 4, "y", "1");
   pkb->addRs(RelationshipType::USES_S, 3, TableType::VAR_TABLE, "w");
 
   int xVarIdx = 0;
@@ -823,10 +823,10 @@ TEST_CASE("QueryEvaluator: Multiple Pattern Clauses") {
   pkb->addStmt(DesignEntity::ASSIGN, 2);
   pkb->addStmt(DesignEntity::IF, 3);
   pkb->addStmt(DesignEntity::WHILE, 4);
-  pkb->addAssignPttFullExpr(1, "x", "y");
-  pkb->addAssignPttFullExpr(2, "x", "z");
-  pkb->addIfPtt(3, "y");
-  pkb->addWhilePtt(4, "x");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "x", "y");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 2, "x", "z");
+  pkb->addPatternRs(RelationshipType::PTT_IF, 3, "y");
+  pkb->addPatternRs(RelationshipType::PTT_WHILE, 4, "x");
   QueryEvaluator qe(pkb);
 
   int xVarIdx = 0;

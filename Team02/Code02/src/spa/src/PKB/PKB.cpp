@@ -107,6 +107,18 @@ bool PKB::isRs(RelationshipType rs, TableType leftType, string left,
   return isRs(rs, leftIndex, rightIndex);
 }
 
+unordered_set<int> getValue(TablesRs* tables, RelationshipType rs, int key) {
+  if ((*tables).count(rs) == 0) {
+    return unordered_set<int>({});
+  }
+
+  if ((*tables)[rs].count(key) == 0) {
+    return unordered_set<int>({});
+  }
+
+  return (*tables)[rs][key];
+}
+
 unordered_set<int> PKB::getRight(RelationshipType rs, int left) {
   if (tablesRs.count(rs) == 0) {
     return SetOfStmts();
@@ -149,59 +161,91 @@ SetOfStmtLists PKB::getMappings(RelationshipType rs, ParamPosition param) {
   return mappingsRs.at(rs).at(param);
 }
 
-// Pattern API
-void PKB::addAssignPttFullExpr(StmtNo s, string var, string expr) {
-  patternKB.addAssignPttFullExpr(s, var, expr);
-}
-void PKB::addAssignPttSubExpr(StmtNo s, string var, string expr) {
-  patternKB.addAssignPttSubExpr(s, var, expr);
-}
-unordered_set<int> PKB::getAssignForFullExpr(string expr) {
-  return patternKB.getAssignForFullExpr(expr);
-}
-unordered_set<int> PKB::getAssignForSubExpr(string expr) {
-  return patternKB.getAssignForSubExpr(expr);
-}
-unordered_set<int> PKB::getAssignForVarAndFullExpr(string varName,
-                                                   string expr) {
-  return patternKB.getAssignForVarAndFullExpr(varName, expr);
-}
-unordered_set<int> PKB::getAssignForVarAndSubExpr(string varName,
-                                                  string subExpr) {
-  return patternKB.getAssignForVarAndSubExpr(varName, subExpr);
-}
-vector<vector<int>> PKB::getAssignVarPairsForFullExpr(string expr) {
-  return patternKB.getAssignVarPairsForFullExpr(expr);
-}
-vector<vector<int>> PKB::getAssignVarPairsForSubExpr(string subExpr) {
-  return patternKB.getAssignVarPairsForSubExpr(subExpr);
-}
-unordered_set<int> PKB::getAssignForVar(string varName) {
-  return patternKB.getAssignForVar(varName);
-}
-vector<vector<int>> PKB::getAssignVarPairs() {
-  return patternKB.getAssignVarPairs();
-}
-void PKB::addIfPtt(StmtNo s, string varName) { patternKB.addIfPtt(s, varName); }
-
-void PKB::addWhilePtt(StmtNo s, string varName) {
-  patternKB.addWhilePtt(s, varName);
+// New Pattern API
+void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName) {
+  int varIndex = insertAt(TableType::VAR_TABLE, varName);
+  insertToTableRs(&tablesRs, rs, varIndex, stmtNo);
+  insertToMappings(&mappingsRs, rs, stmtNo, varIndex);
 }
 
-unordered_set<int> PKB::getIfStmtForVar(string varName) {
-  return patternKB.getIfStmtForVar(varName);
+void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName,
+                       string expr) {
+  addPatternRs(rs, stmtNo, varName);
+
+  int exprIndex = insertAt(TableType::EXPR_TABLE, expr);
+  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
+
+  insertToTableRs(&tablesExpr, rs, exprIndex, stmtNo);
+
+  // Insert to Special Mappings Table
+  if (mappingsForExpr.count(rs) == 0) {
+    // insert new map
+    unordered_map<int, SetOfIntLists> newMap({});
+    mappingsForExpr.insert({rs, newMap});
+  }
+
+  if (mappingsForExpr[rs].count(exprIndex) == 0) {
+    SetOfIntLists newSet({});
+    mappingsForExpr[rs].insert({exprIndex, newSet});
+  }
+
+  ListOfInts newList({stmtNo, varIndex});
+  mappingsForExpr[rs][exprIndex].insert(newList);
+
+  // Insert to Special Expr and Var Table
+  if (tablesPttRs.count(rs) == 0) {
+    // insert new map
+    unordered_map<pair<ExprIdx, VarIdx>, SetOfStmts, PairHash> newMap({});
+    tablesPttRs.insert({rs, newMap});
+  }
+  pair newPair(varIndex, exprIndex);
+  if (tablesPttRs[rs].count(newPair) == 0) {
+    SetOfStmts newSet({});
+    tablesPttRs[rs].insert({newPair, newSet});
+  }
+  tablesPttRs[rs][newPair].insert(stmtNo);
 }
 
-vector<vector<int>> PKB::getIfStmtVarPairs() {
-  return patternKB.getIfStmtVarPairs();
+SetOfStmts PKB::getStmtsForVarAndExpr(RelationshipType rs, string varName,
+                                      string expr) {
+  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
+  int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
+  if (tablesPttRs.count(rs) == 0) {
+    return SetOfStmts({});
+  }
+
+  pair newPair(varIndex, exprIndex);
+  if (tablesPttRs[rs].count(newPair) == 0) {
+    return SetOfStmts({});
+  }
+
+  return tablesPttRs[rs][newPair];
 }
 
-unordered_set<int> PKB::getWhileStmtForVar(string varName) {
-  return patternKB.getWhileStmtForVar(varName);
+SetOfStmts PKB::getStmtsForVar(RelationshipType rs, string varName) {
+  return getRight(rs, TableType::VAR_TABLE, varName);
 }
 
-vector<vector<int>> PKB::getWhileStmtVarPairs() {
-  return patternKB.getWhileStmtVarPairs();
+SetOfStmts PKB::getStmtsForExpr(RelationshipType rs, std::string expr) {
+  int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
+  return getValue(&tablesExpr, rs, exprIndex);
+}
+
+SetOfStmtLists PKB::getVarMappings(RelationshipType rs) {
+  return getMappings(rs, ParamPosition::BOTH);
+}
+
+SetOfStmtLists PKB::getVarMappingsForExpr(RelationshipType rs, string expr) {
+  int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
+  if (mappingsForExpr.count(rs) == 0) {
+    return SetOfStmtLists({});
+  }
+
+  if (mappingsForExpr[rs].count(exprIndex) == 0) {
+    return SetOfStmtLists({});
+  }
+
+  return mappingsForExpr[rs][exprIndex];
 }
 
 // Calls API

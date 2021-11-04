@@ -58,17 +58,17 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
   SECTION("Different type of statements") {
     REQUIRE(
         pkb->getAllStmts(DesignEntity::STATEMENT) ==
-        UNO_SET_OF_STMT_NO({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
+        SetOfStmts({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
                             13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::READ) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == UNO_SET_OF_STMT_NO({}));
-    REQUIRE(pkb->getAllCallStmts() == UNO_SET_OF_STMT_NO({10, 12, 16}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::READ) == SetOfStmts({}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == SetOfStmts({}));
+    REQUIRE(pkb->getAllCallStmts() == SetOfStmts({10, 12, 16}));
     REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) ==
-            UNO_SET_OF_STMT_NO({4, 14}));
+            SetOfStmts({4, 14}));
     REQUIRE(pkb->getAllStmts(DesignEntity::IF) ==
-            UNO_SET_OF_STMT_NO({6, 13, 22}));
+            SetOfStmts({6, 13, 22}));
     REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) ==
-            UNO_SET_OF_STMT_NO(
+            SetOfStmts(
                 {1, 2, 3, 5, 7, 8, 9, 11, 15, 17, 18, 19, 20, 21, 23, 24}));
   }
 
@@ -78,7 +78,7 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
     int qIdx = pkb->getIndexOf(TableType::PROC_TABLE, "q");
 
     REQUIRE(pkb->getAllElementsAt(TableType::PROC_TABLE) ==
-            UNO_SET_OF_STMT_NO{exampleIdx, pIdx, qIdx});
+            SetOfStmts{exampleIdx, pIdx, qIdx});
   }
 
   SECTION("Consts") {
@@ -89,7 +89,7 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
     int c5idx = pkb->getIndexOf(TableType::CONST_TABLE, "5");
 
     REQUIRE(pkb->getAllElementsAt(TableType::CONST_TABLE) ==
-            UNO_SET_OF_STMT_NO{c0idx, c1idx, c2idx, c3idx, c5idx});
+            SetOfStmts{c0idx, c1idx, c2idx, c3idx, c5idx});
   }
 
   SECTION("Variables") {
@@ -162,7 +162,7 @@ TEST_CASE("[DE][GetAllVarNames & GetAllConsts] complex cond expr") {
   int c18idx = pkb->getIndexOf(TableType::CONST_TABLE, "18");
 
   REQUIRE(pkb->getAllElementsAt(TableType::VAR_TABLE) ==
-          unordered_set<VAR_IDX>{aIdx, bIdx, cIdx, dIdx, eIdx, fIdx, gIdx, hIdx,
+          unordered_set<VarIdx>{aIdx, bIdx, cIdx, dIdx, eIdx, fIdx, gIdx, hIdx,
                                  iIdx, jIdx, kIdx, lIdx, mIdx, nIdx, oIdx, pIdx,
                                  qIdx});
 

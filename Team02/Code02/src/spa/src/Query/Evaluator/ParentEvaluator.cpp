@@ -38,7 +38,7 @@ bool ParentEvaluator::evaluateBoolParent(const Param& left,
 }
 
 // synonym & literal
-UNO_SET_OF_STMT_NO ParentEvaluator::evaluateStmtParent(const Param& left,
+SetOfStmts ParentEvaluator::evaluateStmtParent(const Param& left,
                                                        const Param& right) {
   // if one literal + synonym - Parent(s, 2), Parent(1, s)
   ParamType leftType = left.type;
@@ -85,18 +85,18 @@ bool ParentEvaluator::evaluateBoolParentT(const Param& left,
   }
 
   if (leftType == ParamType::WILDCARD) {
-    UNO_SET_OF_STMT_NO listOfStmts =
+    SetOfStmts listOfStmts =
         pkb->getLeft(RelationshipType::PARENT_T, stoi(right.value));
     return !listOfStmts.empty();
   }
 
-  UNO_SET_OF_STMT_NO listOfStmts =
+  SetOfStmts listOfStmts =
       pkb->getRight(RelationshipType::PARENT_T, stoi(left.value));
   return !listOfStmts.empty();
 }
 
 // synonym & literal
-UNO_SET_OF_STMT_NO ParentEvaluator::evaluateStmtParentT(const Param& left,
+SetOfStmts ParentEvaluator::evaluateStmtParentT(const Param& left,
                                                         const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;

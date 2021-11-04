@@ -39,8 +39,8 @@ TEST_CASE("ParentEvaluator: Parent") {
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
-    UNO_SET_OF_STMT_NO result = pe.evaluateStmtParent(left, right);
-    REQUIRE(result == UNO_SET_OF_STMT_NO({2, 3}));
+    SetOfStmts result = pe.evaluateStmtParent(left, right);
+    REQUIRE(result == SetOfStmts({2, 3}));
   }
 
   SECTION("Evaluates both wildcards - Parent(_, _)") {
@@ -85,8 +85,8 @@ TEST_CASE("ParentEvaluator: ParentT") {
 
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s"};
-    UNO_SET_OF_STMT_NO result = pe.evaluateStmtParentT(left, right);
-    REQUIRE(result == UNO_SET_OF_STMT_NO({2, 3}));
+    SetOfStmts result = pe.evaluateStmtParentT(left, right);
+    REQUIRE(result == SetOfStmts({2, 3}));
   }
 
   SECTION("Evaluates both wildcards - ParentT(_, _)") {

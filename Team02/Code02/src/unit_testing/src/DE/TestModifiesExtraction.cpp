@@ -60,21 +60,21 @@ TEST_CASE("[DE][Modifies R/S] sample source") {
   SECTION("Modifies R/S") {
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
                          "x") ==
-            UNO_SET_OF_STMT_NO({1, 4, 5, 10, 12, 13, 15, 16, 17, 19, 23, 26}));
+            SetOfStmts({1, 4, 5, 10, 12, 13, 15, 16, 17, 19, 23, 26}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
                          "i") ==
-            UNO_SET_OF_STMT_NO({3, 4, 11, 12, 13, 15, 18}));
+            SetOfStmts({3, 4, 11, 12, 13, 15, 18}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
                          "z") ==
-            UNO_SET_OF_STMT_NO(
+            SetOfStmts(
                 {2, 4, 6, 7, 9, 10, 12, 13, 15, 17, 20, 21, 22, 23, 24}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
-                         "y") == UNO_SET_OF_STMT_NO({4, 6, 8}));
+                         "y") == SetOfStmts({4, 6, 8}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
-                         "a") == UNO_SET_OF_STMT_NO({12, 13, 14}));
+                         "a") == SetOfStmts({12, 13, 14}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
                          "b") ==
-            UNO_SET_OF_STMT_NO({4, 10, 12, 13, 15, 17, 23, 25}));
+            SetOfStmts({4, 10, 12, 13, 15, 17, 23, 25}));
 
     REQUIRE(pkb->isRs(RelationshipType::MODIFIES_P, TableType::PROC_TABLE, "q",
                       TableType::VAR_TABLE, "z"));

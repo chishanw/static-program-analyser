@@ -26,8 +26,8 @@ class NextEvaluator {
 
  private:
   PKB* pkb;
-  std::unordered_map<STMT_NO, UNO_SET_OF_STMT_NO> nextTCache;
-  std::unordered_map<STMT_NO, UNO_SET_OF_STMT_NO> reverseNextTCache;
+  std::unordered_map<STMT_NO, SetOfStmts> nextTCache;
+  std::unordered_map<STMT_NO, SetOfStmts> reverseNextTCache;
   bool getIsNextT(int startStmt, int endStmt);
   std::unordered_set<int> getNextTStmts(int startStmt);
   std::unordered_set<int> getPrevTStmts(int endStmt);

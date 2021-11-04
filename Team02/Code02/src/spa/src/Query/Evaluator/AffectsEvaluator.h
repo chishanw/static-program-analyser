@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <vector>
 
-typedef std::unordered_map<VAR_IDX, std::unordered_set<STMT_NO>>
+typedef std::unordered_map<VarIdx, std::unordered_set<STMT_NO>>
     LastModifiedTable;
 enum class BoolParamCombo {
   LITERALS,

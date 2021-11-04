@@ -11,11 +11,11 @@
 #include "AffectsInfoKB.h"
 #include "CallsKB.h"
 #include "Common/Common.h"
-#include "PatternKB.h"
 #include "Table.h"
 
 typedef std::unordered_map<RelationshipType, std::unordered_map<int, SetOfInts>>
     TablesRs;
+
 typedef std::unordered_map<RelationshipType,
                            std::unordered_map<ParamPosition, SetOfStmtLists>>
     MappingsRs;
@@ -31,7 +31,7 @@ class PKB {
   int getNumStmts(DesignEntity de);
 
   SetOfStmts getAllCallStmts();
-
+  // TODO(Merlin): Refractor More.
   void addRs(RelationshipType rs, int left, int right);
   void addRs(RelationshipType rs, int left, TableType rightType,
              std::string right);
@@ -54,27 +54,15 @@ class PKB {
 
   SetOfStmtLists getMappings(RelationshipType rs, ParamPosition param);
 
-  // Pattern API
-  void addAssignPttFullExpr(StmtNo s, std::string var, std::string expr);
-  void addAssignPttSubExpr(StmtNo s, std::string var, std::string expr);
-  std::unordered_set<int> getAssignForFullExpr(std::string expr);
-  std::unordered_set<int> getAssignForSubExpr(std::string expr);
-  std::unordered_set<int> getAssignForVarAndFullExpr(std::string varName,
-                                                     std::string subExpr);
-  std::unordered_set<int> getAssignForVarAndSubExpr(std::string varName,
-                                                    std::string expr);
-
-  std::vector<std::vector<int>> getAssignVarPairsForFullExpr(std::string expr);
-  std::vector<std::vector<int>> getAssignVarPairsForSubExpr(
-      std::string subExpr);
-  std::unordered_set<int> getAssignForVar(std::string varName);
-  std::vector<std::vector<int>> getAssignVarPairs();
-  void addIfPtt(StmtNo s, std::string varName);
-  std::unordered_set<int> getIfStmtForVar(std::string varName);
-  std::vector<std::vector<int>> getIfStmtVarPairs();
-  void addWhilePtt(StmtNo s, std::string varName);
-  std::unordered_set<int> getWhileStmtForVar(std::string varName);
-  std::vector<std::vector<int>> getWhileStmtVarPairs();
+  void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName,
+                    std::string expr);
+  void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName);
+  SetOfStmts getStmtsForVarAndExpr(RelationshipType rs, std::string varName,
+                                   std::string expr);
+  SetOfStmts getStmtsForVar(RelationshipType rs, std::string varName);
+  SetOfStmts getStmtsForExpr(RelationshipType type, std::string expr);
+  SetOfStmtLists getVarMappingsForExpr(RelationshipType rs, std::string expr);
+  SetOfStmtLists getVarMappings(RelationshipType rs);
 
   // Calls API
   void addCalls(StmtNo s, PROC_NAME caller, PROC_NAME callee);
@@ -106,15 +94,23 @@ class PKB {
 
  private:
   // Members
-  TablesRs tablesRs, invTablesRs;
+  TablesRs tablesRs, invTablesRs, tablesExpr;
+  std::unordered_map<RelationshipType, std::unordered_map<int, SetOfStmtLists>>
+      mappingsForExpr;
+
+  std::unordered_map<
+      RelationshipType,
+      std::unordered_map<std::pair<ExprIdx, VarIdx>, SetOfStmts, PairHash>>
+      tablesPttRs;
+
   MappingsRs mappingsRs;
   TableOfStmts tableOfStmts;
   Tables tables = {{TableType::VAR_TABLE, Table()},
                    {TableType::CONST_TABLE, Table()},
-                   {TableType::PROC_TABLE, Table()}};
+                   {TableType::PROC_TABLE, Table()},
+                   {TableType::EXPR_TABLE, Table()}};
 
   // Design Abstractions
-  PatternKB patternKB = PatternKB(&tables.at(TableType::VAR_TABLE));
   CallsKB callsKB = CallsKB(&tables.at(TableType::PROC_TABLE));
   AffectsInfoKB affectsInfoKB =
       AffectsInfoKB(&tables.at(TableType::PROC_TABLE));

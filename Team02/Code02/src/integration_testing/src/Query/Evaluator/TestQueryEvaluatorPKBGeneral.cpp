@@ -122,8 +122,8 @@ TEST_CASE("QueryEvaluator: Different design entities") {
   pkb->addStmt(DesignEntity::IF, 5);
   pkb->addStmt(DesignEntity::ASSIGN, 6);
   pkb->addStmt(DesignEntity::ASSIGN, 7);
-  pkb->addAssignPttFullExpr(6, "x", "1");
-  pkb->addAssignPttSubExpr(6, "x", "1");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 6, "x", "1");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 6, "x", "1");
   pkb->addRs(RelationshipType::PARENT, 4, 5);
   QueryEvaluator qe(pkb);
 
@@ -698,7 +698,7 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
   pkb->addRs(RelationshipType::FOLLOWS_T, 1, 3);
   pkb->addRs(RelationshipType::FOLLOWS_T, 2, 3);
 
-  pkb->addAssignPttFullExpr(3, "x", "x * 2");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 3, "x", "x * 2");
   pkb->addRs(RelationshipType::MODIFIES_S, 3, TableType::VAR_TABLE, "x");
   QueryEvaluator qe(pkb);
 

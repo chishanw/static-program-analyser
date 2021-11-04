@@ -100,21 +100,21 @@ TEST_CASE("[DE][Uses R/S] sample source") {
 
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
                          "x") ==
-            UNO_SET_OF_STMT_NO({4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 18, 19,
+            SetOfStmts({4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 18, 19,
                                 21, 22, 23, 24}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
                          "i") ==
-            UNO_SET_OF_STMT_NO({4, 9, 11, 12, 13, 14, 17, 21}));
+            SetOfStmts({4, 9, 11, 12, 13, 14, 17, 21}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "z") == UNO_SET_OF_STMT_NO({4, 6, 8, 9, 10, 12, 13, 14,
+                         "z") == SetOfStmts({4, 6, 8, 9, 10, 12, 13, 14,
                                                      15, 16, 19, 21, 22, 24}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "y") == UNO_SET_OF_STMT_NO({12, 13, 14, 15}));
+                         "y") == SetOfStmts({12, 13, 14, 15}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "a") == UNO_SET_OF_STMT_NO({12, 13, 14, 15}));
+                         "a") == SetOfStmts({12, 13, 14, 15}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
                          "b") ==
-            UNO_SET_OF_STMT_NO({4, 10, 12, 13, 14, 16, 22, 23}));
+            SetOfStmts({4, 10, 12, 13, 14, 16, 22, 23}));
 
     rs = RelationshipType::USES_P;
     REQUIRE(pkb->isRs(rs, leftType, "q", rightType, "z"));

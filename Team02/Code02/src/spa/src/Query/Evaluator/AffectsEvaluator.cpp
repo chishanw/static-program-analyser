@@ -300,9 +300,9 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
 /* Helper Methods For Affects Extraction ---------------------------- */
 void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
                                          LastModifiedTable* LMT) {
-  unordered_set<VAR_IDX> usedVars =
+  unordered_set<VarIdx> usedVars =
       pkb->getRight(RelationshipType::USES_S, currStmt);
-  for (VAR_IDX usedVar : usedVars) {
+  for (VarIdx usedVar : usedVars) {
     if (LMT->find(usedVar) != LMT->end()) {
       unordered_set<STMT_NO> LMTStmts = LMT->at(usedVar);
       for (STMT_NO LMTStmt : LMTStmts) {
@@ -344,7 +344,7 @@ void AffectsEvaluator::processThenElseBlocks(
 
 void AffectsEvaluator::updateLastModifiedVariables(STMT_NO currStmt,
                                                    LastModifiedTable* LMT) {
-  unordered_set<VAR_IDX> modifiedVars =
+  unordered_set<VarIdx> modifiedVars =
       pkb->getRight(RelationshipType::MODIFIES_S, currStmt);
   for (auto modifiedVar : modifiedVars) {
     if (LMT->find(modifiedVar) == LMT->end()) {
@@ -395,7 +395,7 @@ bool AffectsEvaluator::shouldTerminateBoolEarly(BoolParamCombo paramCombo,
 LastModifiedTable AffectsEvaluator::mergeLMT(LastModifiedTable* firstLMT,
                                              LastModifiedTable* secondLMT) {
   LastModifiedTable finalLMT = {};
-  unordered_set<VAR_IDX> allVariables = {};
+  unordered_set<VarIdx> allVariables = {};
   for (auto varStmtSetPair : *firstLMT) {
     allVariables.insert(varStmtSetPair.first);
   }

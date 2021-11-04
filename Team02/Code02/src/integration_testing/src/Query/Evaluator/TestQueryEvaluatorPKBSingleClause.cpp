@@ -3897,14 +3897,14 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
   pkb->addStmt(DesignEntity::ASSIGN, 2);
   pkb->addStmt(DesignEntity::ASSIGN, 3);
 
-  pkb->addAssignPttFullExpr(1, "x", "w");
-  pkb->addAssignPttSubExpr(1, "x", "w");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "x", "w");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 1, "x", "w");
 
-  pkb->addAssignPttFullExpr(2, "y", "w");
-  pkb->addAssignPttSubExpr(2, "y", "w");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 2, "y", "w");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 2, "y", "w");
 
-  pkb->addAssignPttFullExpr(3, "z", "1");
-  pkb->addAssignPttSubExpr(3, "z", "1");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 3, "z", "1");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 3, "z", "1");
 
   int xVarIdx = 0;
   int yVarIdx = 1;
@@ -4014,7 +4014,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     SelectClause select = {{a}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
+    REQUIRE(SetOfStmtLists(results.begin(), results.end()) ==
+            SetOfStmtLists({{1}, {2}, {3}}));
   }
 
   SECTION("Select v pattern a (v, 'w')") {
@@ -4047,7 +4048,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     SelectClause select = {{v}, SelectType::SYNONYMS, conditionClauses};
     vector<vector<int>> results = qe.evaluateQuery(synonyms, select);
-    REQUIRE(results == vector<vector<int>>({{xVarIdx}, {yVarIdx}, {zVarIdx}}));
+    REQUIRE(SetOfStmtLists(results.begin(), results.end()) ==
+            SetOfStmtLists({{xVarIdx}, {yVarIdx}, {zVarIdx}}));
   }
 }
 
@@ -4062,7 +4064,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a ('x', 'w')") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttFullExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4077,7 +4079,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a ('x', _'w'_)") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttSubExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4092,7 +4094,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a ('x', _)") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttFullExpr(1, "y", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "y", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4107,7 +4109,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a (_, 'w')") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttFullExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4122,7 +4124,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a (_, _'w'_)") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttSubExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4150,7 +4152,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a (v, 'w')") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttFullExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4165,7 +4167,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select a pattern a (v, _'w'_)") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttSubExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4194,7 +4196,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select v pattern a (v, 'w')") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttFullExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4209,7 +4211,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select v pattern a (v, _'w'_)") {
     pkb->addStmt(DesignEntity::ASSIGN, 1);
-    pkb->addAssignPttSubExpr(1, "x", "www");
+    pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 1, "x", "www");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {
@@ -4243,10 +4245,10 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
   pkb->addStmt(DesignEntity::IF, 2);
   pkb->addStmt(DesignEntity::IF, 3);
 
-  pkb->addIfPtt(1, "x");
-  pkb->addIfPtt(1, "y");
-  pkb->addIfPtt(2, "x");
-  pkb->addIfPtt(3, "z");
+  pkb->addPatternRs(RelationshipType::PTT_IF, 1, "x");
+  pkb->addPatternRs(RelationshipType::PTT_IF, 1, "y");
+  pkb->addPatternRs(RelationshipType::PTT_IF, 2, "x");
+  pkb->addPatternRs(RelationshipType::PTT_IF, 3, "z");
 
   int xVarIdx = 0;
   int yVarIdx = 1;
@@ -4314,7 +4316,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select ifs pattern ifs ('x', _, _)") {
     pkb->addStmt(DesignEntity::IF, 1);
-    pkb->addIfPtt(1, "y");
+    pkb->addPatternRs(RelationshipType::PTT_IF, 1, "y");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {ifs, {ParamType::NAME_LITERAL, "x"}, {}};
@@ -4373,10 +4375,10 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
   pkb->addStmt(DesignEntity::WHILE, 3);
   pkb->addStmt(DesignEntity::WHILE, 4);
 
-  pkb->addWhilePtt(1, "x");
-  pkb->addWhilePtt(1, "y");
-  pkb->addWhilePtt(2, "x");
-  pkb->addWhilePtt(3, "z");
+  pkb->addPatternRs(RelationshipType::PTT_WHILE, 1, "x");
+  pkb->addPatternRs(RelationshipType::PTT_WHILE, 1, "y");
+  pkb->addPatternRs(RelationshipType::PTT_WHILE, 2, "x");
+  pkb->addPatternRs(RelationshipType::PTT_WHILE, 3, "z");
 
   int xVarIdx = 0;
   int yVarIdx = 1;
@@ -4444,7 +4446,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
   SECTION("Select w pattern w ('x', _, _)") {
     pkb->addStmt(DesignEntity::WHILE, 1);
-    pkb->addWhilePtt(1, "y");
+    pkb->addPatternRs(RelationshipType::PTT_WHILE, 1, "y");
     QueryEvaluator qe(pkb);
 
     PatternClause patternClause = {w, {ParamType::NAME_LITERAL, "x"}, {}};

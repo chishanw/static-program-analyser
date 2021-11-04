@@ -86,18 +86,18 @@ TEST_CASE("[DE][Parent(*) R/S] sample source") {
 
   SECTION("Parent* R/S") {
     REQUIRE(pkb->getRight(RelationshipType::PARENT_T, 4) ==
-            UNO_SET_OF_STMT_NO({5, 6, 7, 8, 9, 10, 11}));
+            SetOfStmts({5, 6, 7, 8, 9, 10, 11}));
 
     REQUIRE(pkb->getRight(RelationshipType::PARENT_T, 6) ==
-            UNO_SET_OF_STMT_NO({7, 8}));
+            SetOfStmts({7, 8}));
 
     REQUIRE(pkb->getRight(RelationshipType::PARENT_T, 13) ==
-            UNO_SET_OF_STMT_NO({14, 15, 16, 17, 18, 19, 20}));
+            SetOfStmts({14, 15, 16, 17, 18, 19, 20}));
 
     REQUIRE(pkb->getRight(RelationshipType::PARENT_T, 14) ==
-            UNO_SET_OF_STMT_NO({15, 16, 17}));
+            SetOfStmts({15, 16, 17}));
 
     REQUIRE(pkb->getRight(RelationshipType::PARENT_T, 22) ==
-            UNO_SET_OF_STMT_NO({23, 24}));
+            SetOfStmts({23, 24}));
   }
 }
