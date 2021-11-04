@@ -62,10 +62,6 @@ class PKB {
   SetOfStmtLists getVarMappingsForExpr(RelationshipType rs, std::string expr);
   SetOfStmtLists getVarMappings(RelationshipType rs);
 
-  // Calls API
-  void addCallStmtToCallee(StmtNo, ProcName);
-  ProcIdx getProcCalledByCallStmt(int callStmtNum);
-
   // Affects Info API
   void addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmt);
   void addFirstStmtOfProc(PROC_NAME procName, StmtNo firstStmtOfProc);
@@ -101,6 +97,4 @@ class PKB {
   // Design Abstractions
   AffectsInfoKB affectsInfoKB =
       AffectsInfoKB(&tables.at(TableType::PROC_TABLE));
-
-  std::unordered_map<StmtNo, ProcIdx> stmtToCallee;
 };

@@ -908,7 +908,7 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
   pkb->addStmt(DesignEntity::CALL, 3);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "a",
              TableType::PROC_TABLE, "b");
-  pkb->addCallStmtToCallee(3, "b");
+  pkb->addRs(RelationshipType::CALLS_S, 3, TableType::PROC_TABLE, "b");
   int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
   int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
   int const3Idx = pkb->insertAt(TableType::CONST_TABLE, "3");

@@ -141,7 +141,7 @@ TEST_CASE("Project with attributes") {
   pkb->addStmt(DesignEntity::STATEMENT, 6);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "procA",
              TableType::PROC_TABLE, "procB");
-  pkb->addCallStmtToCallee(1, "procB");
+  pkb->addRs(RelationshipType::CALLS_S, 1, TableType::PROC_TABLE, "procB");
   pkb->addStmt(DesignEntity::READ, 2);
   pkb->addRs(RelationshipType::MODIFIES_S, 2, TableType::VAR_TABLE, "y");
   pkb->addStmt(DesignEntity::PRINT, 3);

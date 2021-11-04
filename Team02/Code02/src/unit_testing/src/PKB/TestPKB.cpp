@@ -11,7 +11,7 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   db.addStmt(DesignEntity::CALL, 3);
   db.addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "test1",
            TableType::PROC_TABLE, "test2");
-  db.addCallStmtToCallee(3, "test2");
+  db.addRs(RelationshipType::CALLS_S, 3, TableType::PROC_TABLE, "test2");
   db.addStmt(DesignEntity::WHILE, 4);
   db.addStmt(DesignEntity::IF, 5);
   db.addStmt(DesignEntity::ASSIGN, 6);

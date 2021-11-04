@@ -316,7 +316,8 @@ int WithEvaluator::getIndexOfProcNameAttrOfSynonym(
       procIdx = valueOfSynonym;
       break;
     case DesignEntity::CALL:
-      procIdx = pkb->getProcCalledByCallStmt(valueOfSynonym);
+      procIdx =
+          *(pkb->getRight(RelationshipType::CALLS_S, valueOfSynonym).begin());
       break;
     default:
       DMOprintErrMsgAndExit(

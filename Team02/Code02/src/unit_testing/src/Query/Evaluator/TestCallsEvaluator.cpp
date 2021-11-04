@@ -18,15 +18,15 @@ TEST_CASE("CallsEvaluator: Calls") {
   pkb->addStmt(DesignEntity::CALL, 1);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "proc1",
              TableType::PROC_TABLE, "proc2");
-  pkb->addCallStmtToCallee(1, "proc2");
+  pkb->addRs(RelationshipType::CALLS_S, 1, TableType::PROC_TABLE, "proc2");
   pkb->addStmt(DesignEntity::CALL, 2);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "proc1",
              TableType::PROC_TABLE, "proc3");
-  pkb->addCallStmtToCallee(2, "proc3");
+  pkb->addRs(RelationshipType::CALLS_S, 2, TableType::PROC_TABLE, "proc3");
   pkb->addStmt(DesignEntity::CALL, 3);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "proc2",
              TableType::PROC_TABLE, "proc3");
-  pkb->addCallStmtToCallee(3, "proc3");
+  pkb->addRs(RelationshipType::CALLS_S, 3, TableType::PROC_TABLE, "proc3");
 
   CallsEvaluator ce(pkb);
 
@@ -91,15 +91,15 @@ TEST_CASE("CallsEvaluator: CallsT") {
   pkb->addStmt(DesignEntity::CALL, 1);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "proc1",
              TableType::PROC_TABLE, "proc2");
-  pkb->addCallStmtToCallee(1, "proc2");
+  pkb->addRs(RelationshipType::CALLS_S, 1, TableType::PROC_TABLE, "proc2");
   pkb->addStmt(DesignEntity::CALL, 2);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "proc2",
              TableType::PROC_TABLE, "proc3");
-  pkb->addCallStmtToCallee(2, "proc3");
+  pkb->addRs(RelationshipType::CALLS_S, 2, TableType::PROC_TABLE, "proc3");
   pkb->addStmt(DesignEntity::CALL, 3);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "proc3",
              TableType::PROC_TABLE, "proc4");
-  pkb->addCallStmtToCallee(3, "proc4");
+  pkb->addRs(RelationshipType::CALLS_S, 3, TableType::PROC_TABLE, "proc4");
   pkb->addRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "proc1",
              TableType::PROC_TABLE, "proc2");
   pkb->addRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "proc1",

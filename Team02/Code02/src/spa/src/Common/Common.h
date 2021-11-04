@@ -38,6 +38,7 @@ enum class RelationshipType {
   MODIFIES_P,
   CALLS,
   CALLS_T,
+  CALLS_S,
   NEXT,
   NEXT_T,
   NEXT_BIP,

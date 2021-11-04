@@ -248,18 +248,6 @@ SetOfStmtLists PKB::getVarMappingsForExpr(RelationshipType rs, string expr) {
   return mappingsForExpr[rs][exprIndex];
 }
 
-void PKB::addCallStmtToCallee(StmtNo callStmtNum, ProcName callee) {
-  stmtToCallee[callStmtNum] = insertAt(TableType::PROC_TABLE, callee);
-}
-
-// Calls API
-ProcIdx PKB::getProcCalledByCallStmt(int callStmtNum) {
-  if (stmtToCallee.count(callStmtNum) == 0) {
-    return -1;
-  }
-  return stmtToCallee.at(callStmtNum);
-}
-
 // Affects Info API
 void PKB::addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmtForIfStmt) {
   affectsInfoKB.addNextStmtForIfStmt(ifStmt, nextStmtForIfStmt);

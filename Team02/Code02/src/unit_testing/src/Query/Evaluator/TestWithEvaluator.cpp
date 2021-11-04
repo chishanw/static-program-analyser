@@ -19,13 +19,13 @@ TEST_CASE("WithEvaluator: Name Attributes") {
   pkb->addStmt(DesignEntity::STATEMENT, 5);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "A",
              TableType::PROC_TABLE, "D");
-  pkb->addCallStmtToCallee(3, "D");
+  pkb->addRs(RelationshipType::CALLS_S, 3, TableType::PROC_TABLE, "D");
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "B",
              TableType::PROC_TABLE, "D");
-  pkb->addCallStmtToCallee(4, "D");
+  pkb->addRs(RelationshipType::CALLS_S, 4, TableType::PROC_TABLE, "D");
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "C",
              TableType::PROC_TABLE, "A");
-  pkb->addCallStmtToCallee(5, "A");
+  pkb->addRs(RelationshipType::CALLS_S, 5, TableType::PROC_TABLE, "A");
   pkb->addStmt(DesignEntity::READ, 1);
   pkb->addStmt(DesignEntity::READ, 2);
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");

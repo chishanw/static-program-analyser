@@ -66,7 +66,8 @@ string ResultProjector::getStringForSynonym(Synonym synonym, int result) {
       return pkb->getElementAt(TableType::CONST_TABLE, result);
     case DesignEntity::CALL: {
       if (hasAttribute && attribute == Attribute::PROC_NAME) {
-        int procIdx = pkb->getProcCalledByCallStmt(result);
+        int procIdx =
+            *(pkb->getRight(RelationshipType::CALLS_S, result).begin());
         return pkb->getElementAt(TableType::PROC_TABLE, procIdx);
       } else {
         return to_string(result);

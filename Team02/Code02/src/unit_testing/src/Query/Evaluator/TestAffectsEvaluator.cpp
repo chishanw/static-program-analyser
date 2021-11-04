@@ -802,7 +802,7 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   pkb->addStmt(DesignEntity::CALL, 8);
   pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "B",
              TableType::PROC_TABLE, "C");
-  pkb->addCallStmtToCallee(8, "C");
+  pkb->addRs(RelationshipType::CALLS_S, 8, TableType::PROC_TABLE, "C");
   vector<int> assignStmts = {1, 4, 5, 7, 9};
   for (auto stmt : assignStmts) {
     pkb->addStmt(DesignEntity::ASSIGN, stmt);

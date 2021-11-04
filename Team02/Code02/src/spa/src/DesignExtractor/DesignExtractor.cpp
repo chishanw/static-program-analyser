@@ -503,7 +503,8 @@ CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
 
       pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE,
                  caller->ProcName, TableType::PROC_TABLE, callee);
-      pkb->addCallStmtToCallee(callStmtNo, callee);
+      pkb->addRs(RelationshipType::CALLS_S, callStmtNo, TableType::PROC_TABLE,
+                 callee);
 
       allProcsCalled.insert(p.second);
     }
