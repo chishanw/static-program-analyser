@@ -248,43 +248,17 @@ SetOfStmtLists PKB::getVarMappingsForExpr(RelationshipType rs, string expr) {
   return mappingsForExpr[rs][exprIndex];
 }
 
+void PKB::addCallStmtToCallee(StmtNo callStmtNum, ProcName callee) {
+  stmtToCallee[callStmtNum] = insertAt(TableType::PROC_TABLE, callee);
+}
+
 // Calls API
-void PKB::addCalls(StmtNo s, PROC_NAME caller, PROC_NAME callee) {
-  addStmt(DesignEntity::STATEMENT, s);
-  callsKB.addCalls(s, caller, callee);
+ProcIdx PKB::getProcCalledByCallStmt(int callStmtNum) {
+  if (stmtToCallee.count(callStmtNum) == 0) {
+    return -1;
+  }
+  return stmtToCallee.at(callStmtNum);
 }
-void PKB::addCallsT(PROC_NAME caller, PROC_NAME callee) {
-  callsKB.addCallsT(caller, callee);
-}
-bool PKB::isCalls(PROC_NAME caller, PROC_NAME callee) {
-  return callsKB.isCalls(caller, callee);
-}
-unordered_set<PROC_IDX> PKB::getProcsCalledBy(PROC_NAME proc) {
-  return callsKB.getProcsCalledBy(proc);
-}
-unordered_set<PROC_IDX> PKB::getCallerProcs(PROC_NAME proc) {
-  return callsKB.getCallerProcs(proc);
-}
-vector<pair<PROC_IDX, vector<PROC_IDX>>> PKB::getAllCallsPairs() {
-  return callsKB.getAllCallsPairs();
-}
-PROC_IDX PKB::getProcCalledByCallStmt(int callStmtNum) {
-  return callsKB.getProcCalledByCallStmt(callStmtNum);
-}
-bool PKB::isCallsT(PROC_NAME caller, PROC_NAME callee) {
-  return callsKB.isCallsT(caller, callee);
-}
-unordered_set<PROC_IDX> PKB::getProcsCalledTBy(PROC_NAME proc) {
-  return callsKB.getProcsCalledTBy(proc);
-}
-unordered_set<PROC_IDX> PKB::getCallerTProcs(PROC_NAME proc) {
-  return callsKB.getCallerTProcs(proc);
-}
-vector<pair<PROC_IDX, vector<PROC_IDX>>> PKB::getAllCallsTPairs() {
-  return callsKB.getAllCallsTPairs();
-}
-SetOfStmts PKB::getAllCallStmts() { return callsKB.getAllCallStmts(); }
-bool PKB::isCallStmt(StmtNo s) { return callsKB.isCallStmt(s); }
 
 // Affects Info API
 void PKB::addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmtForIfStmt) {

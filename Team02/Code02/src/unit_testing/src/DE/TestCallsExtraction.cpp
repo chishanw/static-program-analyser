@@ -53,15 +53,20 @@ TEST_CASE("[DE][Calls R/S] sample source") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  REQUIRE(pkb->isCallStmt(10));
-  REQUIRE(pkb->isCallStmt(12));
-  REQUIRE(pkb->isCallStmt(16));
-  REQUIRE(!pkb->isCallStmt(17));
-  REQUIRE(pkb->isCalls("Example", "p"));
-  REQUIRE(!pkb->isCalls("Example", "q"));
-  REQUIRE(pkb->isCalls("p", "q"));
-  REQUIRE(!pkb->isCallStmt(25));  // out of bound test, last stmt is #24
-  REQUIRE(!pkb->isCallStmt(30));  // out of bound test, last stmt is #24
+  REQUIRE(pkb->isStmt(DesignEntity::CALL, 10));
+  REQUIRE(pkb->isStmt(DesignEntity::CALL, 12));
+  REQUIRE(pkb->isStmt(DesignEntity::CALL, 16));
+  REQUIRE(!pkb->isStmt(DesignEntity::CALL, 17));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "Example",
+                    TableType::PROC_TABLE, "p"));
+  REQUIRE(!pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "Example",
+                     TableType::PROC_TABLE, "q"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "p",
+                    TableType::PROC_TABLE, "q"));
+  REQUIRE(!pkb->isStmt(DesignEntity::CALL,
+                       25));  // out of bound test, last stmt is #24
+  REQUIRE(!pkb->isStmt(DesignEntity::CALL,
+                       30));  // out of bound test, last stmt is #24
 
   SECTION("[DE][AffectsInfo] sample source") {
     PROC_IDX exampleIdx = pkb->getIndexOf(TableType::PROC_TABLE, "Example");
@@ -110,19 +115,32 @@ TEST_CASE("[DE][Calls(*) R/S] sample source") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  REQUIRE(pkb->isCallsT("a", "b"));
-  REQUIRE(pkb->isCallsT("a", "c"));
-  REQUIRE(pkb->isCallsT("a", "d"));
-  REQUIRE(pkb->isCallsT("a", "e"));
-  REQUIRE(pkb->isCallsT("a", "f"));
-  REQUIRE(pkb->isCallsT("a", "g"));
-  REQUIRE(pkb->isCallsT("b", "d"));
-  REQUIRE(pkb->isCallsT("b", "f"));
-  REQUIRE(pkb->isCallsT("b", "g"));
-  REQUIRE(pkb->isCallsT("c", "d"));
-  REQUIRE(pkb->isCallsT("c", "e"));
-  REQUIRE(pkb->isCallsT("c", "f"));
-  REQUIRE(pkb->isCallsT("c", "g"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                    TableType::PROC_TABLE, "b"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                    TableType::PROC_TABLE, "c"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                    TableType::PROC_TABLE, "d"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                    TableType::PROC_TABLE, "e"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                    TableType::PROC_TABLE, "f"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                    TableType::PROC_TABLE, "g"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "b",
+                    TableType::PROC_TABLE, "d"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "b",
+                    TableType::PROC_TABLE, "f"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "b",
+                    TableType::PROC_TABLE, "g"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "c",
+                    TableType::PROC_TABLE, "d"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "c",
+                    TableType::PROC_TABLE, "e"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "c",
+                    TableType::PROC_TABLE, "f"));
+  REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "c",
+                    TableType::PROC_TABLE, "g"));
 }
 
 TEST_CASE("Cyclic Calls") {

@@ -256,7 +256,7 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
     allVisitedStmts.insert(currStmt);
 
     if (pkb->isStmt(DesignEntity::READ, currStmt) ||
-        pkb->isCallStmt(currStmt)) {
+        pkb->isStmt(DesignEntity::CALL, currStmt)) {
       updateLastModifiedVariables(currStmt, LMT);
     }
 

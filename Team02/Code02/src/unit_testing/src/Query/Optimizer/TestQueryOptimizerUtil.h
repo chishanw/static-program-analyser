@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Common/Common.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Common/Common.h>
 
 #include <set>
 #include <string>
@@ -42,8 +42,7 @@ class TestQueryOptimizerUtil {
                                             DEFAULT_W_NAME};
   inline static query::Synonym DEFAULT_IFS = {DesignEntity::IF,
                                               DEFAULT_IFS_NAME};
-  inline static query::Synonym DEFAULT_C = {DesignEntity::CALL,
-                                            DEFAULT_C_NAME};
+  inline static query::Synonym DEFAULT_C = {DesignEntity::CALL, DEFAULT_C_NAME};
   inline static query::Synonym DEFAULT_N = {DesignEntity::PROG_LINE,
                                             DEFAULT_N_NAME};
 

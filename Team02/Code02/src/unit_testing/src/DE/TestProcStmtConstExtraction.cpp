@@ -56,20 +56,17 @@ TEST_CASE("[DE][Proc & Stmt & Const] sample source") {
   de.Extract(ast);
 
   SECTION("Different type of statements") {
-    REQUIRE(
-        pkb->getAllStmts(DesignEntity::STATEMENT) ==
-        SetOfStmts({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
-                            13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::STATEMENT) ==
+            SetOfStmts({1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
+                        13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}));
     REQUIRE(pkb->getAllStmts(DesignEntity::READ) == SetOfStmts({}));
     REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == SetOfStmts({}));
-    REQUIRE(pkb->getAllCallStmts() == SetOfStmts({10, 12, 16}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) ==
-            SetOfStmts({4, 14}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::IF) ==
-            SetOfStmts({6, 13, 22}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) ==
-            SetOfStmts(
-                {1, 2, 3, 5, 7, 8, 9, 11, 15, 17, 18, 19, 20, 21, 23, 24}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::CALL) == SetOfStmts({10, 12, 16}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) == SetOfStmts({4, 14}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::IF) == SetOfStmts({6, 13, 22}));
+    REQUIRE(
+        pkb->getAllStmts(DesignEntity::ASSIGN) ==
+        SetOfStmts({1, 2, 3, 5, 7, 8, 9, 11, 15, 17, 18, 19, 20, 21, 23, 24}));
   }
 
   SECTION("Procedures") {
@@ -163,8 +160,8 @@ TEST_CASE("[DE][GetAllVarNames & GetAllConsts] complex cond expr") {
 
   REQUIRE(pkb->getAllElementsAt(TableType::VAR_TABLE) ==
           unordered_set<VarIdx>{aIdx, bIdx, cIdx, dIdx, eIdx, fIdx, gIdx, hIdx,
-                                 iIdx, jIdx, kIdx, lIdx, mIdx, nIdx, oIdx, pIdx,
-                                 qIdx});
+                                iIdx, jIdx, kIdx, lIdx, mIdx, nIdx, oIdx, pIdx,
+                                qIdx});
 
   REQUIRE(pkb->getAllElementsAt(TableType::CONST_TABLE) ==
           unordered_set<ConstIdx>{c0idx, c1idx, c2idx, c3idx, c4idx, c5idx,

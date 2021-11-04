@@ -20,20 +20,26 @@ bool CallsEvaluator::evaluateBoolCalls(const Param& left, const Param& right) {
   // if both underscore - Calls(_, _)
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
-    unordered_set<PROC_IDX> procsCalled = pkb->getProcsCalledBy(left.value);
+    unordered_set<PROC_IDX> procsCalled = pkb->getRight(
+        RelationshipType::CALLS, TableType::PROC_TABLE, left.value);
     return procsCalled.find(pkb->getIndexOf(TableType::PROC_TABLE,
-        right.value)) != procsCalled.end();
+                                            right.value)) != procsCalled.end();
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !(pkb->getAllCallsPairs()).empty();
+    return !(pkb->getMappings(RelationshipType::CALLS, ParamPosition::BOTH))
+                .empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
-    return !(pkb->getCallerProcs(right.value).empty());
+    return !(pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE,
+                          right.value)
+                 .empty());
   }
 
-  return !(pkb->getProcsCalledBy(left.value).empty());
+  return !(
+      pkb->getRight(RelationshipType::CALLS, TableType::PROC_TABLE, left.value)
+          .empty());
 }
 
 // synonym & literal
@@ -44,40 +50,31 @@ unordered_set<int> CallsEvaluator::evaluateProcCalls(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::NAME_LITERAL) {
-    return pkb->getProcsCalledBy(left.value);
+    return pkb->getRight(RelationshipType::CALLS, TableType::PROC_TABLE,
+                         left.value);
   }
 
   // rightType == ParamType::LITERAL
-  return pkb->getCallerProcs(right.value);
+  return pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE,
+                      right.value);
 }
 
 // synonym & wildcard - Calls(s, _) -> getAllCallsStmtPair()
 // synonym & synonym - Calls(s1, s2) -> getAllCallsTStmtPair()
 vector<vector<int>> CallsEvaluator::evaluateProcPairCalls(const Param& left,
                                                           const Param& right) {
-  vector<pair<PROC_IDX, vector<PROC_IDX>>> results = pkb->getAllCallsPairs();
-  vector<vector<int>> formattedResults = {};
-
+  unordered_set<vector<int>, VectorHash> results;
   if (left.type == ParamType::WILDCARD) {
-    for (auto result : results) {
-      for (auto second : result.second) {
-        formattedResults.push_back({second});
-      }
-    }
-    return formattedResults;
+    results = pkb->getMappings(RelationshipType::CALLS, ParamPosition::RIGHT);
+
+  } else if (right.type == ParamType::WILDCARD) {
+    results = pkb->getMappings(RelationshipType::CALLS, ParamPosition::LEFT);
+
+  } else {
+    results = pkb->getMappings(RelationshipType::CALLS, ParamPosition::BOTH);
   }
-  if (right.type == ParamType::WILDCARD) {
-    for (auto result : results) {
-      formattedResults.push_back({result.first});
-    }
-    return formattedResults;
-  }
-  // both synonyms
-  for (auto result : results) {
-    for (auto second : result.second) {
-      formattedResults.push_back({result.first, second});
-    }
-  }
+
+  auto formattedResults = vector<vector<int>>(results.begin(), results.end());
   return formattedResults;
 }
 
@@ -87,20 +84,26 @@ bool CallsEvaluator::evaluateBoolCallsT(const Param& left, const Param& right) {
 
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
-    unordered_set<PROC_IDX> procsCalledT = pkb->getProcsCalledTBy(left.value);
-    return procsCalledT.find(pkb->getIndexOf(TableType::PROC_TABLE,
-        right.value)) != procsCalledT.end();
+    unordered_set<PROC_IDX> procsCalledT = pkb->getRight(
+        RelationshipType::CALLS_T, TableType::PROC_TABLE, left.value);
+    return procsCalledT.find(pkb->getIndexOf(
+               TableType::PROC_TABLE, right.value)) != procsCalledT.end();
   }
 
   if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !(pkb->getAllCallsTPairs()).empty();
+    return !(pkb->getMappings(RelationshipType::CALLS_T, ParamPosition::BOTH))
+                .empty();
   }
 
   if (leftType == ParamType::WILDCARD) {
-    return !(pkb->getCallerTProcs(right.value).empty());
+    return !(pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                          right.value)
+                 .empty());
   }
 
-  return !(pkb->getProcsCalledTBy(left.value).empty());
+  return !(pkb->getRight(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                         left.value)
+               .empty());
 }
 
 unordered_set<int> CallsEvaluator::evaluateProcCallsT(const Param& left,
@@ -109,35 +112,23 @@ unordered_set<int> CallsEvaluator::evaluateProcCallsT(const Param& left,
   ParamType rightType = right.type;
 
   if (leftType == ParamType::NAME_LITERAL) {
-    return pkb->getProcsCalledTBy(left.value);
+    return pkb->getRight(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                         left.value);
   }
-  return pkb->getCallerTProcs(right.value);
+  return pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                      right.value);
 }
 
 vector<vector<int>> CallsEvaluator::evaluateProcPairCallsT(const Param& left,
                                                            const Param& right) {
-  vector<pair<PROC_IDX, vector<PROC_IDX>>> results = pkb->getAllCallsTPairs();
-  vector<vector<int>> formattedResults = {};
-
-  if (left.type == ParamType::WILDCARD) {
-    for (auto result : results) {
-      for (auto second : result.second) {
-        formattedResults.push_back({second});
-      }
-    }
-    return formattedResults;
+  unordered_set<vector<int>, VectorHash> results;
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    results = pkb->getMappings(RelationshipType::CALLS_T, ParamPosition::BOTH);
+  } else if (left.type == ParamType::SYNONYM) {
+    results = pkb->getMappings(RelationshipType::CALLS_T, ParamPosition::LEFT);
+  } else {
+    // rightType == ParamType::SYNONYM
+    results = pkb->getMappings(RelationshipType::CALLS_T, ParamPosition::RIGHT);
   }
-  if (right.type == ParamType::WILDCARD) {
-    for (auto result : results) {
-      formattedResults.push_back({result.first});
-    }
-    return formattedResults;
-  }
-  // both synonyms
-  for (auto result : results) {
-    for (auto second : result.second) {
-      formattedResults.push_back({result.first, second});
-    }
-  }
-  return formattedResults;
+  return vector<vector<int>>(results.begin(), results.end());
 }

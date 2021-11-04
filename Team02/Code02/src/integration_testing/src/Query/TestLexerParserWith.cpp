@@ -759,8 +759,7 @@ TEST_CASE("Invalid queries with one with clause throws") {
   }
 
   SECTION("Invalid with _ = 2") {
-    string invalidQuery =
-        "Select BOOLEAN with _ = 2";
+    string invalidQuery = "Select BOOLEAN with _ = 2";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_W_PARAM);
@@ -769,8 +768,7 @@ TEST_CASE("Invalid queries with one with clause throws") {
   }
 
   SECTION("Invalid with \"x\" = _") {
-    string invalidQuery =
-        "Select BOOLEAN with \"x\" = _";
+    string invalidQuery = "Select BOOLEAN with \"x\" = _";
     // test
     REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
                         QueryParser::INVALID_W_PARAM);

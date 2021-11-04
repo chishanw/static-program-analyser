@@ -1,6 +1,6 @@
+#include <Common/Common.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -597,8 +597,7 @@ TEST_CASE(
         {DesignEntity::STATEMENT, "s", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses,
-                                     RelationshipType::FOLLOWS_T,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::FOLLOWS_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 

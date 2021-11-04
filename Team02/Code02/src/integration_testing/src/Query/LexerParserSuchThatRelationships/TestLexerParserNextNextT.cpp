@@ -1,6 +1,6 @@
+#include <Common/Common.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -255,8 +255,7 @@ TEST_CASE(
     string validQuery = "read r1, r2; Select BOOLEAN such that Next(r1, r2)";
 
     // expected
-    SynonymMap map = {{"r1", DesignEntity::READ},
-                      {"r2", DesignEntity::READ}};
+    SynonymMap map = {{"r1", DesignEntity::READ}, {"r2", DesignEntity::READ}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -304,8 +303,7 @@ TEST_CASE(
     string validQuery = "call c1, c2; Select BOOLEAN such that Next(c1, c2)";
 
     // expected
-    SynonymMap map = {{"c1", DesignEntity::CALL},
-                      {"c2", DesignEntity::CALL}};
+    SynonymMap map = {{"c1", DesignEntity::CALL}, {"c2", DesignEntity::CALL}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -328,8 +326,7 @@ TEST_CASE(
     string validQuery = "while w1, w2; Select BOOLEAN such that Next(w1, w2)";
 
     // expected
-    SynonymMap map = {{"w1", DesignEntity::WHILE},
-                      {"w2", DesignEntity::WHILE}};
+    SynonymMap map = {{"w1", DesignEntity::WHILE}, {"w2", DesignEntity::WHILE}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -353,8 +350,7 @@ TEST_CASE(
         "if ifs1, ifs2; Select BOOLEAN such that Next(ifs1, ifs2)";
 
     // expected
-    SynonymMap map = {{"ifs1", DesignEntity::IF},
-                      {"ifs2", DesignEntity::IF}};
+    SynonymMap map = {{"ifs1", DesignEntity::IF}, {"ifs2", DesignEntity::IF}};
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
@@ -513,8 +509,7 @@ TEST_CASE("Valid queries with NextBip* relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses,
-                                     RelationshipType::NEXT_BIP_T,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::NEXT_BIP_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 

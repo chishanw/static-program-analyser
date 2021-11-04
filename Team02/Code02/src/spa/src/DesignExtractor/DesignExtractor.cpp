@@ -70,7 +70,7 @@ void DesignExtractor::ExtractProcAndStmtHelper(
     } else if (dynamic_cast<const PrintStmtAST*>(stmt)) {
       pkb->addStmt(DesignEntity::PRINT, stmt->StmtNo);
     } else if (dynamic_cast<const CallStmtAST*>(stmt)) {
-      // handled by ExtractCalls
+      pkb->addStmt(DesignEntity::CALL, stmt->StmtNo);
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
       pkb->addStmt(DesignEntity::WHILE, stmt->StmtNo);
 
@@ -498,7 +498,13 @@ CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
     unordered_map<STMT_NO, PROC_NAME> res =
         ExtractCallsHelper(caller->StmtList, allProcs);
     for (auto p : res) {
-      pkb->addCalls(p.first, caller->ProcName, p.second);
+      StmtNo callStmtNo = p.first;
+      ProcName callee = p.second;
+
+      pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE,
+                 caller->ProcName, TableType::PROC_TABLE, callee);
+      pkb->addCallStmtToCallee(callStmtNo, callee);
+
       allProcsCalled.insert(p.second);
     }
 
@@ -555,7 +561,8 @@ void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
     throw runtime_error("Cyclic/Recursive loop detected.");
   }
 
-  pkb->addCallsT(caller, callee);
+  pkb->addRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, caller,
+             TableType::PROC_TABLE, callee);
 
   unordered_set<PROC_NAME> nextLayerCallees = callGraph.at(callee);
   for (auto nextLayerCallee : nextLayerCallees) {

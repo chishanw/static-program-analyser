@@ -35,74 +35,103 @@ TEST_CASE("Whole frontend simple test") {
             SetOfStmts({1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
     REQUIRE(pkb->getAllStmts(DesignEntity::READ) == SetOfStmts({7}));
     REQUIRE(pkb->getAllStmts(DesignEntity::PRINT) == SetOfStmts({10}));
-    REQUIRE(pkb->getAllCallStmts() == SetOfStmts({5, 8}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::CALL) == SetOfStmts({5, 8}));
     REQUIRE(pkb->getAllStmts(DesignEntity::WHILE) == SetOfStmts({2}));
     REQUIRE(pkb->getAllStmts(DesignEntity::IF) == SetOfStmts({4}));
-    REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) ==
-            SetOfStmts({1, 3, 6, 9}));
+    REQUIRE(pkb->getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({1, 3, 6, 9}));
   }
 
   SECTION("Calls/* extraction") {
-    REQUIRE(pkb->isCallStmt(5));
-    REQUIRE(pkb->isCallStmt(8));
+    REQUIRE(pkb->isStmt(DesignEntity::CALL, 5));
+    REQUIRE(pkb->isStmt(DesignEntity::CALL, 8));
     // invalid query
-    REQUIRE(!pkb->isCallStmt(1));
+    REQUIRE(!pkb->isStmt(DesignEntity::CALL, 1));
 
-    REQUIRE(pkb->isCalls("a", "b"));
-    REQUIRE(pkb->isCalls("b", "c"));
+    REQUIRE(pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "a",
+                      TableType::PROC_TABLE, "b"));
+    REQUIRE(pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "b",
+                      TableType::PROC_TABLE, "c"));
     // invalid query
-    REQUIRE(!pkb->isCalls("a", "c"));
-    REQUIRE(!pkb->isCalls("a", "B"));
-    REQUIRE(!pkb->isCalls("A", "B"));
+    REQUIRE(!pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "a",
+                       TableType::PROC_TABLE, "c"));
+    REQUIRE(!pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "a",
+                       TableType::PROC_TABLE, "B"));
+    REQUIRE(!pkb->isRs(RelationshipType::CALLS, TableType::PROC_TABLE, "A",
+                       TableType::PROC_TABLE, "B"));
 
-    REQUIRE(pkb->getProcsCalledBy("a") == SetOfStmts({1}));
-    REQUIRE(pkb->getProcsCalledBy("b") == SetOfStmts({2}));
-    REQUIRE(pkb->getProcsCalledBy("c") == SetOfStmts({}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS, TableType::PROC_TABLE,
+                          "a") == SetOfStmts({1}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS, TableType::PROC_TABLE,
+                          "b") == SetOfStmts({2}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS, TableType::PROC_TABLE,
+                          "c") == SetOfStmts({}));
     // invalid query
-    REQUIRE(pkb->getProcsCalledBy("A") == SetOfStmts({}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS, TableType::PROC_TABLE,
+                          "A") == SetOfStmts({}));
 
-    REQUIRE(pkb->getCallerProcs("a") == SetOfStmts({}));
-    REQUIRE(pkb->getCallerProcs("b") == SetOfStmts({0}));
-    REQUIRE(pkb->getCallerProcs("c") == SetOfStmts({1}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE, "a") ==
+            SetOfStmts({}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE, "b") ==
+            SetOfStmts({0}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE, "c") ==
+            SetOfStmts({1}));
     // invalid query
-    REQUIRE(pkb->getCallerProcs("A") == SetOfStmts({}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE, "A") ==
+            SetOfStmts({}));
 
     vector<PROC_IDX> calledByA({1});
     pair<PROC_IDX, vector<PROC_IDX>> aRes(0, calledByA);
     vector<PROC_IDX> calledByB({2});
     pair<PROC_IDX, vector<PROC_IDX>> bRes(1, calledByB);
     vector<pair<PROC_IDX, vector<PROC_IDX>>> result({aRes, bRes});
-    vector<pair<PROC_IDX, vector<PROC_IDX>>> output = pkb->getAllCallsPairs();
-    REQUIRE(
-        set<pair<PROC_IDX, vector<PROC_IDX>>>(output.begin(), output.end()) ==
-        set<pair<PROC_IDX, vector<PROC_IDX>>>(result.begin(), result.end()));
+    // vector<pair<PROC_IDX, vector<PROC_IDX>>> output =
+    //     pkb->getMappings(RelationshipType::CALLS, ParamPosition::BOTH);
+    // REQUIRE(
+    //     set<pair<PROC_IDX, vector<PROC_IDX>>>(output.begin(), output.end())
+    //     == set<pair<PROC_IDX, vector<PROC_IDX>>>(result.begin(),
+    //     result.end()));
 
-    REQUIRE(pkb->isCallsT("a", "b"));
-    REQUIRE(pkb->isCallsT("a", "c"));
-    REQUIRE(pkb->isCallsT("b", "c"));
+    REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                      TableType::PROC_TABLE, "b"));
+    REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                      TableType::PROC_TABLE, "c"));
+    REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "b",
+                      TableType::PROC_TABLE, "c"));
     // invalid query
-    REQUIRE(!pkb->isCallsT("a", "B"));
-    REQUIRE(!pkb->isCallsT("A", "B"));
+    REQUIRE(!pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
+                       TableType::PROC_TABLE, "B"));
+    REQUIRE(!pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "A",
+                       TableType::PROC_TABLE, "B"));
 
-    REQUIRE(pkb->getProcsCalledTBy("a") == SetOfStmts({1, 2}));
-    REQUIRE(pkb->getProcsCalledTBy("b") == SetOfStmts({2}));
-    REQUIRE(pkb->getProcsCalledTBy("c") == SetOfStmts({}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                          "a") == SetOfStmts({1, 2}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                          "b") == SetOfStmts({2}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                          "c") == SetOfStmts({}));
     // invalid query
-    REQUIRE(pkb->getProcsCalledTBy("A") == SetOfStmts({}));
+    REQUIRE(pkb->getRight(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                          "A") == SetOfStmts({}));
 
-    REQUIRE(pkb->getCallerTProcs("a") == SetOfStmts({}));
-    REQUIRE(pkb->getCallerTProcs("b") == SetOfStmts({0}));
-    REQUIRE(pkb->getCallerTProcs("c") == SetOfStmts({0, 1}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                         "a") == SetOfStmts({}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                         "b") == SetOfStmts({0}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                         "c") == SetOfStmts({0, 1}));
     // invalid query
-    REQUIRE(pkb->getCallerTProcs("A") == SetOfStmts({}));
+    REQUIRE(pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
+                         "A") == SetOfStmts({}));
 
     vector<PROC_IDX> calledTByA({1, 2});
     pair<PROC_IDX, vector<PROC_IDX>> aTRes(0, calledTByA);
     vector<pair<PROC_IDX, vector<PROC_IDX>>> resultT({aTRes, bRes});
-    vector<pair<PROC_IDX, vector<PROC_IDX>>> outputT = pkb->getAllCallsTPairs();
-    REQUIRE(
-        set<pair<PROC_IDX, vector<PROC_IDX>>>(outputT.begin(), outputT.end()) ==
-        set<pair<PROC_IDX, vector<PROC_IDX>>>(resultT.begin(), resultT.end()));
+    // vector<pair<PROC_IDX, vector<PROC_IDX>>> outputT =
+    //     pkb->getMappings(RelationshipType::CALLS_T, ParamPosition::BOTH);
+    // REQUIRE(
+    //     set<pair<PROC_IDX, vector<PROC_IDX>>>(outputT.begin(), outputT.end())
+    //     == set<pair<PROC_IDX, vector<PROC_IDX>>>(resultT.begin(),
+    //     resultT.end()));
   }
 
   SECTION("Follows/* extraction") {
@@ -113,51 +142,33 @@ TEST_CASE("Whole frontend simple test") {
     // invalid query
     REQUIRE(!pkb->isRs(RelationshipType::FOLLOWS_T, 2, 3));
 
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 1) ==
-            SetOfStmts({2}));
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 3) ==
-            SetOfStmts({4}));
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 7) ==
-            SetOfStmts({8}));
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 8) ==
-            SetOfStmts({9}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 1) == SetOfStmts({2}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 3) == SetOfStmts({4}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 7) == SetOfStmts({8}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 8) == SetOfStmts({9}));
     // invalid query
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 11) ==
-            SetOfStmts({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS, 11) == SetOfStmts({}));
 
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 2) ==
-            SetOfStmts({1}));
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 9) ==
-            SetOfStmts({8}));
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 8) ==
-            SetOfStmts({7}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 2) == SetOfStmts({1}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 9) == SetOfStmts({8}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 8) == SetOfStmts({7}));
     // invalid query
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 1) ==
-            SetOfStmts({}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS, 1) == SetOfStmts({}));
 
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 1) ==
-            SetOfStmts({2}));
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 3) ==
-            SetOfStmts({4}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 1) == SetOfStmts({2}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 3) == SetOfStmts({4}));
     REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 7) ==
             SetOfStmts({8, 9}));
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 8) ==
-            SetOfStmts({9}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 8) == SetOfStmts({9}));
     // invalid query
-    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 11) ==
-            SetOfStmts({}));
+    REQUIRE(pkb->getRight(RelationshipType::FOLLOWS_T, 11) == SetOfStmts({}));
 
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 2) ==
-            SetOfStmts({1}));
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 4) ==
-            SetOfStmts({3}));
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 9) ==
-            SetOfStmts({7, 8}));
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 8) ==
-            SetOfStmts({7}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 2) == SetOfStmts({1}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 4) == SetOfStmts({3}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 9) == SetOfStmts({7, 8}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 8) == SetOfStmts({7}));
     // invalid query
-    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 1) ==
-            SetOfStmts({}));
+    REQUIRE(pkb->getLeft(RelationshipType::FOLLOWS_T, 1) == SetOfStmts({}));
 
     auto output =
         pkb->getMappings(RelationshipType::FOLLOWS_T, ParamPosition::BOTH);

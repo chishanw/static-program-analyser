@@ -905,7 +905,10 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
   pkb->addRs(RelationshipType::MODIFIES_S, 4, TableType::VAR_TABLE, "x");
   pkb->addRs(RelationshipType::FOLLOWS, 1, 2);
   pkb->addRs(RelationshipType::FOLLOWS, 2, 3);
-  pkb->addCalls(3, "a", "b");
+  pkb->addStmt(DesignEntity::CALL, 3);
+  pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "a",
+             TableType::PROC_TABLE, "b");
+  pkb->addCallStmtToCallee(3, "b");
   int const1Idx = pkb->insertAt(TableType::CONST_TABLE, "1");
   int const2Idx = pkb->insertAt(TableType::CONST_TABLE, "2");
   int const3Idx = pkb->insertAt(TableType::CONST_TABLE, "3");

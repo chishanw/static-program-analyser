@@ -1031,7 +1031,7 @@ unordered_set<int> QueryEvaluator::getAllValuesOfSynonym(string synonymName) {
     case DesignEntity::PRINT:
       return pkb->getAllStmts(DesignEntity::PRINT);
     case DesignEntity::CALL:
-      return pkb->getAllCallStmts();
+      return pkb->getAllStmts(DesignEntity::CALL);
     case DesignEntity::WHILE:
       return pkb->getAllStmts(DesignEntity::WHILE);
     case DesignEntity::IF:
@@ -1094,7 +1094,7 @@ bool QueryEvaluator::checkIsCorrectDesignEntity(int result,
     case DesignEntity::PRINT:
       return pkb->isStmt(DesignEntity::PRINT, result);
     case DesignEntity::CALL:
-      return pkb->isCallStmt(result);
+      return pkb->isStmt(DesignEntity::CALL, result);
     case DesignEntity::WHILE:
       return pkb->isStmt(DesignEntity::WHILE, result);
     case DesignEntity::IF:

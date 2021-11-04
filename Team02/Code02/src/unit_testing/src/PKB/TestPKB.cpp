@@ -8,7 +8,10 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
 
   db.addStmt(DesignEntity::READ, 1);
   db.addStmt(DesignEntity::PRINT, 2);
-  db.addCalls(3, "test1", "test2");
+  db.addStmt(DesignEntity::CALL, 3);
+  db.addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "test1",
+           TableType::PROC_TABLE, "test2");
+  db.addCallStmtToCallee(3, "test2");
   db.addStmt(DesignEntity::WHILE, 4);
   db.addStmt(DesignEntity::IF, 5);
   db.addStmt(DesignEntity::ASSIGN, 6);
@@ -16,7 +19,7 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   // Boolean positive
   REQUIRE(db.isStmt(DesignEntity::READ, 1));
   REQUIRE(db.isStmt(DesignEntity::PRINT, 2));
-  REQUIRE(db.isCallStmt(3));
+  REQUIRE(db.isStmt(DesignEntity::CALL, 3));
   REQUIRE(db.isStmt(DesignEntity::WHILE, 4));
   REQUIRE(db.isStmt(DesignEntity::IF, 5));
   REQUIRE(db.isStmt(DesignEntity::ASSIGN, 6));
@@ -24,7 +27,7 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   // Boolean false
   REQUIRE(!db.isStmt(DesignEntity::READ, 2));
   REQUIRE(!db.isStmt(DesignEntity::PRINT, 10));
-  REQUIRE(!db.isCallStmt(7));
+  REQUIRE(!db.isStmt(DesignEntity::CALL, 7));
   REQUIRE(!db.isStmt(DesignEntity::WHILE, 5));
   REQUIRE(!db.isStmt(DesignEntity::IF, 4));
   REQUIRE(!db.isStmt(DesignEntity::ASSIGN, 3));
@@ -34,7 +37,7 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
           SetOfStmts({1, 2, 3, 4, 5, 6}));
   REQUIRE(db.getAllStmts(DesignEntity::READ) == SetOfStmts({1}));
   REQUIRE(db.getAllStmts(DesignEntity::PRINT) == SetOfStmts({2}));
-  REQUIRE(db.getAllCallStmts() == SetOfStmts({3}));
+  REQUIRE(db.getAllStmts(DesignEntity::CALL) == SetOfStmts({3}));
   REQUIRE(db.getAllStmts(DesignEntity::WHILE) == SetOfStmts({4}));
   REQUIRE(db.getAllStmts(DesignEntity::IF) == SetOfStmts({5}));
   REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({6}));
@@ -46,7 +49,7 @@ TEST_CASE("GET_ALL_STATEMENTS_EMPTY_TEST") {
   REQUIRE(db.getAllStmts(DesignEntity::STATEMENT) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::READ) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::PRINT) == SetOfStmts({}));
-  REQUIRE(db.getAllCallStmts() == SetOfStmts({}));
+  REQUIRE(db.getAllStmts(DesignEntity::CALL) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::WHILE) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::IF) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({}));

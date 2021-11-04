@@ -9,7 +9,6 @@
 #include <vector>
 
 #include "AffectsInfoKB.h"
-#include "CallsKB.h"
 #include "Common/Common.h"
 #include "Table.h"
 
@@ -30,7 +29,6 @@ class PKB {
   bool isStmt(DesignEntity de, StmtNo s);
   int getNumStmts(DesignEntity de);
 
-  SetOfStmts getAllCallStmts();
   // TODO(Merlin): Refractor More.
   void addRs(RelationshipType rs, int left, int right);
   void addRs(RelationshipType rs, int left, TableType rightType,
@@ -65,18 +63,8 @@ class PKB {
   SetOfStmtLists getVarMappings(RelationshipType rs);
 
   // Calls API
-  void addCalls(StmtNo s, PROC_NAME caller, PROC_NAME callee);
-  void addCallsT(PROC_NAME caller, PROC_NAME callee);
-  bool isCallStmt(StmtNo s);
-  bool isCalls(PROC_NAME caller, PROC_NAME callee);
-  std::unordered_set<PROC_IDX> getProcsCalledBy(PROC_NAME proc);
-  std::unordered_set<PROC_IDX> getCallerProcs(PROC_NAME proc);
-  std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsPairs();
-  PROC_IDX getProcCalledByCallStmt(int callStmtNum);
-  bool isCallsT(PROC_NAME caller, PROC_NAME callee);
-  std::unordered_set<PROC_IDX> getProcsCalledTBy(PROC_NAME proc);
-  std::unordered_set<PROC_IDX> getCallerTProcs(PROC_NAME proc);
-  std::vector<std::pair<PROC_IDX, std::vector<PROC_IDX>>> getAllCallsTPairs();
+  void addCallStmtToCallee(StmtNo, ProcName);
+  ProcIdx getProcCalledByCallStmt(int callStmtNum);
 
   // Affects Info API
   void addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmt);
@@ -111,7 +99,8 @@ class PKB {
                    {TableType::EXPR_TABLE, Table()}};
 
   // Design Abstractions
-  CallsKB callsKB = CallsKB(&tables.at(TableType::PROC_TABLE));
   AffectsInfoKB affectsInfoKB =
       AffectsInfoKB(&tables.at(TableType::PROC_TABLE));
+
+  std::unordered_map<StmtNo, ProcIdx> stmtToCallee;
 };

@@ -117,7 +117,10 @@ TEST_CASE("QueryEvaluator: Different design entities") {
   }
   pkb->addStmt(DesignEntity::READ, 1);
   pkb->addStmt(DesignEntity::PRINT, 2);
-  pkb->addCalls(3, "test1", "test2");
+  pkb->addStmt(DesignEntity::CALL, 3);
+  pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "test1",
+             TableType::PROC_TABLE, "test2");
+  pkb->addCallStmtToCallee(3, "test2");
   pkb->addStmt(DesignEntity::WHILE, 4);
   pkb->addStmt(DesignEntity::IF, 5);
   pkb->addStmt(DesignEntity::ASSIGN, 6);
