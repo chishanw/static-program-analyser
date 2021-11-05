@@ -7,27 +7,39 @@ using namespace Catch;
 TEST_CASE("WHILE_PATTERN") {
   // Init PKB
   PKB db = PKB();
+  RelationshipType rs = RelationshipType::PTT_WHILE;
 
   // Empty Results
-  REQUIRE(db.getVarMappings(RelationshipType::PTT_WHILE) == SetOfStmtLists());
-  REQUIRE(db.getStmtsForVar(RelationshipType::PTT_WHILE, "d") ==
+  REQUIRE(db.getVarMappings(rs) == SetOfStmtLists());
+  REQUIRE(db.getStmtsForVar(rs, "d") ==
           unordered_set<int>());
 
-  db.addPatternRs(RelationshipType::PTT_WHILE, 1, "a");
-  db.addPatternRs(RelationshipType::PTT_WHILE, 2, "a");
-  db.addPatternRs(RelationshipType::PTT_WHILE, 3, "b");
-  db.addPatternRs(RelationshipType::PTT_WHILE, 4, "b");
-  db.addPatternRs(RelationshipType::PTT_WHILE, 5, "c");
-  db.addPatternRs(RelationshipType::PTT_WHILE, 5, "d");
+  db.addPatternRs(rs, 1, "a");
+  db.addPatternRs(rs, 2, "a");
+  db.addPatternRs(rs, 3, "b");
+  db.addPatternRs(rs, 4, "b");
+  db.addPatternRs(rs, 5, "c");
+  db.addPatternRs(rs, 5, "d");
+
+  REQUIRE(db.isPatternRs(rs, 1, "a"));
+  REQUIRE(db.isPatternRs(rs, 2, "a"));
+  REQUIRE(db.isPatternRs(rs, 3, "b"));
+  REQUIRE(db.isPatternRs(rs, 4, "b"));
+  REQUIRE(db.isPatternRs(rs, 5, "c"));
+  REQUIRE(db.isPatternRs(rs, 5, "d"));
+  REQUIRE(!db.isPatternRs(rs, 1, "b"));
+  REQUIRE(!db.isPatternRs(rs, 5, "b"));
+  REQUIRE(!db.isPatternRs(rs, 16, "a"));
+  REQUIRE(!db.isPatternRs(RelationshipType::PTT_WHILE, 1, "b"));
 
   // w("a", _) = {1, 2}
-  REQUIRE(db.getStmtsForVar(RelationshipType::PTT_WHILE, "a") ==
+  REQUIRE(db.getStmtsForVar(rs, "a") ==
           unordered_set({1, 2}));
-  REQUIRE(db.getStmtsForVar(RelationshipType::PTT_WHILE, "b") ==
+  REQUIRE(db.getStmtsForVar(rs, "b") ==
           unordered_set({3, 4}));
-  REQUIRE(db.getStmtsForVar(RelationshipType::PTT_WHILE, "c") ==
+  REQUIRE(db.getStmtsForVar(rs, "c") ==
           unordered_set({5}));
-  REQUIRE(db.getStmtsForVar(RelationshipType::PTT_WHILE, "d") ==
+  REQUIRE(db.getStmtsForVar(rs, "d") ==
           unordered_set({5}));
 
   // w("_", _) = All possible pairs of <s, index(var_name)>
@@ -35,7 +47,7 @@ TEST_CASE("WHILE_PATTERN") {
   int bIndex = db.getIndexOf(TableType::VAR_TABLE, "b");
   int cIndex = db.getIndexOf(TableType::VAR_TABLE, "c");
   int dIndex = db.getIndexOf(TableType::VAR_TABLE, "d");
-  REQUIRE(db.getVarMappings(RelationshipType::PTT_WHILE) ==
+  REQUIRE(db.getVarMappings(rs) ==
           SetOfIntLists({
               vector({1, aIndex}),
               vector({2, aIndex}),
@@ -46,7 +58,7 @@ TEST_CASE("WHILE_PATTERN") {
           }));
 }
 
-TEST_CASE("HACK") {
+TEST_CASE("ASSIGNMENT PATTERN") {
   // Init PKB
   PKB db = PKB();
   RelationshipType rs = RelationshipType::PTT_ASSIGN_FULL_EXPR;
@@ -61,6 +73,16 @@ TEST_CASE("HACK") {
   db.addPatternRs(rs, 3, "v", "x+1");
   db.addPatternRs(rs, 4, "v", "x+2");
 
+  REQUIRE(db.isPatternRs(rs, 1, "y", "x+1"));
+  REQUIRE(db.isPatternRs(rs, 2, "y", "x+1"));
+  REQUIRE(db.isPatternRs(rs, 3, "v", "x+1"));
+  REQUIRE(db.isPatternRs(rs, 4, "v", "x+2"));
+
+  REQUIRE(!db.isPatternRs(rs, 5, "v", "x+2"));
+  REQUIRE(!db.isPatternRs(rs, 2, "v", "x"));
+  REQUIRE(!db.isPatternRs(rs, 3, "a", "x+1"));
+  REQUIRE(!db.isPatternRs(RelationshipType::PTT_IF, 4, "v", "x+2"));
+
   // a (_, "x+1") = {1, 2, 3}
   REQUIRE(db.getStmtsForExpr(rs, "x+1") == unordered_set({1, 2, 3}));
 
@@ -74,11 +96,11 @@ TEST_CASE("HACK") {
           SetOfStmtLists({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
                           vector<int>({3, vIdx})}));
 
-  //// a ("y",_) = {1, 2}, a("v",_) = {3, 4}
+  // a ("y",_) = {1, 2}, a("v",_) = {3, 4}
   REQUIRE(db.getStmtsForVar(rs, "y") == unordered_set({1, 2}));
   REQUIRE(db.getStmtsForVar(rs, "v") == unordered_set({3, 4}));
 
-  //// a(v, _)  = return all pairs for filtering (s, varidx), etc etc
+  // a(v, _)  = return all pairs for filtering (s, varidx), etc etc
   REQUIRE(db.getVarMappings(rs) ==
           SetOfStmtLists({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
                           vector<int>({3, vIdx}), vector<int>({4, vIdx})}));
@@ -89,9 +111,4 @@ TEST_CASE("HACK") {
   REQUIRE(db.getStmtsForVar(rs, "good").empty());
   REQUIRE(db.getStmtsForExpr(rs, "bad").empty());
   REQUIRE(db.getVarMappingsForExpr(rs, "x+3").empty());
-
-  int s = 1;
-  string var = "";
-  string expr = "";
-  db.addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, s, var, expr);
 }

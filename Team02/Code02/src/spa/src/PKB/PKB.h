@@ -49,12 +49,14 @@ class PKB {
   std::unordered_set<int> getLeft(RelationshipType rs, int right);
   std::unordered_set<int> getLeft(RelationshipType rs, TableType rightType,
                                   std::string);
-
   SetOfStmtLists getMappings(RelationshipType rs, ParamPosition param);
 
   void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName,
                     std::string expr);
   void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName);
+  bool isPatternRs(RelationshipType rs, StmtNo stmtno, std::string varName,
+                   std::string expr);
+  bool isPatternRs(RelationshipType rs, StmtNo stmtno, std::string varName);
   SetOfStmts getStmtsForVarAndExpr(RelationshipType rs, std::string varName,
                                    std::string expr);
   SetOfStmts getStmtsForVar(RelationshipType rs, std::string varName);

@@ -203,6 +203,26 @@ void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName,
   tablesPttRs[rs][newPair].insert(stmtNo);
 }
 
+bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, string varName,
+  string expr) {
+  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
+  int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
+  if (tablesPttRs.count(rs) == 0) {
+    return false;
+  }
+  auto key = pair(varIndex, exprIndex);
+  if (tablesPttRs[rs].count(key) == 0) {
+    return false;
+  }
+
+  return tablesPttRs[rs][key].count(stmtno) != 0;
+}
+
+bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, string varName) {
+  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
+  return isRs(rs, varIndex, stmtno);
+}
+
 SetOfStmts PKB::getStmtsForVarAndExpr(RelationshipType rs, string varName,
                                       string expr) {
   int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
