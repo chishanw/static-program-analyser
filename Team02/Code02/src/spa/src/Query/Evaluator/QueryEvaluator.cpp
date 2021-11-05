@@ -229,6 +229,11 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
   bool isPairClause =
       find(pairParamTypesCombos.begin(), pairParamTypesCombos.end(),
            paramTypesCombo) != pairParamTypesCombos.end();
+  if (relationshipType == RelationshipType::AFFECTS ||
+      relationshipType == RelationshipType::AFFECTS_T) {
+    isPairClause =
+        left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM;
+  }
 
   // evaluate clause that returns a boolean
   if (isBoolClause) {
