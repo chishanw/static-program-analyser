@@ -462,8 +462,8 @@ TEST_CASE("QueryEvaluator: 1 Such That + 1 Pattern Clause") {
   }
 
   SECTION("Select s1 such that UsesS(3, 'w') pattern a (v, 'w')") {
-    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
-                                     {ParamType::INTEGER_LITERAL, "1"},
+    SuchThatClause suchThatClause = {RelationshipType::USES_S,
+                                     {ParamType::INTEGER_LITERAL, "3"},
                                      {ParamType::NAME_LITERAL, "w"}};
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});

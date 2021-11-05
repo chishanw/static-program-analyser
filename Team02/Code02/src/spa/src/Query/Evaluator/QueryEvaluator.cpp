@@ -17,12 +17,7 @@ using namespace std;
 using namespace query;
 
 QueryEvaluator::QueryEvaluator(PKB* pkb, QueryOptimizer* optimizer)
-    : followsEvaluator(pkb),
-      parentEvaluator(pkb),
-      usesEvaluator(pkb),
-      modifiesEvaluator(pkb),
-      callsEvaluator(pkb),
-      nextEvaluator(pkb),
+    : nextEvaluator(pkb),
       affectsEvaluator(pkb),
       patternEvaluator(pkb),
       withEvaluator(pkb) {
@@ -102,12 +97,131 @@ FinalQueryResults QueryEvaluator::evaluateQuery(
 
 /* Evaluate Such That Clauses -------------------------------------------- */
 void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
+  auto relationshipType = clause.relationshipType;
+
+  switch (clause.relationshipType) {
+    case RelationshipType::FOLLOWS:
+    case RelationshipType::FOLLOWS_T:
+    case RelationshipType::PARENT:
+    case RelationshipType::PARENT_T:
+    case RelationshipType::USES_S:
+    case RelationshipType::USES_P:
+    case RelationshipType::MODIFIES_S:
+    case RelationshipType::MODIFIES_P:
+    case RelationshipType::CALLS:
+    case RelationshipType::CALLS_T:
+    case RelationshipType::NEXT:
+    case RelationshipType::NEXT_BIP:
+      return evaluateSuchThatClauseHelper(clause);
+    case RelationshipType::NEXT_T:
+    case RelationshipType::NEXT_BIP_T:
+    case RelationshipType::AFFECTS:
+    case RelationshipType::AFFECTS_T:
+      return evaluateSuchThatOnDemandClause(clause);
+    default:
+      DMOprintErrMsgAndExit(
+          "[QueryEvaluator][evaluateSuchThatClause] invalid relationship type");
+  }
+}
+
+void QueryEvaluator::evaluateSuchThatClauseHelper(SuchThatClause clause) {
+  // resolve left and right param one by one
+  // resolve = determine its possible values
+
+  // check whether left or right param is in the result table
+  // if it is, they are immediately resolve
+  // if not, pull their values from PKB
+
+  // if we know the r/s type, wildcard can be treated as an generic syn that
+  // doesn't get added into the result table in the end
+  // e.g. follows(_, _)
+  // then we know the wildcards here can be treated as s1 & s2, and the only
+  // diff is that they don't get added into the table in the end
+
+  // first look at left, then right
+  // if left is literal, alr resolved
+  // if left is syn, check whether it is in the result table
+  //       if it is, resolved
+  //       if not, pull from PKB
+  // if left is wildcard, treat it as a syn and pull all the possible values
+  // from PKB
+
+  // then look at right and resolve according to resolved left values
+  // if right is literal, check whether it agrees with
+  // left param's resolved values
+  // if right is syn, get its values based on left param's
+  // resolved valuesleft param's resolved values
+  // if right is wildcard, treat it as a syn and pull all the possible values
+  // from PKB
+
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+  vector<vector<int>> leftRightValuePairs;
+
+  // if both parems are syn and present in the result table, grab them
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM &&
+      (queryResultsSynonyms.count(left.value) > 0) &&
+      (queryResultsSynonyms.count(right.value) > 0)) {
+    leftRightValuePairs = resolveBothParamsFromResultTable(clause);
+  } else {
+    // otherwise resolve left then right param
+    unordered_set<int> leftValues = resolveLeftParam(clause);
+    leftRightValuePairs = resolveRightParamFromLeftValues(clause, leftValues);
+  }
+
+  auto isLiteral = [](ParamType type) {
+    return type == ParamType::INTEGER_LITERAL ||
+           type == ParamType::NAME_LITERAL;
+  };
+  bool isBoolClause =
+      (isLiteral(left.type) && isLiteral(right.type)) ||
+      (isLiteral(left.type) && right.type == ParamType::WILDCARD) ||
+      (left.type == ParamType::WILDCARD && isLiteral(right.type)) ||
+      (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD);
+
+  if (isBoolClause) {
+    areAllClausesTrue = !leftRightValuePairs.empty();
+    return;
+  }
+
+  // transform data if it's (syn, integer) or a (syn, wildcard) combination
+  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
+    // do nothing
+  } else if (left.type == ParamType::SYNONYM) {
+    unordered_set<int> uniqueValues;
+    for (auto p : leftRightValuePairs) {
+      uniqueValues.insert(p.front());
+    }
+    leftRightValuePairs = formatRefResults(uniqueValues);
+  } else if (right.type == ParamType::SYNONYM) {
+    unordered_set<int> uniqueValues;
+    for (auto p : leftRightValuePairs) {
+      uniqueValues.insert(p.back());
+    }
+    leftRightValuePairs = formatRefResults(uniqueValues);
+  } else {
+    DMOprintErrMsgAndExit(
+        "shouldn't reach here, this if-else block asserts that at least one "
+        "of the params is a syn");
+  }
+
+  filterAndAddIncomingResults(leftRightValuePairs, left, right);
+}
+
+void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
   auto left = clause.leftParam;
   auto right = clause.rightParam;
   auto relationshipType = clause.relationshipType;
 
   pair<ParamType, ParamType> paramTypesCombo = make_pair(left.type, right.type);
-  bool isBoolClause = getIsBoolClause(relationshipType, paramTypesCombo);
+  vector<pair<ParamType, ParamType>> boolParamTypesCombos = {
+      {ParamType::INTEGER_LITERAL, ParamType::INTEGER_LITERAL},
+      {ParamType::INTEGER_LITERAL, ParamType::WILDCARD},
+      {ParamType::WILDCARD, ParamType::INTEGER_LITERAL},
+      {ParamType::WILDCARD, ParamType::WILDCARD}};
+  bool isBoolClause =
+      find(boolParamTypesCombos.begin(), boolParamTypesCombos.end(),
+           paramTypesCombo) != boolParamTypesCombos.end();
   vector<pair<ParamType, ParamType>> pairParamTypesCombos = {
       {ParamType::SYNONYM, ParamType::SYNONYM},
       {ParamType::SYNONYM, ParamType::WILDCARD},
@@ -126,7 +240,7 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
   // the rest of clauses has at least one synonym
   // convert clauses with synonyms to bool clauses if possible
   // by taking INTEGER/NAME_LITERAL results from previous clauses
-  auto newParams = getParamsWithPrevResults(left, right);
+  auto newParams = getResolvedParamsForOnDemandRs(left, right);
   if (!newParams.empty()) {
     // if there is any results that can be reused from previous clauses
     for (auto newParam : newParams) {
@@ -150,16 +264,13 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
         switch (paramPosition) {
           case ParamPosition::BOTH:
             incomingResults.push_back(
-                {getIndexFromLiteral(left.value, newLeft.value),
-                 getIndexFromLiteral(right.value, newRight.value)});
+                {stoi(newLeft.value), stoi(newRight.value)});
             break;
           case ParamPosition::LEFT:
-            incomingResults.push_back(
-                {getIndexFromLiteral(left.value, newLeft.value)});
+            incomingResults.push_back({stoi(newLeft.value)});
             break;
           case ParamPosition::RIGHT:
-            incomingResults.push_back(
-                {getIndexFromLiteral(right.value, newRight.value)});
+            incomingResults.push_back({stoi(newRight.value)});
             break;
           default:
             break;
@@ -187,30 +298,6 @@ bool QueryEvaluator::callSubEvaluatorBool(RelationshipType relationshipType,
                                           const Param& left,
                                           const Param& right) {
   switch (relationshipType) {
-    case RelationshipType::FOLLOWS:
-      return followsEvaluator.evaluateBoolFollows(left, right);
-    case RelationshipType::FOLLOWS_T:
-      return followsEvaluator.evaluateBoolFollowsT(left, right);
-    case RelationshipType::PARENT:
-      return parentEvaluator.evaluateBoolParent(left, right);
-    case RelationshipType::PARENT_T:
-      return parentEvaluator.evaluateBoolParentT(left, right);
-    case RelationshipType::MODIFIES_S:
-      return modifiesEvaluator.evaluateBoolModifiesS(left, right);
-    case RelationshipType::MODIFIES_P:
-      return modifiesEvaluator.evaluateBoolModifiesP(left, right);
-    case RelationshipType::USES_S:
-      return usesEvaluator.evaluateBoolUsesS(left, right);
-    case RelationshipType::USES_P:
-      return usesEvaluator.evaluateBoolUsesP(left, right);
-    case RelationshipType::CALLS:
-      return callsEvaluator.evaluateBoolCalls(left, right);
-    case RelationshipType::CALLS_T:
-      return callsEvaluator.evaluateBoolCallsT(left, right);
-    case RelationshipType::NEXT:
-    case RelationshipType::NEXT_BIP:
-      return nextEvaluator.evaluateBoolNextNextBip(relationshipType, left,
-                                                   right);
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
       return nextEvaluator.evaluateBoolNextTNextBipT(relationshipType, left,
@@ -228,41 +315,6 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorRef(
     RelationshipType relationshipType, const Param& left, const Param& right) {
   unordered_set<STMT_NO> refResults = {};
   switch (relationshipType) {
-    case RelationshipType::FOLLOWS:
-      refResults = followsEvaluator.evaluateStmtFollows(left, right);
-      break;
-    case RelationshipType::FOLLOWS_T:
-      refResults = followsEvaluator.evaluateStmtFollowsT(left, right);
-      break;
-    case RelationshipType::PARENT:
-      refResults = parentEvaluator.evaluateStmtParent(left, right);
-      break;
-    case RelationshipType::PARENT_T:
-      refResults = parentEvaluator.evaluateStmtParentT(left, right);
-      break;
-    case RelationshipType::MODIFIES_S:
-      refResults = modifiesEvaluator.evaluateModifiesS(left, right);
-      break;
-    case RelationshipType::MODIFIES_P:
-      refResults = modifiesEvaluator.evaluateModifiesP(left, right);
-      break;
-    case RelationshipType::USES_S:
-      refResults = usesEvaluator.evaluateUsesS(left, right);
-      break;
-    case RelationshipType::USES_P:
-      refResults = usesEvaluator.evaluateUsesP(left, right);
-      break;
-    case RelationshipType::CALLS:
-      refResults = callsEvaluator.evaluateProcCalls(left, right);
-      break;
-    case RelationshipType::CALLS_T:
-      refResults = callsEvaluator.evaluateProcCallsT(left, right);
-      break;
-    case RelationshipType::NEXT:
-    case RelationshipType::NEXT_BIP:
-      refResults =
-          nextEvaluator.evaluateNextNextBip(relationshipType, left, right);
-      break;
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
       refResults =
@@ -283,30 +335,6 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorRef(
 ClauseIncomingResults QueryEvaluator::callSubEvaluatorPair(
     RelationshipType relationshipType, const Param& left, const Param& right) {
   switch (relationshipType) {
-    case RelationshipType::FOLLOWS:
-      return followsEvaluator.evaluateStmtPairFollows(left, right);
-    case RelationshipType::FOLLOWS_T:
-      return followsEvaluator.evaluateStmtPairFollowsT(left, right);
-    case RelationshipType::PARENT:
-      return parentEvaluator.evaluateStmtPairParent(left, right);
-    case RelationshipType::PARENT_T:
-      return parentEvaluator.evaluateStmtPairParentT(left, right);
-    case RelationshipType::MODIFIES_S:
-      return modifiesEvaluator.evaluatePairModifiesS(left, right);
-    case RelationshipType::MODIFIES_P:
-      return modifiesEvaluator.evaluatePairModifiesP(left, right);
-    case RelationshipType::USES_S:
-      return usesEvaluator.evaluatePairUsesS(left, right);
-    case RelationshipType::USES_P:
-      return usesEvaluator.evaluatePairUsesP(left, right);
-    case RelationshipType::CALLS:
-      return callsEvaluator.evaluateProcPairCalls(left, right);
-    case RelationshipType::CALLS_T:
-      return callsEvaluator.evaluateProcPairCallsT(left, right);
-    case RelationshipType::NEXT:
-    case RelationshipType::NEXT_BIP:
-      return nextEvaluator.evaluatePairNextNextBip(relationshipType, left,
-                                                   right);
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
       return nextEvaluator.evaluatePairNextTNextBipT(relationshipType, left,
@@ -818,136 +846,241 @@ void QueryEvaluator::filterQuerySynonymsBySelectSynonyms(
   queryResultsSynonyms = filteredSynonyms;
 }
 
-/* Helpers to Evaluate Based on Previous Clauses ------------------------ */
+/* Helpers to Evaluate Based on Previous Clauses ----------------------- */
+vector<vector<int>> QueryEvaluator::resolveBothParamsFromResultTable(
+    query::SuchThatClause clause) {
+  auto rsType = clause.relationshipType;
+  auto left = clause.leftParam;
+  auto right = clause.rightParam;
+  SetOfStmtLists leftRightValuePairsSet;
+
+  for (auto resultEntry : groupQueryResults) {
+    int leftValue = resultEntry.at(left.value);
+    int rightValue = resultEntry.at(right.value);
+
+    if (pkb->isRs(rsType, leftValue, rightValue))
+      leftRightValuePairsSet.insert({leftValue, rightValue});
+  }
+
+  return vector<vector<int>>{leftRightValuePairsSet.begin(),
+                             leftRightValuePairsSet.end()};
+}
+
+unordered_set<int> QueryEvaluator::resolveLeftParam(
+    query::SuchThatClause clause) {
+  auto rsType = clause.relationshipType;
+  auto left = clause.leftParam;
+  unordered_set<int> leftValues;
+
+  switch (left.type) {
+    case ParamType::INTEGER_LITERAL:
+      leftValues.insert(stoi(left.value));
+      break;
+
+    case ParamType::NAME_LITERAL:
+      leftValues.insert(convertLeftNameLiteralToInt(rsType, left.value));
+      break;
+
+    case ParamType::SYNONYM:
+      if (queryResultsSynonyms.find(left.value) != queryResultsSynonyms.end()) {
+        // get from groupQueryResults
+        for (auto entry : groupQueryResults) {
+          leftValues.insert(entry[left.value]);
+        }
+        break;
+      }
+
+      // get from pkb
+      // fall throught to WILDCARD case
+
+    case ParamType::WILDCARD:
+      // there's no ambiguity what syn type the wildcard would be if it were a
+      // syn, can store this info in a map that has r/s type as key and syn type
+      // as value
+      if (rsType == RelationshipType::MODIFIES_P ||
+          rsType == RelationshipType::USES_P ||
+          rsType == RelationshipType::CALLS ||
+          rsType == RelationshipType::CALLS_T) {
+        leftValues.merge(pkb->getAllElementsAt(TableType::PROC_TABLE));
+      } else {
+        // get all stmts of synonym's DesignEntity
+        leftValues.merge(pkb->getAllStmts(synonymMap[left.value]));
+      }
+      break;
+
+    default:
+      DMOprintErrMsgAndExit("RsType " + to_string(static_cast<int>(rsType)) +
+                            " shouldn't have " +
+                            to_string(static_cast<int>(left.type)) +
+                            " as left param, param's value = " + left.value);
+      break;
+  }
+
+  return leftValues;
+}
+
+vector<vector<int>> QueryEvaluator::resolveRightParamFromLeftValues(
+    query::SuchThatClause clause, unordered_set<int> leftValues) {
+  auto rsType = clause.relationshipType;
+  auto right = clause.rightParam;
+  vector<vector<int>> leftRightValuePairs;
+
+  switch (right.type) {
+    case ParamType::INTEGER_LITERAL:
+
+      int rightValue;
+
+      rightValue = stoi(right.value);
+
+      for (int leftValue : leftValues) {
+        if (pkb->isRs(rsType, leftValue, rightValue)) {
+          leftRightValuePairs.push_back({leftValue, rightValue});
+        }
+      }
+      break;
+
+    case ParamType::NAME_LITERAL:
+
+      rightValue = convertRightNameLiteralToInt(rsType, right.value);
+
+      for (int leftValue : leftValues) {
+        if (pkb->isRs(rsType, leftValue, rightValue)) {
+          leftRightValuePairs.push_back({leftValue, rightValue});
+        }
+      }
+      break;
+
+    case ParamType::SYNONYM:
+      // if synonym is alr in the groupQueryResults
+      if (queryResultsSynonyms.find(right.value) !=
+          queryResultsSynonyms.end()) {
+        unordered_set<int> rightValues;
+        for (auto entry : groupQueryResults) {
+          rightValues.insert(entry[right.value]);
+        }
+
+        // cross product left values and right values
+        for (int leftValue : leftValues) {
+          for (int rightValue : rightValues) {
+            if (pkb->isRs(rsType, leftValue, rightValue)) {
+              leftRightValuePairs.push_back({leftValue, rightValue});
+            }
+          }
+        }
+      } else {
+        for (int leftValue : leftValues) {
+          for (int rightValue : pkb->getRight(rsType, leftValue)) {
+            leftRightValuePairs.push_back({leftValue, rightValue});
+          }
+        }
+      }
+
+      break;
+
+    case ParamType::WILDCARD:
+      for (int leftValue : leftValues) {
+        if (!pkb->getRight(rsType, leftValue).empty()) {
+          leftRightValuePairs.push_back({leftValue});
+        }
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return leftRightValuePairs;
+}
+
+int QueryEvaluator::convertLeftNameLiteralToInt(RelationshipType rsType,
+                                                string pValue) {
+  switch (rsType) {
+    case RelationshipType::USES_P:
+    case RelationshipType::MODIFIES_P:
+    case RelationshipType::CALLS:
+    case RelationshipType::CALLS_T:
+      return pkb->getIndexOf(TableType::PROC_TABLE, pValue);
+
+    default:
+      DMOprintErrMsgAndExit(
+          "RsType " + to_string(static_cast<int>(rsType)) +
+          " shouldn't have NAME_LITERAL as left param, param's value = " +
+          pValue);
+      break;
+  }
+  return -1;
+}
+
+int QueryEvaluator::convertRightNameLiteralToInt(RelationshipType rsType,
+                                                 string pValue) {
+  switch (rsType) {
+    case RelationshipType::USES_S:
+    case RelationshipType::USES_P:
+    case RelationshipType::MODIFIES_S:
+    case RelationshipType::MODIFIES_P:
+      return pkb->getIndexOf(TableType::VAR_TABLE, pValue);
+    case RelationshipType::CALLS:
+    case RelationshipType::CALLS_T:
+      return pkb->getIndexOf(TableType::PROC_TABLE, pValue);
+    default:
+      DMOprintErrMsgAndExit(
+          "RsType " + to_string(static_cast<int>(rsType)) +
+          " shouldn't have NAME_LITERAL as right param, param's value = " +
+          pValue);
+      break;
+  }
+  return -1;
+}
+
+/* Helpers to Evaluate Based on Previous Clauses: On-Demand Rs -------------- */
 vector<tuple<Param, Param, ParamPosition>>
-QueryEvaluator::getParamsWithPrevResults(const Param& left,
-                                         const Param& right) {
+QueryEvaluator::getResolvedParamsForOnDemandRs(const Param& left,
+                                               const Param& right) {
   vector<tuple<Param, Param, ParamPosition>> newParams = {};
 
   if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
     for (auto result : groupQueryResults) {
       if (result.find(left.value) != result.end() &&
           result.find(right.value) != result.end()) {
-        auto leftLiteral =
-            getParamTypeAndLiteralFromIndex(left.value, result.at(left.value));
-        auto rightLiteral = getParamTypeAndLiteralFromIndex(
-            right.value, result.at(right.value));
-        Param newLeft = {leftLiteral.first, leftLiteral.second};
-        Param newRight = {rightLiteral.first, rightLiteral.second};
+        Param newLeft = {ParamType::INTEGER_LITERAL,
+                         to_string(result[left.value])};
+        Param newRight = {ParamType::INTEGER_LITERAL,
+                          to_string(result[right.value])};
         newParams.push_back(make_tuple(newLeft, newRight, ParamPosition::BOTH));
       }
     }
 
     if (newParams.empty()) {
       // try to get individual s1 || s2 results if s1 && s2 not available
-      addLeftParamFromPrevResults(left, right, newParams);
-      addRightParamFromPrevResults(left, right, newParams);
+      resolveLeftParamForOnDemandRs(left, right, newParams);
+      resolveRightParamForOnDemandRs(left, right, newParams);
     }
   } else if (left.type == ParamType::SYNONYM) {
-    addLeftParamFromPrevResults(left, right, newParams);
+    resolveLeftParamForOnDemandRs(left, right, newParams);
   } else {
-    addRightParamFromPrevResults(left, right, newParams);
+    resolveRightParamForOnDemandRs(left, right, newParams);
   }
   return newParams;
 }
 
-void QueryEvaluator::addLeftParamFromPrevResults(
+void QueryEvaluator::resolveLeftParamForOnDemandRs(
     const Param& left, const Param& right,
     vector<tuple<Param, Param, ParamPosition>>& newParams) {
   for (auto result : clauseSynonymValuesTable[left.value]) {
-    auto leftLiteral = getParamTypeAndLiteralFromIndex(left.value, result);
+    auto leftLiteral = make_pair(ParamType::INTEGER_LITERAL, to_string(result));
     Param newLeft = {leftLiteral.first, leftLiteral.second};
     newParams.push_back(make_tuple(newLeft, right, ParamPosition::LEFT));
   }
 }
 
-void QueryEvaluator::addRightParamFromPrevResults(
+void QueryEvaluator::resolveRightParamForOnDemandRs(
     const Param& left, const Param& right,
     vector<tuple<Param, Param, ParamPosition>>& newParams) {
   for (auto result : clauseSynonymValuesTable[right.value]) {
-    auto rightLiteral = getParamTypeAndLiteralFromIndex(right.value, result);
+    auto rightLiteral =
+        make_pair(ParamType::INTEGER_LITERAL, to_string(result));
     Param newRight = {rightLiteral.first, rightLiteral.second};
     newParams.push_back(make_tuple(left, newRight, ParamPosition::RIGHT));
-  }
-}
-
-bool QueryEvaluator::getIsBoolClause(
-    RelationshipType relationshipType,
-    pair<ParamType, ParamType> paramTypesCombo) {
-  vector<pair<ParamType, ParamType>> boolParamTypesCombos = {};
-  switch (relationshipType) {
-    case RelationshipType::FOLLOWS:
-    case RelationshipType::FOLLOWS_T:
-    case RelationshipType::PARENT:
-    case RelationshipType::PARENT_T:
-    case RelationshipType::NEXT:
-    case RelationshipType::NEXT_BIP:
-    case RelationshipType::NEXT_T:
-    case RelationshipType::NEXT_BIP_T:
-    case RelationshipType::AFFECTS:
-    case RelationshipType::AFFECTS_T:
-      boolParamTypesCombos = {
-          {ParamType::INTEGER_LITERAL, ParamType::INTEGER_LITERAL},
-          {ParamType::INTEGER_LITERAL, ParamType::WILDCARD},
-          {ParamType::WILDCARD, ParamType::INTEGER_LITERAL},
-          {ParamType::WILDCARD, ParamType::WILDCARD}};
-      break;
-    case RelationshipType::USES_S:
-    case RelationshipType::MODIFIES_S:
-      boolParamTypesCombos = {
-          {ParamType::INTEGER_LITERAL, ParamType::NAME_LITERAL},
-          {ParamType::INTEGER_LITERAL, ParamType::WILDCARD}};
-      break;
-    case RelationshipType::USES_P:
-    case RelationshipType::MODIFIES_P:
-      boolParamTypesCombos = {
-          {ParamType::NAME_LITERAL, ParamType::NAME_LITERAL},
-          {ParamType::NAME_LITERAL, ParamType::WILDCARD}};
-      break;
-    case RelationshipType::CALLS:
-    case RelationshipType::CALLS_T:
-      boolParamTypesCombos = {
-          {ParamType::NAME_LITERAL, ParamType::NAME_LITERAL},
-          {ParamType::NAME_LITERAL, ParamType::WILDCARD},
-          {ParamType::WILDCARD, ParamType::NAME_LITERAL},
-          {ParamType::WILDCARD, ParamType::WILDCARD}};
-      break;
-    default:
-      break;
-  }
-  return find(boolParamTypesCombos.begin(), boolParamTypesCombos.end(),
-              paramTypesCombo) != boolParamTypesCombos.end();
-}
-
-pair<ParamType, string> QueryEvaluator::getParamTypeAndLiteralFromIndex(
-    string synonymName, int index) {
-  DesignEntity designEntity = synonymMap.at(synonymName);
-  switch (designEntity) {
-    case DesignEntity::VARIABLE:
-      return make_pair(ParamType::NAME_LITERAL,
-                       pkb->getElementAt(TableType::VAR_TABLE, index));
-    case DesignEntity::PROCEDURE:
-      return make_pair(ParamType::NAME_LITERAL,
-                       pkb->getElementAt(TableType::PROC_TABLE, index));
-    case DesignEntity::CONSTANT:
-      return make_pair(ParamType::NAME_LITERAL,
-                       pkb->getElementAt(TableType::CONST_TABLE, index));
-    default:
-      return make_pair(ParamType::INTEGER_LITERAL, to_string(index));
-  }
-}
-
-int QueryEvaluator::getIndexFromLiteral(string synonymName, string literal) {
-  DesignEntity designEntity = synonymMap.at(synonymName);
-  switch (designEntity) {
-    case DesignEntity::VARIABLE:
-      return pkb->getIndexOf(TableType::VAR_TABLE, literal);
-    case DesignEntity::PROCEDURE:
-      return pkb->getIndexOf(TableType::PROC_TABLE, literal);
-    case DesignEntity::CONSTANT:
-      return pkb->getIndexOf(TableType::CONST_TABLE, literal);
-    default:
-      return stoi(literal);
   }
 }
 

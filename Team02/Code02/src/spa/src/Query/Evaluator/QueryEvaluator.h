@@ -4,13 +4,8 @@
 #include <PKB/PKB.h>
 #include <Query/Common.h>
 #include <Query/Evaluator/AffectsEvaluator.h>
-#include <Query/Evaluator/CallsEvaluator.h>
-#include <Query/Evaluator/FollowsEvaluator.h>
-#include <Query/Evaluator/ModifiesEvaluator.h>
 #include <Query/Evaluator/NextEvaluator.h>
-#include <Query/Evaluator/ParentEvaluator.h>
 #include <Query/Evaluator/PatternEvaluator.h>
-#include <Query/Evaluator/UsesEvaluator.h>
 #include <Query/Evaluator/WithEvaluator.h>
 #include <Query/Optimizer/QueryOptimizer.h>
 
@@ -33,11 +28,6 @@ class QueryEvaluator {
   PKB* pkb;
   QueryOptimizer* optimizer;
   std::unordered_map<std::string, DesignEntity> synonymMap;
-  FollowsEvaluator followsEvaluator;
-  ParentEvaluator parentEvaluator;
-  UsesEvaluator usesEvaluator;
-  ModifiesEvaluator modifiesEvaluator;
-  CallsEvaluator callsEvaluator;
   NextEvaluator nextEvaluator;
   AffectsEvaluator affectsEvaluator;
   PatternEvaluator patternEvaluator;
@@ -81,8 +71,10 @@ class QueryEvaluator {
       std::vector<int> incomingResult,
       std::vector<std::string> incomingResultsSynonyms);
 
-  // methods to call the relevant sub evaluator
+  // methods to process different types of clauses
   void evaluateSuchThatClause(query::SuchThatClause);
+  void evaluateSuchThatClauseHelper(query::SuchThatClause);
+  void evaluateSuchThatOnDemandClause(query::SuchThatClause);
   bool callSubEvaluatorBool(RelationshipType relationshipType,
                             const query::Param& left,
                             const query::Param& right);
@@ -112,22 +104,29 @@ class QueryEvaluator {
       const std::vector<query::Synonym>& selectedSynonyms);
   void mergeGroupResultsIntoFinalResults();
 
-  // helpers for evaluating based on prev clauses
+  // helpers for evaluating based on prev clauses - non on demand rs
+  std::vector<std::vector<int>> resolveBothParamsFromResultTable(
+      query::SuchThatClause clause);
+  std::unordered_set<int> resolveLeftParam(query::SuchThatClause clause);
+  std::vector<std::vector<int>> resolveRightParamFromLeftValues(
+      query::SuchThatClause clause, std::unordered_set<int> leftValues);
+  int convertLeftNameLiteralToInt(RelationshipType rsType,
+                                  std::string nameLiteral);
+  int convertRightNameLiteralToInt(RelationshipType rsType,
+                                   std::string nameLiteral);
+
+  // helpers for evaluating based on prev clauses - on demand rs
   std::vector<std::tuple<query::Param, query::Param, ParamPosition>>
-  getParamsWithPrevResults(const query::Param& left, const query::Param& right);
-  void addLeftParamFromPrevResults(
+  getResolvedParamsForOnDemandRs(const query::Param& left,
+                                 const query::Param& right);
+  void resolveLeftParamForOnDemandRs(
       const query::Param& left, const query::Param& right,
       std::vector<std::tuple<query::Param, query::Param, ParamPosition>>&
           newParams);
-  void addRightParamFromPrevResults(
+  void resolveRightParamForOnDemandRs(
       const query::Param& left, const query::Param& right,
       std::vector<std::tuple<query::Param, query::Param, ParamPosition>>&
           newParams);
-  bool getIsBoolClause(RelationshipType relationshipType,
-                       std::pair<query::ParamType, query::ParamType>);
-  std::pair<query::ParamType, std::string> getParamTypeAndLiteralFromIndex(
-      std::string synonymName, int index);
-  int getIndexFromLiteral(std::string synonymName, std::string literal);
 
   // miscellaneous helpers
   query::ClauseIncomingResults formatRefResults(

@@ -5878,6 +5878,11 @@ assign a; call c;
 Select <a, c.stmt#> such that Follows*(a, c)
 1 2, 1 3, 10 13, 11 13, 12 13, 15 18, 16 18, 17 18
 5000
+455 - Follows* test, assign and call
+assign a; call c;
+Select <c, a> such that Follows*(a, c.procName)
+none
+5000
 456 - Follows* test, assign and call
 assign a; call c;
 Select <c.stmt#, a.stmt#> such that Follows*(a, c)
