@@ -7,40 +7,37 @@
 using namespace std;
 
 void PKB::addStmt(DesignEntity de, StmtNo s) {
-  if (tableOfStmts.count(DesignEntity::STATEMENT) == 0) {
-    tableOfStmts[DesignEntity::STATEMENT] = SetOfStmts();
-  }
-
-  if (tableOfStmts.count(de) == 0) {
-    tableOfStmts[de] = SetOfStmts();
-  }
-
-  tableOfStmts.at(DesignEntity::STATEMENT).insert(s);
-  tableOfStmts.at(de).insert(s);
+  tableOfStmts[DesignEntity::STATEMENT].insert(s);
+  tableOfStmts[DesignEntity::PROG_LINE].insert(s);
+  tableOfStmts[de].insert(s);
 }
 
 SetOfStmts PKB::getAllStmts(DesignEntity de) {
-  if (tableOfStmts.count(de) == 0) {
-    return SetOfStmts();
-  }
-
-  return tableOfStmts.at(de);
+  return tableOfStmts[de];
 }
 
 bool PKB::isStmt(DesignEntity de, StmtNo s) {
-  if (tableOfStmts.count(de) == 0) {
-    return false;
-  }
-
-  return tableOfStmts.at(de).count(s) > 0;
+  return tableOfStmts[de].find(s) != tableOfStmts[de].end();
 }
 
-int PKB::getNumStmts(DesignEntity de) {
-  if (tableOfStmts.count(de) == 0) {
-    return 0;
+int PKB::getNumEntity(DesignEntity de) {
+  switch (de) {
+    case DesignEntity::STATEMENT:
+    case DesignEntity::READ:
+    case DesignEntity::PRINT:
+    case DesignEntity::CALL:
+    case DesignEntity::WHILE:
+    case DesignEntity::IF:
+    case DesignEntity::ASSIGN:
+    case DesignEntity::PROG_LINE:
+      return tableOfStmts[de].size();
+    case DesignEntity::VARIABLE:
+      return tables.at(TableType::VAR_TABLE).getSize();
+    case DesignEntity::CONSTANT:
+      return tables.at(TableType::CONST_TABLE).getSize();
+    case DesignEntity::PROCEDURE:
+      return tables.at(TableType::PROC_TABLE).getSize();
   }
-
-  return tableOfStmts.at(de).size();
 }
 
 void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,

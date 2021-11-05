@@ -28,10 +28,10 @@ enum class MatchType { EXACT, SUB_EXPRESSION, ANY };
 enum class SelectType { SYNONYMS, BOOLEAN };
 
 struct Synonym {
-  const DesignEntity entity;
-  const std::string name;
-  const bool hasAttribute;
-  const Attribute attribute;
+  DesignEntity entity;
+  std::string name;
+  bool hasAttribute;
+  Attribute attribute;
   bool operator==(const Synonym& other) const {
     return entity == other.entity && name == other.name &&
            hasAttribute == other.hasAttribute && attribute == other.attribute;
@@ -39,17 +39,17 @@ struct Synonym {
 };
 
 struct Param {
-  const ParamType type;
-  const std::string value;
+  ParamType type;
+  std::string value;
   bool operator==(const Param& other) const {
     return type == other.type && value == other.value;
   }
 };
 
 struct SuchThatClause {
-  const RelationshipType relationshipType;
-  const Param leftParam;
-  const Param rightParam;
+  RelationshipType relationshipType;
+  Param leftParam;
+  Param rightParam;
   bool operator==(const SuchThatClause& other) const {
     return relationshipType == other.relationshipType &&
            leftParam == other.leftParam && rightParam == other.rightParam;
@@ -57,17 +57,17 @@ struct SuchThatClause {
 };
 
 struct PatternExpr {
-  const MatchType matchType;
-  const std::string expr;
+  MatchType matchType;
+  std::string expr;
   bool operator==(const PatternExpr& other) const {
     return matchType == other.matchType && expr == other.expr;
   }
 };
 
 struct PatternClause {
-  const Synonym matchSynonym;
-  const Param leftParam;
-  const PatternExpr patternExpr;
+  Synonym matchSynonym;
+  Param leftParam;
+  PatternExpr patternExpr;
   bool operator==(const PatternClause& other) const {
     return matchSynonym == other.matchSynonym && leftParam == other.leftParam &&
            patternExpr == other.patternExpr;
@@ -75,18 +75,18 @@ struct PatternClause {
 };
 
 struct WithClause {
-  const Param leftParam;
-  const Param rightParam;
+  Param leftParam;
+  Param rightParam;
   bool operator==(const WithClause& other) const {
     return leftParam == other.leftParam && rightParam == other.rightParam;
   }
 };
 
 struct ConditionClause {
-  const SuchThatClause suchThatClause;
-  const PatternClause patternClause;
-  const WithClause withClause;
-  const ConditionClauseType conditionClauseType;
+  SuchThatClause suchThatClause;
+  PatternClause patternClause;
+  WithClause withClause;
+  ConditionClauseType conditionClauseType;
   bool operator==(const ConditionClause& other) const {
     return suchThatClause == other.suchThatClause &&
            patternClause == other.patternClause &&
@@ -96,9 +96,9 @@ struct ConditionClause {
 };
 
 struct SelectClause {
-  const std::vector<Synonym> selectSynonyms;
-  const SelectType selectType;
-  const std::vector<ConditionClause> conditionClauses;
+  std::vector<Synonym> selectSynonyms;
+  SelectType selectType;
+  std::vector<ConditionClause> conditionClauses;
   bool operator==(const SelectClause& other) const {
     return selectSynonyms == other.selectSynonyms &&
            conditionClauses == other.conditionClauses;
@@ -106,8 +106,8 @@ struct SelectClause {
 };
 
 struct GroupDetails {
-  const bool isBooleanGroup;
-  const std::vector<Synonym> selectedSynonyms;
+  bool isBooleanGroup;
+  std::vector<Synonym> selectedSynonyms;
   bool operator==(const GroupDetails& other) const {
     return isBooleanGroup == other.isBooleanGroup &&
            selectedSynonyms == other.selectedSynonyms;

@@ -1,5 +1,8 @@
 #include "QueryOptimizer.h"
 
+#include <algorithm>
+#include <functional>
+#include <numeric>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -8,48 +11,61 @@
 using namespace std;
 using namespace query;
 
-QueryOptimizer::QueryOptimizer(PKB* pkb) { this->pkb = pkb; }
+const unordered_set<RelationshipType> expensiveRelationships = {
+    RelationshipType::NEXT_T,      RelationshipType::NEXT_BIP_T,
+    RelationshipType::AFFECTS,     RelationshipType::AFFECTS_T,
+    RelationshipType::AFFECTS_BIP, RelationshipType::AFFECTS_BIP_T};
 
-std::optional<query::ConditionClause> QueryOptimizer::GetNextClause(
+QueryOptimizer::QueryOptimizer(PKB* pkb) {
+  this->pkb = pkb;
+  this->synonymCountTable = {};
+}
+
+optional<query::ConditionClause> QueryOptimizer::GetNextClause(
     query::SynonymCountsTable& countTable) {
-  // TODO(Beatrice): Re sort PQ based on countTable
-  if (tempGroupDetailsAndGroupPairs.empty() ||
-      tempGroupDetailsAndGroupPairs[currentGroupIndex].second.empty()) {
+  synonymCountTable = &countTable;
+  if (groupAndInfoPairs.empty() || groupAndInfoPairs[0].first.empty()) {
     return nullopt;
   }
+  Group& group = groupAndInfoPairs[0].first;
+  sortClausesAtGroupIndex(0);
 
-  auto it = tempGroupDetailsAndGroupPairs[currentGroupIndex].second.begin();
-  ConditionClause clause = *it;
-  tempGroupDetailsAndGroupPairs[currentGroupIndex].second.erase(clause);
+  ConditionClause clause = group[0];
+  group.erase(group.begin());
   return {clause};
 }
 
-std::optional<query::GroupDetails> QueryOptimizer::GetNextGroupDetails() {
-  if (tempGroupDetailsAndGroupPairs.empty()) {
+optional<query::GroupDetails> QueryOptimizer::GetNextGroupDetails() {
+  if (groupAndInfoPairs.empty()) {
     return nullopt;
   }
 
   if (isFirstGroup) {
     isFirstGroup = false;
-    return {tempGroupDetailsAndGroupPairs[currentGroupIndex].first};
+    return {groupAndInfoPairs[0].second.details};
   }
 
-  currentGroupIndex++;
-  if (currentGroupIndex >= tempGroupDetailsAndGroupPairs.size()) {
+  // remove used group and detail pair
+  groupAndInfoPairs.erase(groupAndInfoPairs.begin());
+
+  if (groupAndInfoPairs.empty()) {
     return nullopt;
   }
 
-  return {tempGroupDetailsAndGroupPairs[currentGroupIndex].first};
+  return {groupAndInfoPairs[0].second.details};
 }
 
 void QueryOptimizer::PreprocessClauses(SynonymMap map,
-                                       SelectClause selectClause) {
-  Groups groups = groupClauses(selectClause.conditionClauses);
-  tempGroupDetailsAndGroupPairs = extractGroupDetails(
-      selectClause.selectType, selectClause.selectSynonyms, groups);
+                                       const SelectClause& selectClause) {
+  synonymMap = std::move(map);
+  vector<vector<ConditionClause>> groupsOfClauses =
+      groupClauses(selectClause.conditionClauses);
+  groupAndInfoPairs =
+      extractGroupInfo(selectClause.selectSynonyms, groupsOfClauses);
+  sortGroups();
 }
 
-Groups QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
+vector<Group> QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
   unordered_set<ConditionClause, CLAUSE_HASH> clausesSet(clauses.begin(),
                                                          clauses.end());
 
@@ -60,7 +76,7 @@ Groups QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
 
   int nextOpenGrpIdx = 0;
 
-  for (ConditionClause clause : clausesSet) {
+  for (const ConditionClause& clause : clausesSet) {
     unordered_set<string> synonymNames = extractSynonymsUsed(clause);
     // create new subset if clause has no synonyms
     if (synonymNames.empty()) {
@@ -119,49 +135,163 @@ Groups QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
     }
   }
 
-  vector<unordered_set<ConditionClause, CLAUSE_HASH>> groupsOfClauses;
-  groupsOfClauses.reserve(subsetIdToClauses.size());
-  for (const auto& p : subsetIdToClauses) {
-    groupsOfClauses.push_back(p.second);
+  vector<vector<ConditionClause>> groupsOfClauses;
+  for (const auto& pair : subsetIdToClauses) {
+    vector<ConditionClause> group;
+    for (auto& clause : pair.second) {
+      group.push_back(clause);
+    }
+    groupsOfClauses.push_back(group);
   }
   return groupsOfClauses;
 }
 
-GroupDetailAndGroupPairs QueryOptimizer::extractGroupDetails(
-    query::SelectType selectType, std::vector<query::Synonym> selectSynonyms,
-    Groups groupsOfClauses) {
-  GroupDetailAndGroupPairs detailAndGroupPairs = {};
-
-  if (selectType == SelectType::BOOLEAN) {
-    for (Group group : groupsOfClauses) {
-      GroupDetails detail = {true, {}};
-      detailAndGroupPairs.push_back({detail, group});
-    }
-    return detailAndGroupPairs;
-  }
-
-  for (const Group& group : groupsOfClauses) {
+vector<pair<Group, DetailedGrpInfo>> QueryOptimizer::extractGroupInfo(
+    const vector<query::Synonym>& selectSynonyms,
+    const vector<Group>& groupsOfClauses) {
+  vector<pair<Group, DetailedGrpInfo>> pairs;
+  for (auto& group : groupsOfClauses) {
     unordered_set<string> groupSynonyms = {};
-    for (ConditionClause clause : group) {
-      groupSynonyms.merge(extractSynonymsUsed(clause));
-    }
+    vector<Synonym> groupSelectSynonyms = {};
+    int numEfficientClauses = 0;
+    int numExpensiveClauses = 0;
 
-    vector<Synonym> selectedGroupSynonyms = {};
-    for (Synonym& synonym : selectSynonyms) {
-      if (groupSynonyms.find(synonym.name) != groupSynonyms.end()) {
-        selectedGroupSynonyms.push_back(synonym);
+    for (auto& clause : group) {
+      groupSynonyms.merge(extractSynonymsUsed(clause));
+      if (clause.conditionClauseType == ConditionClauseType::WITH) {
+        numEfficientClauses++;
+      }
+      if (clause.conditionClauseType == ConditionClauseType::SUCH_THAT &&
+          expensiveRelationships.find(clause.suchThatClause.relationshipType) !=
+              expensiveRelationships.end()) {
+        numExpensiveClauses++;
       }
     }
 
-    bool isBoolGroup = selectedGroupSynonyms.empty();
-    GroupDetails detail = {isBoolGroup, selectedGroupSynonyms};
-    detailAndGroupPairs.push_back({detail, group});
+    for (auto& synonym : selectSynonyms) {
+      if (groupSynonyms.find(synonym.name) != groupSynonyms.end()) {
+        groupSelectSynonyms.push_back(synonym);
+      }
+    }
+
+    bool isLiteralGroup = groupSynonyms.empty();
+    bool isBoolGroup = groupSelectSynonyms.empty();
+    int totalNumClauses = group.size();
+    DetailedGrpInfo info = {{isBoolGroup, groupSelectSynonyms},
+                            isLiteralGroup,
+                            totalNumClauses,
+                            numEfficientClauses,
+                            numExpensiveClauses};
+    pairs.emplace_back(group, info);
   }
-  return detailAndGroupPairs;
+  return pairs;
+}
+
+void QueryOptimizer::sortGroups() {
+  // groups comparator
+  // priority: groups with less expensive clauses -> groups with more efficient
+  // clauses -> groups of smaller sizes
+  auto groupComparator = [](const GroupAndInfoPair& groupAndInfoA,
+                            const GroupAndInfoPair& groupAndInfoB) {
+    DetailedGrpInfo infoA = groupAndInfoA.second;
+    DetailedGrpInfo infoB = groupAndInfoB.second;
+    if (infoA.numExpensiveClauses != infoB.numExpensiveClauses) {
+      return infoB.numExpensiveClauses > infoA.numExpensiveClauses;
+    }
+    if (infoA.isLiteralGroup != infoB.isLiteralGroup) {
+      return infoA.isLiteralGroup;
+    }
+    if (infoB.numEfficientClauses != infoA.numEfficientClauses) {
+      return infoB.numEfficientClauses <= infoA.numEfficientClauses;
+    }
+    return infoB.totalNumClauses > infoA.totalNumClauses;
+  };
+
+  sort(groupAndInfoPairs.begin(), groupAndInfoPairs.end(), groupComparator);
+}
+
+void QueryOptimizer::sortClausesAtGroupIndex(int index) {
+  // clauses comparator
+  // priority: common synonym -> non-expensive clauses -> estimated pdt size ->
+  // efficient clauses
+  auto clausesComparator = [this](const ConditionClause& clauseA,
+                                  const ConditionClause& clauseB) {
+    bool hasCommonSynonymA = hasCommonSynonyms(clauseA);
+    bool hasCommonSynonymB = hasCommonSynonyms(clauseB);
+    if (hasCommonSynonymA != hasCommonSynonymB) {
+      return hasCommonSynonymA;
+    }
+
+    bool isExpensiveA =
+        clauseA.conditionClauseType == ConditionClauseType::SUCH_THAT &&
+        expensiveRelationships.find(clauseA.suchThatClause.relationshipType) !=
+            expensiveRelationships.end();
+    bool isExpensiveB =
+        clauseB.conditionClauseType == ConditionClauseType::SUCH_THAT &&
+        expensiveRelationships.find(clauseB.suchThatClause.relationshipType) !=
+            expensiveRelationships.end();
+    if (isExpensiveA != isExpensiveB) {
+      return isExpensiveB;
+    }
+
+    unsigned long estSizeA = getSizeOfClause(clauseA);
+    unsigned long estSizeB = getSizeOfClause(clauseB);
+    if (estSizeA != estSizeB) {
+      return estSizeB > estSizeA;
+    }
+
+    bool isEfficientA =
+        clauseA.conditionClauseType == ConditionClauseType::WITH;
+    return isEfficientA;
+  };
+
+  Group& group = groupAndInfoPairs[index].first;
+  sort(group.begin(), group.end(), clausesComparator);
+}
+
+std::vector<unsigned long> QueryOptimizer::getSizesOfSynonyms(
+    std::unordered_set<query::SYN_NAME>* synNames) {
+  vector<unsigned long> sizes = {};
+  for (const string& s : *synNames) {
+    if (synonymCountTable != nullptr &&
+        synonymCountTable->find(s) != synonymCountTable->end()) {
+      sizes.push_back(synonymCountTable->at(s));
+    } else {
+      sizes.push_back(pkb->getNumEntity(synonymMap[s]));
+    }
+  }
+  return sizes;
+}
+
+unsigned long QueryOptimizer::getSizeOfClause(
+    const query::ConditionClause& clause) {
+  unordered_set<string> synonyms = QueryOptimizer::extractSynonymsUsed(clause);
+  vector<unsigned long> sizes = getSizesOfSynonyms(&synonyms);
+  if (!synonyms.empty()) {
+    for (string s : synonyms) {
+    }
+    for (unsigned long s : sizes) {
+    }
+  }
+  if (clause.conditionClauseType == ConditionClauseType::WITH) {
+    if (synonyms.size() < 2) {
+      return 1;
+    }
+    return *min_element(sizes.begin(), sizes.end());
+  }
+  return reduce(sizes.begin(), sizes.end(), 1, multiplies<>());
+}
+
+bool QueryOptimizer::hasCommonSynonyms(const ConditionClause& clause) {
+  unordered_set<string> synonyms = QueryOptimizer::extractSynonymsUsed(clause);
+  return any_of(synonyms.begin(), synonyms.end(), [this](const string& s){
+    return synonymCountTable != nullptr &&
+           synonymCountTable->find(s) != synonymCountTable->end();
+  });
 }
 
 unordered_set<SYN_NAME> QueryOptimizer::extractSynonymsUsed(
-    ConditionClause& clause) {
+    const ConditionClause& clause) {
   unordered_set<ParamType> synonymTypes = {
       ParamType::SYNONYM, ParamType::ATTRIBUTE_PROC_NAME,
       ParamType::ATTRIBUTE_VAR_NAME, ParamType::ATTRIBUTE_VALUE,

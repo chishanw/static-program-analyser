@@ -23,7 +23,7 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
     vector<vector<int>> result = TestQueryUtil::EvaluateQuery(
         pkb, {}, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(result) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(result) ==
             set<int>({1, 2, 3}));
   }
 
@@ -39,7 +39,7 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
     vector<vector<int>> result = TestQueryUtil::EvaluateQuery(
         pkb, {}, SelectType::SYNONYMS, synonyms, {n});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(result) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(result) ==
             set<int>({1, 2, 3}));
   }
 
@@ -55,7 +55,7 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
     vector<vector<int>> result = TestQueryUtil::EvaluateQuery(
         pkb, {}, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(result) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(result) ==
             set<int>({aIdx, bIdx, cIdx}));
   }
 
@@ -71,7 +71,7 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
     vector<vector<int>> result = TestQueryUtil::EvaluateQuery(
         pkb, {}, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(result) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(result) ==
             set<int>({xIdx, yIdx, zIdx}));
   }
 
@@ -87,7 +87,7 @@ TEST_CASE("QueryEvaluator: Select all design entities") {
 
     vector<vector<int>> result = TestQueryUtil::EvaluateQuery(
         pkb, {}, SelectType::SYNONYMS, synonyms, {c});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(result) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(result) ==
             set<int>({0, 1, 2}));
   }
 }
@@ -118,7 +118,8 @@ TEST_CASE("QueryEvaluator: Different design entities") {
       {"s", DesignEntity::STATEMENT}, {"n", DesignEntity::PROG_LINE},
       {"rd", DesignEntity::READ},     {"pr", DesignEntity::PRINT},
       {"cll", DesignEntity::CALL},    {"w", DesignEntity::WHILE},
-      {"ifs", DesignEntity::IF},      {"a", DesignEntity::ASSIGN}};
+      {"ifs", DesignEntity::IF},      {"a", DesignEntity::ASSIGN},
+      {"v", DesignEntity::VARIABLE}};
   Synonym s = {DesignEntity::STATEMENT, "s"};
   Synonym n = {DesignEntity::PROG_LINE, "n"};
   Synonym rd = {DesignEntity::READ, "rd"};
@@ -139,7 +140,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -152,7 +153,7 @@ TEST_CASE("QueryEvaluator: Different design entities") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -498,7 +499,7 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -540,7 +541,7 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -561,7 +562,7 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -583,7 +584,7 @@ TEST_CASE("QueryEvaluator: Test algos to add new results") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 }
@@ -619,7 +620,7 @@ TEST_CASE("QueryEvaluator: Select tuple") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -763,5 +764,61 @@ TEST_CASE("QueryEvaluator: Select BOOLEAN") {
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
     REQUIRE(results == vector<vector<int>>({{0}}));
+  }
+}
+
+TEST_CASE("hello") {
+  PKB* pkb = new PKB();
+  for (int i = 1; i < 8; i++) {
+    pkb->addStmt(DesignEntity::STATEMENT, i);
+    if (i != 7) {
+      pkb->addRs(RelationshipType::FOLLOWS, i, i + 1);
+    }
+  }
+  pkb->addStmt(DesignEntity::READ, 1);
+  pkb->addStmt(DesignEntity::PRINT, 2);
+  pkb->addStmt(DesignEntity::CALL, 3);
+  pkb->addRs(RelationshipType::CALLS, TableType::PROC_TABLE, "test1",
+             TableType::PROC_TABLE, "test2");
+  pkb->addRs(RelationshipType::CALLS_S, 3, TableType::PROC_TABLE, "test2");
+  pkb->addStmt(DesignEntity::WHILE, 4);
+  pkb->addStmt(DesignEntity::IF, 5);
+  pkb->addStmt(DesignEntity::ASSIGN, 6);
+  pkb->addStmt(DesignEntity::ASSIGN, 7);
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_FULL_EXPR, 6, "x", "1");
+  pkb->addPatternRs(RelationshipType::PTT_ASSIGN_SUB_EXPR, 6, "x", "1");
+  pkb->addRs(RelationshipType::PARENT, 4, 5);
+
+  unordered_map<string, DesignEntity> synonyms = {
+      {"s", DesignEntity::STATEMENT}, {"n", DesignEntity::PROG_LINE},
+      {"rd", DesignEntity::READ},     {"pr", DesignEntity::PRINT},
+      {"cll", DesignEntity::CALL},    {"w", DesignEntity::WHILE},
+      {"ifs", DesignEntity::IF},      {"a", DesignEntity::ASSIGN},
+      {"v", DesignEntity::VARIABLE}};
+  Synonym s = {DesignEntity::STATEMENT, "s"};
+  Synonym n = {DesignEntity::PROG_LINE, "n"};
+  Synonym rd = {DesignEntity::READ, "rd"};
+  Synonym pr = {DesignEntity::PRINT, "pr"};
+  Synonym cll = {DesignEntity::CALL, "cll"};
+  Synonym w = {DesignEntity::WHILE, "w"};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym a = {DesignEntity::ASSIGN, "a"};
+  vector<ConditionClause> conditionClauses = {};
+
+  SECTION("Select a such that Follows(rd, a) pattern a (v, _'1'_)") {
+    SuchThatClause suchThatClause = {RelationshipType::FOLLOWS,
+                                     {ParamType::SYNONYM, "rd"},
+                                     {ParamType::SYNONYM, "a"}};
+    conditionClauses.push_back(
+        {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
+
+    PatternClause patternClause = {
+        a, {ParamType::SYNONYM, "v"}, {MatchType::SUB_EXPRESSION, "1"}};
+    conditionClauses.push_back(
+        {{}, patternClause, {}, ConditionClauseType::PATTERN});
+
+    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+        pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
+    REQUIRE(results == vector<vector<int>>({}));
   }
 }

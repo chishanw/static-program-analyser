@@ -9,12 +9,8 @@ void TestQueryUtil::AddSuchThatClause(vector<ConditionClause>& clauses,
                                       string leftParamVal,
                                       ParamType rightParamType,
                                       string rightParamVal) {
-  SuchThatClause stClause = {
-      type, {leftParamType, leftParamVal}, {rightParamType, rightParamVal}};
-
-  ConditionClause conditionClause = {
-      stClause, {}, {}, ConditionClauseType::SUCH_THAT};
-
+  ConditionClause conditionClause = BuildSuchThatClause(
+      type, leftParamType, leftParamVal, rightParamType, rightParamVal);
   clauses.push_back(conditionClause);
 }
 
@@ -22,11 +18,8 @@ void TestQueryUtil::AddPatternClause(vector<ConditionClause>& clauses,
                                      Synonym patternSynonym,
                                      ParamType leftParamType,
                                      string leftParamVal, PatternExpr expr) {
-  PatternClause pClause = {patternSynonym, {leftParamType, leftParamVal}, expr};
-
-  ConditionClause conditionClause = {
-      {}, pClause, {}, ConditionClauseType::PATTERN};
-
+  ConditionClause conditionClause =
+      BuildPatternClause(patternSynonym, leftParamType, leftParamVal, expr);
   clauses.push_back(conditionClause);
 }
 
@@ -34,13 +27,39 @@ void TestQueryUtil::AddWithClause(vector<ConditionClause>& clauses,
                                   ParamType leftParamType, string leftParamVal,
                                   ParamType rightParamType,
                                   string rightParamVal) {
+  ConditionClause conditionClause = BuildWithClause(
+      leftParamType, leftParamVal, rightParamType, rightParamVal);
+  clauses.push_back(conditionClause);
+}
+
+query::ConditionClause TestQueryUtil::BuildSuchThatClause(
+    RelationshipType type, ParamType leftParamType, string leftParamVal,
+    ParamType rightParamType, string rightParamVal) {
+  SuchThatClause stClause = {
+      type, {leftParamType, leftParamVal}, {rightParamType, rightParamVal}};
+  ConditionClause conditionClause = {
+      stClause, {}, {}, ConditionClauseType::SUCH_THAT};
+  return conditionClause;
+}
+
+query::ConditionClause TestQueryUtil::BuildPatternClause(
+    Synonym patternSynonym, ParamType leftParamType, string leftParamVal,
+    PatternExpr expr) {
+  PatternClause pClause = {patternSynonym, {leftParamType, leftParamVal}, expr};
+  ConditionClause conditionClause = {
+      {}, pClause, {}, ConditionClauseType::PATTERN};
+  return conditionClause;
+}
+
+query::ConditionClause TestQueryUtil::BuildWithClause(ParamType leftParamType,
+                                                      string leftParamVal,
+                                                      ParamType rightParamType,
+                                                      string rightParamVal) {
   WithClause wClause = {{leftParamType, leftParamVal},
                         {rightParamType, rightParamVal}};
-
   ConditionClause conditionClause = {
       {}, {}, wClause, ConditionClauseType::WITH};
-
-  clauses.push_back(conditionClause);
+  return conditionClause;
 }
 
 vector<vector<int>> TestQueryUtil::EvaluateQuery(
@@ -56,7 +75,7 @@ vector<vector<int>> TestQueryUtil::EvaluateQuery(
   return qe.evaluateQuery(synonymMap, select);
 }
 
-set<int> TestQueryUtil::getUniqueSelectSingleQEResults(
+set<int> TestQueryUtil::GetUniqueSelectSingleQEResults(
     vector<vector<int>> results) {
   // used for QE testing to prevent macOS tests from failing
   // due to reversed order of vectors

@@ -1,5 +1,6 @@
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
+#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>

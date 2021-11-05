@@ -15,6 +15,8 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   db.addStmt(DesignEntity::WHILE, 4);
   db.addStmt(DesignEntity::IF, 5);
   db.addStmt(DesignEntity::ASSIGN, 6);
+  db.insertAt(TableType::VAR_TABLE, "varA");
+  db.insertAt(TableType::CONST_TABLE, "1");
 
   // Boolean positive
   REQUIRE(db.isStmt(DesignEntity::READ, 1));
@@ -23,6 +25,18 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   REQUIRE(db.isStmt(DesignEntity::WHILE, 4));
   REQUIRE(db.isStmt(DesignEntity::IF, 5));
   REQUIRE(db.isStmt(DesignEntity::ASSIGN, 6));
+  REQUIRE(db.isStmt(DesignEntity::STATEMENT, 1));
+  REQUIRE(db.isStmt(DesignEntity::STATEMENT, 2));
+  REQUIRE(db.isStmt(DesignEntity::STATEMENT, 3));
+  REQUIRE(db.isStmt(DesignEntity::STATEMENT, 4));
+  REQUIRE(db.isStmt(DesignEntity::STATEMENT, 5));
+  REQUIRE(db.isStmt(DesignEntity::STATEMENT, 6));
+  REQUIRE(db.isStmt(DesignEntity::PROG_LINE, 1));
+  REQUIRE(db.isStmt(DesignEntity::PROG_LINE, 2));
+  REQUIRE(db.isStmt(DesignEntity::PROG_LINE, 3));
+  REQUIRE(db.isStmt(DesignEntity::PROG_LINE, 4));
+  REQUIRE(db.isStmt(DesignEntity::PROG_LINE, 5));
+  REQUIRE(db.isStmt(DesignEntity::PROG_LINE, 6));
 
   // Boolean false
   REQUIRE(!db.isStmt(DesignEntity::READ, 2));
@@ -41,6 +55,19 @@ TEST_CASE("GET_ALL_STATEMENTS_TEST") {
   REQUIRE(db.getAllStmts(DesignEntity::WHILE) == SetOfStmts({4}));
   REQUIRE(db.getAllStmts(DesignEntity::IF) == SetOfStmts({5}));
   REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({6}));
+
+  // Check sizes
+  REQUIRE(db.getNumEntity(DesignEntity::STATEMENT) == 6);
+  REQUIRE(db.getNumEntity(DesignEntity::PROG_LINE) == 6);
+  REQUIRE(db.getNumEntity(DesignEntity::READ) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::PRINT) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::CALL) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::WHILE) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::IF) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::ASSIGN) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::VARIABLE) == 1);
+  REQUIRE(db.getNumEntity(DesignEntity::PROCEDURE) == 2);
+  REQUIRE(db.getNumEntity(DesignEntity::CONSTANT) == 1);
 }
 
 TEST_CASE("GET_ALL_STATEMENTS_EMPTY_TEST") {
@@ -53,6 +80,9 @@ TEST_CASE("GET_ALL_STATEMENTS_EMPTY_TEST") {
   REQUIRE(db.getAllStmts(DesignEntity::WHILE) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::IF) == SetOfStmts({}));
   REQUIRE(db.getAllStmts(DesignEntity::ASSIGN) == SetOfStmts({}));
+
+  REQUIRE_FALSE(db.isStmt(DesignEntity::STATEMENT, 1));
+  REQUIRE(db.getNumEntity(DesignEntity::STATEMENT) == 0);
 }
 
 TEST_CASE("PKB_CONSTANTS_TEST") {

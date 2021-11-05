@@ -89,7 +89,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -102,7 +102,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -115,7 +115,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -128,7 +128,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -141,7 +141,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -154,7 +154,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -317,7 +317,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -330,7 +330,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -343,7 +343,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -356,7 +356,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -369,7 +369,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 }
@@ -484,7 +484,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -497,7 +497,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -510,7 +510,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -535,7 +535,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
   }
 
@@ -548,7 +548,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
   }
 
@@ -561,7 +561,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4}));
   }
 
@@ -573,7 +573,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 }
@@ -726,7 +726,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4}));
   }
 
@@ -739,7 +739,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
   }
 
@@ -752,7 +752,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
   }
 
@@ -765,7 +765,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4}));
   }
 
@@ -778,7 +778,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 }
@@ -899,7 +899,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -912,7 +912,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -925,7 +925,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -938,7 +938,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -963,7 +963,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -976,7 +976,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -989,7 +989,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1002,7 +1002,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -1015,7 +1015,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -1204,7 +1204,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -1217,7 +1217,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1230,7 +1230,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -1243,7 +1243,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1256,7 +1256,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -1269,7 +1269,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx}));
   }
 
@@ -1294,7 +1294,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1307,7 +1307,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 
@@ -1320,7 +1320,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1333,7 +1333,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 
@@ -1346,7 +1346,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -1566,7 +1566,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -1579,7 +1579,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1592,7 +1592,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -1605,7 +1605,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1618,7 +1618,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -1631,7 +1631,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -1823,7 +1823,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -1836,7 +1836,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1849,7 +1849,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -1862,7 +1862,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1875,7 +1875,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -1888,7 +1888,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx}));
   }
 
@@ -1913,7 +1913,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1926,7 +1926,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 
@@ -1939,7 +1939,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 
@@ -1952,7 +1952,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 
@@ -1965,7 +1965,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -2196,7 +2196,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -2209,7 +2209,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -2222,7 +2222,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -2235,7 +2235,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx}));
   }
 
@@ -2248,7 +2248,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 
@@ -2261,7 +2261,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx}));
   }
 
@@ -2274,7 +2274,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 
@@ -2287,7 +2287,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
   }
 
@@ -2300,7 +2300,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
   }
 }
@@ -2492,7 +2492,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
   }
 
@@ -2505,7 +2505,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
   }
 
@@ -2518,7 +2518,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
   }
 
@@ -2531,7 +2531,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx}));
   }
 
@@ -2544,7 +2544,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc4Idx}));
   }
 
@@ -2557,7 +2557,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx, proc5Idx}));
   }
 
@@ -2570,7 +2570,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc4Idx}));
   }
 
@@ -2583,7 +2583,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
   }
 
@@ -2596,7 +2596,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc4Idx}));
   }
 
@@ -2609,7 +2609,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx, proc5Idx}));
   }
 }
@@ -2793,7 +2793,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
   }
 
@@ -2806,7 +2806,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
   }
 
@@ -2819,7 +2819,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
   }
 
@@ -2832,7 +2832,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 4, 5}));
   }
 
@@ -2845,7 +2845,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({7, 8}));
   }
 
@@ -2858,7 +2858,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -2871,7 +2871,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4, 5, 6, 7, 8}));
   }
 
@@ -3092,7 +3092,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
   }
 
@@ -3105,7 +3105,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
   }
 
@@ -3118,7 +3118,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
   }
 
@@ -3131,7 +3131,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
   }
 
@@ -3144,7 +3144,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4, 5, 6, 7, 8, 9}));
   }
 
@@ -3157,7 +3157,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
   }
 
@@ -3170,7 +3170,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({7, 8, 9}));
   }
 
@@ -3183,7 +3183,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3196,7 +3196,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({3, 6}));
   }
 
@@ -3420,7 +3420,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3432,7 +3432,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3445,7 +3445,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3458,7 +3458,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({4, 5}));
   }
 
@@ -3471,7 +3471,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
   }
 
@@ -3483,7 +3483,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
   }
 
@@ -3495,7 +3495,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3526,7 +3526,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3538,7 +3538,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3551,7 +3551,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3564,7 +3564,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
   }
 
@@ -3577,7 +3577,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -3590,7 +3590,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({6}));
   }
 
@@ -3602,7 +3602,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
   }
 
@@ -3614,7 +3614,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
   }
 
@@ -4107,7 +4107,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -4119,7 +4119,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -4131,7 +4131,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -4165,7 +4165,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -4199,7 +4199,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -4405,7 +4405,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -4416,7 +4416,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -4427,7 +4427,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -4438,7 +4438,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -4530,7 +4530,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -4541,7 +4541,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -4552,7 +4552,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
   }
 
@@ -4563,7 +4563,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
   }
 }
@@ -4651,7 +4651,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({procAIdx, procBIdx}));
   }
 
@@ -4662,7 +4662,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({procAIdx, procBIdx}));
   }
 
@@ -4673,7 +4673,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({varAIdx, varBIdx}));
   }
 
@@ -4684,7 +4684,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({procAIdx}));
   }
 
@@ -4695,7 +4695,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({varAIdx}));
   }
 
@@ -4706,7 +4706,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({varAIdx, varBIdx}));
   }
 
@@ -4717,7 +4717,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({TRUE_SELECT_BOOL_RESULT}));
   }
 }
@@ -4838,7 +4838,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -4862,7 +4862,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -4873,7 +4873,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -4884,7 +4884,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1}));
   }
 
@@ -4895,7 +4895,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
   }
 
@@ -4906,7 +4906,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
   }
 
@@ -4917,7 +4917,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1}));
   }
 
@@ -4928,7 +4928,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {c1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({const1Idx, const2Idx}));
   }
 
@@ -4939,7 +4939,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {c1});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({const2Idx}));
   }
 
@@ -4950,7 +4950,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({TRUE_SELECT_BOOL_RESULT}));
   }
 }
@@ -5092,7 +5092,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
 
     vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
-    REQUIRE(TestQueryUtil::getUniqueSelectSingleQEResults(results) ==
+    REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({FALSE_SELECT_BOOL_RESULT}));
   }
 }

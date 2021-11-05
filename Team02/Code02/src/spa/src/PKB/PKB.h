@@ -27,7 +27,7 @@ class PKB {
   void addStmt(DesignEntity de, StmtNo s);
   SetOfStmts getAllStmts(DesignEntity de);
   bool isStmt(DesignEntity de, StmtNo s);
-  int getNumStmts(DesignEntity de);
+  int getNumEntity(DesignEntity de);
 
   // TODO(Merlin): Refractor More.
   void addRs(RelationshipType rs, int left, int right);

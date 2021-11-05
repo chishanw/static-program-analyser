@@ -23,11 +23,22 @@ class TestQueryUtil {
   static void AddWithClause(std::vector<query::ConditionClause>&,
                             query::ParamType, std::string, query::ParamType,
                             std::string);
+  static query::ConditionClause BuildSuchThatClause(RelationshipType,
+                                                    query::ParamType,
+                                                    std::string,
+                                                    query::ParamType,
+                                                    std::string);
+  static query::ConditionClause BuildPatternClause(query::Synonym,
+                                                   query::ParamType,
+                                                   std::string,
+                                                   query::PatternExpr);
+  static query::ConditionClause BuildWithClause(query::ParamType, std::string,
+                                                query::ParamType, std::string);
   static std::vector<std::vector<int>> EvaluateQuery(
       PKB* pkb, std::vector<query::ConditionClause> clauses,
       query::SelectType selectType,
       std::unordered_map<query::SYN_NAME, DesignEntity> synonymMap,
       std::vector<query::Synonym> selectSynonyms);
-  static std::set<int> getUniqueSelectSingleQEResults(
+  static std::set<int> GetUniqueSelectSingleQEResults(
       std::vector<std::vector<int>> results);
 };

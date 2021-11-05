@@ -16,9 +16,9 @@ class Table {
   std::string getElement(int index);
   TableElemIdx getIndex(std::string element);
   std::unordered_set<TableElemIdx> getAllElements();
+  int getSize();
 
  protected:
   std::unordered_map<std::string, TableElemIdx> nameAsKey;
   std::vector<std::string> idxAsKey;
-  int getSize();
 };
