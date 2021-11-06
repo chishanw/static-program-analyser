@@ -88,7 +88,7 @@ FinalQueryResults QueryEvaluator::evaluateQuery(
     filterGroupResultsBySelectSynonyms(groupDetails.selectedSynonyms);
     mergeGroupResultsIntoFinalResults();
     // clean up group data
-    filterQuerySynonymsBySelectSynonyms(groupDetails.selectedSynonyms);
+    filterQuerySynonymsBySelectSynonyms(select.selectSynonyms);
     groupQueryResults.clear();
   }
 
