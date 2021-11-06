@@ -7,10 +7,10 @@
 #include "Common/AST.h"
 #include "PKB/PKB.h"
 
-typedef std::unordered_map<PROC_NAME, std::unordered_set<PROC_NAME>> CALL_GRAPH;
-typedef std::pair<STMT_NO, NAME> STMT_NO_NAME_PAIR;
+typedef std::unordered_map<ProcName, std::unordered_set<ProcName>> CallGraph;
+typedef std::pair<StmtNo, NAME> StmtNoNamePair;
 
-struct STMT_NO_NAME_PAIR_HASH;
+struct StmtNoNamePairHash;
 
 class DesignExtractor {
  public:
@@ -25,28 +25,26 @@ class DesignExtractor {
   void ExtractProcAndStmtHelper(const std::vector<StmtAST*>);
 
   void ExtractUses(const ProgramAST*);
-  std::unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
-  ExtractUsesHelper(const std::vector<StmtAST*>,
-                    std::unordered_map<NAME, ProcedureAST*>);
+  std::unordered_set<StmtNoNamePair, StmtNoNamePairHash> ExtractUsesHelper(
+      const std::vector<StmtAST*>, std::unordered_map<NAME, ProcedureAST*>);
 
   void ExtractModifies(const ProgramAST*);
-  std::unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
-  ExtractModifiesHelper(const std::vector<StmtAST*>,
-                        std::unordered_map<NAME, ProcedureAST*>);
+  std::unordered_set<StmtNoNamePair, StmtNoNamePairHash> ExtractModifiesHelper(
+      const std::vector<StmtAST*>, std::unordered_map<NAME, ProcedureAST*>);
 
   void ExtractParent(const ProgramAST*);
-  std::vector<std::pair<STMT_NO, STMT_NO>> ExtractParentHelper(
-      const STMT_NO, const std::vector<StmtAST*>);
+  std::vector<std::pair<StmtNo, StmtNo>> ExtractParentHelper(
+      const StmtNo, const std::vector<StmtAST*>);
   void ExtractParentTrans(const ProgramAST*);
-  std::vector<std::pair<STMT_NO, STMT_NO>> ExtractParentTransHelper(
-      const STMT_NO, const std::vector<StmtAST*>);
+  std::vector<std::pair<StmtNo, StmtNo>> ExtractParentTransHelper(
+      const StmtNo, const std::vector<StmtAST*>);
 
   void ExtractFollows(const ProgramAST*);
-  std::vector<std::pair<STMT_NO, STMT_NO>> ExtractFollowsHelper(
+  std::vector<std::pair<StmtNo, StmtNo>> ExtractFollowsHelper(
       const std::vector<StmtAST*>);
 
   void ExtractFollowsTrans(const ProgramAST*);
-  std::vector<std::pair<STMT_NO, STMT_NO>> ExtractFollowsTransHelper(
+  std::vector<std::pair<StmtNo, StmtNo>> ExtractFollowsTransHelper(
       const std::vector<StmtAST*>);
 
   void ExtractExprPatterns(const ProgramAST*);
@@ -56,14 +54,21 @@ class DesignExtractor {
   std::unordered_set<std::string> ExtractConstHelper(
       const std::vector<StmtAST*>);
 
-  CALL_GRAPH ExtractCalls(const ProgramAST*, std::unordered_set<NAME>);
-  std::unordered_map<STMT_NO, PROC_NAME> ExtractCallsHelper(
+  std::pair<CallGraph, CallGraph> ExtractCalls(const ProgramAST*,
+                                               std::unordered_set<NAME>);
+  std::unordered_map<StmtNo, ProcName> ExtractCallsHelper(
       const std::vector<StmtAST*>, std::unordered_set<NAME>);
-  void ExtractCallsTrans(CALL_GRAPH);
-  void ExtractCallsTransHelper(CALL_GRAPH, PROC_NAME, PROC_NAME);
+  void ExtractCallsTrans(CallGraph, std::vector<ProcName>,
+                         std::unordered_set<ProcName>);
+  std::vector<ProcName> GetTopoSortedProcs(CallGraph, CallGraph,
+                                           std::unordered_set<ProcName>);
 
-  void ExtractNextAndNextBip(const ProgramAST*);
-  void ExtractNextAndNextBipHelper(const std::unordered_map<NAME, STMT_NO>&,
-                                   const std::vector<StmtAST*>, STMT_NO,
-                                   STMT_NO);
+  void ExtractNext(const ProgramAST*);
+  void ExtractNextHelper(const std::vector<StmtAST*>, StmtNo, StmtNo);
+
+  void ExtractNextBip(const ProgramAST*, std::vector<ProcName>);
+  void ExtractNextBipHelper(
+      const std::vector<StmtAST*>, StmtNo, StmtNo, ProcName,
+      const std::unordered_map<NAME, StmtNo>&,
+      std::unordered_map<ProcName, std::unordered_set<StmtNo>>*, bool);
 };

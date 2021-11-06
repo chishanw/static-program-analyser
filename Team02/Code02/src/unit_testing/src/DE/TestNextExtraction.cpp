@@ -117,53 +117,161 @@ TEST_CASE("[DE][Next R/S] nested while and if") {
 TEST_CASE("[DE][NextBip R/S] sample source") {
   string program =
       "procedure Example {        "
-      "  x = 2;                   "
-      "  z = 3;                   "
-      "  i = 5;                   "
-      "  while (i!=0) {           "
-      "    x = x - 1;             "
-      "    if (x==1) then {       "
-      "      z = x + 1; }         "
+      "  x = 2;                   "  // 1
+      "  z = 3;                   "  // 2
+      "  i = 5;                   "  // 3
+      "  while (i!=0) {           "  // 4
+      "    x = x - 1;             "  // 5
+      "    if (x==1) then {       "  // 6
+      "      z = x + 1; }         "  // 7
       "    else {                 "
-      "      y = z + x; }         "
-      "    z = z + x + i;         "
+      "      y = z + x; }         "  // 8
+      "    z = z + x + i;         "  // 9
       "    call q;                "  // 10
-      "    i = i - 1; }           "
+      "    i = i - 1; }           "  // 11
       "  call p; }                "  // 12
       "                           "
       "procedure p {              "
       "  if (x<0) then {          "  // 13
-      "    while (i>0) {          "
-      "      x = z * 3 + 2 * y;   "
+      "    while (i>0) {          "  // 14
+      "      x = z * 3 + 2 * y;   "  // 15
       "      call q;              "  // 16
-      "      i = i - 1; }         "
-      "    x = x + 1;             "
-      "    z = x + z; }           "
+      "      i = i - 1; }         "  // 17
+      "    x = x + 1;             "  // 18
+      "    z = x + z; }           "  // 19
       "  else {                   "
-      "    z = 1; }               "
-      "  z = z + x + i; }         "
+      "    z = 1; }               "  // 20
+      "  z = z + x + i; }         "  // 21
       "                           "
       "procedure q {              "
       "  if (x==1) then {         "  // 22
-      "    z = x + 1; }           "
+      "    z = x + 1; }           "  // 23
       "  else {                   "
-      "    x = z + x; } }         ";  // 24
+      "    x = z + x; }           "  // 24
+      "}                          ";
 
   ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
   PKB* pkb = new PKB();
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 0) ==
-          unordered_set<int>{});  // out of bound
-  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 10).count(22) > 0);
-  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 12).count(13) > 0);
-  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 16).count(22) > 0);
+  // NextBip for non call stmts in Example
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 0) ==
+        unordered_set<int>{});  // out of bound
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 1) == unordered_set<int>{2});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 2) == unordered_set<int>{3});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 3) == unordered_set<int>{4});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 4) ==
+        unordered_set<int>{5, 12});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 5) == unordered_set<int>{6});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 6) ==
+        unordered_set<int>{7, 8});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 7) == unordered_set<int>{9});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 8) == unordered_set<int>{9});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 9) == unordered_set<int>{10});
+
+  // check NextBip between Example and q
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 10) ==
+        unordered_set<int>{22});
+
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 11) == unordered_set<int>{4});
+
+  // check NextBip between Example and p
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 12) ==
+        unordered_set<int>{13});
+
+  // check NextBip in p
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 13) ==
+        unordered_set<int>{14, 20});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 14) ==
+        unordered_set<int>{15, 18});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 15) ==
+        unordered_set<int>{16});
+
+  // check NextBip between p and q
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 16) ==
+        unordered_set<int>{22});
+
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 17) ==
+        unordered_set<int>{14});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 18) ==
+        unordered_set<int>{19});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 19) ==
+        unordered_set<int>{21});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 20) ==
+        unordered_set<int>{21});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 21) ==
+        unordered_set<int>{});  // end of p
+
+  // check NextBip in q
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 22) ==
+        unordered_set<int>{23, 24});
+
+  // end of q, return to respective callers
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 23) ==
+        unordered_set<int>{11, 17});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 24) ==
+        unordered_set<int>{11, 17});
+
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 25) ==
+        unordered_set<int>{});  // out of bound
+
+  // next neg tests
   REQUIRE(pkb->getRight(RelationshipType::NEXT, 10).count(22) == 0);
   REQUIRE(pkb->getRight(RelationshipType::NEXT, 12).count(13) == 0);
   REQUIRE(pkb->getRight(RelationshipType::NEXT, 16).count(22) == 0);
-  REQUIRE(pkb->getRight(RelationshipType::NEXT_BIP, 25) ==
-          unordered_set<int>{});  // out of bound
+}
+
+TEST_CASE("[DE][NextBip R/S] call is last stmt in procedure") {
+  string program =
+      "procedure a {      "
+      "  x = 2;           "
+      "  call b;          "  // 2
+      "}                  "
+      "procedure b {      "
+      "  x = 2;           "  // 3
+      "  x = 2;           "
+      "  call c;          "  // 5
+      "}                  "
+      "procedure c {      "
+      "  if (x==1) then { "  // 6
+      "    z = x + 1; }   "  // 7
+      "  else {           "
+      "    x = z + x; } } ";  // 8
+
+  ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
+  PKB* pkb = new PKB();
+  DesignExtractor de = DesignExtractor(pkb);
+  de.Extract(ast);
+
+  // out of range
+  CHECK(pkb->getRight(RelationshipType::NEXT, -1) == unordered_set<int>{});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, -1) == unordered_set<int>{});
+  CHECK(pkb->getRight(RelationshipType::NEXT, 0) == unordered_set<int>{});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 0) == unordered_set<int>{});
+
+  // NextBip for a
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 1) == unordered_set<int>{2});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 2) == unordered_set<int>{3});
+  // Next neg test
+  CHECK(pkb->getRight(RelationshipType::NEXT, 2) == unordered_set<int>{});
+
+  // NextBip for b
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 3) == unordered_set<int>{4});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 4) == unordered_set<int>{5});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 5) == unordered_set<int>{6});
+  // Next neg test
+  CHECK(pkb->getRight(RelationshipType::NEXT, 5) == unordered_set<int>{});
+
+  // NextBip for c
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 6) ==
+        unordered_set<int>{7, 8});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 7) == unordered_set<int>{});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 8) == unordered_set<int>{});
+
+  // out of range
+  CHECK(pkb->getRight(RelationshipType::NEXT, 9) == unordered_set<int>{});
+  CHECK(pkb->getRight(RelationshipType::NEXT_BIP, 9) == unordered_set<int>{});
 }
 
 TEST_CASE("[DE][AffectsInfo] nested if") {

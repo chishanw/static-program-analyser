@@ -125,35 +125,6 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
 }
 
 void QueryEvaluator::evaluateSuchThatClauseHelper(SuchThatClause clause) {
-  // resolve left and right param one by one
-  // resolve = determine its possible values
-
-  // check whether left or right param is in the result table
-  // if it is, they are immediately resolve
-  // if not, pull their values from PKB
-
-  // if we know the r/s type, wildcard can be treated as an generic syn that
-  // doesn't get added into the result table in the end
-  // e.g. follows(_, _)
-  // then we know the wildcards here can be treated as s1 & s2, and the only
-  // diff is that they don't get added into the table in the end
-
-  // first look at left, then right
-  // if left is literal, alr resolved
-  // if left is syn, check whether it is in the result table
-  //       if it is, resolved
-  //       if not, pull from PKB
-  // if left is wildcard, treat it as a syn and pull all the possible values
-  // from PKB
-
-  // then look at right and resolve according to resolved left values
-  // if right is literal, check whether it agrees with
-  // left param's resolved values
-  // if right is syn, get its values based on left param's
-  // resolved valuesleft param's resolved values
-  // if right is wildcard, treat it as a syn and pull all the possible values
-  // from PKB
-
   auto left = clause.leftParam;
   auto right = clause.rightParam;
   vector<vector<int>> leftRightValuePairs;
@@ -908,8 +879,10 @@ unordered_set<int> QueryEvaluator::resolveLeftParam(
           rsType == RelationshipType::CALLS_T) {
         leftValues.merge(pkb->getAllElementsAt(TableType::PROC_TABLE));
       } else {
-        // get all stmts of synonym's DesignEntity
-        leftValues.merge(pkb->getAllStmts(synonymMap[left.value]));
+        // get left results of synonym's DesignEntity for rs type
+        for (auto valueList : pkb->getMappings(rsType, ParamPosition::LEFT)) {
+          leftValues.insert(valueList.front());
+        }
       }
       break;
 

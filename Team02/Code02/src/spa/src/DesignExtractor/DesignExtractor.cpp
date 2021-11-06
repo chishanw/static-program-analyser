@@ -12,8 +12,8 @@
 
 using namespace std;
 
-struct STMT_NO_NAME_PAIR_HASH {
-  size_t operator()(const STMT_NO_NAME_PAIR& p) const {
+struct StmtNoNamePairHash {
+  size_t operator()(const StmtNoNamePair& p) const {
     string s = to_string(p.first) + '_' + p.second;
     return hash<string>{}(s);
   }
@@ -22,7 +22,7 @@ struct STMT_NO_NAME_PAIR_HASH {
 DesignExtractor::DesignExtractor(PKB* pkb) { this->pkb = pkb; }
 
 void DesignExtractor::Extract(const ProgramAST* programAST) {
-  unordered_set<PROC_NAME> allProcs = ExtractProcAndStmt(programAST);
+  unordered_set<ProcName> allProcs = ExtractProcAndStmt(programAST);
 
   ExtractExprPatterns(programAST);
 
@@ -34,17 +34,23 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractFollows(programAST);
   ExtractFollowsTrans(programAST);
 
-  CALL_GRAPH callGraph = ExtractCalls(programAST, allProcs);
-  ExtractCallsTrans(callGraph);  // this should be called before ExtractUses
-                                 // or ExtractModifies to prevent infinite
-                                 // recursion if there exists Recursive/Cyclic
-                                 // Calls
+  // ExtractCalls & ExtractCallsTrans should be called before ExtractUses,
+  // ExtractModifies, ExtractNext & ExtractNextBip to prevent infinite recursion
+  // if there exists Recursive/Cyclic Calls
+  pair<CallGraph, CallGraph> callGraphPair = ExtractCalls(programAST, allProcs);
+  CallGraph callGraph = callGraphPair.first;
+  CallGraph reverseCallGraph = callGraphPair.second;
+
+  vector<ProcName> topoProcs =
+      GetTopoSortedProcs(callGraph, reverseCallGraph, allProcs);
+
+  ExtractCallsTrans(reverseCallGraph, topoProcs, allProcs);
 
   ExtractUses(programAST);
   ExtractModifies(programAST);
 
-  ExtractNextAndNextBip(programAST);
-  // ... other subroutines to extract other r/s go here too
+  ExtractNext(programAST);
+  ExtractNextBip(programAST, topoProcs);
 }
 
 unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(
@@ -91,9 +97,9 @@ void DesignExtractor::ExtractProcAndStmtHelper(
 }
 
 void mergeResultHelper(
-    unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>* resPtr,
-    unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>* resNextPtr,
-    STMT_NO stmtNo) {
+    unordered_set<StmtNoNamePair, StmtNoNamePairHash>* resPtr,
+    unordered_set<StmtNoNamePair, StmtNoNamePairHash>* resNextPtr,
+    StmtNo stmtNo) {
   for (auto res : *resNextPtr) {
     resPtr->insert(make_pair(stmtNo, res.second));
   }
@@ -119,7 +125,7 @@ void DesignExtractor::ExtractUses(const ProgramAST* programAST) {
   // 5. Procedure call c (i.e. "call p") Variable v
   // Uses (c, v) is defined in the same way as Uses (p, v).
 
-  unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH> result;
+  unordered_set<StmtNoNamePair, StmtNoNamePairHash> result;
 
   unordered_map<NAME, ProcedureAST*> procNameToAST;
   for (auto procedure : programAST->ProcedureList) {
@@ -138,13 +144,13 @@ void DesignExtractor::ExtractUses(const ProgramAST* programAST) {
   }
 }
 
-unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
+unordered_set<StmtNoNamePair, StmtNoNamePairHash>
 DesignExtractor::ExtractUsesHelper(
     const vector<StmtAST*> stmtList,
     unordered_map<NAME, ProcedureAST*> procNameToAST) {
-  unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
+  unordered_set<StmtNoNamePair, StmtNoNamePairHash>
       result;  // resultAtThisNestingLevel
-  unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
+  unordered_set<StmtNoNamePair, StmtNoNamePairHash>
       resultNext;  // resultAtNextNestingLevel
 
   for (auto stmt : stmtList) {
@@ -193,7 +199,7 @@ DesignExtractor::ExtractUsesHelper(
 }
 
 void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
-  unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH> result;
+  unordered_set<StmtNoNamePair, StmtNoNamePairHash> result;
 
   unordered_map<NAME, ProcedureAST*> procNameToAST;
   for (auto procedure : programAST->ProcedureList) {
@@ -211,12 +217,12 @@ void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
   }
 }
 
-unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH>
+unordered_set<StmtNoNamePair, StmtNoNamePairHash>
 DesignExtractor::ExtractModifiesHelper(
     const vector<StmtAST*> stmtList,
     unordered_map<NAME, ProcedureAST*> procNameToAST) {
-  unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH> result;
-  unordered_set<STMT_NO_NAME_PAIR, STMT_NO_NAME_PAIR_HASH> resultNext;
+  unordered_set<StmtNoNamePair, StmtNoNamePairHash> result;
+  unordered_set<StmtNoNamePair, StmtNoNamePairHash> resultNext;
 
   for (auto stmt : stmtList) {
     // procedure and call not included in iteration 1
@@ -264,10 +270,10 @@ void DesignExtractor::ExtractParent(const ProgramAST* programAST) {
   }
 }
 
-vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractParentHelper(
-    const STMT_NO parentStmtNo, const vector<StmtAST*> stmtList) {
-  vector<pair<STMT_NO, STMT_NO>> result;      // resultAtThisNestingLevel
-  vector<pair<STMT_NO, STMT_NO>> resultNext;  // resultAtNextNestingLevel
+vector<pair<StmtNo, StmtNo>> DesignExtractor::ExtractParentHelper(
+    const StmtNo parentStmtNo, const vector<StmtAST*> stmtList) {
+  vector<pair<StmtNo, StmtNo>> result;      // resultAtThisNestingLevel
+  vector<pair<StmtNo, StmtNo>> resultNext;  // resultAtNextNestingLevel
 
   for (const StmtAST* stmt : stmtList) {
     // -1 is a special value, see ExtractParent method comment
@@ -301,11 +307,11 @@ void DesignExtractor::ExtractParentTrans(const ProgramAST* programAST) {
   }
 }
 
-vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractParentTransHelper(
-    const STMT_NO parentStmtNo, const vector<StmtAST*> stmtList) {
-  vector<pair<STMT_NO, STMT_NO>> result;           // resultAtThisNestingLevel
-  vector<pair<STMT_NO, STMT_NO>> resultNext;       // resultAtNextNestingLevel
-  unordered_set<STMT_NO> uniqueDescendantStmtNos;  // collate descendant StmtNos
+vector<pair<StmtNo, StmtNo>> DesignExtractor::ExtractParentTransHelper(
+    const StmtNo parentStmtNo, const vector<StmtAST*> stmtList) {
+  vector<pair<StmtNo, StmtNo>> result;            // resultAtThisNestingLevel
+  vector<pair<StmtNo, StmtNo>> resultNext;        // resultAtNextNestingLevel
+  unordered_set<StmtNo> uniqueDescendantStmtNos;  // collate descendant StmtNos
 
   for (const StmtAST* stmt : stmtList) {
     uniqueDescendantStmtNos.insert(stmt->StmtNo);
@@ -357,10 +363,10 @@ void DesignExtractor::ExtractFollows(const ProgramAST* programAST) {
   }
 }
 
-vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractFollowsHelper(
+vector<pair<StmtNo, StmtNo>> DesignExtractor::ExtractFollowsHelper(
     const vector<StmtAST*> stmtList) {
-  vector<pair<STMT_NO, STMT_NO>> result;
-  vector<pair<STMT_NO, STMT_NO>> resultNext;
+  vector<pair<StmtNo, StmtNo>> result;
+  vector<pair<StmtNo, StmtNo>> resultNext;
   // at the start of each stmtList, the first stmt cannot follow anything,
   // so prevStmt is set to null
   StmtAST* prevStmt = NULL;
@@ -398,11 +404,11 @@ void DesignExtractor::ExtractFollowsTrans(const ProgramAST* programAST) {
   }
 }
 
-vector<pair<STMT_NO, STMT_NO>> DesignExtractor::ExtractFollowsTransHelper(
+vector<pair<StmtNo, StmtNo>> DesignExtractor::ExtractFollowsTransHelper(
     const vector<StmtAST*> stmtList) {
-  vector<pair<STMT_NO, STMT_NO>> result;
-  vector<pair<STMT_NO, STMT_NO>> resultNext;
-  unordered_set<STMT_NO> uniqueAncestorStmtNos;
+  vector<pair<StmtNo, StmtNo>> result;
+  vector<pair<StmtNo, StmtNo>> resultNext;
+  unordered_set<StmtNo> uniqueAncestorStmtNos;
 
   for (StmtAST* stmt : stmtList) {
     for (auto ancestorStmtNo : uniqueAncestorStmtNos) {
@@ -488,14 +494,15 @@ unordered_set<string> DesignExtractor::ExtractConstHelper(
   return res;
 }
 
-CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
-                                         unordered_set<NAME> allProcs) {
-  CALL_GRAPH callGraph;
+pair<CallGraph, CallGraph> DesignExtractor::ExtractCalls(
+    const ProgramAST* programAST, unordered_set<NAME> allProcs) {
+  CallGraph callGraph;
+  CallGraph reverseCallGraph;
 
   for (auto caller : programAST->ProcedureList) {
-    unordered_set<PROC_NAME> allProcsCalled;
+    unordered_set<ProcName> allProcsCalled;
 
-    unordered_map<STMT_NO, PROC_NAME> res =
+    unordered_map<StmtNo, ProcName> res =
         ExtractCallsHelper(caller->StmtList, allProcs);
     for (auto p : res) {
       StmtNo callStmtNo = p.first;
@@ -506,27 +513,34 @@ CALL_GRAPH DesignExtractor::ExtractCalls(const ProgramAST* programAST,
       pkb->addRs(RelationshipType::CALLS_S, callStmtNo, TableType::PROC_TABLE,
                  callee);
 
-      allProcsCalled.insert(p.second);
+      // build call graphs
+      if (caller->ProcName == callee)
+        throw runtime_error("Recursive call detected.");
+
+      allProcsCalled.insert(callee);
+
+      if (reverseCallGraph.count(callee) == 0)
+        reverseCallGraph[callee] = unordered_set<ProcName>{};
+      reverseCallGraph[callee].insert(caller->ProcName);
     }
 
-    // allProcsCalled could be empty set
-    callGraph.insert({caller->ProcName, allProcsCalled});
+    if (!allProcsCalled.empty()) callGraph[caller->ProcName] = allProcsCalled;
   }
 
   // for Affects r/s
   for (auto p : callGraph) {
-    PROC_NAME callerProcName = p.first;
-    for (PROC_NAME calleeProcName : p.second) {
+    ProcName callerProcName = p.first;
+    for (ProcName calleeProcName : p.second) {
       pkb->addProcCallEdge(callerProcName, calleeProcName);
     }
   }
 
-  return callGraph;
+  return pair<CallGraph, CallGraph>{callGraph, reverseCallGraph};
 }
 
-unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
+unordered_map<StmtNo, ProcName> DesignExtractor::ExtractCallsHelper(
     const vector<StmtAST*> stmtList, unordered_set<NAME> allProcs) {
-  unordered_map<STMT_NO, PROC_NAME> res;
+  unordered_map<StmtNo, ProcName> res;
   for (auto stmt : stmtList) {
     if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
       if (allProcs.count(callStmt->ProcName) < 1) {
@@ -545,99 +559,130 @@ unordered_map<STMT_NO, PROC_NAME> DesignExtractor::ExtractCallsHelper(
   return res;
 }
 
-void DesignExtractor::ExtractCallsTrans(CALL_GRAPH callGraph) {
-  for (auto p : callGraph) {
-    PROC_NAME caller = p.first;
-    unordered_set<PROC_NAME> callees = p.second;
-    for (auto callee : callees) {
-      ExtractCallsTransHelper(callGraph, caller, callee);
+void DesignExtractor::ExtractCallsTrans(CallGraph reverseCallGraph,
+                                        vector<ProcName> topoProcs,
+                                        unordered_set<NAME> allProcs) {
+  if (topoProcs.size() != allProcs.size())
+    throw runtime_error("Cyclic call detected.");
+
+  CallGraph transCallGraph;
+
+  reverse(topoProcs.begin(), topoProcs.end());
+
+  for (auto proc : topoProcs) {
+    // if no proc calls this proc
+    if (reverseCallGraph.count(proc) == 0) continue;
+
+    for (auto caller : reverseCallGraph[proc]) {
+      transCallGraph[caller].insert(proc);
+
+      // if this proc calls no proc
+      if (transCallGraph.count(proc) == 0) continue;
+
+      for (auto callee : transCallGraph[proc]) {
+        transCallGraph[caller].insert(callee);
+      }
     }
   }
-}
 
-void DesignExtractor::ExtractCallsTransHelper(CALL_GRAPH callGraph,
-                                              PROC_NAME caller,
-                                              PROC_NAME callee) {
-  if (caller == callee) {
-    throw runtime_error("Cyclic/Recursive loop detected.");
-  }
-
-  pkb->addRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, caller,
-             TableType::PROC_TABLE, callee);
-
-  unordered_set<PROC_NAME> nextLayerCallees = callGraph.at(callee);
-  for (auto nextLayerCallee : nextLayerCallees) {
-    ExtractCallsTransHelper(callGraph, caller, nextLayerCallee);
+  for (auto p : transCallGraph) {
+    auto caller = p.first;
+    for (auto callee : p.second)
+      pkb->addRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, caller,
+                 TableType::PROC_TABLE, callee);
   }
 }
 
-void DesignExtractor::ExtractNextAndNextBip(const ProgramAST* programAST) {
-  unordered_map<NAME, STMT_NO> procNameToItsFirstStmt;
+vector<ProcName> DesignExtractor::GetTopoSortedProcs(
+    CallGraph callGraph, CallGraph reverseCallGraph,
+    unordered_set<ProcName> allProcs) {
+  vector<ProcName> res;
 
+  unordered_map<ProcName, int> indegree;
+  for (auto proc : allProcs) indegree[proc] = 0;
+  for (auto p : reverseCallGraph) {
+    ProcName callee = p.first;
+    indegree[callee] = p.second.size();
+  }
+
+  unordered_set<ProcName> procQueue;
+  for (auto p : indegree) {
+    if (p.second == 0) procQueue.insert(p.first);
+  }
+
+  while (!procQueue.empty()) {
+    // pop one procedure from the bfsQueue
+    ProcName procName = *(procQueue.begin());
+    procQueue.erase(procName);
+
+    res.push_back(procName);
+
+    for (auto callee : callGraph[procName]) {
+      indegree[callee]--;
+      if (indegree[callee] == 0) procQueue.insert(callee);
+    }
+  }
+
+  return res;
+}
+
+void DesignExtractor::ExtractNext(const ProgramAST* programAST) {
   for (auto procedure : programAST->ProcedureList) {
-    procNameToItsFirstStmt[procedure->ProcName] =
-        procedure->StmtList[0]->StmtNo;
     pkb->addFirstStmtOfProc(procedure->ProcName,
                             procedure->StmtList.front()->StmtNo);
   }
 
   for (auto procedure : programAST->ProcedureList) {
-    ExtractNextAndNextBipHelper(procNameToItsFirstStmt, procedure->StmtList, -1,
-                                -1);
+    ExtractNextHelper(procedure->StmtList, -1, -1);
   }
 }
 
-void DesignExtractor::ExtractNextAndNextBipHelper(
-    const unordered_map<NAME, STMT_NO>& procNameToItsFirstStmt,
-    const vector<StmtAST*> stmtList, STMT_NO prevStmt,
-    STMT_NO nextStmtForLastStmt) {
-  auto addNext = [this](STMT_NO s1, STMT_NO s2) {
+void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
+                                        StmtNo prevStmt,
+                                        StmtNo nextStmtForLastStmt) {
+  auto addNext = [this](StmtNo s1, StmtNo s2) {
     if (s1 == -1 || s2 == -1) return;
     pkb->addRs(RelationshipType::NEXT, s1, s2);
   };
-  auto addNextBip = [this](STMT_NO s1, STMT_NO s2) {
-    if (s1 == -1 || s2 == -1) return;
-    pkb->addRs(RelationshipType::NEXT_BIP, s1, s2);
+  auto getNextStmtNoAfterCurrIdx = [stmtList](size_t i) {
+    if (i + 1 < stmtList.size()) {
+      return stmtList[i + 1]->StmtNo;
+    }
+    return -1;
   };
 
   for (size_t i = 0; i < stmtList.size(); ++i) {
     auto stmt = stmtList[i];
 
     addNext(prevStmt, stmt->StmtNo);
-    addNextBip(prevStmt, stmt->StmtNo);
 
     if (dynamic_cast<const ReadStmtAST*>(stmt) ||
         dynamic_cast<const PrintStmtAST*>(stmt) ||
+        dynamic_cast<const CallStmtAST*>(stmt) ||
         dynamic_cast<const AssignStmtAST*>(stmt)) {
-      prevStmt = stmt->StmtNo;
-    } else if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
-      addNextBip(callStmt->StmtNo,
-                 procNameToItsFirstStmt.at(callStmt->ProcName));
       prevStmt = stmt->StmtNo;
 
     } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
-      ExtractNextAndNextBipHelper(procNameToItsFirstStmt, whileStmt->StmtList,
-                                  stmt->StmtNo, stmt->StmtNo);
+      ExtractNextHelper(whileStmt->StmtList, stmt->StmtNo, stmt->StmtNo);
       prevStmt = stmt->StmtNo;
+
     } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
-      STMT_NO nextStmtForLastStmtInIf = -1;
-      if (i + 1 < stmtList.size()) {
-        nextStmtForLastStmtInIf = stmtList[i + 1]->StmtNo;
-      }
-      if (nextStmtForLastStmtInIf != -1) {
-        pkb->addNextStmtForIfStmt(stmt->StmtNo, nextStmtForLastStmtInIf);
+      StmtNo nextStmtAfterIf = getNextStmtNoAfterCurrIdx(i);
+
+      if (nextStmtAfterIf != -1) {
+        pkb->addNextStmtForIfStmt(stmt->StmtNo, nextStmtAfterIf);
+        // skip extraction if this stmt is the last stmt in current stmtList,
+        // let the next block of code handles it, for better performance
+        ExtractNextHelper(ifStmt->ThenBlock, ifStmt->StmtNo, nextStmtAfterIf);
+        ExtractNextHelper(ifStmt->ElseBlock, ifStmt->StmtNo, nextStmtAfterIf);
       }
 
-      ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ThenBlock,
-                                  ifStmt->StmtNo, nextStmtForLastStmtInIf);
-      ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ElseBlock,
-                                  ifStmt->StmtNo, nextStmtForLastStmtInIf);
+      prevStmt = -1;  // because there's no Next r/s between the current if stmt
+                      // and the next stmt in the current stmtList
 
-      prevStmt = -1;  // because Next r/s between the last stmt in ifStmt's
-                      // then/else block are alr handled by recursive call above
     } else {
       DMOprintErrMsgAndExit(
-          "[DE][ExtractNextAndNextBipHelper][for loop] shouldn't reach "
+          "[DE][ExtractNextHelper][for loop] shouldn't reach "
           "here.");
       return;
     }
@@ -651,18 +696,149 @@ void DesignExtractor::ExtractNextAndNextBipHelper(
       dynamic_cast<const AssignStmtAST*>(stmt) ||
       dynamic_cast<const WhileStmtAST*>(stmt)) {
     addNext(stmt->StmtNo, nextStmtForLastStmt);
-    addNextBip(stmt->StmtNo, nextStmtForLastStmt);
   } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
     if (nextStmtForLastStmt != -1) {
       pkb->addNextStmtForIfStmt(ifStmt->StmtNo, nextStmtForLastStmt);
     }
-    ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ThenBlock, -1,
-                                nextStmtForLastStmt);
-    ExtractNextAndNextBipHelper(procNameToItsFirstStmt, ifStmt->ElseBlock, -1,
-                                nextStmtForLastStmt);
+    ExtractNextHelper(ifStmt->ThenBlock, ifStmt->StmtNo, nextStmtForLastStmt);
+    ExtractNextHelper(ifStmt->ElseBlock, ifStmt->StmtNo, nextStmtForLastStmt);
   } else {
     DMOprintErrMsgAndExit(
-        "[DE][ExtractNextAndNextBipHelper][last stmt] shouldn't reach here.");
+        "[DE][ExtractNextHelper][last stmt] shouldn't reach here.");
+    return;
+  }
+}
+
+void DesignExtractor::ExtractNextBip(const ProgramAST* programAST,
+                                     vector<ProcName> topoProcs) {
+  unordered_map<NAME, StmtNo> procNameToItsFirstStmt;
+  for (auto procedure : programAST->ProcedureList) {
+    procNameToItsFirstStmt[procedure->ProcName] =
+        procedure->StmtList[0]->StmtNo;
+  }
+
+  unordered_map<ProcName, const ProcedureAST*> procNameToProc;
+  for (auto procedure : programAST->ProcedureList) {
+    procNameToProc[procedure->ProcName] = procedure;
+  }
+
+  // for storing callee's procName to the last stmts in this call path
+  unordered_map<ProcName, unordered_set<StmtNo>> lastStmtsOfCallPath;
+
+  reverse(topoProcs.begin(), topoProcs.end());
+
+  for (auto procName : topoProcs) {
+    ExtractNextBipHelper(procNameToProc[procName]->StmtList, -1, -1, procName,
+                         procNameToItsFirstStmt, &lastStmtsOfCallPath, true);
+  }
+}
+
+void DesignExtractor::ExtractNextBipHelper(
+    const std::vector<StmtAST*> stmtList, StmtNo prevStmt,
+    StmtNo nextStmtForLastStmt, ProcName currProcName,
+    const unordered_map<NAME, StmtNo>& procNameToItsFirstStmt,
+    unordered_map<ProcName, unordered_set<StmtNo>>* lastStmtsOfCallPath,
+    bool isAtProcLevel) {
+  auto addNextBip = [this](StmtNo s1, StmtNo s2) {
+    if (s1 == -1 || s2 == -1) return;
+    pkb->addRs(RelationshipType::NEXT_BIP, s1, s2);
+  };
+  auto getNextStmtNoAfterCurrIdx = [stmtList](size_t i) {
+    if (i + 1 < stmtList.size()) {
+      return stmtList[i + 1]->StmtNo;
+    }
+    return -1;
+  };
+
+  for (size_t i = 0; i < stmtList.size(); ++i) {
+    auto stmt = stmtList[i];
+
+    addNextBip(prevStmt, stmt->StmtNo);
+
+    if (dynamic_cast<const ReadStmtAST*>(stmt) ||
+        dynamic_cast<const PrintStmtAST*>(stmt) ||
+        dynamic_cast<const AssignStmtAST*>(stmt)) {
+      prevStmt = stmt->StmtNo;
+
+    } else if (auto whileStmt = dynamic_cast<const WhileStmtAST*>(stmt)) {
+      ExtractNextBipHelper(whileStmt->StmtList, stmt->StmtNo, stmt->StmtNo,
+                           currProcName, procNameToItsFirstStmt,
+                           lastStmtsOfCallPath, false);
+      prevStmt = stmt->StmtNo;
+
+    } else if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
+      auto nextStmtAfterCall = getNextStmtNoAfterCurrIdx(i);
+      auto callee = callStmt->ProcName;
+      auto firstStmtInCallee = procNameToItsFirstStmt.at(callee);
+      auto lastStmtsInThisCallPath = lastStmtsOfCallPath->at(callee);
+
+      addNextBip(callStmt->StmtNo, firstStmtInCallee);
+
+      for (auto lastStmt : lastStmtsInThisCallPath) {
+        addNextBip(lastStmt, nextStmtAfterCall);
+      }
+
+      prevStmt = -1;
+
+    } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+      StmtNo nextStmtAfterIf = getNextStmtNoAfterCurrIdx(i);
+
+      if (nextStmtAfterIf != -1) {
+        // skip extraction if this stmt is the last stmt in current stmtList,
+        // let the next block of code handles it, for better performance
+        ExtractNextBipHelper(ifStmt->ThenBlock, ifStmt->StmtNo, nextStmtAfterIf,
+                             currProcName, procNameToItsFirstStmt,
+                             lastStmtsOfCallPath, false);
+        ExtractNextBipHelper(ifStmt->ElseBlock, ifStmt->StmtNo, nextStmtAfterIf,
+                             currProcName, procNameToItsFirstStmt,
+                             lastStmtsOfCallPath, false);
+      }
+
+      prevStmt = -1;  // because there's no Next r/s between the current if
+                      // stmt and the next stmt in the current stmtList
+
+    } else {
+      DMOprintErrMsgAndExit(
+          "[DE][ExtractNextBipHelper][for loop] shouldn't reach "
+          "here.");
+      return;
+    }
+  }
+
+  // settle last stmt in curr stmtList
+  auto stmt = stmtList[stmtList.size() - 1];
+  if (dynamic_cast<const ReadStmtAST*>(stmt) ||
+      dynamic_cast<const PrintStmtAST*>(stmt) ||
+      dynamic_cast<const AssignStmtAST*>(stmt) ||
+      dynamic_cast<const WhileStmtAST*>(stmt)) {
+    addNextBip(stmt->StmtNo, nextStmtForLastStmt);
+
+    if (isAtProcLevel)
+      (*lastStmtsOfCallPath)[currProcName].insert(stmt->StmtNo);
+
+  } else if (auto ifStmt = dynamic_cast<const IfStmtAST*>(stmt)) {
+    ExtractNextBipHelper(ifStmt->ThenBlock, ifStmt->StmtNo, nextStmtForLastStmt,
+                         currProcName, procNameToItsFirstStmt,
+                         lastStmtsOfCallPath, isAtProcLevel);
+    ExtractNextBipHelper(ifStmt->ElseBlock, ifStmt->StmtNo, nextStmtForLastStmt,
+                         currProcName, procNameToItsFirstStmt,
+                         lastStmtsOfCallPath, isAtProcLevel);
+  } else if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
+    ProcName callee = callStmt->ProcName;
+
+    for (auto lastStmt : (*lastStmtsOfCallPath)[callee]) {
+      addNextBip(lastStmt, nextStmtForLastStmt);
+    }
+
+    if (isAtProcLevel) {
+      for (auto lastStmt : (*lastStmtsOfCallPath)[callee]) {
+        (*lastStmtsOfCallPath)[currProcName].insert(lastStmt);
+      }
+    }
+
+  } else {
+    DMOprintErrMsgAndExit(
+        "[DE][ExtractNextBipHelper][last stmt] shouldn't reach here.");
     return;
   }
 }

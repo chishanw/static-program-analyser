@@ -1,0 +1,505 @@
+1 - NextBip variable and variable
+variable v1, v2;
+Select BOOLEAN such that NextBip(v1, v2)
+FALSE
+5000
+2 - NextBip variable and variable
+variable v1, v2;
+Select v1 such that NextBip(v1, v2)
+none
+5000
+3 - NextBip constant and constant
+constant c1, c2;
+Select BOOLEAN such that NextBip(c1, c2)
+FALSE
+5000
+4 - NextBip constant and constant
+constant c1, c2;
+Select c1 such that NextBip(c1, c2)
+none
+5000
+5 - NextBip stmt and stmt
+stmt s1, s2;
+Select BOOLEAN such that NextBip(s1, s2)
+TRUE
+5000
+6 - NextBip stmt and stmt
+stmt s1, s2;
+Select s1 such that NextBip(s1, s2)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15
+5000
+7 - NextBip prog_line and prog_line
+prog_line p1, p2;
+Select BOOLEAN such that NextBip(p1, p2)
+TRUE
+5000
+8 - NextBip prog_line and prog_line
+prog_line p1, p2;
+Select p1 such that NextBip(p1, p2)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15
+5000
+9 - NextBip prog_line and prog_line
+prog_line p1, p2;
+Select <p1, p2> such that NextBip(p1, p2)
+1 2, 2 3, 3 4, 3 7, 4 5, 6 3, 7 9, 8 10, 5 13, 7 8, 9 10, 10 11, 11 12, 13 14, 14 15, 15 6
+5000
+10 - NextBip prog_line and prog_line
+prog_line p1, p2;
+Select <p2, p1> such that NextBip(p1, p2)
+2 1, 3 2, 4 3, 7 3, 5 4, 3 6, 9 7, 10 8, 13 5, 8 7, 10 9, 11 10, 12 11, 14 13, 15 14, 6 15
+5000
+11 - NextBip while and while
+while w1, w2;
+Select w1 such that NextBip(w1, w2)
+none
+5000
+12 - NextBip if and if
+while i1, i2;
+Select BOOLEAN such that NextBip(i1, i2)
+FALSE
+5000
+13 - NextBip assign and assign
+assign a1, a2;
+Select <a1, a2> such that NextBip(a1, a2)
+1 2, 8 10, 9 10, 10 11, 11 12, 13 14, 14 15, 15 6
+5000
+14 - NextBip assign and assign
+assign a1, a2;
+Select <a2, a1> such that NextBip(a1, a2)
+2 1, 10 8, 10 9, 11 10, 12 11, 14 13, 15 14, 6 15
+5000
+15 - NextBip call and while
+call c; while w;
+Select <c, w> such that NextBip(c, w)
+none
+5000
+16 - NextBip if and while
+while w; if i;
+Select <w, i> such that NextBip(w, i)
+3 7
+5000
+17 - NextBip if and while
+while w; if i;
+Select <i.stmt#, w.stmt#> such that NextBip(w, i)
+7 3
+5000
+18 - NextBip variable and integer
+variable v;
+Select BOOLEAN such that NextBip(v, 14)
+FALSE
+5000
+19 - NextBip variable and integer
+variable v;
+Select v such that NextBip(v, 19)
+none
+5000
+20 - NextBip constant and integer
+constant c;
+Select BOOLEAN such that NextBip(c, 14)
+FALSE
+5000
+21 - NextBip constant and integer
+constant c;
+Select c such that NextBip(c, 19)
+none
+5000
+22 - NextBip stmt and integer
+stmt s;
+Select BOOLEAN such that NextBip(s, 14)
+TRUE
+5000
+23 - NextBip stmt and integer
+stmt s;
+Select s such that NextBip(s, 13)
+5
+5000
+24 - assign and integer
+assign a;
+Select a.stmt# such that NextBip(a, 13)
+none
+5000
+25 - call and integer
+call c;
+Select c.procName such that NextBip(c, 6)
+none
+5000
+26 - call and integer
+call c;
+Select c such that NextBip(c, 6)
+none
+5000
+27 - call and integer
+call c;
+Select <c.stmt#, c.procName> such that NextBip(c, 6)
+none
+5000
+28 - while and integer
+while w;
+Select w such that NextBip(w, 4)
+3
+5000
+29 - while and integer
+while w;
+Select <w, w.stmt#> such that NextBip(w, 4)
+3 3
+5000
+30 - if and integer
+if i;
+Select i such that NextBip(i, 9)
+7
+5000
+31 - if and integer
+if i;
+Select <i, i.stmt#> such that NextBip(i, 9)
+7 7
+5000
+32 - NextBip prog_line and integer
+prog_line p;
+Select BOOLEAN such that NextBip(p, 14)
+TRUE
+5000
+33 - NextBip prog_line and integer
+prog_line p;
+Select BOOLEAN such that NextBip(p, 30)
+FALSE
+5000
+34 - NextBip prog_line and integer
+prog_line p;
+Select p such that NextBip(p, 30)
+none
+5000
+35 - NextBip prog_line and integer
+prog_line p;
+Select p such that NextBip(p, 13)
+5
+5000
+36 - NextBip prog_line and integer
+prog_line p;
+Select <p, p> such that NextBip(p, 13)
+5 5
+5000
+37 - NextBip prog_line and wildcard
+prog_line p;
+Select BOOLEAN such that NextBip(p, _)
+TRUE
+5000
+38 - assign and wildcard
+assign a;
+Select a such that NextBip(a, _)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+39 - assign and wildcard
+assign a;
+Select a.stmt# such that NextBip(a, _)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+40 - assign and wildcard
+assign a;
+Select <a, a.stmt#> such that NextBip(a, _)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+41 - while and wildcard
+while w;
+Select w such that NextBip(w, _)
+3
+5000
+42 - while and wildcard
+while w;
+Select w.stmt# such that NextBip(w, _)
+3
+5000
+43 - while and wildcard
+while w;
+Select <w, w.stmt#> such that NextBip(w, _)
+3 3
+5000
+44 - if and wildcard
+if i;
+Select i such that NextBip(i, _)
+7
+5000
+45 - if and wildcard
+if i;
+Select i.stmt# such that NextBip(i, _)
+7
+5000
+46 - if and wildcard
+if i;
+Select <i, i.stmt#> such that NextBip(i, _)
+7 7
+5000
+47 - call and wildcard
+call c;
+Select c such that NextBip(c, _)
+5
+5000
+48 - call and wildcard
+call c;
+Select c.stmt# such that NextBip(c, _)
+5
+5000
+49 - call and wildcard
+call c;
+Select <c, c.procName> such that NextBip(c, _)
+5 Third
+5000
+50 - NextBip variable and wildcard
+variable v;
+Select BOOLEAN such that NextBip(v, _)
+FALSE
+5000
+51 - NextBip variable and wildcard
+variable v;
+Select v such that NextBip(v, _)
+none
+5000
+52 - NextBip constant and wildcard
+constant c;
+Select BOOLEAN such that NextBip(c, _)
+FALSE
+5000
+53 - NextBip constant and wildcard
+constant c;
+Select c such that NextBip(c, _)
+none
+5000
+54 - NextBip stmt and wildcard
+stmt s;
+Select BOOLEAN such that NextBip(s, _)
+TRUE
+5000
+55 - NextBip stmt and wildcard
+stmt s;
+Select s such that NextBip(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15
+5000
+56 - NextBip prog_line and wildcard
+prog_line p;
+Select p such that NextBip(p, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15
+5000
+57 - NextBip prog_line and wildcard
+prog_line p;
+Select <p, p> such that NextBip(p, _)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+58 - NextBip integer and variable
+variable v;
+Select BOOLEAN such that NextBip(14, v)
+FALSE
+5000
+59 - NextBip integer and variable
+variable v;
+Select v such that NextBip(19, v)
+none
+5000
+60 - NextBip integer and constant
+constant c;
+Select BOOLEAN such that NextBip(14, c)
+FALSE
+5000
+61 - NextBip integer and constant
+constant c;
+Select c such that NextBip(19, c)
+none
+5000
+62 - NextBip integer and stmt
+stmt s;
+Select BOOLEAN such that NextBip(14, s)
+TRUE
+5000
+63 - NextBip integer and stmt
+stmt s;
+Select s such that NextBip(5, s)
+13
+5000
+64 - NextBip integer and prog_line
+prog_line p;
+Select BOOLEAN such that NextBip(30, p)
+FALSE
+5000
+65 - NextBip integer and prog_line
+prog_line p;
+Select p such that NextBip(30, p)
+none
+5000
+66 - NextBip integer and prog_line
+prog_line p;
+Select BOOLEAN such that NextBip(5, p)
+TRUE
+5000
+67 - NextBip integer and prog_line
+prog_line p;
+Select p such that NextBip(5, p)
+13
+5000
+68 - NextBip integer and prog_line
+prog_line p;
+Select <p, p> such that NextBip(5, p)
+13 13
+5000
+69 - call and integer
+call c;
+Select c such that NextBip(c, 14)
+none
+5000
+70 - call and integer
+call c;
+Select c.stmt# such that NextBip(c, 14)
+none
+5000
+71 - call and integer
+call c;
+Select <c, c.procName> such that NextBip(c, 14)
+none
+5000
+72 - NextBip integer and integer
+prog_line p;
+Select BOOLEAN such that NextBip(14, 15)
+TRUE
+5000
+74 - NextBip integer and wildcard
+prog_line p;
+Select BOOLEAN such that NextBip(30, _)
+FALSE
+5000
+75 - NextBip integer and wildcard
+prog_line p;
+Select p such that NextBip(5, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+76 - NextBip integer and wildcard
+prog_line p;
+Select <p, p> such that NextBip(14, _)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+77 - NextBip wildcard and variable
+variable v;
+Select BOOLEAN such that NextBip(_, v)
+FALSE
+5000
+78 - NextBip wildcard and variable
+variable v;
+Select v such that NextBip(_, v)
+none
+5000
+79 - NextBip wildcard and constant
+constant c;
+Select BOOLEAN such that NextBip(_, c)
+FALSE
+5000
+80 - NextBip wildcard and constant
+constant c;
+Select c such that NextBip(_, c)
+none
+5000
+81 - NextBip wildcard and stmt
+stmt s;
+Select BOOLEAN such that NextBip(_, s)
+TRUE
+5000
+82 - NextBip wildcard and stmt
+stmt s;
+Select s such that NextBip(_, s)
+2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+83 - NextBip wildcard and prog_line
+prog_line p;
+Select BOOLEAN such that NextBip(_, p)
+TRUE
+5000
+84 - NextBip wildcard and prog_line
+prog_line p;
+Select p such that NextBip(_, p)
+2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+85 - NextBip wildcard and prog_line
+prog_line p;
+Select <p, p> such that NextBip(_, p)
+2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+86 - wildcard and assign
+assign a;
+Select a such that NextBip(_, a)
+2, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+87 - wildcard and assign
+assign a;
+Select a.stmt# such that NextBip(_, a)
+2, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+88 - wildcard and assign
+assign a;
+Select <a, a.stmt#> such that NextBip(_, a)
+2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+89 - wildcard and call
+call c;
+Select c such that NextBip(_, c)
+5
+5000
+90 - wildcard and call
+call c;
+Select c.stmt# such that NextBip(_, c)
+5
+5000
+91 - wildcard and call
+call c;
+Select <c.stmt#, c.procName> such that NextBip(_, c)
+5 Third
+5000
+92 - wildcard and if
+if i;
+Select i such that NextBip(_, i)
+7
+5000
+93 - wildcard and if
+if i;
+Select i.stmt# such that NextBip(_, i)
+7
+5000
+94 - wildcard and if
+if i;
+Select <i.stmt#, i> such that NextBip(_, i)
+7 7
+5000
+95 - wildcard and while
+while w;
+Select w such that NextBip(_, w)
+3
+5000
+96 - wildcard and while
+while w;
+Select w.stmt# such that NextBip(_, w)
+3
+5000
+97 - wildcard and while
+while w;
+Select <w, w.stmt#> such that NextBip(_, w)
+3 3
+5000
+98 - NextBip wildcard and integer
+prog_line p;
+Select BOOLEAN such that NextBip(_, 14)
+TRUE
+5000
+99 - NextBip wildcard and integer
+prog_line p;
+Select p such that NextBip(_, 14)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+100 - NextBip wildcard and integer
+prog_line p;
+Select <p, p> such that NextBip(_, 14)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+101 - NextBip wildcard and wildcard
+prog_line p;
+Select p such that NextBip(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+102 - NextBip wildcard and wildcard
+prog_line p1, p2;
+Select <p1, p2> such that NextBip(_, _)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15, 1 10,1 11,1 12,1 13,1 14,1 15,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9,10 1,10 11,10 12,10 13,10 14,10 15,10 2,10 3,10 4,10 5,10 6,10 7,10 8,10 9,11 1,11 10,11 12,11 13,11 14,11 15,11 2,11 3,11 4,11 5,11 6,11 7,11 8,11 9,12 1,12 10,12 11,12 13,12 14,12 15,12 2,12 3,12 4,12 5,12 6,12 7,12 8,12 9,13 1,13 10,13 11,13 12,13 14,13 15,13 2,13 3,13 4,13 5,13 6,13 7,13 8,13 9,14 1,14 10,14 11,14 12,14 13,14 15,14 2,14 3,14 4,14 5,14 6,14 7,14 8,14 9,15 1,15 10,15 11,15 12,15 13,15 14,15 2,15 3,15 4,15 5,15 6,15 7,15 8,15 9,2 1,2 10,2 11,2 12,2 13,2 14,2 15,2 3,2 4,2 5,2 6,2 7,2 8,2 9,3 1,3 10,3 11,3 12,3 13,3 14,3 15,3 2,3 4,3 5,3 6,3 7,3 8,3 9,4 1,4 10,4 11,4 12,4 13,4 14,4 15,4 2,4 3,4 5,4 6,4 7,4 8,4 9,5 1,5 10,5 11,5 12,5 13,5 14,5 15,5 2,5 3,5 4,5 6,5 7,5 8,5 9,6 1,6 10,6 11,6 12,6 13,6 14,6 15,6 2,6 3,6 4,6 5,6 7,6 8,6 9,7 1,7 10,7 11,7 12,7 13,7 14,7 15,7 2,7 3,7 4,7 5,7 6,7 8,7 9,8 1,8 10,8 11,8 12,8 13,8 14,8 15,8 2,8 3,8 4,8 5,8 6,8 7,8 9,9 1,9 10,9 11,9 12,9 13,9 14,9 15,9 2,9 3,9 4,9 5,9 6,9 7,9 8
+5000

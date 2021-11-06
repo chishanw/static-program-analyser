@@ -160,7 +160,7 @@ TEST_CASE("Cyclic Calls") {
   ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
   PKB* pkb = new PKB();
   DesignExtractor de = DesignExtractor(pkb);
-  REQUIRE_THROWS_WITH(de.Extract(ast), "Cyclic/Recursive loop detected.");
+  REQUIRE_THROWS_WITH(de.Extract(ast), "Cyclic call detected.");
 }
 
 TEST_CASE("Recursive Call") {
@@ -174,7 +174,7 @@ TEST_CASE("Recursive Call") {
   ProgramAST* ast = Parser().Parse(Tokenizer::TokenizeProgramString(program));
   PKB* pkb = new PKB();
   DesignExtractor de = DesignExtractor(pkb);
-  REQUIRE_THROWS_WITH(de.Extract(ast), "Cyclic/Recursive loop detected.");
+  REQUIRE_THROWS_WITH(de.Extract(ast), "Recursive call detected.");
 }
 
 TEST_CASE("No Call") {

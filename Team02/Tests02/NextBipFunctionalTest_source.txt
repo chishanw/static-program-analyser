@@ -1,0 +1,23 @@
+procedure Second {
+    x = 0;
+    z = 5;
+    while (i != 0) {
+        x = x + 2*y;
+        call Third;
+        i = i - 1;
+    }
+    if (x == 1) then {
+        x = x + 1;
+    } else {
+        z = 1;
+    }
+    z = z + x + y;
+    y = z + 2;
+    x = x * y + z;
+}
+
+procedure Third {
+    z = 5;
+    v = z;
+    y = v;
+}
