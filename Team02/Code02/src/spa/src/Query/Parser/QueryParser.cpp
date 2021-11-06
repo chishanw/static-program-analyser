@@ -709,7 +709,7 @@ void QueryParser::parsePatternClause(vector<ConditionClause>& results) {
   while (hasNextPattern) {
     string pattSynString = getNameOrKeyword();
     DesignEntity pattSynEntity = getEntityFromSynonymName(pattSynString);
-    Synonym pattSynonym = {pattSynEntity, pattSynString};
+    Synonym pattSynonym = {pattSynEntity, pattSynString, false, {}};
 
     unordered_set<DesignEntity> expectedEntities = {};
 
