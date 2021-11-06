@@ -268,7 +268,7 @@ void QueryOptimizer::sortClausesAtGroupIndex(int index) {
 unsigned long QueryOptimizer::getSizeOfClause(
     query::ConditionClauseType type, const std::vector<std::string>& synonyms) {
   vector<int> sizes = {};
-  for (const string& s : synonyms) {
+  for (const string s : synonyms) {
     if (synonymCountTable != nullptr &&
         synonymCountTable->find(s) != synonymCountTable->end()) {
       sizes.push_back(synonymCountTable->at(s));
@@ -334,5 +334,4 @@ vector<SYN_NAME> QueryOptimizer::extractSynonymsUsed(
       return synonymNamesUsed;
     }
   }
-  return synonymNamesUsed;
 }

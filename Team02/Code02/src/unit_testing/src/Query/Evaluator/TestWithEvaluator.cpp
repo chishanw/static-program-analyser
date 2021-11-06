@@ -48,14 +48,14 @@ TEST_CASE("WithEvaluator: Name Attributes") {
       {"c1", DesignEntity::CALL},      {"c2", DesignEntity::CALL},
       {"v1", DesignEntity::VARIABLE},  {"v2", DesignEntity::VARIABLE},
       {"rd1", DesignEntity::READ},     {"rd2", DesignEntity::READ}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
-  Synonym c1 = {DesignEntity::PROCEDURE, "c1", false, {}};
-  Synonym c2 = {DesignEntity::PROCEDURE, "c2", false, {}};
-  Synonym v1 = {DesignEntity::VARIABLE, "v1", false, {}};
-  Synonym v2 = {DesignEntity::VARIABLE, "v2", false, {}};
-  Synonym rd1 = {DesignEntity::READ, "rd1", false, {}};
-  Synonym rd2 = {DesignEntity::READ, "rd2", false, {}};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym c1 = {DesignEntity::PROCEDURE, "c1"};
+  Synonym c2 = {DesignEntity::PROCEDURE, "c2"};
+  Synonym v1 = {DesignEntity::VARIABLE, "v1"};
+  Synonym v2 = {DesignEntity::VARIABLE, "v2"};
+  Synonym rd1 = {DesignEntity::READ, "rd1"};
+  Synonym rd2 = {DesignEntity::READ, "rd2"};
 
   SECTION("with p1.procName = p2.procName") {
     Param left = {ParamType::ATTRIBUTE_PROC_NAME, "p1"};
@@ -275,15 +275,15 @@ TEST_CASE("WithEvaluator: Integer Attributes") {
       {"a1", DesignEntity::ASSIGN},    {"a2", DesignEntity::ASSIGN},
       {"ifs", DesignEntity::IF},       {"n1", DesignEntity::PROG_LINE},
       {"n2", DesignEntity::PROG_LINE}};
-  Synonym c1 = {DesignEntity::CONSTANT, "c1", false, {}};
-  Synonym c2 = {DesignEntity::CONSTANT, "c2", false, {}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
-  Synonym a1 = {DesignEntity::ASSIGN, "a1", false, {}};
-  Synonym a2 = {DesignEntity::ASSIGN, "a2", false, {}};
-  Synonym ifs = {DesignEntity::IF, "ifs", false, {}};
-  Synonym n1 = {DesignEntity::PROG_LINE, "n1", false, {}};
-  Synonym n2 = {DesignEntity::PROG_LINE, "n2", false, {}};
+  Synonym c1 = {DesignEntity::CONSTANT, "c1"};
+  Synonym c2 = {DesignEntity::CONSTANT, "c2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym a1 = {DesignEntity::ASSIGN, "a1"};
+  Synonym a2 = {DesignEntity::ASSIGN, "a2"};
+  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym n1 = {DesignEntity::PROG_LINE, "n1"};
+  Synonym n2 = {DesignEntity::PROG_LINE, "n2"};
 
   SECTION("with n1 = n2") {
     Param left = {ParamType::SYNONYM, "n1"};

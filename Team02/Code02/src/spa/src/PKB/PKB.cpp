@@ -38,7 +38,6 @@ int PKB::getNumEntity(DesignEntity de) {
     case DesignEntity::PROCEDURE:
       return tables.at(TableType::PROC_TABLE).getSize();
   }
-  return 0;
 }
 
 void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,

@@ -20,16 +20,16 @@ class ArithAST {
   ArithAST() : hasOnlyOneNode(false) {}  // default constructor for child class
 
   explicit ArithAST(ArithAST* leftNode)
-      : Sign(""),
+      : hasOnlyOneNode(true),
+        Sign(""),
         LeftNode(leftNode),
-        RightNode(nullptr),
-        hasOnlyOneNode(true) {}
+        RightNode(nullptr) {}
 
   ArithAST(std::string sign, ArithAST* leftNode, ArithAST* rightNode)
-      : Sign(sign),
+      : hasOnlyOneNode(false),
+        Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode),
-        hasOnlyOneNode(false) {}
+        RightNode(rightNode) {}
 
   virtual ~ArithAST() {}
 
@@ -51,28 +51,28 @@ class FactorAST : public ArithAST {
   const ArithAST* Expr;
 
   explicit FactorAST(NAME varName)
-      : VarName(varName),
-        ConstValue(""),
-        Expr(nullptr),
-        isVarName(true),
+      : isVarName(true),
         isConstValue(false),
-        isExpr(false) {}
+        isExpr(false),
+        VarName(varName),
+        ConstValue(""),
+        Expr(nullptr) {}
 
   explicit FactorAST(std::string constValue, bool isConstant)
-      : VarName(""),
-        ConstValue(constValue),
-        Expr(nullptr),
-        isVarName(false),
+      : isVarName(false),
         isConstValue(true),
-        isExpr(false) {}
+        isExpr(false),
+        VarName(""),
+        ConstValue(constValue),
+        Expr(nullptr) {}
 
   explicit FactorAST(ArithAST* expr)
-      : VarName(""),
-        ConstValue(""),
-        Expr(expr),
-        isVarName(false),
+      : isVarName(false),
         isConstValue(false),
-        isExpr(true) {}
+        isExpr(true),
+        VarName(""),
+        ConstValue(""),
+        Expr(expr) {}
 
   bool IsVarName() const { return this->isVarName; }
   bool IsConstValue() const { return this->isConstValue; }
@@ -110,27 +110,27 @@ class CondExprAST {
   const CondExprAST* RightNode;
 
   explicit CondExprAST(RelExprAST* relExpr)
-      : Sign(""),
+      : hasOnlyOneRelExpr(true),
+        hasOnlyOneCondExpr(false),
+        Sign(""),
         RelExpr(relExpr),
         LeftNode(nullptr),
-        RightNode(nullptr),
-        hasOnlyOneRelExpr(true),
-        hasOnlyOneCondExpr(false) {}
+        RightNode(nullptr) {}
 
   CondExprAST(std::string sign, CondExprAST* condExpr)
-      : Sign(sign),
+      : hasOnlyOneRelExpr(false),
+        hasOnlyOneCondExpr(true),
+        Sign(sign),
         RelExpr(nullptr),
         LeftNode(condExpr),
-        RightNode(nullptr),
-        hasOnlyOneRelExpr(false),
-        hasOnlyOneCondExpr(true) {}
+        RightNode(nullptr) {}
 
   CondExprAST(std::string sign, CondExprAST* leftNode, CondExprAST* rightNode)
-      : Sign(sign),
+      : hasOnlyOneRelExpr(false),
+        hasOnlyOneCondExpr(false),
+        Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode),
-        hasOnlyOneRelExpr(false),
-        hasOnlyOneCondExpr(false) {}
+        RightNode(rightNode) {}
 
   bool HasOnlyOneRelExpr() const { return this->hasOnlyOneRelExpr; }
   bool HasOnlyOneCondExpr() const { return this->hasOnlyOneCondExpr; }
