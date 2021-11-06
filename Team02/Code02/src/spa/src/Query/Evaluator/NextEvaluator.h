@@ -3,7 +3,6 @@
 #include <Common/Common.h>
 #include <PKB/PKB.h>
 #include <Query/Common.h>
-#include <Query/Evaluator/QueryEvaluatorCache.h>
 
 #include <unordered_set>
 #include <vector>
@@ -11,7 +10,6 @@
 class NextEvaluator {
  public:
   explicit NextEvaluator(PKB* pkb);
-  void attachCache(QueryEvaluatorCache* cache);
 
   bool evaluateBoolNextNextBip(RelationshipType rsType,
                                const query::Param& left,
@@ -35,7 +33,21 @@ class NextEvaluator {
 
  private:
   PKB* pkb;
-  QueryEvaluatorCache* cache;
+
+  TablesRs stmtToStmtsCache;
+  TablesRs invStmtToStmtsCache;
+
+  bool isStmtInStmtsCache(RelationshipType rsType, StmtNo leftStmt);
+  bool isStmtInInvStmtsCache(RelationshipType rsType, StmtNo leftStmt);
+  bool isRelationship(RelationshipType rsType, StmtNo left, StmtNo right);
+  SetOfInts& getStmts(RelationshipType rsType, StmtNo stmt);
+  SetOfInts& getInvStmts(RelationshipType rsType, StmtNo stmt);
+
+  void addToStmtsCache(RelationshipType rsType, StmtNo leftStmt,
+                       SetOfInts rightStmts);
+  void addToInvStmtsCache(RelationshipType rsType, StmtNo leftStmt,
+                          SetOfInts rightStmts);
+
   RelationshipType getNonTransitiveRsType(RelationshipType rsType);
   bool getIsNextTNextBipT(RelationshipType rsType, int startStmt, int endStmt);
   std::unordered_set<int> getNextTNextBipTStmts(RelationshipType rsType,

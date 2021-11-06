@@ -14,11 +14,10 @@ using namespace query;
 
 NextEvaluator::NextEvaluator(PKB* pkb) {
   this->pkb = pkb;
-  this->cache = new QueryEvaluatorCache();  // init here for unit tests
-}
-
-void NextEvaluator::attachCache(QueryEvaluatorCache* cache) {
-  this->cache = cache;
+  stmtToStmtsCache.insert(
+      {{RelationshipType::NEXT_T, {}}, {RelationshipType::NEXT_BIP_T, {}}});
+  invStmtToStmtsCache.insert(
+      {{RelationshipType::NEXT_T, {}}, {RelationshipType::NEXT_BIP_T, {}}});
 }
 
 bool NextEvaluator::evaluateBoolNextNextBip(RelationshipType rsType,
@@ -99,10 +98,10 @@ bool NextEvaluator::evaluateBoolNextTNextBipT(RelationshipType rsType,
       rightType == ParamType::INTEGER_LITERAL) {
     int leftStmtNum = stoi(left.value);
     int rightStmtNum = stoi(right.value);
-    if (cache->isStmtInStmtsCache(rsType, leftStmtNum) ||
-        cache->isStmtInInvStmtsCache(rsType, rightStmtNum)) {
+    if (isStmtInStmtsCache(rsType, leftStmtNum) ||
+        isStmtInInvStmtsCache(rsType, rightStmtNum)) {
       // if result cached
-      return cache->isRelationship(rsType, leftStmtNum, rightStmtNum);
+      return isRelationship(rsType, leftStmtNum, rightStmtNum);
     } else {
       return getIsNextTNextBipT(rsType, leftStmtNum, rightStmtNum);
     }
@@ -133,12 +132,12 @@ unordered_set<int> NextEvaluator::evaluateNextTNextBipT(RelationshipType rsType,
   if (leftType == ParamType::INTEGER_LITERAL) {
     int leftStmtNum = stoi(left.value);
     unordered_set<int> results;
-    if (cache->isStmtInStmtsCache(rsType, leftStmtNum)) {
+    if (isStmtInStmtsCache(rsType, leftStmtNum)) {
       // if results cached
-      results = cache->getStmts(rsType, leftStmtNum);
+      results = getStmts(rsType, leftStmtNum);
     } else {
       results = getNextTNextBipTStmts(rsType, leftStmtNum);
-      cache->addToStmtsCache(rsType, leftStmtNum, results);
+      addToStmtsCache(rsType, leftStmtNum, results);
     }
     return results;
   }
@@ -146,12 +145,12 @@ unordered_set<int> NextEvaluator::evaluateNextTNextBipT(RelationshipType rsType,
   // Synonym + Integer - e.g. NextT(s, 2)
   int rightStmtNum = stoi(right.value);
   unordered_set<int> results;
-  if (cache->isStmtInInvStmtsCache(rsType, rightStmtNum)) {
+  if (isStmtInInvStmtsCache(rsType, rightStmtNum)) {
     // if results cached
-    results = cache->getInvStmts(rsType, rightStmtNum);
+    results = getInvStmts(rsType, rightStmtNum);
   } else {
     results = getInvNextTNextBipTStmts(rsType, rightStmtNum);
-    cache->addToInvStmtsCache(rsType, rightStmtNum, results);
+    addToInvStmtsCache(rsType, rightStmtNum, results);
   }
   return results;
 }
@@ -163,12 +162,12 @@ vector<vector<int>> NextEvaluator::evaluatePairNextTNextBipT(
 
   for (auto stmtNum : allStmts) {
     unordered_set<int> nextTNextBipTStmts;
-    if (cache->isStmtInStmtsCache(rsType, stmtNum)) {
+    if (isStmtInStmtsCache(rsType, stmtNum)) {
       // if results cached
-      nextTNextBipTStmts = cache->getStmts(rsType, stmtNum);
+      nextTNextBipTStmts = getStmts(rsType, stmtNum);
     } else {
       nextTNextBipTStmts = getNextTNextBipTStmts(rsType, stmtNum);
-      cache->addToStmtsCache(rsType, stmtNum, nextTNextBipTStmts);
+      addToStmtsCache(rsType, stmtNum, nextTNextBipTStmts);
     }
 
     for (auto nextTStmt : nextTNextBipTStmts) {
@@ -331,4 +330,44 @@ RelationshipType NextEvaluator::getNonTransitiveRsType(
     DMOprintErrMsgAndExit("[NextEvaluator] Invalid transitive rs type");
     return {};
   }
+}
+
+/* Cache getter methods -------------------------------------- */
+bool NextEvaluator::isStmtInStmtsCache(RelationshipType rsType,
+                                       StmtNo leftStmt) {
+  return stmtToStmtsCache[rsType].find(leftStmt) !=
+         stmtToStmtsCache[rsType].end();
+}
+
+bool NextEvaluator::isStmtInInvStmtsCache(RelationshipType rsType,
+                                          StmtNo rightStmt) {
+  return invStmtToStmtsCache[rsType].find(rightStmt) !=
+         invStmtToStmtsCache[rsType].end();
+}
+
+bool NextEvaluator::isRelationship(RelationshipType rsType, StmtNo left,
+                                   StmtNo right) {
+  return stmtToStmtsCache[rsType][left].find(right) !=
+             stmtToStmtsCache[rsType][left].end() ||
+         invStmtToStmtsCache[rsType][right].find(left) !=
+             stmtToStmtsCache[rsType][right].end();
+}
+
+SetOfInts& NextEvaluator::getStmts(RelationshipType rsType, StmtNo stmt) {
+  return stmtToStmtsCache[rsType][stmt];
+}
+
+SetOfInts& NextEvaluator::getInvStmts(RelationshipType rsType, StmtNo stmt) {
+  return invStmtToStmtsCache[rsType][stmt];
+}
+
+/* Cache setter methods --------------------------------------- */
+void NextEvaluator::addToStmtsCache(RelationshipType rsType, StmtNo leftStmt,
+                                    SetOfInts rightStmts) {
+  stmtToStmtsCache[rsType].insert({leftStmt, rightStmts});
+}
+
+void NextEvaluator::addToInvStmtsCache(RelationshipType rsType,
+                                       StmtNo rightStmt, SetOfInts leftStmts) {
+  invStmtToStmtsCache[rsType].insert({rightStmt, leftStmts});
 }

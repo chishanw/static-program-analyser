@@ -15,28 +15,33 @@ using namespace query;
 AffectsEvaluator::AffectsEvaluator(PKB* pkb) { this->pkb = pkb; }
 
 /* Getter Methods -------------------------------------------------------- */
-bool AffectsEvaluator::isAffects(STMT_NO a1, STMT_NO a2) {
-  return tableOfAffects.find(a1) != tableOfAffects.end() &&
-         tableOfAffects.at(a1).find(a2) != tableOfAffects.at(a1).end();
+bool AffectsEvaluator::isAffects(RelationshipType rsType, STMT_NO a1,
+                                 STMT_NO a2) {
+  return tableOfAffects[rsType].find(a1) != tableOfAffects[rsType].end() &&
+         tableOfAffects[rsType].at(a1).find(a2) !=
+             tableOfAffects[rsType].at(a1).end();
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::getAffects(STMT_NO a1) {
-  if (tableOfAffects.find(a1) != tableOfAffects.end()) {
-    return tableOfAffects.at(a1);
+unordered_set<STMT_NO> AffectsEvaluator::getAffects(RelationshipType rsType,
+                                                    STMT_NO a1) {
+  if (tableOfAffects[rsType].find(a1) != tableOfAffects[rsType].end()) {
+    return tableOfAffects[rsType].at(a1);
   }
   return {};
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::getAffectsInv(STMT_NO a2) {
-  if (tableOfAffectsInv.find(a2) != tableOfAffectsInv.end()) {
-    return tableOfAffectsInv.at(a2);
+unordered_set<STMT_NO> AffectsEvaluator::getAffectsInv(RelationshipType rsType,
+                                                       STMT_NO a2) {
+  if (tableOfAffectsInv[rsType].find(a2) != tableOfAffectsInv[rsType].end()) {
+    return tableOfAffectsInv[rsType].at(a2);
   }
   return {};
 }
 
 /* Evaluation Methods --------------------------------------------------- */
 // Affects(1, 2), Affects(_, _), Affects(1, _), Affects(_, 2)
-bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
+bool AffectsEvaluator::evaluateBoolAffects(RelationshipType rsType,
+                                           const Param& left,
                                            const Param& right) {
   vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
 
@@ -44,11 +49,11 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
       right.type == ParamType::INTEGER_LITERAL) {
     int leftStmt = stoi(left.value);
     int rightStmt = stoi(right.value);
-    if (isCompleteCache) {
-      return isAffects(leftStmt, rightStmt);
+    if (isCompleteAffectsCache) {
+      return isAffects(rsType, leftStmt, rightStmt);
     }
     // check incomplete cache
-    if (isAffects(leftStmt, rightStmt)) {
+    if (isAffects(rsType, leftStmt, rightStmt)) {
       return true;
     }
 
@@ -58,24 +63,26 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
     }
 
     LastModifiedTable LMT = {};
-    extractAffects(leftStmt, rightStmt, -1, &LMT, BoolParamCombo::LITERALS);
-    return isAffects(leftStmt, rightStmt);
+    extractAffects(rsType, leftStmt, rightStmt, -1, &LMT,
+                   BoolParamCombo::LITERALS);
+    return isAffects(rsType, leftStmt, rightStmt);
   }
 
   if (left.type == ParamType::WILDCARD && right.type == ParamType::WILDCARD) {
-    if (isCompleteCache) {
-      return !affectsStmtPairs.empty();
+    if (isCompleteAffectsCache) {
+      return !affectsStmtPairs[rsType].empty();
     }
     // check incomplete cache
-    if (!affectsStmtPairs.empty()) {
+    if (!affectsStmtPairs[rsType].empty()) {
       return true;
     }
 
     vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
     for (auto firstStmt : firstStmtOfAllProcs) {
       LastModifiedTable LMT = {};
-      extractAffects(firstStmt, -1, -1, &LMT, BoolParamCombo::WILDCARDS);
-      if (!affectsStmtPairs.empty()) {
+      extractAffects(rsType, firstStmt, -1, -1, &LMT,
+                     BoolParamCombo::WILDCARDS);
+      if (!affectsStmtPairs[rsType].empty()) {
         return true;
       }
     }
@@ -84,11 +91,11 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
 
   if (left.type == ParamType::INTEGER_LITERAL) {
     STMT_NO leftStmt = stoi(left.value);
-    if (isCompleteCache) {
-      return !getAffects(leftStmt).empty();
+    if (isCompleteAffectsCache) {
+      return !getAffects(rsType, leftStmt).empty();
     }
     // check incomplete cache
-    if (!getAffects(leftStmt).empty()) {
+    if (!getAffects(rsType, leftStmt).empty()) {
       return true;
     }
 
@@ -97,17 +104,18 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
     }
 
     LastModifiedTable LMT = {};
-    extractAffects(leftStmt, -1, -1, &LMT, BoolParamCombo::LITERAL_WILDCARD);
-    return !getAffects(leftStmt).empty();
+    extractAffects(rsType, leftStmt, -1, -1, &LMT,
+                   BoolParamCombo::LITERAL_WILDCARD);
+    return !getAffects(rsType, leftStmt).empty();
   }
 
   if (right.type == ParamType::INTEGER_LITERAL) {
     STMT_NO rightStmt = stoi(right.value);
-    if (isCompleteCache) {
-      return !getAffectsInv(rightStmt).empty();
+    if (isCompleteAffectsCache) {
+      return !getAffectsInv(rsType, rightStmt).empty();
     }
     // check incomplete cache
-    if (!getAffectsInv(rightStmt).empty()) {
+    if (!getAffectsInv(rsType, rightStmt).empty()) {
       return true;
     }
 
@@ -124,7 +132,7 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
       }
 
       LastModifiedTable LMT = {};
-      extractAffects(firstStmt, rightStmt, -1, &LMT,
+      extractAffects(rsType, firstStmt, rightStmt, -1, &LMT,
                      BoolParamCombo::WILDCARD_LITERAL);
 
       // if a2 visited, all Affects with a2 have been computed in this proc
@@ -132,43 +140,33 @@ bool AffectsEvaluator::evaluateBoolAffects(const Param& left,
         break;
       }
     }
-    return !getAffectsInv(rightStmt).empty();
+    return !getAffectsInv(rsType, rightStmt).empty();
   }
 
   DMOprintErrMsgAndExit("[AffectsEvaluator] Invalid bool clause");
   return false;
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffects(
-    const Param& left, const Param& right) {
-  if (left.type == ParamType::INTEGER_LITERAL ||
-      right.type == ParamType::INTEGER_LITERAL) {
-    return evaluateSynonymLiteral(left, right);
-  } else {
-    return evaluateSynonymWildcard(left, right);
-  }
-}
-
 // synonym & integer literal - Affects(a1, 2), Affects(1, a2)
-unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymLiteral(
-    const Param& left, const Param& right) {
+unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffects(
+    RelationshipType rsType, const Param& left, const Param& right) {
   if (left.type == ParamType::INTEGER_LITERAL) {
     STMT_NO leftStmt = stoi(left.value);
-    if (isCompleteCache) {
-      return getAffects(leftStmt);
+    if (isCompleteAffectsCache) {
+      return getAffects(rsType, leftStmt);
     }
     if (!pkb->isStmt(DesignEntity::ASSIGN, leftStmt)) {
       return {};
     }
 
     LastModifiedTable LMT = {};
-    extractAffects(leftStmt, -1, -1, &LMT, {});
-    return getAffects(leftStmt);
+    extractAffects(rsType, leftStmt, -1, -1, &LMT, {});
+    return getAffects(rsType, leftStmt);
 
   } else {
     STMT_NO rightStmt = stoi(right.value);
-    if (isCompleteCache) {
-      return getAffectsInv(rightStmt);
+    if (isCompleteAffectsCache) {
+      return getAffectsInv(rsType, rightStmt);
     }
     if (!pkb->isStmt(DesignEntity::ASSIGN, rightStmt)) {
       return {};
@@ -184,25 +182,25 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymLiteral(
       }
 
       LastModifiedTable LMT = {};
-      extractAffects(firstStmt, -1, -1, &LMT, {});
+      extractAffects(rsType, firstStmt, -1, -1, &LMT, {});
 
       // if a2 visited, all Affects with a2 have been computed in this proc
       if (allVisitedStmts.find(rightStmt) != allVisitedStmts.end()) {
         break;
       }
     }
-    return getAffectsInv(rightStmt);
+    return getAffectsInv(rsType, rightStmt);
   }
 }
 
 // Affects(a1, _), Affects(_, a2)
-unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymWildcard(
-    const Param& left, const Param& right) {
-  if (isCompleteCache) {
+vector<vector<STMT_NO>> AffectsEvaluator::evaluateSynonymWildcard(
+    RelationshipType rsType, const Param& left, const Param& right) {
+  if (isCompleteAffectsCache) {
     if (left.type == ParamType::SYNONYM) {
-      return affectsStmts;
+      return affectsLeftStmtPairs[rsType];
     } else {
-      return affectsInvStmts;
+      return affectsRightStmtPairs[rsType];
     }
   }
   vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
@@ -210,41 +208,48 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymWildcard(
   // get all Affects and return either a1 or a2
   for (auto firstStmt : firstStmtOfAllProcs) {
     LastModifiedTable LMT = {};
-    extractAffects(firstStmt, -1, -1, &LMT, {});
+    extractAffects(rsType, firstStmt, -1, -1, &LMT, {});
   }
-  isCompleteCache = true;
+  isCompleteAffectsCache = true;
   if (left.type == ParamType::SYNONYM) {
-    return affectsStmts;
+    return affectsLeftStmtPairs[rsType];
   } else {
-    return affectsInvStmts;
+    return affectsRightStmtPairs[rsType];
   }
 }
 
 // synonym & synonym - Affects(a1, a2)
-vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffects() {
-  if (isCompleteCache) {
-    return affectsStmtPairs;
+vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffects(
+    RelationshipType rsType, const Param& left, const Param& right) {
+  if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
+    return evaluateSynonymWildcard(rsType, left, right);
+  }
+
+  if (isCompleteAffectsCache) {
+    return affectsStmtPairs[rsType];
   }
   vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
 
   // get all Affects and return (a1, a2)
   for (auto firstStmt : firstStmtOfAllProcs) {
     LastModifiedTable LMT = {};
-    extractAffects(firstStmt, -1, -1, &LMT, {});
+    extractAffects(rsType, firstStmt, -1, -1, &LMT, {});
   }
-  isCompleteCache = true;
-  return affectsStmtPairs;
+  isCompleteAffectsCache = true;
+  return affectsStmtPairs[rsType];
 }
 
 bool AffectsEvaluator::evaluateBoolAffectsT(const query::Param& left,
                                             const query::Param& right) {
   if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
-    return evaluateBoolAffects(left, right);
+    return evaluateBoolAffects(RelationshipType::AFFECTS, left, right);
   }
 
   // literals only
-  if (isCompleteCacheT) {
-    return tableOfAffectsT.at(stoi(left.value)).count(stoi(right.value)) > 0;
+  if (isCompleteAffectsTCache) {
+    return tableOfAffects[RelationshipType::AFFECTS_T]
+               .at(stoi(left.value))
+               .count(stoi(right.value)) > 0;
   }
   unordered_set<STMT_NO> visited;
   return evalBoolLitAffectsT(left, right, &visited);
@@ -253,15 +258,16 @@ bool AffectsEvaluator::evaluateBoolAffectsT(const query::Param& left,
 bool AffectsEvaluator::evalBoolLitAffectsT(const query::Param& left,
                                            const query::Param& right,
                                            unordered_set<STMT_NO>* visited) {
-  bool hasFoundAffectsT = evaluateBoolAffects(left, right);
+  bool hasFoundAffectsT =
+      evaluateBoolAffects(RelationshipType::AFFECTS, left, right);
   bool allCombosTested = false;
   while (!hasFoundAffectsT && !allCombosTested) {
     unordered_set<STMT_NO> affectedStmts;
     unordered_set<STMT_NO> visitedStmts;
     try {
-      affectedStmts = tableOfAffects.at(stoi(left.value));
-    }
-    catch (const out_of_range& e) {
+      affectedStmts =
+          tableOfAffects[RelationshipType::AFFECTS].at(stoi(left.value));
+    } catch (const out_of_range& e) {
       break;
     }
     for (STMT_NO affectedStmt : affectedStmts) {
@@ -270,7 +276,7 @@ bool AffectsEvaluator::evalBoolLitAffectsT(const query::Param& left,
         continue;
       }
       visited->insert(affectedStmt);
-      Param newParam{ ParamType::INTEGER_LITERAL, to_string(affectedStmt) };
+      Param newParam{ParamType::INTEGER_LITERAL, to_string(affectedStmt)};
       hasFoundAffectsT = evalBoolLitAffectsT(newParam, right, visited);
       if (hasFoundAffectsT) {
         break;
@@ -283,70 +289,88 @@ bool AffectsEvaluator::evalBoolLitAffectsT(const query::Param& left,
   return hasFoundAffectsT;
 }
 
+// Affects(a, 2), (1, a)
 unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsT(
     const query::Param& left, const query::Param& right) {
-  if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
-    return evaluateSynonymWildcard(left, right);
-  }
-  if (isCompleteCacheT) {
+  if (isCompleteAffectsTCache) {
     if (left.type == ParamType::INTEGER_LITERAL) {
-      return tableOfAffectsT.at(stoi(left.value));
+      return tableOfAffects[RelationshipType::AFFECTS_T].at(stoi(left.value));
     } else {
-      return tableOfAffectsTInv.at(stoi(right.value));
+      return tableOfAffectsInv[RelationshipType::AFFECTS_T].at(
+          stoi(right.value));
     }
   }
   unordered_set<STMT_NO> visited;
-  return evaluateSynonymLiteralT(left, right, &visited);
+  return evaluateStmtAffectsTHelper(left, right, &visited);
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::evaluateSynonymLiteralT(
+unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsTHelper(
     const query::Param& left, const query::Param& right,
     unordered_set<STMT_NO>* visited) {
   unordered_set<STMT_NO> result;
-  unordered_set<STMT_NO> firstLayer = evaluateSynonymLiteral(left, right);
+  unordered_set<STMT_NO> firstLayer =
+      evaluateStmtAffects(RelationshipType::AFFECTS, left, right);
   for (STMT_NO affected : firstLayer) {
     if (visited->count(affected) > 0) {
       continue;
     }
     result.insert(affected);
     visited->insert(affected);
-    Param newParam = { ParamType::INTEGER_LITERAL, to_string(affected) };
+    Param newParam = {ParamType::INTEGER_LITERAL, to_string(affected)};
     if (left.type == ParamType::INTEGER_LITERAL) {
       if (stoi(left.value) == affected) {
         continue;
       }
-      result.merge(evaluateSynonymLiteralT(newParam, right, visited));
+      result.merge(evaluateStmtAffectsTHelper(newParam, right, visited));
     } else {
       if (stoi(right.value) == affected) {
         continue;
       }
-      result.merge(evaluateSynonymLiteralT(left, newParam, visited));
+      result.merge(evaluateStmtAffectsTHelper(left, newParam, visited));
     }
   }
   return result;
 }
 
-vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffectsT() {
-  populateCacheT();
+vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffectsT(
+    const Param& left, const Param& right) {
+  // Affects(a, _) or (_, a)
+  if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
+    return evaluateSynonymWildcard(RelationshipType::AFFECTS, left, right);
+  }
+
+  // Affects(a1, a2)
+  if (isCompleteAffectsTCache) {
+    return affectsStmtPairs[RelationshipType::AFFECTS_T];
+  }
+
+  populateAffectsTCache(left, right);
   vector<vector<STMT_NO>> result;
-  for (auto it : tableOfAffectsT) {
+  for (auto it : tableOfAffects[RelationshipType::AFFECTS_T]) {
     STMT_NO curr = it.first;
     for (STMT_NO affectedT : it.second) {
-      vector<STMT_NO> currPair{ curr, affectedT };
+      vector<STMT_NO> currPair{curr, affectedT};
       result.push_back(currPair);
     }
   }
+  affectsStmtPairs[RelationshipType::AFFECTS_T] = result;
   return result;
 }
 
-void AffectsEvaluator::populateCacheT() {
-  evaluatePairAffects();
-  populateTable(&tableOfAffectsT, &tableOfAffects);
-  populateTable(&tableOfAffectsTInv, &tableOfAffectsInv);
-  isCompleteCacheT = true;
+void AffectsEvaluator::populateAffectsTCache(const Param& left,
+                                             const Param& right) {
+  if (!isCompleteAffectsCache) {
+    // ensure affects cache is populated first
+    evaluatePairAffects(RelationshipType::AFFECTS, left, right);
+  }
+  populateAffectsTTable(&tableOfAffects[RelationshipType::AFFECTS_T],
+                        &tableOfAffects[RelationshipType::AFFECTS]);
+  populateAffectsTTable(&tableOfAffectsInv[RelationshipType::AFFECTS_T],
+                        &tableOfAffectsInv[RelationshipType::AFFECTS]);
+  isCompleteAffectsTCache = true;
 }
 
-void AffectsEvaluator::populateTable(
+void AffectsEvaluator::populateAffectsTTable(
     unordered_map<STMT_NO, unordered_set<STMT_NO>>* target,
     unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
   for (auto it : *base) {
@@ -354,14 +378,15 @@ void AffectsEvaluator::populateTable(
     unordered_set<STMT_NO> affectedStmts = it.second;
     unordered_set<STMT_NO> visitedForCurr;
     for (STMT_NO affectedStmt : affectedStmts) {
-      populateTableHelper(currStmt, affectedStmt, &visitedForCurr, base);
+      populateAffectsTTableHelper(currStmt, affectedStmt, &visitedForCurr,
+                                  base);
     }
     target->insert({currStmt, visitedForCurr});
   }
 }
 
-void AffectsEvaluator::populateTableHelper(STMT_NO orig, STMT_NO affected,
-    unordered_set<STMT_NO>* visited,
+void AffectsEvaluator::populateAffectsTTableHelper(
+    STMT_NO orig, STMT_NO affected, unordered_set<STMT_NO>* visited,
     unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
   if (visited->count(affected) > 0) {
     return;
@@ -373,7 +398,7 @@ void AffectsEvaluator::populateTableHelper(STMT_NO orig, STMT_NO affected,
       nextLayer = base->at(affected);
       for (STMT_NO nextLayerAffects : nextLayer) {
         if (affected != nextLayerAffects) {
-          populateTableHelper(orig, nextLayerAffects, visited, base);
+          populateAffectsTTableHelper(orig, nextLayerAffects, visited, base);
         }
       }
     }
@@ -381,7 +406,9 @@ void AffectsEvaluator::populateTableHelper(STMT_NO orig, STMT_NO affected,
 }
 
 /* Affects Extraction Method ---------------------------------------------- */
-void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
+// affects & affects bip?
+void AffectsEvaluator::extractAffects(RelationshipType rsType,
+                                      STMT_NO startStmt, STMT_NO endStmt,
                                       STMT_NO stmtAfterIfOrWhile,
                                       LastModifiedTable* LMT,
                                       BoolParamCombo paramCombo) {
@@ -405,20 +432,21 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
     }
 
     if (pkb->isStmt(DesignEntity::ASSIGN, currStmt)) {
-      processAssignStmt(currStmt, LMT);
+      processAssignStmt(rsType, currStmt, LMT);
     }
 
     if (pkb->isStmt(DesignEntity::WHILE, currStmt)) {
       STMT_NO firstStmtInWhile = currStmt + 1;
-      processWhileLoop(firstStmtInWhile, endStmt, currStmt, LMT, paramCombo);
+      processWhileLoop(rsType, firstStmtInWhile, endStmt, currStmt, LMT,
+                       paramCombo);
       visitedIfAndWhile.insert(firstStmtInWhile);
     }
 
     if (pkb->isStmt(DesignEntity::IF, currStmt)) {
       STMT_NO nextStmtForIf = pkb->getNextStmtForIfStmt(currStmt);
       unordered_set<STMT_NO> thenElseStmts =
-          pkb->getRight(RelationshipType::NEXT, currStmt);
-      processThenElseBlocks(thenElseStmts, endStmt, nextStmtForIf, LMT,
+          pkb->getRight(getCFGRsType(rsType), currStmt);
+      processThenElseBlocks(rsType, thenElseStmts, endStmt, nextStmtForIf, LMT,
                             paramCombo);
       for (STMT_NO stmt : thenElseStmts) {
         visitedIfAndWhile.insert(stmt);
@@ -427,7 +455,7 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
     }
 
     unordered_set<int> allNextStmts =
-        pkb->getRight(RelationshipType::NEXT, currStmt);
+        pkb->getRight(getCFGRsType(rsType), currStmt);
     for (int nextStmt : allNextStmts) {
       // prevent infinite loop in CFG - don't process if/while blocks again
       if (visitedIfAndWhile.find(nextStmt) == visitedIfAndWhile.end()) {
@@ -435,14 +463,15 @@ void AffectsEvaluator::extractAffects(STMT_NO startStmt, STMT_NO endStmt,
       }
     }
 
-    if (shouldTerminateBoolEarly(paramCombo, startStmt, endStmt)) {
+    if (shouldTerminateBoolEarly(rsType, paramCombo, startStmt, endStmt)) {
       return;
     }
   }
 }
 
 /* Helper Methods For Affects Extraction ---------------------------- */
-void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
+void AffectsEvaluator::processAssignStmt(RelationshipType rsType,
+                                         STMT_NO currStmt,
                                          LastModifiedTable* LMT) {
   unordered_set<VarIdx> usedVars =
       pkb->getRight(RelationshipType::USES_S, currStmt);
@@ -451,7 +480,7 @@ void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
       unordered_set<STMT_NO> LMTStmts = LMT->at(usedVar);
       for (STMT_NO LMTStmt : LMTStmts) {
         if (pkb->isStmt(DesignEntity::ASSIGN, LMTStmt)) {
-          addAffectsRelationship(LMT, LMTStmt, currStmt);
+          addAffectsRelationship(rsType, LMT, LMTStmt, currStmt);
         }
       }
     }
@@ -459,7 +488,8 @@ void AffectsEvaluator::processAssignStmt(STMT_NO currStmt,
   updateLastModifiedVariables(currStmt, LMT);
 }
 
-void AffectsEvaluator::processWhileLoop(STMT_NO firstStmtInWhile,
+void AffectsEvaluator::processWhileLoop(RelationshipType rsType,
+                                        STMT_NO firstStmtInWhile,
                                         STMT_NO endStmt, STMT_NO whileStmt,
                                         LastModifiedTable* LMT,
                                         BoolParamCombo paramCombo) {
@@ -467,20 +497,22 @@ void AffectsEvaluator::processWhileLoop(STMT_NO firstStmtInWhile,
   LastModifiedTable beforeLMT;
   while (LMT->empty() || beforeLMT != *LMT) {
     beforeLMT = *LMT;
-    extractAffects(firstStmtInWhile, endStmt, whileStmt, LMT, paramCombo);
+    extractAffects(rsType, firstStmtInWhile, endStmt, whileStmt, LMT,
+                   paramCombo);
   }
   *LMT = mergeLMT(&originalLMT, LMT);
 }
 
 void AffectsEvaluator::processThenElseBlocks(
-    unordered_set<STMT_NO> thenElseStmts, STMT_NO endStmt,
-    STMT_NO nextStmtForIf, LastModifiedTable* LMT, BoolParamCombo paramCombo) {
+    RelationshipType rsType, unordered_set<STMT_NO> thenElseStmts,
+    STMT_NO endStmt, STMT_NO nextStmtForIf, LastModifiedTable* LMT,
+    BoolParamCombo paramCombo) {
   vector<STMT_NO> stmts(thenElseStmts.begin(), thenElseStmts.end());
   vector<LastModifiedTable> thenElseLMTs = {*LMT, *LMT};
 
   // traverse else and then blocks
   for (int i = 0; i < stmts.size(); i++) {
-    extractAffects(stmts[i], endStmt, nextStmtForIf, &thenElseLMTs[i],
+    extractAffects(rsType, stmts[i], endStmt, nextStmtForIf, &thenElseLMTs[i],
                    paramCombo);
   }
   *LMT = mergeLMT(&thenElseLMTs.front(), &thenElseLMTs.back());
@@ -498,38 +530,46 @@ void AffectsEvaluator::updateLastModifiedVariables(STMT_NO currStmt,
   }
 }
 
-void AffectsEvaluator::addAffectsRelationship(LastModifiedTable* LMT,
+void AffectsEvaluator::addAffectsRelationship(RelationshipType rsType,
+                                              LastModifiedTable* LMT,
                                               STMT_NO LMTStmt,
                                               STMT_NO currStmt) {
-  affectsStmts.insert(LMTStmt);
-  affectsInvStmts.insert(currStmt);
-  affectsStmtPairs.push_back({LMTStmt, currStmt});
+  affectsStmts[rsType].insert(LMTStmt);
+  affectsInvStmts[rsType].insert(currStmt);
+  affectsLeftStmtPairs[rsType].push_back({LMTStmt});
+  affectsRightStmtPairs[rsType].push_back({currStmt});
+  affectsStmtPairs[rsType].push_back({LMTStmt, currStmt});
 
-  if (tableOfAffects.find(LMTStmt) == tableOfAffects.end()) {
-    tableOfAffects.insert({LMTStmt, {}});
+  if (tableOfAffects[rsType].find(LMTStmt) == tableOfAffects[rsType].end()) {
+    tableOfAffects[rsType].insert({LMTStmt, {}});
   }
-  tableOfAffects.at(LMTStmt).insert(currStmt);
+  tableOfAffects[rsType].at(LMTStmt).insert(currStmt);
 
-  if (tableOfAffectsInv.find(currStmt) == tableOfAffectsInv.end()) {
-    tableOfAffectsInv.insert({currStmt, {}});
+  if (tableOfAffectsInv[rsType].find(currStmt) ==
+      tableOfAffectsInv[rsType].end()) {
+    tableOfAffectsInv[rsType].insert({currStmt, {}});
   }
-  tableOfAffectsInv.at(currStmt).insert(LMTStmt);
+  tableOfAffectsInv[rsType].at(currStmt).insert(LMTStmt);
 }
 
-bool AffectsEvaluator::shouldTerminateBoolEarly(BoolParamCombo paramCombo,
+bool AffectsEvaluator::shouldTerminateBoolEarly(RelationshipType rsType,
+                                                BoolParamCombo paramCombo,
                                                 STMT_NO startStmt,
                                                 STMT_NO endStmt) {
   switch (paramCombo) {
     case BoolParamCombo::LITERALS:
-      return tableOfAffects.find(startStmt) != tableOfAffects.end() &&
-             tableOfAffects.at(startStmt).find(endStmt) !=
-                 tableOfAffects.at(startStmt).end();
+      return tableOfAffects[rsType].find(startStmt) !=
+                 tableOfAffects[rsType].end() &&
+             tableOfAffects[rsType].at(startStmt).find(endStmt) !=
+                 tableOfAffects[rsType].at(startStmt).end();
     case BoolParamCombo::WILDCARDS:
-      return !affectsStmtPairs.empty();
+      return !affectsStmtPairs[rsType].empty();
     case BoolParamCombo::LITERAL_WILDCARD:
-      return tableOfAffects.find(startStmt) != tableOfAffects.end();
+      return tableOfAffects[rsType].find(startStmt) !=
+             tableOfAffects[rsType].end();
     case BoolParamCombo::WILDCARD_LITERAL:
-      return tableOfAffectsInv.find(endStmt) != tableOfAffectsInv.end();
+      return tableOfAffectsInv[rsType].find(endStmt) !=
+             tableOfAffectsInv[rsType].end();
     default:
       // early termination here only for boolean clauses
       return false;
@@ -558,4 +598,15 @@ LastModifiedTable AffectsEvaluator::mergeLMT(LastModifiedTable* firstLMT,
     finalLMT.insert({varIdx, stmtSet});
   }
   return finalLMT;
+}
+
+RelationshipType AffectsEvaluator::getCFGRsType(RelationshipType rsType) {
+  if (rsType == RelationshipType::AFFECTS) {
+    return RelationshipType::NEXT;
+  } else if (rsType == RelationshipType::AFFECTS_BIP) {
+    return RelationshipType::NEXT_BIP;
+  } else {
+    DMOprintErrMsgAndExit("[AffectsEvaluator][getCFGRsType] Invalid rsType");
+    return {};
+  }
 }

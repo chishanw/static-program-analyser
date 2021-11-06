@@ -1,0 +1,1435 @@
+1 - AffectsBip test,integer and stmt
+stmt s;
+Select BOOLEAN such that AffectsBip(15,s)
+TRUE
+5000
+2 - AffectsBip test,integer and stmt
+stmt s;
+Select <s,s.stmt#> such that AffectsBip(15,s)
+4 4, 10 10
+5000
+3 - AffectsBip test,integer and stmt
+stmt s;
+Select s.stmt# such that AffectsBip(15,s)
+4, 10
+5000
+4 - AffectsBip test,integer and stmt
+stmt s;
+Select <s,s> such that AffectsBip(15,s)
+4 4, 10 10
+5000
+5 - AffectsBip test,integer and stmt
+stmt s;
+Select <s.stmt#,s> such that AffectsBip(15,s)
+4 4, 10 10
+5000
+6 - AffectsBip test,integer and stmt
+stmt s;
+Select <s.stmt#,s.stmt#> such that AffectsBip(15,s)
+4 4, 10 10
+5000
+7 - AffectsBip test,integer and call
+call c;
+Select BOOLEAN such that AffectsBip(2,c)
+FALSE
+5000
+8 - AffectsBip test,integer and call
+call c;
+Select <c.procName,c.stmt#> such that AffectsBip(2,c)
+none
+5000
+9 - AffectsBip test,integer and prog_line
+prog_line pl;
+Select BOOLEAN such that AffectsBip(2,pl)
+TRUE
+5000
+10 - AffectsBip test,integer and prog_line
+prog_line pl;
+Select pl such that AffectsBip(4,pl)
+4, 8, 10, 12
+5000
+11 - AffectsBip test,integer and prog_line
+prog_line pl;
+Select <pl,pl> such that AffectsBip(1,pl)
+4 4, 8 8, 10 10, 12 12
+5000
+12 - AffectsBip test,integer and read
+read r;
+Select BOOLEAN such that AffectsBip(1,r)
+FALSE
+5000
+13 - AffectsBip test,integer and read
+read r;
+Select <r,r.stmt#> such that AffectsBip(1,r)
+none
+5000
+14 - AffectsBip test,integer and print
+print pn;
+Select BOOLEAN such that AffectsBip(15,pn)
+FALSE
+5000
+15 - AffectsBip test,integer and print
+print pn;
+Select <pn.varName,pn.stmt#> such that AffectsBip(6,pn)
+none
+5000
+16 - AffectsBip test,integer and while
+while w;
+Select BOOLEAN such that AffectsBip(13,w)
+FALSE
+5000
+17 - AffectsBip test,integer and while
+while w;
+Select w.stmt# such that AffectsBip(13,w)
+none
+5000
+18 - AffectsBip test,integer and if
+if i;
+Select BOOLEAN such that AffectsBip(14,i)
+FALSE
+5000
+19 - AffectsBip test,integer and if
+if i;
+Select i.stmt# such that AffectsBip(14,i)
+none
+5000
+20 - AffectsBip test,integer and assign
+assign a;
+Select BOOLEAN such that AffectsBip(9,a)
+TRUE
+5000
+21 - AffectsBip test,integer and assign
+assign a;
+Select a.stmt# such that AffectsBip(9,a)
+10
+5000
+22 - AffectsBip test,integer and assign
+assign a;
+Select <a,a.stmt#> such that AffectsBip(15,a)
+4 4, 10 10
+5000
+23 - AffectsBip test,integer and variable
+variable v;
+Select BOOLEAN such that AffectsBip(1,v)
+FALSE
+5000
+24 - AffectsBip test,integer and variable
+variable v;
+Select v.varName such that AffectsBip(1,v)
+none
+5000
+25- AffectsBip test,integer and constant
+constant c;
+Select BOOLEAN such that AffectsBip(1,c)
+FALSE
+5000
+26- AffectsBip test,integer and constant
+constant c;
+Select c.value such that AffectsBip(1,c)
+none
+5000
+27- AffectsBip test,integer and constant
+constant c;
+Select <c,c.value> such that AffectsBip(1,c)
+none
+5000
+28 - AffectsBip test,integer and procedure
+procedure p;
+Select BOOLEAN such that AffectsBip(1,p)
+FALSE
+5000
+29 - AffectsBip test,integer and procedure
+procedure p;
+Select p.procName such that AffectsBip(1,p)
+none
+5000
+30 - AffectsBip test,integer and integer
+stmt s;
+Select BOOLEAN such that AffectsBip(6,6)
+TRUE
+5000
+31 - AffectsBip test,integer and integer
+stmt s;
+Select <s,s.stmt#> such that AffectsBip(1,1)
+none
+5000
+32 - AffectsBip test,integer and wildcard
+stmt s;
+Select BOOLEAN such that AffectsBip(1,_)
+TRUE
+5000
+33 - AffectsBip test,integer and wildcard
+stmt s;
+Select <s,s.stmt#> such that AffectsBip(1,_)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+34 - AffectsBip test,stmt and integer
+stmt s;
+Select BOOLEAN such that AffectsBip(s,12)
+TRUE
+5000
+35 - AffectsBip test,stmt and integer
+stmt s;
+Select s.stmt# such that AffectsBip(s,12)
+1, 4, 8, 10, 11
+5000
+36 - AffectsBip test,stmt and integer
+stmt s;
+Select <s,s.stmt#> such that AffectsBip(s,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+37 - AffectsBip test,stmt and integer
+stmt s;
+Select <s.stmt#,s.stmt#> such that AffectsBip(s,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+38 - AffectsBip test,stmt and integer
+stmt s;
+Select <s.stmt#,s> such that AffectsBip(s,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+39 - AffectsBip test,stmt and integer
+stmt s;
+Select <s,s> such that AffectsBip(s,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+40 - AffectsBip test,call and integer
+call c;
+Select BOOLEAN such that AffectsBip(c,12)
+FALSE
+5000
+41 - AffectsBip test,call and integer
+call c;
+Select c.stmt# such that AffectsBip(c,12)
+none
+5000
+42 - AffectsBip test,prog_line and integer
+prog_line pl;
+Select BOOLEAN such that AffectsBip(pl, 10)
+TRUE
+5000
+43 - AffectsBip test,prog_line and integer
+prog_line pl;
+Select pl such that AffectsBip(pl,10)
+1, 13, 2, 4, 8, 9, 15
+5000
+44 - AffectsBip test,prog_line and integer
+prog_line pl;
+Select <pl,pl> such that AffectsBip(pl,10)
+1 1, 2 2, 4 4, 8 8, 9 9, 13 13, 15 15
+5000
+45 - AffectsBip test,read and integer
+read r;
+Select BOOLEAN such that AffectsBip(r,2)
+FALSE
+5000
+46 - AffectsBip test,read and integer
+read r;
+Select r.stmt# such that AffectsBip(r,2)
+none
+5000
+47 - AffectsBip test,print and integer
+print pn;
+Select BOOLEAN such that AffectsBip(pn,7)
+FALSE
+5000
+48 - AffectsBip test,print and integer
+print pn;
+Select <pn.varName,pn.stmt#> such that AffectsBip(pn,7)
+none
+5000
+49 - AffectsBip test,while and integer
+while w;
+Select BOOLEAN such that AffectsBip(w,11)
+FALSE
+5000
+50 - AffectsBip test,while and integer
+while w;
+Select <w,w.stmt#> such that AffectsBip(w,11)
+none
+5000
+51 - AffectsBip test,if and integer
+if i;
+Select BOOLEAN such that AffectsBip(i,23)
+FALSE
+5000
+52 - AffectsBip test,if and integer
+if i;
+Select i.stmt# such that AffectsBip(i,23)
+none
+5000
+53 - AffectsBip test,assign and integer
+assign a;
+Select BOOLEAN such that AffectsBip(a, 12)
+TRUE
+5000
+54 - AffectsBip test,assign and integer
+assign a;
+Select a.stmt# such that AffectsBip(a,12)
+1, 4, 8, 10, 11
+5000
+55 - AffectsBip test,assign and integer
+assign a;
+Select <a,a.stmt#> such that AffectsBip(a,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+56 - AffectsBip test,assign and integer
+assign a;
+Select <a.stmt#,a.stmt#> such that AffectsBip(a,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+57 - AffectsBip test,assign and integer
+assign a;
+Select <a,a> such that AffectsBip(a,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+58 - AffectsBip test,assign and integer
+assign a;
+Select <a.stmt#,a> such that AffectsBip(a,12)
+1 1, 4 4, 8 8, 10 10, 11 11
+5000
+59 - AffectsBip test,variable and integer
+variable v;
+Select BOOLEAN such that AffectsBip(v,2)
+FALSE
+5000
+60 - AffectsBip test,variable and integer
+variable v;
+Select <v,v.varName> such that AffectsBip(v,2)
+none
+5000
+61 - AffectsBip test,constant and integer
+constant c;
+Select BOOLEAN such that AffectsBip(c,2)
+FALSE
+5000
+62 - AffectsBip test,constant and integer
+constant c;
+Select <c,c.value> such that AffectsBip(c,2)
+none
+5000
+63 - AffectsBip test,procedure and integer
+procedure p;
+Select BOOLEAN such that AffectsBip(p,2)
+FALSE
+5000
+64 - AffectsBip test,procedure and integer
+procedure p;
+Select <p,p.procName> such that AffectsBip(p,2)
+none
+5000
+65 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select BOOLEAN such that AffectsBip(s1,s2)
+TRUE
+5000
+66 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s1,s2> such that AffectsBip(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+67 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select s1.stmt# such that AffectsBip(s1,s2)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+68 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s1.stmt#,s2.stmt#> such that AffectsBip(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+69 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s1.stmt#,s2> such that AffectsBip(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+70 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s1,s2.stmt#> such that AffectsBip(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+71 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s2,s1> such that AffectsBip(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+72 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s2.stmt#,s1> such that AffectsBip(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+73 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s2.stmt#,s1.stmt#> such that AffectsBip(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+74 - AffectsBip test,stmt and stmt
+stmt s1,s2;
+Select <s2,s1.stmt#> such that AffectsBip(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+75 - AffectsBip test,stmt and call
+stmt s; call c;
+Select BOOLEAN such that AffectsBip(s,c)
+FALSE
+5000
+76 - AffectsBip test,stmt and call
+stmt s; call c;
+Select c.procName such that AffectsBip(s,c)
+none
+5000
+77 - AffectsBip test,stmt and prog_line
+stmt s; prog_line pl;
+Select BOOLEAN such that AffectsBip(s,pl)
+TRUE
+5000
+78 - AffectsBip test,stmt and prog_line
+stmt s; prog_line pl;
+Select <s,pl> such that AffectsBip(s,pl)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+79 - AffectsBip test,stmt and prog_line
+stmt s; prog_line pl;
+Select pl such that AffectsBip(s,pl)
+4, 6, 8, 10, 11, 12, 14, 15
+5000
+80 - AffectsBip test,stmt and prog_line
+stmt s; prog_line pl;
+Select <pl,s> such that AffectsBip(s,pl)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+81 - AffectsBip test,stmt and read
+stmt s; read r;
+Select BOOLEAN such that AffectsBip(s,r)
+FALSE
+5000
+82 - AffectsBip test,stmt and read
+stmt s; read r;
+Select r.varName such that AffectsBip(s,r)
+none
+5000
+83 - AffectsBip test,stmt and print
+stmt s; print pn;
+Select BOOLEAN such that AffectsBip(s,pn)
+FALSE
+5000
+84 - AffectsBip test,stmt and print
+stmt s; print pn;
+Select pn.varName such that AffectsBip(s,pn)
+none
+5000
+85 - AffectsBip test,stmt and while
+stmt s; while w;
+Select BOOLEAN such that AffectsBip(s,w)
+FALSE
+5000
+86 - AffectsBip test,stmt and while
+stmt s; while w;
+Select <s,w> such that AffectsBip(s,w)
+none
+5000
+87 - AffectsBip test,stmt and if
+stmt s; if i;
+Select BOOLEAN such that AffectsBip(s,i)
+FALSE
+5000
+88 - AffectsBip test,stmt and if
+stmt s; if i;
+Select <s,i> such that AffectsBip(s,i)
+none
+5000
+89 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select BOOLEAN such that AffectsBip(s,a)
+TRUE
+5000
+90 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <s,a> such that AffectsBip(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+91 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <s.stmt#,a.stmt#> such that AffectsBip(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+92 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <s.stmt#,a> such that AffectsBip(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+93 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <s,a.stmt#> such that AffectsBip(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+94 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <a,s> such that AffectsBip(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+95 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <a.stmt#,s.stmt#> such that AffectsBip(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+96 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <a.stmt#,s> such that AffectsBip(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+97 - AffectsBip test,stmt and assign
+stmt s; assign a;
+Select <a,s.stmt#> such that AffectsBip(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+98 - AffectsBip test,stmt and variable
+stmt s; variable v;
+Select BOOLEAN such that AffectsBip(s,v)
+FALSE
+5000
+99 - AffectsBip test,stmt and variable
+stmt s; variable v;
+Select <s,v.varName> such that AffectsBip(s,v)
+none
+5000
+100 - AffectsBip test,stmt and constant
+stmt s; constant c;
+Select BOOLEAN such that AffectsBip(s,c)
+FALSE
+5000
+101 - AffectsBip test,stmt and constant
+stmt s; constant c;
+Select <s,c.value> such that AffectsBip(s,c)
+none
+5000
+102 - AffectsBip test,stmt and procedure
+stmt s; procedure p;
+Select BOOLEAN such that AffectsBip(s,p)
+FALSE
+5000
+103 - AffectsBip test,stmt and procedure
+stmt s; procedure p;
+Select <s,p.procName> such that AffectsBip(s,p)
+none
+5000
+104 - AffectsBip test,call and stmt
+call c; stmt s;
+Select BOOLEAN such that AffectsBip(c,s)
+FALSE
+5000
+105 - AffectsBip test,call and stmt
+call c; stmt s;
+Select c.procName such that AffectsBip(c,s)
+none
+5000
+106 - AffectsBip test,call and variable
+call c; variable v;
+Select BOOLEAN such that AffectsBip(c,v)
+FALSE
+5000
+107 - AffectsBip test,call and variable
+call c; variable v;
+Select <c,v> such that AffectsBip(c,v)
+none
+5000
+108 - AffectsBip test,call and constant
+call ca; constant co;
+Select BOOLEAN such that AffectsBip(ca,co)
+FALSE
+5000
+109 - AffectsBip test,call and constant
+call ca; constant co;
+Select <ca,co> such that AffectsBip(ca,co)
+none
+5000
+110 - AffectsBip test,call and procedure
+call c; procedure p;
+Select BOOLEAN such that AffectsBip(c,p)
+FALSE
+5000
+111 - AffectsBip test,call and procedure
+call c; procedure p;
+Select <c,p> such that AffectsBip(c,p)
+none
+5000
+112 - AffectsBip test,prog_line and stmt
+prog_line pl; stmt s;
+Select BOOLEAN such that AffectsBip(pl,s)
+TRUE
+5000
+113 - AffectsBip test,prog_line and stmt
+prog_line pl; stmt s;
+Select <pl,s> such that AffectsBip(pl,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+114 - AffectsBip test,prog_line and stmt
+prog_line pl; stmt s;
+Select pl such that AffectsBip(pl,s)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+115 - AffectsBip test,prog_line and stmt
+prog_line pl; stmt s;
+Select <s,pl> such that AffectsBip(pl,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+116 - AffectsBip test,prog_line and stmt
+prog_line pl; stmt s;
+Select <s.stmt#,pl> such that AffectsBip(pl,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+117 - AffectsBip test,prog_line and call
+prog_line pl; call c;
+Select BOOLEAN such that AffectsBip(pl,c)
+FALSE
+5000
+118 - AffectsBip test,prog_line and call
+prog_line pl; call c;
+Select <pl,c> such that AffectsBip(pl,c)
+none
+5000
+119 - AffectsBip test,prog_line and prog_line
+prog_line pl1,pl2;
+Select BOOLEAN such that AffectsBip(pl1,pl2)
+TRUE
+5000
+120 - AffectsBip test,prog_line and prog_line
+prog_line pl1,pl2;
+Select <pl1,pl2> such that AffectsBip(pl1,pl2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+121 - AffectsBip test,prog_line and prog_line
+prog_line pl1,pl2;
+Select <pl2,pl1> such that AffectsBip(pl1,pl2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+122 - AffectsBip test,prog_line and read
+prog_line pl; read r;
+Select BOOLEAN such that AffectsBip(pl,r)
+FALSE
+5000
+123 - AffectsBip test,prog_line and read
+prog_line pl; read r;
+Select <pl,r.varName> such that AffectsBip(pl,r)
+none
+5000
+124 - AffectsBip test,prog_line and print
+prog_line pl; print pn;
+Select BOOLEAN such that AffectsBip(pl,pn)
+FALSE
+5000
+125 - AffectsBip test,prog_line and print
+prog_line pl; print pn;
+Select <pl,pn.varName> such that AffectsBip(pl,pn)
+none
+5000
+126 - AffectsBip test,prog_line and while
+prog_line pl; while w;
+Select BOOLEAN such that AffectsBip(pl,w)
+FALSE
+5000
+127 - AffectsBip test,prog_line and while
+prog_line pl; while w;
+Select <pl,w> such that AffectsBip(pl,w)
+none
+5000
+128 - AffectsBip test,prog_line and if
+prog_line pl; if i;
+Select BOOLEAN such that AffectsBip(pl,i)
+FALSE
+5000
+129 - AffectsBip test,prog_line and if
+prog_line pl; if i;
+Select <pl,i> such that AffectsBip(pl,i)
+none
+5000
+130 - AffectsBip test,prog_line and assign
+prog_line pl; assign a;
+Select BOOLEAN such that AffectsBip(pl,a)
+TRUE
+5000
+131 - AffectsBip test,prog_line and assign
+prog_line pl; assign a;
+Select <pl,a> such that AffectsBip(pl,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+132 - AffectsBip test,prog_line and assign
+prog_line pl; assign a;
+Select pl such that AffectsBip(pl,a)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+133 - AffectsBip test,prog_line and assign
+prog_line pl; assign a;
+Select <a,pl> such that AffectsBip(pl,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+134 - AffectsBip test,prog_line and variable
+prog_line pl; variable v;
+Select BOOLEAN such that AffectsBip(pl,v)
+FALSE
+5000
+135 - AffectsBip test,prog_line and variable
+prog_line pl; variable v;
+Select <pl,v.varName> such that AffectsBip(pl,v)
+none
+5000
+136 - AffectsBip test,prog_line and constant
+prog_line pl; constant c;
+Select BOOLEAN such that AffectsBip(pl,c)
+FALSE
+5000
+137 - AffectsBip test,prog_line and constant
+prog_line pl; constant c;
+Select <pl,c.value> such that AffectsBip(pl,c)
+none
+5000
+138 - AffectsBip test,prog_line and procedure
+prog_line pl; procedure p;
+Select BOOLEAN such that AffectsBip(pl,p)
+FALSE
+5000
+139 - AffectsBip test,prog_line and procedure
+prog_line pl; procedure p;
+Select <pl,p.procName> such that AffectsBip(pl,p)
+none
+5000
+140 - AffectsBip test,read and stmt
+stmt s; read r;
+Select BOOLEAN such that AffectsBip(r,s)
+FALSE
+5000
+141 - AffectsBip test,read and stmt
+stmt s; read r;
+Select r.varName such that AffectsBip(r,s)
+none
+5000
+142 - AffectsBip test,read and variable
+variable v; read r;
+Select BOOLEAN such that AffectsBip(r,v)
+FALSE
+5000
+143 - AffectsBip test,read and variable
+variable v; read r;
+Select <r,v> such that AffectsBip(r,v)
+none
+5000
+144 - AffectsBip test,read and constant
+constant c; read r;
+Select BOOLEAN such that AffectsBip(r,c)
+FALSE
+5000
+145 - AffectsBip test,read and constant
+constant c; read r;
+Select <r,c> such that AffectsBip(r,c)
+none
+5000
+146 - AffectsBip test,read and procedure
+procedure p; read r;
+Select BOOLEAN such that AffectsBip(r,p)
+FALSE
+5000
+147 - AffectsBip test,read and procedure
+procedure p; read r;
+Select <r,p> such that AffectsBip(r,p)
+none
+5000
+148 - AffectsBip test,print and stmt
+stmt s; print pn;
+Select BOOLEAN such that AffectsBip(pn,s)
+FALSE
+5000
+149 - AffectsBip test,print and stmt
+stmt s; print pn;
+Select pn.varName such that AffectsBip(pn,s)
+none
+5000
+150 - AffectsBip test,print and variable
+variable v; print pn;
+Select BOOLEAN such that AffectsBip(pn,v)
+FALSE
+5000
+151 - AffectsBip test,print and variable
+variable v; print pn;
+Select <pn,v> such that AffectsBip(pn,v)
+none
+5000
+152 - AffectsBip test,print and constant
+constant c; print pn;
+Select BOOLEAN such that AffectsBip(pn,c)
+FALSE
+5000
+153 - AffectsBip test,print and constant
+constant c; print pn;
+Select <pn,c> such that AffectsBip(pn,c)
+none
+5000
+154 - AffectsBip test,print and procedure
+procedure p; print pn;
+Select BOOLEAN such that AffectsBip(pn,p)
+FALSE
+5000
+155 - AffectsBip test,print and procedure
+procedure p; print pn;
+Select <pn,p> such that AffectsBip(pn,p)
+none
+5000
+156 - AffectsBip test,while and stmt
+stmt s; while w;
+Select BOOLEAN such that AffectsBip(w,s)
+FALSE
+5000
+157 - AffectsBip test,while and stmt
+stmt s; while w;
+Select <w,s> such that AffectsBip(w,s)
+none
+5000
+158 - AffectsBip test,while and variable
+variable v; while w;
+Select BOOLEAN such that AffectsBip(w,v)
+FALSE
+5000
+159 - AffectsBip test,while and variable
+variable v; while w;
+Select <w,v> such that AffectsBip(w,v)
+none
+5000
+160 - AffectsBip test,while and constant
+constant c; while w;
+Select BOOLEAN such that AffectsBip(w,c)
+FALSE
+5000
+161 - AffectsBip test,while and constant
+constant c; while w;
+Select <w,c> such that AffectsBip(w,c)
+none
+5000
+162 - AffectsBip test,while and procedure
+procedure p; while w;
+Select BOOLEAN such that AffectsBip(w,p)
+FALSE
+5000
+163 - AffectsBip test,while and procedure
+procedure p; while w;
+Select <w,p> such that AffectsBip(w,p)
+none
+5000
+164 - AffectsBip test,if and stmt
+if i; stmt s;
+Select BOOLEAN such that AffectsBip(i,s)
+FALSE
+5000
+165 - AffectsBip test,if and stmt
+if i; stmt s;
+Select <i,s> such that AffectsBip(i,s)
+none
+5000
+166 - AffectsBip test,if and variable
+if i; variable v;
+Select BOOLEAN such that AffectsBip(i,v)
+FALSE
+5000
+167 - AffectsBip test,if and variable
+if i; variable v;
+Select <i,v> such that AffectsBip(i,v)
+none
+5000
+168 - AffectsBip test,if and constant
+if i; constant c;
+Select BOOLEAN such that AffectsBip(i,c)
+FALSE
+5000
+169 - AffectsBip test,if and constant
+if i; constant c;
+Select <i,c> such that AffectsBip(i,c)
+none
+5000
+170 - AffectsBip test,if and procedure
+if i; procedure p;
+Select BOOLEAN such that AffectsBip(i,p)
+FALSE
+5000
+171 - AffectsBip test,if and procedure
+if i; procedure p;
+Select <i,p> such that AffectsBip(i,p)
+none
+5000
+172 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select BOOLEAN such that AffectsBip(a,s)
+TRUE
+5000
+173- AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <a,s> such that AffectsBip(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+174 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select a.stmt# such that AffectsBip(a,s)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+175 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <a.stmt#,s.stmt#> such that AffectsBip(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+176 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <a.stmt#,s> such that AffectsBip(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+177 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <a,s.stmt#> such that AffectsBip(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+178 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <s,a> such that AffectsBip(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+179 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <s.stmt#,a.stmt#> such that AffectsBip(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+180 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <s.stmt#,a> such that AffectsBip(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+181 - AffectsBip test,assign and stmt
+assign a; stmt s;
+Select <s,a.stmt#> such that AffectsBip(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+182 - AffectsBip test,assign and call
+assign a; call c;
+Select BOOLEAN such that AffectsBip(a,c)
+FALSE
+5000
+183 - AffectsBip test,assign and call
+assign a; call c;
+Select <a,c.procName> such that AffectsBip(a,c)
+none
+5000
+184 - AffectsBip test,assign and prog_line
+assign a; prog_line pl;
+Select BOOLEAN such that AffectsBip(a,pl)
+TRUE
+5000
+185 - AffectsBip test,assign and prog_line
+assign a; prog_line pl;
+Select <a,pl> such that AffectsBip(a,pl)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+186 - AffectsBip test,assign and prog_line
+assign a; prog_line pl;
+Select a.stmt# such that AffectsBip(a,pl)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+187 - AffectsBip test,assign and prog_line
+assign a; prog_line pl;
+Select <a.stmt#,pl> such that AffectsBip(a,pl)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+188 - AffectsBip test,assign and prog_line
+assign a; prog_line pl;
+Select <pl,a> such that AffectsBip(a,pl)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+189 - AffectsBip test,assign and prog_line
+assign a; prog_line pl;
+Select <pl,a.stmt#> such that AffectsBip(a,pl)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+190 - AffectsBip test,assign and read
+assign a; read r;
+Select BOOLEAN such that AffectsBip(a,r)
+FALSE
+5000
+191 - AffectsBip test,assign and read
+assign a; read r;
+Select <a,r> such that AffectsBip(a,r)
+none
+5000
+192 - AffectsBip test,assign and print
+assign a; print pn;
+Select BOOLEAN such that AffectsBip(a,pn)
+FALSE
+5000
+193 - AffectsBip test,assign and print
+assign a; print pn;
+Select <a,pn> such that AffectsBip(a,pn)
+none
+5000
+194 - AffectsBip test,assign and while
+assign a; while w;
+Select BOOLEAN such that AffectsBip(a,w)
+FALSE
+5000
+195 - AffectsBip test,assign and while
+assign a; while w;
+Select <a,w> such that AffectsBip(a,w)
+none
+5000
+196 - AffectsBip test,assign and if
+assign a; if i;
+Select BOOLEAN such that AffectsBip(a,i)
+FALSE
+5000
+197 - AffectsBip test,assign and if
+assign a; if i;
+Select <a,i> such that AffectsBip(a,i)
+none
+5000
+198 - AffectsBip test,assign and assign
+assign a1,a2;
+Select BOOLEAN such that AffectsBip(a1,a2)
+TRUE
+5000
+199 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a1,a2> such that AffectsBip(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+200 - AffectsBip test,assign and assign
+assign a1,a2;
+Select a1.stmt# such that AffectsBip(a1,a2)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+201 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a1.stmt#,a2.stmt#> such that AffectsBip(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+202 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a1.stmt#,a2> such that AffectsBip(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+203 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a1,a2.stmt#> such that AffectsBip(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000
+204 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a2,a1> such that AffectsBip(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+205 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a2.stmt#,a1.stmt#> such that AffectsBip(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+206 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a2.stmt#,a1> such that AffectsBip(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+207 - AffectsBip test,assign and assign
+assign a1,a2;
+Select <a2,a1.stmt#> such that AffectsBip(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 15, 4 4, 10 1, 12 1, 8 1, 10 13, 4 15, 10 2
+5000
+208 - AffectsBip test,assign and variable
+assign a; variable v;
+Select BOOLEAN such that AffectsBip(a,v)
+FALSE
+5000
+209 - AffectsBip test,assign and variable
+assign a; variable v;
+Select <a,v> such that AffectsBip(a,v)
+none
+5000
+210 - AffectsBip test,assign and constant c
+constant c; assign a;
+Select BOOLEAN such that AffectsBip(a,c)
+FALSE
+5000
+211 - AffectsBip test,assign and constant c
+constant c; assign a;
+Select <a,c> such that AffectsBip(a,c)
+none
+5000
+212 - AffectsBip test,assign and procedure p
+procedure p; assign a;
+Select BOOLEAN such that AffectsBip(a,p)
+FALSE
+5000
+213 - AffectsBip test,assign and procedure p
+procedure p; assign a;
+Select <a,p> such that AffectsBip(a,p)
+none
+5000
+214 - AffectsBip test,stmt and wildcard
+stmt s;
+Select BOOLEAN such that AffectsBip(s,_)
+TRUE
+5000
+215 - AffectsBip test,stmt and wildcard
+stmt s;
+Select <s,s> such that AffectsBip(s,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+216 - AffectsBip test,stmt and wildcard
+stmt s;
+Select <s,s.stmt#> such that AffectsBip(s,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+217 - AffectsBip test,stmt and wildcard
+stmt s;
+Select <s.stmt#,s.stmt#> such that AffectsBip(s,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+218 - AffectsBip test,stmt and wildcard
+stmt s;
+Select <s.stmt#,s> such that AffectsBip(s,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+219 - AffectsBip test,call and wildcard
+call c;
+Select BOOLEAN such that AffectsBip(c,_)
+FALSE
+5000
+220 - AffectsBip test,call and wildcard
+call c;
+Select <c.procName,c.procName> such that AffectsBip(c,_)
+none
+5000
+221 - AffectsBip test,prog_line and wildcard
+prog_line pl;
+Select BOOLEAN such that AffectsBip(pl,_)
+TRUE
+5000
+222 - AffectsBip test,prog_line and wildcard
+prog_line pl;
+Select <pl,pl> such that AffectsBip(pl,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+223 - AffectsBip test,prog_line and wildcard
+prog_line pl;
+Select pl such that AffectsBip(pl,_)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+224 - AffectsBip test,read and wildcard
+read r;
+Select BOOLEAN such that AffectsBip(r,_)
+FALSE
+5000
+225 - AffectsBip test,read and wildcard
+read r;
+Select <r.varName,r.varName> such that AffectsBip(r,_)
+none
+5000
+226 - AffectsBip test,print and wildcard
+print pn;
+Select BOOLEAN such that AffectsBip(pn,_)
+FALSE
+5000
+227 - AffectsBip test,print and wildcard
+print pn;
+Select <pn,pn.varName> such that AffectsBip(pn,_)
+none
+5000
+228 - AffectsBip test,while and wildcard
+while w;
+Select BOOLEAN such that AffectsBip(w,_)
+FALSE
+5000
+229 - AffectsBip test,while and wildcard
+while w;
+Select <w,w> such that AffectsBip(w,_)
+none
+5000
+230 - AffectsBip test,if and wildcard
+if i;
+Select BOOLEAN such that AffectsBip(i,_)
+FALSE
+5000
+231 - AffectsBip test,assign and wildcard
+assign a;
+Select BOOLEAN such that AffectsBip(a,_)
+TRUE
+5000
+232 - AffectsBip test,assign and wildcard
+assign a;
+Select <a,a> such that AffectsBip(a,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+233 - AffectsBip test,assign and wildcard
+assign a;
+Select a.stmt# such that AffectsBip(a,_)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+234 - AffectsBip test,assign and wildcard
+assign a;
+Select <a.stmt#,a> such that AffectsBip(a,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15,
+5000
+235 - AffectsBip test,assign and wildcard
+assign a;
+Select <a,a.stmt#> such that AffectsBip(a,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+236 - AffectsBip test,assign and wildcard
+assign a;
+Select <a.stmt#,a.stmt#> such that AffectsBip(a,_)
+1 1, 2 2, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 15 15
+5000
+237 - AffectsBip test,variable and wildcard
+variable v;
+Select BOOLEAN such that AffectsBip(v,_)
+FALSE
+5000
+238 - AffectsBip test,variable and wildcard
+variable v;
+Select <v,v> such that AffectsBip(v,_)
+none
+5000
+239 - AffectsBip test,constant and wildcard
+constant c;
+Select BOOLEAN such that AffectsBip(c,_)
+FALSE
+5000
+240 - AffectsBip test,constant and wildcard
+constant c;
+Select <c,c> such that AffectsBip(c,_)
+none
+5000
+241 - AffectsBip test,procedure and wildcard
+procedure p;
+Select BOOLEAN such that AffectsBip(p,_)
+FALSE
+5000
+242 - AffectsBip test,procedure and wildcard
+procedure p;
+Select <p,p> such that AffectsBip(p,_)
+none
+5000
+243 - AffectsBip test,wildcard and stmt
+stmt s;
+Select BOOLEAN such that AffectsBip(_,s)
+TRUE
+5000
+244 - AffectsBip test,wildcard and stmt
+stmt s;
+Select <s,s> such that AffectsBip(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+245 - AffectsBip test,wildcard and stmt
+stmt s;
+Select s.stmt# such that AffectsBip(_,s)
+4, 8, 10, 6, 12, 11, 14, 15
+5000
+246 - AffectsBip test,wildcard and stmt
+stmt s;
+Select <s.stmt#,s> such that AffectsBip(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+247 - AffectsBip test,wildcard and stmt
+stmt s;
+Select <s,s.stmt#> such that AffectsBip(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+248 - AffectsBip test,wildcard and stmt
+stmt s;
+Select <s.stmt#,s.stmt#> such that AffectsBip(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+249 - AffectsBip test,wildcard and prog_line
+prog_line pl;
+Select BOOLEAN such that AffectsBip(_,pl)
+TRUE
+5000
+250 - AffectsBip test,wildcard and prog_line
+prog_line pl;
+Select <pl,pl> such that AffectsBip(_,pl)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+251 - AffectsBip test,wildcard and prog_line
+prog_line pl;
+Select pl such that AffectsBip(_,pl)
+4, 8, 10, 6, 12, 11, 14, 15
+5000
+252 - AffectsBip test,wildcard and call
+call c;
+Select BOOLEAN such that AffectsBip(_,c)
+FALSE
+5000
+253 - AffectsBip test,wildcard and call
+call c; stmt s;
+Select c.procName such that AffectsBip(_,c)
+none
+5000
+254 - AffectsBip test,wildcard and read
+read r;
+Select BOOLEAN such that AffectsBip(_,r)
+FALSE
+5000
+255 - AffectsBip test,wildcard and read
+read r;
+Select r.varName such that AffectsBip(_,r)
+none
+5000
+256 - AffectsBip test,wildcard and print
+print pn;
+Select BOOLEAN such that AffectsBip(_,pn)
+FALSE
+5000
+257 - AffectsBip test,wildcard and print
+print pn;
+Select pn.varName such that AffectsBip(_,pn)
+none
+5000
+258 - AffectsBip test,wildcard and while
+while w;
+Select BOOLEAN such that AffectsBip(_,w)
+FALSE
+5000
+259 - AffectsBip test,wildcard and while
+while w;
+Select <w,w> such that AffectsBip(_,w)
+none
+5000
+260 - AffectsBip test,wildcard and if
+if i;
+Select BOOLEAN such that AffectsBip(_,i)
+FALSE
+5000
+261 - AffectsBip test,wildcard and if
+if i;
+Select <i,i> such that AffectsBip(_,i)
+none
+5000
+262 - AffectsBip test,wildcard and assign
+assign a;
+Select BOOLEAN such that AffectsBip(_,a)
+TRUE
+5000
+263 - AffectsBip test,wildcard and assign
+assign a;
+Select a.stmt# such that AffectsBip(_,a)
+4, 8, 10, 6, 12, 11, 14, 15
+5000
+264 - AffectsBip test,wildcard and assign
+assign a;
+Select <a.stmt#,a> such that AffectsBip(_,a)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+265 - AffectsBip test,wildcard and variable
+variable v;
+Select BOOLEAN such that AffectsBip(_,v)
+FALSE
+5000
+266 - AffectsBip test,wildcard and variable
+variable v;
+Select <v,v> such that AffectsBip(_,v)
+none
+5000
+267 - AffectsBip test,wildcard and constant
+constant c;
+Select BOOLEAN such that AffectsBip(_,c)
+FALSE
+5000
+268 - AffectsBip test,wildcard and constant
+constant c;
+Select <c,c> such that AffectsBip(_,c)
+none
+5000
+269 - AffectsBip test,wildcard and procedure
+procedure p;
+Select BOOLEAN such that AffectsBip(_,p)
+FALSE
+5000
+270 - AffectsBip test,wildcard and procedure
+procedure p;
+Select <p,p> such that AffectsBip(_,p)
+none
+5000
+271 - AffectsBip test,wildcard and integer
+stmt s;
+Select BOOLEAN such that AffectsBip(_,3)
+FALSE
+5000
+272 - AffectsBip test,wildcard and integer
+stmt s;
+Select <s,s> such that AffectsBip(_,3)
+none
+5000
+273 - AffectsBip test,wildcard and wildcard
+stmt s;
+Select BOOLEAN such that AffectsBip(_,_)
+TRUE
+5000
+274 - AffectsBip test,wildcard and wildcard
+stmt s;
+Select <s,s> such that AffectsBip(_,_)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+275 - AffectsBip such that ModifiesS
+stmt s; variable v;
+Select s such that AffectsBip(s, _) such that Modifies(s, v)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+276 - AffectsBip and UsesS
+stmt s; variable v;
+Select v such that AffectsBip(s, _) and Uses(s, v)
+x, y, i, z, v
+5000
+277 - Follows and AffectsBip
+stmt s1, s2;
+Select <s1, s2> such that Follows(s1, s2) and AffectsBip(s1, s2)
+10 11, 11 12, 13 14, 14 15
+5000
+278 - Parent such that AffectsBip
+stmt s;
+Select s such that Parent(_, s) such that AffectsBip(s, _)
+4, 6, 8, 9
+5000
+279 - AffectsBip and Next
+stmt s;
+Select s such that AffectsBip(s, _) and Next(7, s)
+8, 9
+5000
+280 - AffectsBip such that Next*
+stmt s;
+Select s such that AffectsBip(s, _) such that Next*(6, _)
+1, 2, 4, 6, 8, 9, 10, 11, 13, 14, 15
+5000
+281 - AffectsBip and pattern a
+assign a;
+Select a such that AffectsBip(a, _) pattern a("x", _)
+1, 4, 8
+5000
+282 - AffectsBip and pattern a
+assign a;
+Select a pattern a("x", _) such that AffectsBip(a, _)
+1, 4, 8
+5000
+283 - AffectsBip and with
+prog_line p; constant c;
+Select p such that AffectsBip(p, _) with p = c.value
+1, 2
+5000
+284 - AffectsBip and with
+stmt s;
+Select s with s.stmt# = 13 such that AffectsBip(s, 14)
+13
+5000
+285 - Follows and AffectsBip
+stmt s;
+Select s such that Follows(s, _) and AffectsBip(s, _)
+1, 2, 4, 10, 11, 13, 14
+5000
+286 - AffectsBip and UsesS
+stmt s; variable v;
+Select s such that AffectsBip(s, _) and Uses(s, v)
+4, 6, 8, 10, 11, 14, 15
+5000
+289 - Multiple AffectsBip stress test
+assign a1, a2;
+Select <a1, a2> such that AffectsBip(a1, a2) and AffectsBip(a1, a2) and AffectsBip(a1, a2) and AffectsBip(a1, a2) and AffectsBip(a1, a2) and AffectsBip(a1, a2) and AffectsBip(a1, a2) and AffectsBip(a1, a2) such that AffectsBip(a1, a2) such that AffectsBip(a1, a2) such that AffectsBip(a1, a2) and AffectsBip(a1, a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 15 10, 4 4, 1 10, 1 12, 1 8, 13 10, 15 4, 2 10
+5000

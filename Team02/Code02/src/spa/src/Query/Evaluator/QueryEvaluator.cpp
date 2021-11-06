@@ -27,9 +27,6 @@ QueryEvaluator::QueryEvaluator(PKB* pkb, QueryOptimizer* optimizer)
   finalQueryResults = {};
   groupQueryResults = {};
   queryResultsSynonyms = {};
-
-  QueryEvaluatorCache* onDemandRsCache = new QueryEvaluatorCache();
-  nextEvaluator.attachCache(onDemandRsCache);
 }
 
 FinalQueryResults QueryEvaluator::evaluateQuery(
@@ -117,6 +114,7 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
     case RelationshipType::NEXT_BIP_T:
     case RelationshipType::AFFECTS:
     case RelationshipType::AFFECTS_T:
+    case RelationshipType::AFFECTS_BIP:
       return evaluateSuchThatOnDemandClause(clause);
     default:
       DMOprintErrMsgAndExit(
@@ -200,11 +198,6 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
   bool isPairClause =
       find(pairParamTypesCombos.begin(), pairParamTypesCombos.end(),
            paramTypesCombo) != pairParamTypesCombos.end();
-  if (relationshipType == RelationshipType::AFFECTS ||
-      relationshipType == RelationshipType::AFFECTS_T) {
-    isPairClause =
-        left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM;
-  }
 
   // evaluate clause that returns a boolean
   if (isBoolClause) {
@@ -279,7 +272,9 @@ bool QueryEvaluator::callSubEvaluatorBool(RelationshipType relationshipType,
       return nextEvaluator.evaluateBoolNextTNextBipT(relationshipType, left,
                                                      right);
     case RelationshipType::AFFECTS:
-      return affectsEvaluator.evaluateBoolAffects(left, right);
+    case RelationshipType::AFFECTS_BIP:
+      return affectsEvaluator.evaluateBoolAffects(relationshipType, left,
+                                                  right);
     case RelationshipType::AFFECTS_T:
       return affectsEvaluator.evaluateBoolAffectsT(left, right);
     default:
@@ -297,7 +292,9 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorRef(
           nextEvaluator.evaluateNextTNextBipT(relationshipType, left, right);
       break;
     case RelationshipType::AFFECTS:
-      refResults = affectsEvaluator.evaluateStmtAffects(left, right);
+    case RelationshipType::AFFECTS_BIP:
+      refResults =
+          affectsEvaluator.evaluateStmtAffects(relationshipType, left, right);
       break;
     case RelationshipType::AFFECTS_T:
       refResults = affectsEvaluator.evaluateStmtAffectsT(left, right);
@@ -316,9 +313,11 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorPair(
       return nextEvaluator.evaluatePairNextTNextBipT(relationshipType, left,
                                                      right);
     case RelationshipType::AFFECTS:
-      return affectsEvaluator.evaluatePairAffects();
+    case RelationshipType::AFFECTS_BIP:
+      return affectsEvaluator.evaluatePairAffects(relationshipType, left,
+                                                  right);
     case RelationshipType::AFFECTS_T:
-      return affectsEvaluator.evaluatePairAffectsT();
+      return affectsEvaluator.evaluatePairAffectsT(left, right);
     default:
       return {};
   }
