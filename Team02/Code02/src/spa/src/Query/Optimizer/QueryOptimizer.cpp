@@ -10,6 +10,7 @@
 
 using namespace std;
 using namespace query;
+using namespace optimizer;
 
 const unordered_set<RelationshipType> expensiveRelationships = {
     RelationshipType::NEXT_T,      RelationshipType::NEXT_BIP_T,
@@ -77,7 +78,7 @@ vector<Group> QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
   int nextOpenGrpIdx = 0;
 
   for (const ConditionClause& clause : clausesSet) {
-    unordered_set<string> synonymNames = extractSynonymsUsed(clause);
+    vector<string> synonymNames = extractSynonymsUsed(clause);
     // create new subset if clause has no synonyms
     if (synonymNames.empty()) {
       subsetIdToClauses[nextOpenGrpIdx].insert(clause);
@@ -155,17 +156,29 @@ vector<pair<Group, DetailedGrpInfo>> QueryOptimizer::extractGroupInfo(
     vector<Synonym> groupSelectSynonyms = {};
     int numEfficientClauses = 0;
     int numExpensiveClauses = 0;
+    int curClauseIndex = 0;
 
     for (auto& clause : group) {
-      groupSynonyms.merge(extractSynonymsUsed(clause));
+      vector<string> clauseSynonyms = extractSynonymsUsed(clause);
+      for (string s : clauseSynonyms) {
+        groupSynonyms.insert(s);
+      }
+      ClauseDifficulty difficulty = ClauseDifficulty::NORMAL;
       if (clause.conditionClauseType == ConditionClauseType::WITH) {
         numEfficientClauses++;
+        difficulty = ClauseDifficulty::EFFICIENT;
       }
       if (clause.conditionClauseType == ConditionClauseType::SUCH_THAT &&
           expensiveRelationships.find(clause.suchThatClause.relationshipType) !=
               expensiveRelationships.end()) {
         numExpensiveClauses++;
+        difficulty = ClauseDifficulty::EXPENSIVE;
       }
+
+      DetailedClauseInfo clauseInfo = {difficulty, clauseSynonyms,
+                                       curClauseIndex};
+      clauseToClauseInfo.insert({clause, clauseInfo});
+      curClauseIndex++;
     }
 
     for (auto& synonym : selectSynonyms) {
@@ -216,43 +229,46 @@ void QueryOptimizer::sortClausesAtGroupIndex(int index) {
   // efficient clauses
   auto clausesComparator = [this](const ConditionClause& clauseA,
                                   const ConditionClause& clauseB) {
-    bool hasCommonSynonymA = hasCommonSynonyms(clauseA);
-    bool hasCommonSynonymB = hasCommonSynonyms(clauseB);
-    if (hasCommonSynonymA != hasCommonSynonymB) {
-      return hasCommonSynonymA;
+    DetailedClauseInfo clauseInfoA = clauseToClauseInfo[clauseA];
+    DetailedClauseInfo clauseInfoB = clauseToClauseInfo[clauseB];
+
+    bool hasCommonA = hasCommonSynonyms(clauseInfoA.synonyms);
+    bool hasCommonB = hasCommonSynonyms(clauseInfoB.synonyms);
+    if ((hasCommonA || hasCommonB) && !(hasCommonA && hasCommonB)) {
+      return hasCommonA;
     }
 
-    bool isExpensiveA =
-        clauseA.conditionClauseType == ConditionClauseType::SUCH_THAT &&
-        expensiveRelationships.find(clauseA.suchThatClause.relationshipType) !=
-            expensiveRelationships.end();
-    bool isExpensiveB =
-        clauseB.conditionClauseType == ConditionClauseType::SUCH_THAT &&
-        expensiveRelationships.find(clauseB.suchThatClause.relationshipType) !=
-            expensiveRelationships.end();
-    if (isExpensiveA != isExpensiveB) {
+    bool isExpensiveA = clauseInfoA.difficulty == ClauseDifficulty::EXPENSIVE;
+    bool isExpensiveB = clauseInfoB.difficulty == ClauseDifficulty::EXPENSIVE;
+    if ((isExpensiveA || isExpensiveB) && !(isExpensiveA && isExpensiveB)) {
       return isExpensiveB;
     }
 
-    unsigned long estSizeA = getSizeOfClause(clauseA);
-    unsigned long estSizeB = getSizeOfClause(clauseB);
+    unsigned long estSizeA =
+        getSizeOfClause(clauseA.conditionClauseType, clauseInfoA.synonyms);
+    unsigned long estSizeB =
+        getSizeOfClause(clauseB.conditionClauseType, clauseInfoB.synonyms);
     if (estSizeA != estSizeB) {
       return estSizeB > estSizeA;
     }
 
-    bool isEfficientA =
-        clauseA.conditionClauseType == ConditionClauseType::WITH;
-    return isEfficientA;
+    bool isEfficientA = clauseInfoA.difficulty == ClauseDifficulty::EFFICIENT;
+    bool isEfficientB = clauseInfoB.difficulty == ClauseDifficulty::EFFICIENT;
+    if ((isEfficientA || isExpensiveB) && !(isEfficientA && isEfficientB)) {
+      return isEfficientA;
+    }
+
+    return clauseInfoA.clauseIndex > clauseInfoB.clauseIndex;
   };
 
   Group& group = groupAndInfoPairs[index].first;
   sort(group.begin(), group.end(), clausesComparator);
 }
 
-std::vector<unsigned long> QueryOptimizer::getSizesOfSynonyms(
-    std::unordered_set<query::SYN_NAME>* synNames) {
-  vector<unsigned long> sizes = {};
-  for (const string& s : *synNames) {
+unsigned long QueryOptimizer::getSizeOfClause(
+    query::ConditionClauseType type, const std::vector<std::string>& synonyms) {
+  vector<int> sizes = {};
+  for (const string s : synonyms) {
     if (synonymCountTable != nullptr &&
         synonymCountTable->find(s) != synonymCountTable->end()) {
       sizes.push_back(synonymCountTable->at(s));
@@ -260,20 +276,7 @@ std::vector<unsigned long> QueryOptimizer::getSizesOfSynonyms(
       sizes.push_back(pkb->getNumEntity(synonymMap[s]));
     }
   }
-  return sizes;
-}
-
-unsigned long QueryOptimizer::getSizeOfClause(
-    const query::ConditionClause& clause) {
-  unordered_set<string> synonyms = QueryOptimizer::extractSynonymsUsed(clause);
-  vector<unsigned long> sizes = getSizesOfSynonyms(&synonyms);
-  if (!synonyms.empty()) {
-    for (string s : synonyms) {
-    }
-    for (unsigned long s : sizes) {
-    }
-  }
-  if (clause.conditionClauseType == ConditionClauseType::WITH) {
+  if (type == ConditionClauseType::WITH) {
     if (synonyms.size() < 2) {
       return 1;
     }
@@ -282,50 +285,51 @@ unsigned long QueryOptimizer::getSizeOfClause(
   return reduce(sizes.begin(), sizes.end(), 1, multiplies<>());
 }
 
-bool QueryOptimizer::hasCommonSynonyms(const ConditionClause& clause) {
-  unordered_set<string> synonyms = QueryOptimizer::extractSynonymsUsed(clause);
-  return any_of(synonyms.begin(), synonyms.end(), [this](const string& s){
-    return synonymCountTable != nullptr &&
-           synonymCountTable->find(s) != synonymCountTable->end();
-  });
+bool QueryOptimizer::hasCommonSynonyms(
+    const std::vector<std::string>& clauseSynonyms) {
+  return any_of(clauseSynonyms.begin(), clauseSynonyms.end(),
+                [this](const string& s) {
+                  return synonymCountTable != nullptr &&
+                         synonymCountTable->find(s) != synonymCountTable->end();
+                });
 }
 
-unordered_set<SYN_NAME> QueryOptimizer::extractSynonymsUsed(
+vector<SYN_NAME> QueryOptimizer::extractSynonymsUsed(
     const ConditionClause& clause) {
   unordered_set<ParamType> synonymTypes = {
       ParamType::SYNONYM, ParamType::ATTRIBUTE_PROC_NAME,
       ParamType::ATTRIBUTE_VAR_NAME, ParamType::ATTRIBUTE_VALUE,
       ParamType::ATTRIBUTE_STMT_NUM};
 
-  unordered_set<string> synonymNamesUsed;
+  vector<string> synonymNamesUsed;
   ConditionClauseType type = clause.conditionClauseType;
   switch (type) {
     case ConditionClauseType::SUCH_THAT: {
       SuchThatClause stClause = clause.suchThatClause;
       if (synonymTypes.find(stClause.leftParam.type) != synonymTypes.end()) {
-        synonymNamesUsed.insert(stClause.leftParam.value);
+        synonymNamesUsed.push_back(stClause.leftParam.value);
       }
       if (synonymTypes.find(stClause.rightParam.type) != synonymTypes.end()) {
-        synonymNamesUsed.insert(stClause.rightParam.value);
+        synonymNamesUsed.push_back(stClause.rightParam.value);
       }
       return synonymNamesUsed;
     }
     case ConditionClauseType::PATTERN: {
       PatternClause patternClause = clause.patternClause;
-      synonymNamesUsed.insert(patternClause.matchSynonym.name);
+      synonymNamesUsed.push_back(patternClause.matchSynonym.name);
       if (synonymTypes.find(patternClause.leftParam.type) !=
           synonymTypes.end()) {
-        synonymNamesUsed.insert(patternClause.leftParam.value);
+        synonymNamesUsed.push_back(patternClause.leftParam.value);
       }
       return synonymNamesUsed;
     }
     case ConditionClauseType::WITH: {
       WithClause withClause = clause.withClause;
       if (synonymTypes.find(withClause.leftParam.type) != synonymTypes.end()) {
-        synonymNamesUsed.insert(withClause.leftParam.value);
+        synonymNamesUsed.push_back(withClause.leftParam.value);
       }
       if (synonymTypes.find(withClause.rightParam.type) != synonymTypes.end()) {
-        synonymNamesUsed.insert(withClause.rightParam.value);
+        synonymNamesUsed.push_back(withClause.rightParam.value);
       }
       return synonymNamesUsed;
     }

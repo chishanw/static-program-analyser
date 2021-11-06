@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+namespace optimizer {
 struct CLAUSE_HASH {
   size_t operator()(const query::ConditionClause& clause) const {
     int i = static_cast<int>(clause.conditionClauseType);
@@ -56,45 +57,53 @@ struct DetailedGrpInfo {
   int numExpensiveClauses;
 };
 
-namespace optimizer_unit_test {
-struct OptimizerTester;
+enum ClauseDifficulty { EFFICIENT, EXPENSIVE, NORMAL };
+
+struct DetailedClauseInfo {
+  ClauseDifficulty difficulty;
+  std::vector<std::string> synonyms;
+  int clauseIndex;
 };
 
 typedef int SUBSET_ID;
 typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
 typedef std::vector<query::ConditionClause> Group;
 typedef std::pair<Group, DetailedGrpInfo> GroupAndInfoPair;
+}  // namespace optimizer
 
 class QueryOptimizer {
  public:
   explicit QueryOptimizer(PKB*);
 
-  void PreprocessClauses(SynonymMap, const query::SelectClause&);
+  void PreprocessClauses(optimizer::SynonymMap, const query::SelectClause&);
 
   std::optional<query::GroupDetails> GetNextGroupDetails();
   std::optional<query::ConditionClause> GetNextClause(
       query::SynonymCountsTable&);
 
  private:
-  friend struct ::optimizer_unit_test::OptimizerTester;
   PKB* pkb;
 
-  SynonymMap synonymMap;
+  optimizer::SynonymMap synonymMap;
+  std::unordered_map<query::ConditionClause, optimizer::DetailedClauseInfo,
+                     optimizer::CLAUSE_HASH>
+      clauseToClauseInfo;
   query::SynonymCountsTable* synonymCountTable;
-  std::vector<GroupAndInfoPair> groupAndInfoPairs;
+  std::vector<optimizer::GroupAndInfoPair> groupAndInfoPairs;
   bool isFirstGroup = true;
 
-  std::vector<Group> groupClauses(std::vector<query::ConditionClause>);
-  std::vector<std::pair<Group, DetailedGrpInfo>> extractGroupInfo(
-      const std::vector<query::Synonym>&, const std::vector<Group>&);
+  std::vector<optimizer::Group> groupClauses(
+      std::vector<query::ConditionClause>);
+  std::vector<std::pair<optimizer::Group, optimizer::DetailedGrpInfo>>
+  extractGroupInfo(const std::vector<query::Synonym>&,
+                   const std::vector<optimizer::Group>&);
 
   void sortGroups();
   void sortClausesAtGroupIndex(int);
 
-  static std::unordered_set<query::SYN_NAME> extractSynonymsUsed(
+  static std::vector<query::SYN_NAME> extractSynonymsUsed(
       const query::ConditionClause&);
-  std::vector<unsigned long> getSizesOfSynonyms(
-      std::unordered_set<query::SYN_NAME>*);
-  unsigned long getSizeOfClause(const query::ConditionClause&);
-  bool hasCommonSynonyms(const query::ConditionClause&);
+  unsigned long getSizeOfClause(query::ConditionClauseType,
+                                const std::vector<std::string>&);
+  bool hasCommonSynonyms(const std::vector<std::string>&);
 };

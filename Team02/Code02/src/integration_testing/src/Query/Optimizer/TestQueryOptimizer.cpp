@@ -12,6 +12,7 @@
 
 using namespace std;
 using namespace query;
+using namespace optimizer;
 
 // ================ Testing duplicates ================
 TEST_CASE("Duplicate clauses are removed") {
@@ -26,6 +27,7 @@ TEST_CASE("Duplicate clauses are removed") {
   pkb->addStmt(DesignEntity::IF, 6);
   pkb->addStmt(DesignEntity::CALL, 7);
   pkb->addStmt(DesignEntity::WHILE, 8);
+  pkb->addStmt(DesignEntity::ASSIGN, 9);
   pkb->insertAt(TableType::VAR_TABLE, "var1");
   pkb->insertAt(TableType::VAR_TABLE, "var2");
   pkb->insertAt(TableType::VAR_TABLE, "var3");
@@ -180,8 +182,8 @@ TEST_CASE("Duplicate clauses are removed") {
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 3
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    REQUIRE(optimizer.GetNextClause(emptyCountTable) == pattIfs);
     REQUIRE(optimizer.GetNextClause(emptyCountTable) == stParentTIfs);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable) == pattIfs);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 4
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
