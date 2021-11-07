@@ -1,0 +1,73 @@
+procedure DoubleNestedWhileAtMiddle {
+    a = 5;
+    b = 7;
+    while (a > b) {
+        x = 100;
+        while (x > a) {
+            z = 3;
+            x = x + z;
+        }
+        b = b + 1;
+        a = a - 1;
+        x = x - 3;
+    }
+}
+
+procedure DoubleNestedWhileAtTop {
+    while (a > b) {
+        while (x > a) {
+            x = x + 1;
+            b = b - 1;
+            a = a + 1;
+        } 
+        x = 10;
+        a = a - 1;
+        b = b * x;
+    }
+    a = a * 4;
+    b = b * 2;
+}
+
+procedure DoubleNestedWhileAtBottom {
+    a = 10;
+    b = 15;
+    while (a > b) {
+        x = x + 2;
+        z = z * 3;
+        i = i - 5;
+        while ((x + z + i) > a) {
+            a = a - i;
+            x = x % 2;
+            b = b * z;
+        }
+    } 
+}
+
+procedure WhileIfIfWhile {
+    a = 8;
+    b = 6;
+    while (a > b) {
+        c = 5;
+        if (c < b) then {
+            x = a / b;
+            y = b % c;
+            if (x < y) then {
+                z = x * y;
+                while (z < 100) {
+                    x = x + a + c;
+                    y = y + b + c;
+                }
+            } else {
+                x = x + a;
+                y = y + b;
+            }
+        } else {
+            a = a + z;
+            b = b + y + x;
+        }
+        a = a + 1;
+        b = b + 1;
+    }
+    a = a + 1;
+    b = b + 1;    
+}

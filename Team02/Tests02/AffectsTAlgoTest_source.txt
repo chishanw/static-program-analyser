@@ -1,0 +1,44 @@
+procedure Gandalf {
+    read shine;
+    ring = shine * 2;
+    f = ring + 3;
+    call Frodo;
+    if (lost == shine) then{
+        call Aragon;
+        d = (shine + 12) * (lost + 13);
+    } else {
+        while (f > 10) {
+            read g;
+            f = ring + 4 + g * a * 2 * 1 + shine;
+            call Frodo;
+        }
+        d = 2;
+    }
+    print d;
+}
+
+procedure Frodo {
+    a = f + shine;
+    if (a < 2) then {
+        call Aragon;
+    } else {
+        f = f + 19;
+    }
+}
+
+procedure Aragon {
+    while (shine < 3) {
+        a = 1 * 2 + lost - f;
+        while (lost == a) {
+            lost = lost - 1;
+            w = a + lost;
+            shine  = 1 + ring;
+        }
+        if (a != shine) then {
+            a = lost + 1;
+            w = shine * 2;
+        } else {
+            w = 1;
+        }
+    }
+}

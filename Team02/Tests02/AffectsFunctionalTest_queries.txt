@@ -1,0 +1,1445 @@
+1 - Affects test,integer and stmt
+stmt s;
+Select BOOLEAN such that Affects(1,s)
+TRUE
+5000
+2 - Affects test,integer and stmt
+stmt s;
+Select <s,s.stmt#> such that Affects(1,s)
+4 4, 10 10, 12 12, 8 8
+5000
+3 - Affects test,integer and stmt
+stmt s;
+Select s.stmt# such that Affects(1,s)
+4, 10, 12, 8
+5000
+4 - Affects test,integer and stmt
+stmt s;
+Select <s,s> such that Affects(1,s)
+4 4, 10 10, 12 12, 8 8
+5000
+5 - Affects test,integer and stmt
+stmt s;
+Select <s.stmt#,s> such that Affects(1,s)
+4 4, 10 10, 12 12, 8 8
+5000
+6 - Affects test,integer and stmt
+stmt s;
+Select <s.stmt#,s.stmt#> such that Affects(1,s)
+4 4, 10 10, 12 12, 8 8
+5000
+7 - Affects test,integer and call
+call c;
+Select BOOLEAN such that Affects(1,c)
+FALSE
+5000
+8 - Affects test,integer and call
+call c;
+Select <c.procName,c.stmt#> such that Affects(1,c)
+none
+5000
+9 - Affects test,integer and prog_line
+prog_line pl;
+Select BOOLEAN such that Affects(1,pl)
+TRUE
+5000
+10 - Affects test,integer and prog_line
+prog_line pl;
+Select pl such that Affects(4,pl)
+8, 10, 12, 4
+5000
+11 - Affects test,integer and prog_line
+prog_line pl;
+Select <pl,pl> such that Affects(1,pl)
+8 8, 10 10, 12 12, 4 4
+5000
+12 - Affects test,integer and read
+read r;
+Select BOOLEAN such that Affects(1,r)
+FALSE
+5000
+13 - Affects test,integer and read
+read r;
+Select <r,r.stmt#> such that Affects(1,r)
+none
+5000
+14 - Affects test,integer and print
+print pn;
+Select BOOLEAN such that Affects(15,pn)
+FALSE
+5000
+15 - Affects test,integer and print
+print pn;
+Select <pn.varName,pn.stmt#> such that Affects(6,pn)
+none
+5000
+16 - Affects test,integer and while
+while w;
+Select BOOLEAN such that Affects(13,w)
+FALSE
+5000
+17 - Affects test,integer and while
+while w;
+Select w.stmt# such that Affects(13,w)
+none
+5000
+18 - Affects test,integer and if
+if i;
+Select BOOLEAN such that Affects(14,i)
+FALSE
+5000
+19 - Affects test,integer and if
+if i;
+Select i.stmt# such that Affects(14,i)
+none
+5000
+20 - Affects test,integer and assign
+assign a;
+Select BOOLEAN such that Affects(2,a)
+TRUE
+5000
+21 - Affects test,integer and assign
+assign a;
+Select a.stmt# such that Affects(9,a)
+10
+5000
+22 - Affects test,integer and assign
+assign a;
+Select <a,a.stmt#> such that Affects(8,a)
+10 10, 12 12
+5000
+23 - Affects test,integer and variable
+variable v;
+Select BOOLEAN such that Affects(1,v)
+FALSE
+5000
+24 - Affects test,integer and variable
+variable v;
+Select v.varName such that Affects(1,v)
+none
+5000
+25- Affects test,integer and constant
+constant c;
+Select BOOLEAN such that Affects(1,c)
+FALSE
+5000
+26- Affects test,integer and constant
+constant c;
+Select c.value such that Affects(1,c)
+none
+5000
+27- Affects test,integer and constant
+constant c;
+Select <c,c.value> such that Affects(1,c)
+none
+5000
+28 - Affects test,integer and procedure
+procedure p;
+Select BOOLEAN such that Affects(1,p)
+FALSE
+5000
+29 - Affects test,integer and procedure
+procedure p;
+Select p.procName such that Affects(1,p)
+none
+5000
+30 - Affects test,integer and integer
+stmt s;
+Select BOOLEAN such that Affects(6,6)
+TRUE
+5000
+31 - Affects test,integer and integer
+stmt s;
+Select <s,s.stmt#> such that Affects(1,1)
+none
+5000
+32 - Affects test,integer and wildcard
+stmt s;
+Select BOOLEAN such that Affects(1,_)
+TRUE
+5000
+33 - Affects test,integer and wildcard
+stmt s;
+Select <s,s.stmt#> such that Affects(1,_)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+34 - Affects test,stmt and integer
+stmt s;
+Select BOOLEAN such that Affects(s,12)
+TRUE
+5000
+35 - Affects test,stmt and integer
+stmt s;
+Select s.stmt# such that Affects(s,12)
+4, 8, 10, 11, 1
+5000
+36 - Affects test,stmt and integer
+stmt s;
+Select <s,s.stmt#> such that Affects(s,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+37 - Affects test,stmt and integer
+stmt s;
+Select <s.stmt#,s.stmt#> such that Affects(s,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+38 - Affects test,stmt and integer
+stmt s;
+Select <s.stmt#,s> such that Affects(s,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+39 - Affects test,stmt and integer
+stmt s;
+Select <s,s> such that Affects(s,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+40 - Affects test,call and integer
+call c;
+Select BOOLEAN such that Affects(c,12)
+FALSE
+5000
+41 - Affects test,call and integer
+call c;
+Select c.stmt# such that Affects(c,12)
+none
+5000
+42 - Affects test,prog_line and integer
+prog_line pl;
+Select BOOLEAN such that Affects(pl, 10)
+TRUE
+5000
+43 - Affects test,prog_line and integer
+prog_line pl;
+Select pl such that Affects(pl,10)
+4, 8, 9, 1, 2
+5000
+44 - Affects test,prog_line and integer
+prog_line pl;
+Select <pl,pl> such that Affects(pl,10)
+4 4, 8 8, 9 9, 1 1, 2 2
+5000
+45 - Affects test,read and integer
+read r;
+Select BOOLEAN such that Affects(r,2)
+FALSE
+5000
+46 - Affects test,read and integer
+read r;
+Select r.stmt# such that Affects(r,2)
+none
+5000
+47 - Affects test,print and integer
+print pn;
+Select BOOLEAN such that Affects(pn,7)
+FALSE
+5000
+48 - Affects test,print and integer
+print pn;
+Select <pn.varName,pn.stmt#> such that Affects(pn,7)
+none
+5000
+49 - Affects test,while and integer
+while w;
+Select BOOLEAN such that Affects(w,11)
+FALSE
+5000
+50 - Affects test,while and integer
+while w;
+Select <w,w.stmt#> such that Affects(w,11)
+none
+5000
+51 - Affects test,if and integer
+if i;
+Select BOOLEAN such that Affects(i,23)
+FALSE   
+5000
+52 - Affects test,if and integer
+if i;
+Select i.stmt# such that Affects(i,23)
+none
+5000
+53 - Affects test,assign and integer
+assign a;
+Select BOOLEAN such that Affects(a, 12)
+TRUE
+5000
+54 - Affects test,assign and integer
+assign a;
+Select a.stmt# such that Affects(a,12)
+4, 8, 10, 11, 1
+5000
+55 - Affects test,assign and integer
+assign a;
+Select <a,a.stmt#> such that Affects(a,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+56 - Affects test,assign and integer
+assign a;
+Select <a.stmt#,a.stmt#> such that Affects(a,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+57 - Affects test,assign and integer
+assign a;
+Select <a,a> such that Affects(a,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+58 - Affects test,assign and integer
+assign a;
+Select <a.stmt#,a> such that Affects(a,12)
+4 4, 8 8, 10 10, 11 11, 1 1
+5000
+59 - Affects test,variable and integer
+variable v;
+Select BOOLEAN such that Affects(v,2)
+FALSE
+5000
+60 - Affects test,variable and integer
+variable v;
+Select <v,v.varName> such that Affects(v,2)
+none
+5000
+61 - Affects test,constant and integer
+constant c;
+Select BOOLEAN such that Affects(c,2)
+FALSE
+5000
+62 - Affects test,constant and integer
+constant c;
+Select <c,c.value> such that Affects(c,2)
+none
+5000
+63 - Affects test,procedure and integer
+procedure p;
+Select BOOLEAN such that Affects(p,2)
+FALSE
+5000
+64 - Affects test,procedure and integer
+procedure p;
+Select <p,p.procName> such that Affects(p,2)
+none
+5000
+65 - Affects test,stmt and stmt
+stmt s1,s2;
+Select BOOLEAN such that Affects(s1,s2)
+TRUE
+5000
+66 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s1,s2> such that Affects(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+67 - Affects test,stmt and stmt
+stmt s1,s2;
+Select s1.stmt# such that Affects(s1,s2)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+68 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s1.stmt#,s2.stmt#> such that Affects(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+69 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s1.stmt#,s2> such that Affects(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+70 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s1,s2.stmt#> such that Affects(s1,s2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10, 1 12, 1 8, 2 10, 4 4
+5000
+71 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s2,s1> such that Affects(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+72 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s2.stmt#,s1> such that Affects(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+73 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s2.stmt#,s1.stmt#> such that Affects(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+74 - Affects test,stmt and stmt
+stmt s1,s2;
+Select <s2,s1.stmt#> such that Affects(s1,s2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+75 - Affects test,stmt and call
+stmt s; call c;
+Select BOOLEAN such that Affects(s,c)
+FALSE
+5000
+76 - Affects test,stmt and call
+stmt s; call c;
+Select c.procName such that Affects(s,c)
+none
+5000
+77 - Affects test,stmt and prog_line
+stmt s; prog_line pl;
+Select BOOLEAN such that Affects(s,pl)
+TRUE
+5000
+78 - Affects test,stmt and prog_line
+stmt s; prog_line pl;
+Select <s,pl> such that Affects(s,pl)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+79 - Affects test,stmt and prog_line
+stmt s; prog_line pl;
+Select pl such that Affects(s,pl)
+4, 8, 10, 12, 11, 14, 15, 6
+5000
+80 - Affects test,stmt and prog_line
+stmt s; prog_line pl;
+Select <pl,s> such that Affects(s,pl)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+81 - Affects test,stmt and read
+stmt s; read r;
+Select BOOLEAN such that Affects(s,r)
+FALSE
+5000
+82 - Affects test,stmt and read
+stmt s; read r;
+Select r.varName such that Affects(s,r)
+none
+5000
+83 - Affects test,stmt and print
+stmt s; print pn;
+Select BOOLEAN such that Affects(s,pn)
+FALSE
+5000
+84 - Affects test,stmt and print
+stmt s; print pn;
+Select pn.varName such that Affects(s,pn)
+none
+5000
+85 - Affects test,stmt and while
+stmt s; while w;
+Select BOOLEAN such that Affects(s,w)
+FALSE
+5000
+86 - Affects test,stmt and while
+stmt s; while w;
+Select <s,w> such that Affects(s,w)
+none
+5000
+87 - Affects test,stmt and if
+stmt s; if i;
+Select BOOLEAN such that Affects(s,i)
+FALSE
+5000
+88 - Affects test,stmt and if
+stmt s; if i;
+Select <s,i> such that Affects(s,i)
+none
+5000
+89 - Affects test,stmt and assign
+stmt s; assign a;
+Select BOOLEAN such that Affects(s,a)
+TRUE
+5000
+90 - Affects test,stmt and assign
+stmt s; assign a;
+Select <s,a> such that Affects(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+91 - Affects test,stmt and assign
+stmt s; assign a;
+Select <s.stmt#,a.stmt#> such that Affects(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+92 - Affects test,stmt and assign
+stmt s; assign a;
+Select <s.stmt#,a> such that Affects(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+93 - Affects test,stmt and assign
+stmt s; assign a;
+Select <s,a.stmt#> such that Affects(s,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+94 - Affects test,stmt and assign
+stmt s; assign a;
+Select <a,s> such that Affects(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+95 - Affects test,stmt and assign
+stmt s; assign a;
+Select <a.stmt#,s.stmt#> such that Affects(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+96 - Affects test,stmt and assign
+stmt s; assign a;
+Select <a.stmt#,s> such that Affects(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+97 - Affects test,stmt and assign
+stmt s; assign a;
+Select <a,s.stmt#> such that Affects(s,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+98 - Affects test,stmt and variable
+stmt s; variable v;
+Select BOOLEAN such that Affects(s,v)
+FALSE
+5000
+99 - Affects test,stmt and variable
+stmt s; variable v;
+Select <s,v.varName> such that Affects(s,v)
+none
+5000
+100 - Affects test,stmt and constant
+stmt s; constant c;
+Select BOOLEAN such that Affects(s,c)
+FALSE
+5000
+101 - Affects test,stmt and constant
+stmt s; constant c;
+Select <s,c.value> such that Affects(s,c)
+none
+5000
+102 - Affects test,stmt and procedure
+stmt s; procedure p;
+Select BOOLEAN such that Affects(s,p)
+FALSE
+5000
+103 - Affects test,stmt and procedure
+stmt s; procedure p;
+Select <s,p.procName> such that Affects(s,p)
+none
+5000
+104 - Affects test,call and stmt
+call c; stmt s;
+Select BOOLEAN such that Affects(c,s)
+FALSE
+5000
+105 - Affects test,call and stmt
+call c; stmt s;
+Select c.procName such that Affects(c,s)
+none
+5000
+106 - Affects test,call and variable
+call c; variable v;
+Select BOOLEAN such that Affects(c,v)
+FALSE
+5000
+107 - Affects test,call and variable
+call c; variable v;
+Select <c,v> such that Affects(c,v)
+none
+5000
+108 - Affects test,call and constant
+call ca; constant co;
+Select BOOLEAN such that Affects(ca,co)
+FALSE
+5000
+109 - Affects test,call and constant
+call ca; constant co;
+Select <ca,co> such that Affects(ca,co)
+none
+5000
+110 - Affects test,call and procedure
+call c; procedure p;
+Select BOOLEAN such that Affects(c,p)
+FALSE
+5000
+111 - Affects test,call and procedure
+call c; procedure p;
+Select <c,p> such that Affects(c,p)
+none
+5000
+112 - Affects test,prog_line and stmt
+prog_line pl; stmt s;
+Select BOOLEAN such that Affects(pl,s)
+TRUE
+5000
+113 - Affects test,prog_line and stmt
+prog_line pl; stmt s;
+Select <pl,s> such that Affects(pl,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+114 - Affects test,prog_line and stmt
+prog_line pl; stmt s;
+Select pl such that Affects(pl,s)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+115 - Affects test,prog_line and stmt
+prog_line pl; stmt s;
+Select <s,pl> such that Affects(pl,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+116 - Affects test,prog_line and stmt
+prog_line pl; stmt s;
+Select <s.stmt#,pl> such that Affects(pl,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+117 - Affects test,prog_line and call
+prog_line pl; call c;
+Select BOOLEAN such that Affects(pl,c)
+FALSE
+5000
+118 - Affects test,prog_line and call
+prog_line pl; call c;
+Select <pl,c> such that Affects(pl,c)
+none
+5000
+119 - Affects test,prog_line and prog_line
+prog_line pl1,pl2;
+Select BOOLEAN such that Affects(pl1,pl2)
+TRUE
+5000
+120 - Affects test,prog_line and prog_line
+prog_line pl1,pl2;
+Select <pl1,pl2> such that Affects(pl1,pl2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+121 - Affects test,prog_line and prog_line
+prog_line pl1,pl2;
+Select <pl2,pl1> such that Affects(pl1,pl2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+122 - Affects test,prog_line and read
+prog_line pl; read r;
+Select BOOLEAN such that Affects(pl,r)
+FALSE
+5000
+123 - Affects test,prog_line and read
+prog_line pl; read r;
+Select <pl,r.varName> such that Affects(pl,r)
+none
+5000
+124 - Affects test,prog_line and print
+prog_line pl; print pn;
+Select BOOLEAN such that Affects(pl,pn)
+FALSE
+5000
+125 - Affects test,prog_line and print
+prog_line pl; print pn;
+Select <pl,pn.varName> such that Affects(pl,pn)
+none
+5000
+126 - Affects test,prog_line and while
+prog_line pl; while w;
+Select BOOLEAN such that Affects(pl,w)
+FALSE
+5000
+127 - Affects test,prog_line and while
+prog_line pl; while w;
+Select <pl,w> such that Affects(pl,w)
+none
+5000
+128 - Affects test,prog_line and if
+prog_line pl; if i;
+Select BOOLEAN such that Affects(pl,i)
+FALSE
+5000
+129 - Affects test,prog_line and if
+prog_line pl; if i;
+Select <pl,i> such that Affects(pl,i)
+none
+5000
+130 - Affects test,prog_line and assign
+prog_line pl; assign a;
+Select BOOLEAN such that Affects(pl,a)
+TRUE
+5000
+131 - Affects test,prog_line and assign
+prog_line pl; assign a;
+Select <pl,a> such that Affects(pl,a)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+132 - Affects test,prog_line and assign
+prog_line pl; assign a;
+Select pl such that Affects(pl,a)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+133 - Affects test,prog_line and assign
+prog_line pl; assign a;
+Select <a,pl> such that Affects(pl,a)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+134 - Affects test,prog_line and variable
+prog_line pl; variable v;
+Select BOOLEAN such that Affects(pl,v)
+FALSE
+5000
+135 - Affects test,prog_line and variable
+prog_line pl; variable v;
+Select <pl,v.varName> such that Affects(pl,v)
+none
+5000
+136 - Affects test,prog_line and constant
+prog_line pl; constant c;
+Select BOOLEAN such that Affects(pl,c)
+FALSE
+5000
+137 - Affects test,prog_line and constant
+prog_line pl; constant c;
+Select <pl,c.value> such that Affects(pl,c)
+none
+5000
+138 - Affects test,prog_line and procedure
+prog_line pl; procedure p;
+Select BOOLEAN such that Affects(pl,p)
+FALSE
+5000
+139 - Affects test,prog_line and procedure
+prog_line pl; procedure p;
+Select <pl,p.procName> such that Affects(pl,p)
+none
+5000
+140 - Affects test,read and stmt
+stmt s; read r;
+Select BOOLEAN such that Affects(r,s)
+FALSE
+5000
+141 - Affects test,read and stmt
+stmt s; read r;
+Select r.varName such that Affects(r,s)
+none
+5000
+142 - Affects test,read and variable
+variable v; read r;
+Select BOOLEAN such that Affects(r,v)
+FALSE
+5000
+143 - Affects test,read and variable
+variable v; read r;
+Select <r,v> such that Affects(r,v)
+none
+5000
+144 - Affects test,read and constant
+constant c; read r;
+Select BOOLEAN such that Affects(r,c)
+FALSE
+5000
+145 - Affects test,read and constant
+constant c; read r;
+Select <r,c> such that Affects(r,c)
+none
+5000
+146 - Affects test,read and procedure
+procedure p; read r;
+Select BOOLEAN such that Affects(r,p)
+FALSE
+5000
+147 - Affects test,read and procedure
+procedure p; read r;
+Select <r,p> such that Affects(r,p)
+none
+5000
+148 - Affects test,print and stmt
+stmt s; print pn;
+Select BOOLEAN such that Affects(pn,s)
+FALSE
+5000
+149 - Affects test,print and stmt
+stmt s; print pn;
+Select pn.varName such that Affects(pn,s)
+none
+5000
+150 - Affects test,print and variable
+variable v; print pn;
+Select BOOLEAN such that Affects(pn,v)
+FALSE
+5000
+151 - Affects test,print and variable
+variable v; print pn;
+Select <pn,v> such that Affects(pn,v)
+none
+5000
+152 - Affects test,print and constant
+constant c; print pn;
+Select BOOLEAN such that Affects(pn,c)
+FALSE
+5000
+153 - Affects test,print and constant
+constant c; print pn;
+Select <pn,c> such that Affects(pn,c)
+none
+5000
+154 - Affects test,print and procedure
+procedure p; print pn;
+Select BOOLEAN such that Affects(pn,p)
+FALSE
+5000
+155 - Affects test,print and procedure
+procedure p; print pn;
+Select <pn,p> such that Affects(pn,p)
+none
+5000
+156 - Affects test,while and stmt
+stmt s; while w;
+Select BOOLEAN such that Affects(w,s)
+FALSE
+5000
+157 - Affects test,while and stmt
+stmt s; while w;
+Select <w,s> such that Affects(w,s)
+none
+5000
+158 - Affects test,while and variable
+variable v; while w;
+Select BOOLEAN such that Affects(w,v)
+FALSE
+5000
+159 - Affects test,while and variable
+variable v; while w;
+Select <w,v> such that Affects(w,v)
+none
+5000
+160 - Affects test,while and constant
+constant c; while w;
+Select BOOLEAN such that Affects(w,c)
+FALSE
+5000
+161 - Affects test,while and constant
+constant c; while w;
+Select <w,c> such that Affects(w,c)
+none
+5000
+162 - Affects test,while and procedure
+procedure p; while w;
+Select BOOLEAN such that Affects(w,p)
+FALSE
+5000
+163 - Affects test,while and procedure
+procedure p; while w;
+Select <w,p> such that Affects(w,p)
+none
+5000
+164 - Affects test,if and stmt
+if i; stmt s;
+Select BOOLEAN such that Affects(i,s)
+FALSE
+5000
+165 - Affects test,if and stmt
+if i; stmt s;
+Select <i,s> such that Affects(i,s)
+none
+5000
+166 - Affects test,if and variable
+if i; variable v;
+Select BOOLEAN such that Affects(i,v)
+FALSE
+5000
+167 - Affects test,if and variable
+if i; variable v;
+Select <i,v> such that Affects(i,v)
+none
+5000
+168 - Affects test,if and constant
+if i; constant c;
+Select BOOLEAN such that Affects(i,c)
+FALSE
+5000
+169 - Affects test,if and constant
+if i; constant c;
+Select <i,c> such that Affects(i,c)
+none
+5000
+170 - Affects test,if and procedure
+if i; procedure p;
+Select BOOLEAN such that Affects(i,p)
+FALSE
+5000
+171 - Affects test,if and procedure
+if i; procedure p;
+Select <i,p> such that Affects(i,p)
+none
+5000
+172 - Affects test,assign and stmt
+assign a; stmt s;
+Select BOOLEAN such that Affects(a,s)
+TRUE
+5000
+173- Affects test,assign and stmt
+assign a; stmt s;
+Select <a,s> such that Affects(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+174 - Affects test,assign and stmt
+assign a; stmt s;
+Select a.stmt# such that Affects(a,s)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+175 - Affects test,assign and stmt
+assign a; stmt s;
+Select <a.stmt#,s.stmt#> such that Affects(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+176 - Affects test,assign and stmt
+assign a; stmt s;
+Select <a.stmt#,s> such that Affects(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+177 - Affects test,assign and stmt
+assign a; stmt s;
+Select <a,s.stmt#> such that Affects(a,s)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+178 - Affects test,assign and stmt
+assign a; stmt s;
+Select <s,a> such that Affects(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+179 - Affects test,assign and stmt
+assign a; stmt s;
+Select <s.stmt#,a.stmt#> such that Affects(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+180 - Affects test,assign and stmt
+assign a; stmt s;
+Select <s.stmt#,a> such that Affects(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+181 - Affects test,assign and stmt
+assign a; stmt s;
+Select <s,a.stmt#> such that Affects(a,s)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+182 - Affects test,assign and call
+assign a; call c;
+Select BOOLEAN such that Affects(a,c)
+FALSE
+5000
+183 - Affects test,assign and call
+assign a; call c;
+Select <a,c.procName> such that Affects(a,c)
+none
+5000
+184 - Affects test,assign and prog_line
+assign a; prog_line pl;
+Select BOOLEAN such that Affects(a,pl)
+TRUE
+5000
+185 - Affects test,assign and prog_line
+assign a; prog_line pl;
+Select <a,pl> such that Affects(a,pl)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+186 - Affects test,assign and prog_line
+assign a; prog_line pl;
+Select a.stmt# such that Affects(a,pl)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+187 - Affects test,assign and prog_line
+assign a; prog_line pl;
+Select <a.stmt#,pl> such that Affects(a,pl)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+188 - Affects test,assign and prog_line
+assign a; prog_line pl;
+Select <pl,a> such that Affects(a,pl)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+189 - Affects test,assign and prog_line
+assign a; prog_line pl;
+Select <pl,a.stmt#> such that Affects(a,pl)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+190 - Affects test,assign and read
+assign a; read r;
+Select BOOLEAN such that Affects(a,r)
+FALSE
+5000
+191 - Affects test,assign and read
+assign a; read r;
+Select <a,r> such that Affects(a,r)
+none
+5000
+192 - Affects test,assign and print
+assign a; print pn;
+Select BOOLEAN such that Affects(a,pn)
+FALSE
+5000
+193 - Affects test,assign and print
+assign a; print pn;
+Select <a,pn> such that Affects(a,pn)
+none
+5000
+194 - Affects test,assign and while
+assign a; while w;
+Select BOOLEAN such that Affects(a,w)
+FALSE
+5000
+195 - Affects test,assign and while
+assign a; while w;
+Select <a,w> such that Affects(a,w)
+none
+5000
+196 - Affects test,assign and if
+assign a; if i;
+Select BOOLEAN such that Affects(a,i)
+FALSE
+5000
+197 - Affects test,assign and if
+assign a; if i;
+Select <a,i> such that Affects(a,i)
+none
+5000
+198 - Affects test,assign and assign
+assign a1,a2;
+Select BOOLEAN such that Affects(a1,a2)
+TRUE
+5000
+199 - Affects test,assign and assign
+assign a1,a2;
+Select <a1,a2> such that Affects(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+200 - Affects test,assign and assign
+assign a1,a2;
+Select a1.stmt# such that Affects(a1,a2)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+201 - Affects test,assign and assign
+assign a1,a2;
+Select <a1.stmt#,a2.stmt#> such that Affects(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+202 - Affects test,assign and assign
+assign a1,a2;
+Select <a1.stmt#,a2> such that Affects(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+203 - Affects test,assign and assign
+assign a1,a2;
+Select <a1,a2.stmt#> such that Affects(a1,a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+204 - Affects test,assign and assign
+assign a1,a2;
+Select <a2,a1> such that Affects(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+205 - Affects test,assign and assign
+assign a1,a2;
+Select <a2.stmt#,a1.stmt#> such that Affects(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+206 - Affects test,assign and assign
+assign a1,a2;
+Select <a2.stmt#,a1> such that Affects(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+207 - Affects test,assign and assign
+assign a1,a2;
+Select <a2,a1.stmt#> such that Affects(a1,a2)
+4 1, 8 4, 10 4, 12 4, 6 6, 10 8, 12 8, 10 9, 11 10, 12 10, 12 11, 14 13, 15 14, 10 1, 12 1, 8 1, 10 2, 4 4
+5000
+208 - Affects test,assign and variable
+assign a; variable v;
+Select BOOLEAN such that Affects(a,v)
+FALSE
+5000
+209 - Affects test,assign and variable
+assign a; variable v;
+Select <a,v> such that Affects(a,v)
+none
+5000
+210 - Affects test,assign and constant c
+constant c; assign a;
+Select BOOLEAN such that Affects(a,c)
+FALSE
+5000
+211 - Affects test,assign and constant c
+constant c; assign a;
+Select <a,c> such that Affects(a,c)
+none
+5000
+212 - Affects test,assign and procedure p
+procedure p; assign a;
+Select BOOLEAN such that Affects(a,p)
+FALSE
+5000
+213 - Affects test,assign and procedure p
+procedure p; assign a;
+Select <a,p> such that Affects(a,p)
+none
+5000
+214 - Affects test,stmt and wildcard
+stmt s;
+Select BOOLEAN such that Affects(s,_)
+TRUE
+5000
+215 - Affects test,stmt and wildcard
+stmt s;
+Select <s,s> such that Affects(s,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+216 - Affects test,stmt and wildcard
+stmt s;
+Select <s,s.stmt#> such that Affects(s,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+217 - Affects test,stmt and wildcard
+stmt s;
+Select <s.stmt#,s.stmt#> such that Affects(s,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+218 - Affects test,stmt and wildcard
+stmt s;
+Select <s.stmt#,s> such that Affects(s,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+219 - Affects test,call and wildcard
+call c;
+Select BOOLEAN such that Affects(c,_)
+FALSE
+5000
+220 - Affects test,call and wildcard
+call c;
+Select <c.procName,c.procName> such that Affects(c,_)
+none
+5000
+221 - Affects test,prog_line and wildcard
+prog_line pl;
+Select BOOLEAN such that Affects(pl,_)
+TRUE
+5000
+222 - Affects test,prog_line and wildcard
+prog_line pl;
+Select <pl,pl> such that Affects(pl,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+223 - Affects test,prog_line and wildcard
+prog_line pl;
+Select pl such that Affects(pl,_)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+224 - Affects test,read and wildcard
+read r;
+Select BOOLEAN such that Affects(r,_)
+FALSE
+5000
+225 - Affects test,read and wildcard
+read r;
+Select <r.varName,r.varName> such that Affects(r,_)
+none
+5000
+226 - Affects test,print and wildcard
+print pn;
+Select BOOLEAN such that Affects(pn,_)
+FALSE
+5000
+227 - Affects test,print and wildcard
+print pn;
+Select <pn,pn.varName> such that Affects(pn,_)
+none
+5000
+228 - Affects test,while and wildcard
+while w;
+Select BOOLEAN such that Affects(w,_)
+FALSE
+5000
+229 - Affects test,while and wildcard
+while w;
+Select <w,w> such that Affects(w,_)
+none
+5000
+230 - Affects test,if and wildcard
+if i;
+Select BOOLEAN such that Affects(i,_)
+FALSE
+5000
+231 - Affects test,assign and wildcard
+assign a;
+Select BOOLEAN such that Affects(a,_)
+TRUE
+5000
+232 - Affects test,assign and wildcard
+assign a;
+Select <a,a> such that Affects(a,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+233 - Affects test,assign and wildcard
+assign a;
+Select a.stmt# such that Affects(a,_)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+234 - Affects test,assign and wildcard
+assign a;
+Select <a.stmt#,a> such that Affects(a,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+235 - Affects test,assign and wildcard
+assign a;
+Select <a,a.stmt#> such that Affects(a,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+236 - Affects test,assign and wildcard
+assign a;
+Select <a.stmt#,a.stmt#> such that Affects(a,_)
+1 1, 4 4, 6 6, 8 8, 9 9, 10 10, 11 11, 13 13, 14 14, 2 2
+5000
+237 - Affects test,variable and wildcard
+variable v;
+Select BOOLEAN such that Affects(v,_)
+FALSE
+5000
+238 - Affects test,variable and wildcard
+variable v;
+Select <v,v> such that Affects(v,_)
+none
+5000
+239 - Affects test,constant and wildcard
+constant c;
+Select BOOLEAN such that Affects(c,_)
+FALSE
+5000
+240 - Affects test,constant and wildcard
+constant c;
+Select <c,c> such that Affects(c,_)
+none
+5000
+241 - Affects test,procedure and wildcard
+procedure p;
+Select BOOLEAN such that Affects(p,_)
+FALSE
+5000
+242 - Affects test,procedure and wildcard
+procedure p;
+Select <p,p> such that Affects(p,_)
+none
+5000
+243 - Affects test,wildcard and stmt
+stmt s;
+Select BOOLEAN such that Affects(_,s)
+TRUE
+5000
+244 - Affects test,wildcard and stmt
+stmt s;
+Select <s,s> such that Affects(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+245 - Affects test,wildcard and stmt
+stmt s;
+Select s.stmt# such that Affects(_,s)
+4, 8, 10, 6, 12, 11, 14, 15
+5000
+246 - Affects test,wildcard and stmt
+stmt s;
+Select <s.stmt#,s> such that Affects(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+247 - Affects test,wildcard and stmt
+stmt s;
+Select <s,s.stmt#> such that Affects(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+248 - Affects test,wildcard and stmt
+stmt s;
+Select <s.stmt#,s.stmt#> such that Affects(_,s)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+249 - Affects test,wildcard and prog_line
+prog_line pl;
+Select BOOLEAN such that Affects(_,pl)
+TRUE
+5000
+250 - Affects test,wildcard and prog_line
+prog_line pl;
+Select <pl,pl> such that Affects(_,pl)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+251 - Affects test,wildcard and prog_line
+prog_line pl;
+Select pl such that Affects(_,pl)
+4, 8, 10, 6, 12, 11, 14, 15
+5000
+252 - Affects test,wildcard and call
+call c;
+Select BOOLEAN such that Affects(_,c)
+FALSE
+5000
+253 - Affects test,wildcard and call
+call c; stmt s;
+Select c.procName such that Affects(_,c)
+none
+5000
+254 - Affects test,wildcard and read
+read r;
+Select BOOLEAN such that Affects(_,r)
+FALSE
+5000
+255 - Affects test,wildcard and read
+read r;
+Select r.varName such that Affects(_,r)
+none
+5000
+256 - Affects test,wildcard and print
+print pn;
+Select BOOLEAN such that Affects(_,pn)
+FALSE
+5000
+257 - Affects test,wildcard and print
+print pn;
+Select pn.varName such that Affects(_,pn)
+none
+5000
+258 - Affects test,wildcard and while
+while w;
+Select BOOLEAN such that Affects(_,w)
+FALSE
+5000
+259 - Affects test,wildcard and while
+while w;
+Select <w,w> such that Affects(_,w)
+none
+5000
+260 - Affects test,wildcard and if
+if i;
+Select BOOLEAN such that Affects(_,i)
+FALSE
+5000
+261 - Affects test,wildcard and if
+if i;
+Select <i,i> such that Affects(_,i)
+none
+5000
+262 - Affects test,wildcard and assign
+assign a;
+Select BOOLEAN such that Affects(_,a)
+TRUE
+5000
+263 - Affects test,wildcard and assign
+assign a;
+Select a.stmt# such that Affects(_,a)
+4, 8, 10, 6, 12, 11, 14, 15
+5000
+264 - Affects test,wildcard and assign
+assign a;
+Select <a.stmt#,a> such that Affects(_,a)
+4 4, 8 8, 10 10, 6 6, 12 12, 11 11, 14 14, 15 15
+5000
+265 - Affects test,wildcard and variable
+variable v;
+Select BOOLEAN such that Affects(_,v)
+FALSE
+5000
+266 - Affects test,wildcard and variable
+variable v;
+Select <v,v> such that Affects(_,v)
+none
+5000
+267 - Affects test,wildcard and constant
+constant c;
+Select BOOLEAN such that Affects(_,c)
+FALSE
+5000
+268 - Affects test,wildcard and constant
+constant c;
+Select <c,c> such that Affects(_,c)
+none
+5000
+269 - Affects test,wildcard and procedure
+procedure p;
+Select BOOLEAN such that Affects(_,p)
+FALSE
+5000
+270 - Affects test,wildcard and procedure
+procedure p;
+Select <p,p> such that Affects(_,p)
+none
+5000
+271 - Affects test,wildcard and integer
+stmt s;
+Select BOOLEAN such that Affects(_,4)
+TRUE
+5000
+272 - Affects test,wildcard and integer
+stmt s;
+Select <s,s> such that Affects(_,4)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+273 - Affects test,wildcard and wildcard
+stmt s;
+Select BOOLEAN such that Affects(_,_)
+TRUE
+5000
+274 - Affects test,wildcard and wildcard
+stmt s;
+Select <s,s> such that Affects(_,_)
+1 1, 2 2, 3 3, 4 4, 5 5, 6 6, 7 7, 8 8, 9 9, 10 10, 11 11, 12 12, 13 13, 14 14, 15 15
+5000
+275 - Affects such that ModifiesS
+stmt s; variable v;
+Select s such that Affects(s, _) such that Modifies(s, v)
+1, 4, 6, 8, 9, 10, 11, 13, 14, 2
+5000
+276 - Affects and UsesS
+stmt s; variable v;
+Select v such that Affects(s, _) and Uses(s, v)
+x, y, i, z
+5000
+277 - Follows and Affects
+stmt s1, s2;
+Select <s1, s2> such that Follows(s1, s2) and Affects(s1, s2)
+10 11, 11 12, 13 14, 14 15 
+5000
+278 - Parent such that Affects
+stmt s;
+Select s such that Parent(_, s) such that Affects(s, _)
+4, 6, 8, 9
+5000
+279 - Affects and Next
+stmt s; 
+Select s such that Affects(s, _) and Next(7, s)
+8, 9
+5000
+280 - Affects such that Next*
+stmt s;
+Select s such that Affects(s, _) such that Next*(6, _)
+4, 6, 8, 9, 10, 11, 1, 13, 14, 2
+5000
+281 - Affects and pattern a
+assign a;
+Select a such that Affects(a, _) pattern a("x", _)
+1, 4, 8
+5000
+282 - Affects and pattern a
+assign a;
+Select a pattern a("x", _) such that Affects(a, _)
+1, 4, 8
+5000
+283 - Affects and with
+prog_line p; constant c;
+Select p such that Affects(p, _) with p = c.value
+1, 2
+5000
+284 - Affects and with
+stmt s; 
+Select s with s.stmt# = 13 such that Affects(s, 14)
+13
+5000
+285 - Follows and Affects
+stmt s;
+Select s such that Follows(s, _) and Affects(s, _)
+1, 4, 10, 11, 13, 14, 2
+5000
+286 - Affects and UsesS
+stmt s; variable v;
+Select s such that Affects(s, _) and Uses(s, v)
+4, 6, 8, 10, 11, 14
+5000
+289 - Multiple Affects stress test
+assign a1, a2;
+Select <a1, a2> such that Affects(a1, a2) and Affects(a1, a2) and Affects(a1, a2) and Affects(a1, a2) and Affects(a1, a2) and Affects(a1, a2) and Affects(a1, a2) and Affects(a1, a2) such that Affects(a1, a2) such that Affects(a1, a2) such that Affects(a1, a2) and Affects(a1, a2)
+1 4, 4 8, 4 10, 4 12, 6 6, 8 10, 8 12, 9 10, 10 11, 10 12, 11 12, 13 14, 14 15, 1 10,1 12,1 8,2 10,4 4
+5000
+290 - Stress test
+assign a; variable v; while w;
+Select <a, v> such that Parent(_, a) such that Affects(a, _) such that Follows*(a, _) such that Modifies(a, _) and Uses(a, _) with v.varName = "x" pattern a("x", _) and a(v, _"x"_) such that Next(a, _) and Next(w, a) with w.stmt# = 3
+4 x
+5000
+291 - Stress test
+assign a; variable v;
+Select a such that Parent(_, a) such that Affects(a, _) such that Follows*(a, _) such that Modifies(a, _) and Uses(a, _) with v.varName = "x" pattern a("x", _) and a(v, _"x"_) such that Next(a, _) and Next(_, a)
+4
+5000
