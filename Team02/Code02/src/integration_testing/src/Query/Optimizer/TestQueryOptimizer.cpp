@@ -260,40 +260,27 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
     optimizer.PreprocessClauses(emptySynonymMap, givenSelectClause);
     // group 1
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == clause1);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == withInt);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 2
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    ConditionClause actualClause2 =
-        optimizer.GetNextClause(emptyCountTable).value();
-    REQUIRE(clauses234.find(actualClause2) != clauses234.end());
-    clauses234.erase(actualClause2);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stModifiesP);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 3
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    ConditionClause actualClause3 =
-        optimizer.GetNextClause(emptyCountTable).value();
-    REQUIRE(clauses234.find(actualClause3) != clauses234.end());
-    clauses234.erase(actualClause3);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stParentT);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 4
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    ConditionClause actualClause4 =
-        optimizer.GetNextClause(emptyCountTable).value();
-    REQUIRE(clauses234.find(actualClause4) != clauses234.end());
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stFollows);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 5
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    ConditionClause actualClause5 =
-        optimizer.GetNextClause(emptyCountTable).value();
-    REQUIRE(clauses56.find(actualClause5) != clauses56.end());
-    clauses56.erase(actualClause5);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stNextT);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 6
     REQUIRE(optimizer.GetNextGroupDetails() == optLiteralBoolDetails);
-    ConditionClause actualClause6 =
-        optimizer.GetNextClause(emptyCountTable).value();
-    REQUIRE(clauses56.find(actualClause6) != clauses56.end());
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stAffects);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // optional empty group
     REQUIRE_FALSE(optimizer.GetNextGroupDetails().has_value());

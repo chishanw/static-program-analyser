@@ -55,6 +55,7 @@ struct DetailedGrpInfo {
   int totalNumClauses;
   int numEfficientClauses;
   int numExpensiveClauses;
+  int groupIndex;
 };
 
 enum ClauseDifficulty { EFFICIENT, EXPENSIVE, NORMAL };

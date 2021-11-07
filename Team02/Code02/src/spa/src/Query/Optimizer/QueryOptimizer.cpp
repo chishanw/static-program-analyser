@@ -151,6 +151,7 @@ vector<pair<Group, DetailedGrpInfo>> QueryOptimizer::extractGroupInfo(
     const vector<query::Synonym>& selectSynonyms,
     const vector<Group>& groupsOfClauses) {
   vector<pair<Group, DetailedGrpInfo>> pairs;
+  int groupIndex = 0;
   for (auto& group : groupsOfClauses) {
     unordered_set<string> groupSynonyms = {};
     vector<Synonym> groupSelectSynonyms = {};
@@ -194,8 +195,10 @@ vector<pair<Group, DetailedGrpInfo>> QueryOptimizer::extractGroupInfo(
                             isLiteralGroup,
                             totalNumClauses,
                             numEfficientClauses,
-                            numExpensiveClauses};
+                            numExpensiveClauses,
+                            groupIndex};
     pairs.emplace_back(group, info);
+    groupIndex++;
   }
   return pairs;
 }
@@ -215,9 +218,12 @@ void QueryOptimizer::sortGroups() {
       return infoA.isLiteralGroup;
     }
     if (infoB.numEfficientClauses != infoA.numEfficientClauses) {
-      return infoB.numEfficientClauses <= infoA.numEfficientClauses;
+      return infoA.numEfficientClauses > infoB.numEfficientClauses;
     }
-    return infoB.totalNumClauses > infoA.totalNumClauses;
+    if (infoB.totalNumClauses != infoA.totalNumClauses) {
+      return infoB.totalNumClauses > infoA.totalNumClauses;
+    }
+    return infoA.groupIndex > infoB.groupIndex;
   };
 
   sort(groupAndInfoPairs.begin(), groupAndInfoPairs.end(), groupComparator);
@@ -240,7 +246,7 @@ void QueryOptimizer::sortClausesAtGroupIndex(int index) {
 
     bool isExpensiveA = clauseInfoA.difficulty == ClauseDifficulty::EXPENSIVE;
     bool isExpensiveB = clauseInfoB.difficulty == ClauseDifficulty::EXPENSIVE;
-    if ((isExpensiveA || isExpensiveB) && !(isExpensiveA && isExpensiveB)) {
+    if (isExpensiveA != isExpensiveB) {
       return isExpensiveB;
     }
 
@@ -254,7 +260,7 @@ void QueryOptimizer::sortClausesAtGroupIndex(int index) {
 
     bool isEfficientA = clauseInfoA.difficulty == ClauseDifficulty::EFFICIENT;
     bool isEfficientB = clauseInfoB.difficulty == ClauseDifficulty::EFFICIENT;
-    if ((isEfficientA || isExpensiveB) && !(isEfficientA && isEfficientB)) {
+    if (isEfficientA != isEfficientB) {
       return isEfficientA;
     }
 
