@@ -47,7 +47,7 @@ TEST_CASE("Tokenizer Parser Integration Test 2") {
   REQUIRE(ra->VarName == "x");
 
   // expr
-  REQUIRE(ra->Expr->GetFullExprPatternStr() == "[[[1]-[2]]+[3]]");
+  REQUIRE(ra->Expr->GetFullExprPatternStr() == "[1][2]-[3]+");
 }
 
 TEST_CASE("Parser Exception Test") {

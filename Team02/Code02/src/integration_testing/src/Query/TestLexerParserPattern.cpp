@@ -349,10 +349,9 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
         {DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(
-        clauses, {DesignEntity::ASSIGN, "a"},
-        query::ParamType::NAME_LITERAL, "x",
-        {query::MatchType::EXACT, "[[[1]+[2]]-[3]]"});
+    TestQueryUtil::AddPatternClause(clauses, {DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::NAME_LITERAL, "x",
+                                    {query::MatchType::EXACT, "[1][2]+[3]-"});
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
@@ -378,9 +377,8 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(
-        clauses, {DesignEntity::ASSIGN, "a"},
-        query::ParamType::NAME_LITERAL, "x",
-        {query::MatchType::SUB_EXPRESSION, "[[1]+[[2]-[3]]]"});
+        clauses, {DesignEntity::ASSIGN, "a"}, query::ParamType::NAME_LITERAL,
+        "x", {query::MatchType::SUB_EXPRESSION, "[1][2][3]-+"});
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
@@ -406,9 +404,8 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
 
     vector<query::ConditionClause> clauses;
     TestQueryUtil::AddPatternClause(
-        clauses, {DesignEntity::ASSIGN, "a"},
-        query::ParamType::NAME_LITERAL, "x",
-        {query::MatchType::SUB_EXPRESSION, "[[a]*[b]]"});
+        clauses, {DesignEntity::ASSIGN, "a"}, query::ParamType::NAME_LITERAL,
+        "x", {query::MatchType::SUB_EXPRESSION, "[a][b]*"});
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
@@ -433,10 +430,10 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
         {DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(clauses, {DesignEntity::ASSIGN, "a"},
-                                    query::ParamType::NAME_LITERAL, "x",
-                                    {query::MatchType::SUB_EXPRESSION,
-                                     "[[[Follows]*[Parent]]*[Modifies]]"});
+    TestQueryUtil::AddPatternClause(
+        clauses, {DesignEntity::ASSIGN, "a"}, query::ParamType::NAME_LITERAL,
+        "x",
+        {query::MatchType::SUB_EXPRESSION, "[Follows][Parent]*[Modifies]*"});
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};
@@ -461,11 +458,10 @@ TEST_CASE("Valid pattern clauses for assignment succeeds") {
         {DesignEntity::ASSIGN, "a", false, {}}};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddPatternClause(
-        clauses, {DesignEntity::ASSIGN, "a"},
-        query::ParamType::NAME_LITERAL, "x",
-        {query::MatchType::SUB_EXPRESSION,
-         "[[[abc123]+[2]]-[[v23]*[100000000000000]]]"});
+    TestQueryUtil::AddPatternClause(clauses, {DesignEntity::ASSIGN, "a"},
+                                    query::ParamType::NAME_LITERAL, "x",
+                                    {query::MatchType::SUB_EXPRESSION,
+                                     "[abc123][2]+[v23][100000000000000]*-"});
 
     tuple<SynonymMap, SelectClause> expected = {
         map, {resultSynonyms, query::SelectType::SYNONYMS, clauses}};

@@ -11,14 +11,12 @@ using namespace std;
 string ArithAST::GetFullExprPatternStr() const {
   // no space between tokens
   stringstream out;
-  out << "[";
   if (hasOnlyOneNode) {
     out << LeftNode->GetFullExprPatternStr();
   } else {
-    out << LeftNode->GetFullExprPatternStr() << Sign
-        << RightNode->GetFullExprPatternStr();
+    out << LeftNode->GetFullExprPatternStr()
+        << RightNode->GetFullExprPatternStr() << Sign;
   }
-  out << "]";
   return out.str();
 }
 

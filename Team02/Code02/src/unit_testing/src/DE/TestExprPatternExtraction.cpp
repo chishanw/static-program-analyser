@@ -68,14 +68,14 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
     REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
                                        "i", "[5]") == SetOfStmts{3});
     REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "x", "[[x]-[1]]") == SetOfStmts{5});
+                                       "x", "[x][1]-") == SetOfStmts{5});
     REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "z", "[[x]+[1]]") == SetOfStmts{7, 23});
+                                       "z", "[x][1]+") == SetOfStmts{7, 23});
     REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "y", "[[z]+[x]]") == SetOfStmts{8});
+                                       "y", "[z][x]+") == SetOfStmts{8});
     REQUIRE(pkb->getStmtsForVarAndExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
                                        "z",
-                                       "[[[z]+[x]]+[i]]") == SetOfStmts{9, 21});
+                                       "[z][x]+[i]+") == SetOfStmts{9, 21});
 
     REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
                                  "[2]") == SetOfStmts{1});
@@ -84,13 +84,13 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
     REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
                                  "[5]") == SetOfStmts{3});
     REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                 "[[x]-[1]]") == SetOfStmts{5});
+                                 "[x][1]-") == SetOfStmts{5});
     REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                 "[[x]+[1]]") == SetOfStmts{7, 18, 23});
+                                 "[x][1]+") == SetOfStmts{7, 18, 23});
     REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                 "[[z]+[x]]") == SetOfStmts{8, 24});
+                                 "[z][x]+") == SetOfStmts{8, 24});
     REQUIRE(pkb->getStmtsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                 "[[[z]+[x]]+[i]]") == SetOfStmts{9, 21});
+                                 "[z][x]+[i]+") == SetOfStmts{9, 21});
 
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
                                        "[2]")
@@ -102,31 +102,31 @@ TEST_CASE("[DE][Expr Pattern] sample source") {
                                        "[5]")
                 .count(vector<int>{3, iIdx}) != 0);
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[x]-[1]]")
+                                       "[x][1]-")
                 .count(vector<int>{5, xIdx}) != 0);
 
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[x]+[1]]")
+                                       "[x][1]+")
                 .count(vector<int>{7, zIdx}) != 0);
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[x]+[1]]")
+                                       "[x][1]+")
                 .count(vector<int>{18, xIdx}) != 0);
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[x]+[1]]")
+                                       "[x][1]+")
                 .count(vector<int>{23, zIdx}) != 0);
 
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[z]+[x]]")
+                                       "[z][x]+")
                 .count(vector<int>{8, yIdx}) != 0);
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[z]+[x]]")
+                                       "[z][x]+")
                 .count(vector<int>{24, xIdx}) != 0);
 
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[[z]+[x]]+[i]]")
+                                       "[z][x]+[i]+")
                 .count(vector<int>{9, zIdx}) != 0);
     REQUIRE(pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
-                                       "[[[z]+[x]]+[i]]")
+                                       "[z][x]+[i]+")
                 .count(vector<int>{21, zIdx}) != 0);
 
     // ===============
@@ -187,10 +187,10 @@ TEST_CASE("[DE][Expr Pattern] expr as a factor") {
   DesignExtractor de = DesignExtractor(pkb);
   de.Extract(ast);
 
-  string s23 = "[[2]+[3]]";
-  string s234 = string("[") + s23 + "+" + "[4]" + "]";
-  string s1234 = string("[") + "[1]" + "+" + s234 + "]";
-  string s12345 = string("[") + s1234 + "+" + "[5]" + "]";
+  string s23 = "[2][3]+";
+  string s234 = s23 + "[4]" + "+";
+  string s1234 = "[1]" + s234 + "+";
+  string s12345 = s1234 + "[5]" + "+";
 
   REQUIRE(
       pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, "[1]")
@@ -241,4 +241,29 @@ TEST_CASE("[ExprParser] compare ASTs of diff expr with same AST") {
   string patternStrRepr2 = assignStmt2->Expr->GetFullExprPatternStr();
 
   CHECK(patternStrRepr1 == patternStrRepr2);
+}
+
+TEST_CASE("[ExprParser] test variable/constant boundry") {
+  string program1 =
+      "procedure Example {\n"
+      "  b = aa + a; }\n"
+      "\n";
+
+  ProgramAST* ast1 = Parser().Parse(Tokenizer::TokenizeProgramString(program1));
+  StmtAST* stmt1 = ast1->ProcedureList[0]->StmtList[0];
+  auto assignStmt1 = dynamic_cast<AssignStmtAST*>(stmt1);
+  string patternStrRepr1 = assignStmt1->Expr->GetFullExprPatternStr();
+
+  string program2 =
+      "procedure Example {\n"
+      "  b = a + aa; }\n"
+      "\n";
+  ProgramAST* ast2 = Parser().Parse(Tokenizer::TokenizeProgramString(program2));
+  StmtAST* stmt2 = ast2->ProcedureList[0]->StmtList[0];
+  auto assignStmt2 = dynamic_cast<AssignStmtAST*>(stmt2);
+  string patternStrRepr2 = assignStmt2->Expr->GetFullExprPatternStr();
+
+  REQUIRE(patternStrRepr1 == "[aa][a]+");
+  REQUIRE(patternStrRepr2 == "[a][aa]+");
+  CHECK(patternStrRepr1 != patternStrRepr2);
 }
