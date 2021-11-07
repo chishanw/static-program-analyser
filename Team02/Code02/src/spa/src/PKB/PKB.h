@@ -29,7 +29,6 @@ class PKB {
   bool isStmt(DesignEntity de, StmtNo s);
   int getNumEntity(DesignEntity de);
 
-  // TODO(Merlin): Refractor More.
   void addRs(RelationshipType rs, int left, int right);
   void addRs(RelationshipType rs, int left, TableType rightType,
              std::string right);
@@ -42,15 +41,17 @@ class PKB {
   bool isRs(RelationshipType rs, TableType leftType, std::string left,
             TableType rightType, std::string right);
 
+  bool hasRight(RelationshipType rs, int left);
+  bool hasRight(RelationshipType rs, TableType leftType, std::string left);
   std::unordered_set<int> getRight(RelationshipType rs, int left);
-  std::unordered_set<int> getRight(RelationshipType rs, TableType rightType,
-                                   std::string);
-
+  std::unordered_set<int> getRight(RelationshipType rs, TableType leftType,
+                                   std::string left);
   std::unordered_set<int> getLeft(RelationshipType rs, int right);
   std::unordered_set<int> getLeft(RelationshipType rs, TableType rightType,
-                                  std::string);
+                                  std::string right);
   SetOfStmtLists getMappings(RelationshipType rs, ParamPosition param);
 
+  // Pattern API
   void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName,
                     std::string expr);
   void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName);

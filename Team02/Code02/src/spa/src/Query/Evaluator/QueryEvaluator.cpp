@@ -953,7 +953,7 @@ ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
 
     case ParamType::WILDCARD:
       for (int leftValue : leftValues) {
-        if (!pkb->getRight(rsType, leftValue).empty()) {
+        if (pkb->hasRight(rsType, leftValue)) {
           leftRightValuePairs.insert({leftValue});
         }
       }

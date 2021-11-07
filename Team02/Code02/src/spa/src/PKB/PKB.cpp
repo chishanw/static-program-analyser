@@ -12,9 +12,7 @@ void PKB::addStmt(DesignEntity de, StmtNo s) {
   tableOfStmts[de].insert(s);
 }
 
-SetOfStmts PKB::getAllStmts(DesignEntity de) {
-  return tableOfStmts[de];
-}
+SetOfStmts PKB::getAllStmts(DesignEntity de) { return tableOfStmts[de]; }
 
 bool PKB::isStmt(DesignEntity de, StmtNo s) {
   return tableOfStmts[de].find(s) != tableOfStmts[de].end();
@@ -42,14 +40,6 @@ int PKB::getNumEntity(DesignEntity de) {
 
 void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,
                      int right) {
-  if ((*tablesRs).count(rs) == 0) {
-    (*tablesRs)[rs] = unordered_map<int, unordered_set<int>>{};
-  }
-
-  if ((*tablesRs)[rs].count(left) == 0) {
-    (*tablesRs)[rs][left] = unordered_set<int>{};
-  }
-
   (*tablesRs)[rs][left].insert(right);
 }
 
@@ -105,27 +95,20 @@ bool PKB::isRs(RelationshipType rs, TableType leftType, string left,
 }
 
 unordered_set<int> getValue(TablesRs* tables, RelationshipType rs, int key) {
-  if ((*tables).count(rs) == 0) {
-    return unordered_set<int>({});
-  }
-
-  if ((*tables)[rs].count(key) == 0) {
-    return unordered_set<int>({});
-  }
-
   return (*tables)[rs][key];
 }
 
+bool PKB::hasRight(RelationshipType rs, int left) {
+  return !tablesRs[rs][left].empty();
+}
+
+bool PKB::hasRight(RelationshipType rs, TableType leftType, std::string left) {
+  int leftIndex = getIndexOf(leftType, left);
+  return hasRight(rs, leftIndex);
+}
+
 unordered_set<int> PKB::getRight(RelationshipType rs, int left) {
-  if (tablesRs.count(rs) == 0) {
-    return SetOfStmts();
-  }
-
-  if (tablesRs.at(rs).count(left) == 0) {
-    return SetOfStmts();
-  }
-
-  return tablesRs.at(rs).at(left);
+  return tablesRs[rs][left];
 }
 
 unordered_set<int> PKB::getRight(RelationshipType rs, TableType leftType,
@@ -135,14 +118,7 @@ unordered_set<int> PKB::getRight(RelationshipType rs, TableType leftType,
 }
 
 unordered_set<int> PKB::getLeft(RelationshipType rs, int right) {
-  if (invTablesRs.count(rs) == 0) {
-    return SetOfStmts();
-  }
-
-  if (invTablesRs.at(rs).count(right) == 0) {
-    return SetOfStmts();
-  }
-  return invTablesRs.at(rs).at(right);
+  return invTablesRs[rs][right];
 }
 
 unordered_set<int> PKB::getLeft(RelationshipType rs, TableType rightType,
@@ -152,10 +128,7 @@ unordered_set<int> PKB::getLeft(RelationshipType rs, TableType rightType,
 }
 
 SetOfStmtLists PKB::getMappings(RelationshipType rs, ParamPosition param) {
-  if (mappingsRs.count(rs) == 0) {
-    return SetOfStmtLists();
-  }
-  return mappingsRs.at(rs).at(param);
+  return mappingsRs[rs][param];
 }
 
 // New Pattern API
@@ -175,46 +148,19 @@ void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName,
   insertToTableRs(&tablesExpr, rs, exprIndex, stmtNo);
 
   // Insert to Special Mappings Table
-  if (mappingsForExpr.count(rs) == 0) {
-    // insert new map
-    unordered_map<int, SetOfIntLists> newMap({});
-    mappingsForExpr.insert({rs, newMap});
-  }
-
-  if (mappingsForExpr[rs].count(exprIndex) == 0) {
-    SetOfIntLists newSet({});
-    mappingsForExpr[rs].insert({exprIndex, newSet});
-  }
-
   ListOfInts newList({stmtNo, varIndex});
   mappingsForExpr[rs][exprIndex].insert(newList);
 
   // Insert to Special Expr and Var Table
-  if (tablesPttRs.count(rs) == 0) {
-    // insert new map
-    unordered_map<pair<ExprIdx, VarIdx>, SetOfStmts, PairHash> newMap({});
-    tablesPttRs.insert({rs, newMap});
-  }
   pair newPair(varIndex, exprIndex);
-  if (tablesPttRs[rs].count(newPair) == 0) {
-    SetOfStmts newSet({});
-    tablesPttRs[rs].insert({newPair, newSet});
-  }
   tablesPttRs[rs][newPair].insert(stmtNo);
 }
 
 bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, string varName,
-  string expr) {
+                      string expr) {
   int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
   int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
-  if (tablesPttRs.count(rs) == 0) {
-    return false;
-  }
   auto key = pair(varIndex, exprIndex);
-  if (tablesPttRs[rs].count(key) == 0) {
-    return false;
-  }
-
   return tablesPttRs[rs][key].count(stmtno) != 0;
 }
 
@@ -227,15 +173,7 @@ SetOfStmts PKB::getStmtsForVarAndExpr(RelationshipType rs, string varName,
                                       string expr) {
   int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
   int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
-  if (tablesPttRs.count(rs) == 0) {
-    return SetOfStmts({});
-  }
-
   pair newPair(varIndex, exprIndex);
-  if (tablesPttRs[rs].count(newPair) == 0) {
-    return SetOfStmts({});
-  }
-
   return tablesPttRs[rs][newPair];
 }
 
@@ -254,14 +192,6 @@ SetOfStmtLists PKB::getVarMappings(RelationshipType rs) {
 
 SetOfStmtLists PKB::getVarMappingsForExpr(RelationshipType rs, string expr) {
   int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
-  if (mappingsForExpr.count(rs) == 0) {
-    return SetOfStmtLists({});
-  }
-
-  if (mappingsForExpr[rs].count(exprIndex) == 0) {
-    return SetOfStmtLists({});
-  }
-
   return mappingsForExpr[rs][exprIndex];
 }
 
