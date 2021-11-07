@@ -1,0 +1,560 @@
+1 - Procedure test
+procedure p;
+Select p
+main1,main2,main3,main4,main5
+5000
+2 - ProgLine test
+prog_line pl;
+Select pl
+1,10,100,101,102,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,41,42,43,44,45,46,47,48,49,5,50,51,52,53,54,55,56,57,58,59,6,60,61,62,63,64,65,66,67,68,69,7,70,71,72,73,74,75,76,77,78,79,8,80,81,82,83,84,85,86,87,88,89,9,90,91,92,93,94,95,96,97,98,99
+5000
+3 - Calls test
+call c;
+Select c.procName
+main2,main3,main4,main5
+5000
+4 - Calls procedure and procedure
+procedure p1, p2;
+Select BOOLEAN such that Calls(p1, p2)
+TRUE
+5000
+5 - Calls procedure and procedure
+procedure p1, p2;
+Select <p1, p2> such that Calls(p1, p2)
+main1 main2,main2 main3,main3 main4,main4 main5
+5000
+6 - Calls wildcard and wildcard
+procedure p1, p2;
+Select <p1, p2> such that Calls(_, _)
+main1 main1,main1 main2,main1 main3,main1 main4,main1 main5,main2 main1,main2 main2,main2 main3,main2 main4,main2 main5,main3 main1,main3 main2,main3 main3,main3 main4,main3 main5,main4 main1,main4 main2,main4 main3,main4 main4,main4 main5,main5 main1,main5 main2,main5 main3,main5 main4,main5 main5
+5000
+7 - Calls wildcard and wildcard
+procedure p1, p2;
+Select <p2, p1.procName> such that Calls(_, _)
+main1 main1,main1 main2,main1 main3,main1 main4,main1 main5,main2 main1,main2 main2,main2 main3,main2 main4,main2 main5,main3 main1,main3 main2,main3 main3,main3 main4,main3 main5,main4 main1,main4 main2,main4 main3,main4 main4,main4 main5,main5 main1,main5 main2,main5 main3,main5 main4,main5 main5
+5000
+8 - Calls* procedure and wildcard
+procedure p1, p2;
+Select <p1, p2.procName> such that Calls*(p1, _)
+main1 main1,main1 main2,main1 main3,main1 main4,main1 main5,main2 main1,main2 main2,main2 main3,main2 main4,main2 main5,main3 main1,main3 main2,main3 main3,main3 main4,main3 main5,main4 main1,main4 main2,main4 main3,main4 main4,main4 main5
+5000
+9 - Calls* IDENT and procedure
+procedure p;
+Select <p.procName, p> such that Calls*("main", p)
+none
+5000
+10 - Follows test,integer and wildcard
+stmt s;
+Select BOOLEAN such that Follows(1,_)
+TRUE
+5000
+11 - Follows test,integer and wildcard
+stmt s;
+Select <s,s.stmt#> such that Follows(1,_)
+1 1,10 10,100 100,101 101,102 102,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,2 2,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27,28 28,29 29,3 3,30 30,31 31,32 32,33 33,34 34,35 35,36 36,37 37,38 38,39 39,4 4,40 40,41 41,42 42,43 43,44 44,45 45,46 46,47 47,48 48,49 49,5 5,50 50,51 51,52 52,53 53,54 54,55 55,56 56,57 57,58 58,59 59,6 6,60 60,61 61,62 62,63 63,64 64,65 65,66 66,67 67,68 68,69 69,7 7,70 70,71 71,72 72,73 73,74 74,75 75,76 76,77 77,78 78,79 79,8 8,80 80,81 81,82 82,83 83,84 84,85 85,86 86,87 87,88 88,89 89,9 9,90 90,91 91,92 92,93 93,94 94,95 95,96 96,97 97,98 98,99 99
+5000
+12 - Follows test,stmt and stmt
+stmt s1,s2;
+Select <s1,s2> such that Follows(s1,s2)
+1 2,10 11,100 101,101 102,11 12,13 14,15 16,17 18,18 19,19 20,2 3,21 22,22 23,23 24,24 40,25 26,26 27,27 38,28 29,29 30,3 4,30 31,31 32,32 33,33 34,35 36,36 37,38 39,4 17,40 41,41 42,42 43,44 45,45 46,46 47,47 60,48 49,49 50,5 6,50 58,51 52,52 53,53 54,54 55,56 57,58 59,6 7,60 61,61 62,62 63,64 65,65 66,66 67,67 80,68 69,69 70,7 15,70 78,71 72,72 73,73 74,74 75,76 77,78 79,8 9,80 81,81 82,82 83,84 85,85 86,86 87,87 100,88 89,89 90,9 10,90 98,91 92,92 93,93 94,94 95,96 97,98 99
+5000
+13 - Follows test,print and wildcard
+print pn;
+Select <pn,pn.stmt#> such that Follows(pn,_)
+10 10,15 15,29 29,30 30,32 32,38 38,52 52,53 53,58 58,72 72,73 73,78 78,9 9,92 92,93 93,98 98
+5000
+14 - Follows test,assign and wildcard
+assign a;
+Select <a,a> such that Follows(a,_)
+1 1,100 100,101 101,11 11,13 13,18 18,19 19,2 2,21 21,22 22,23 23,28 28,3 3,31 31,33 33,35 35,36 36,41 41,42 42,44 44,45 45,46 46,51 51,54 54,56 56,61 61,62 62,64 64,65 65,66 66,71 71,74 74,76 76,8 8,81 81,82 82,84 84,85 85,86 86,91 91,94 94,96 96
+5000
+15 - Follows test,wildcard and call
+call c; stmt s;
+Select <c.stmt#,s> such that Follows(_,c)
+17 1,17 10,17 100,17 101,17 102,17 11,17 12,17 13,17 14,17 15,17 16,17 17,17 18,17 19,17 2,17 20,17 21,17 22,17 23,17 24,17 25,17 26,17 27,17 28,17 29,17 3,17 30,17 31,17 32,17 33,17 34,17 35,17 36,17 37,17 38,17 39,17 4,17 40,17 41,17 42,17 43,17 44,17 45,17 46,17 47,17 48,17 49,17 5,17 50,17 51,17 52,17 53,17 54,17 55,17 56,17 57,17 58,17 59,17 6,17 60,17 61,17 62,17 63,17 64,17 65,17 66,17 67,17 68,17 69,17 7,17 70,17 71,17 72,17 73,17 74,17 75,17 76,17 77,17 78,17 79,17 8,17 80,17 81,17 82,17 83,17 84,17 85,17 86,17 87,17 88,17 89,17 9,17 90,17 91,17 92,17 93,17 94,17 95,17 96,17 97,17 98,17 99,40 1,40 10,40 100,40 101,40 102,40 11,40 12,40 13,40 14,40 15,40 16,40 17,40 18,40 19,40 2,40 20,40 21,40 22,40 23,40 24,40 25,40 26,40 27,40 28,40 29,40 3,40 30,40 31,40 32,40 33,40 34,40 35,40 36,40 37,40 38,40 39,40 4,40 40,40 41,40 42,40 43,40 44,40 45,40 46,40 47,40 48,40 49,40 5,40 50,40 51,40 52,40 53,40 54,40 55,40 56,40 57,40 58,40 59,40 6,40 60,40 61,40 62,40 63,40 64,40 65,40 66,40 67,40 68,40 69,40 7,40 70,40 71,40 72,40 73,40 74,40 75,40 76,40 77,40 78,40 79,40 8,40 80,40 81,40 82,40 83,40 84,40 85,40 86,40 87,40 88,40 89,40 9,40 90,40 91,40 92,40 93,40 94,40 95,40 96,40 97,40 98,40 99,60 1,60 10,60 100,60 101,60 102,60 11,60 12,60 13,60 14,60 15,60 16,60 17,60 18,60 19,60 2,60 20,60 21,60 22,60 23,60 24,60 25,60 26,60 27,60 28,60 29,60 3,60 30,60 31,60 32,60 33,60 34,60 35,60 36,60 37,60 38,60 39,60 4,60 40,60 41,60 42,60 43,60 44,60 45,60 46,60 47,60 48,60 49,60 5,60 50,60 51,60 52,60 53,60 54,60 55,60 56,60 57,60 58,60 59,60 6,60 60,60 61,60 62,60 63,60 64,60 65,60 66,60 67,60 68,60 69,60 7,60 70,60 71,60 72,60 73,60 74,60 75,60 76,60 77,60 78,60 79,60 8,60 80,60 81,60 82,60 83,60 84,60 85,60 86,60 87,60 88,60 89,60 9,60 90,60 91,60 92,60 93,60 94,60 95,60 96,60 97,60 98,60 99,80 1,80 10,80 100,80 101,80 102,80 11,80 12,80 13,80 14,80 15,80 16,80 17,80 18,80 19,80 2,80 20,80 21,80 22,80 23,80 24,80 25,80 26,80 27,80 28,80 29,80 3,80 30,80 31,80 32,80 33,80 34,80 35,80 36,80 37,80 38,80 39,80 4,80 40,80 41,80 42,80 43,80 44,80 45,80 46,80 47,80 48,80 49,80 5,80 50,80 51,80 52,80 53,80 54,80 55,80 56,80 57,80 58,80 59,80 6,80 60,80 61,80 62,80 63,80 64,80 65,80 66,80 67,80 68,80 69,80 7,80 70,80 71,80 72,80 73,80 74,80 75,80 76,80 77,80 78,80 79,80 8,80 80,80 81,80 82,80 83,80 84,80 85,80 86,80 87,80 88,80 89,80 9,80 90,80 91,80 92,80 93,80 94,80 95,80 96,80 97,80 98,80 99
+5000
+16 - Follows test,wildcard and call
+call c; stmt s;
+Select <c,c.stmt#> such that Follows(_,c)
+17 17,40 40,60 60,80 80
+5000
+17 - Follows test,wildcard and call
+call c; stmt s;
+Select <c.stmt#,c.stmt#> such that Follows(_,c)
+17 17,40 40,60 60,80 80
+5000
+18 - Follows test,wildcard and read
+read r;
+Select BOOLEAN such that Follows(_,r)
+TRUE
+5000
+19 - Follows test,wildcard and read
+read r;
+Select r.varName such that Follows(_,r)
+ac,ak,e,m,u
+5000
+20 - Follows test,wildcard and read
+read r;
+Select <r.varName,r.varName> such that Follows(_,r)
+ac ac,ak ak,e e,m m,u u
+5000
+21 - Follows test,wildcard and read
+read r;
+Select <r.stmt#,r> such that Follows(_,r)
+26 26,49 49,6 6,69 69,89 89
+5000
+22 - Follows test,wildcard and read
+read r;
+Select <r,r.stmt#> such that Follows(_,r)
+26 26,49 49,6 6,69 69,89 89
+5000
+23 - Follows test,wildcard and read
+read r;
+Select <r.stmt#,r.stmt#> such that Follows(_,r)
+26 26,49 49,6 6,69 69,89 89
+5000
+24 - Follows test,wildcard and print
+print pn;
+Select BOOLEAN such that Follows(_,pn)
+TRUE
+5000
+25 - Follows test,wildcard and print
+print pn;
+Select pn.varName such that Follows(_,pn)
+aa,ab,ac,ai,aj,ak,c,d,e,k,l,m,s,t,u
+5000
+26 - Follows test,wildcard and print
+print pn;
+Select <pn,pn.varName> such that Follows(_,pn)
+10 e,15 c,29 l,30 m,32 e,38 k,52 t,53 u,58 s,72 ab,73 ac,78 aa,9 d,92 aj,93 ak,98 ai
+5000
+27 - Follows test,wildcard and print
+print pn;
+Select <pn.stmt#,pn> such that Follows(_,pn)
+10 10,15 15,29 29,30 30,32 32,38 38,52 52,53 53,58 58,72 72,73 73,78 78,9 9,92 92,93 93,98 98
+5000
+28 - Follows test,wildcard and print
+print pn1,pn2;
+Select <pn1,pn2.stmt#> such that Follows(_,pn2)
+10 10,10 15,10 29,10 30,10 32,10 38,10 52,10 53,10 58,10 72,10 73,10 78,10 9,10 92,10 93,10 98,15 10,15 15,15 29,15 30,15 32,15 38,15 52,15 53,15 58,15 72,15 73,15 78,15 9,15 92,15 93,15 98,29 10,29 15,29 29,29 30,29 32,29 38,29 52,29 53,29 58,29 72,29 73,29 78,29 9,29 92,29 93,29 98,30 10,30 15,30 29,30 30,30 32,30 38,30 52,30 53,30 58,30 72,30 73,30 78,30 9,30 92,30 93,30 98,32 10,32 15,32 29,32 30,32 32,32 38,32 52,32 53,32 58,32 72,32 73,32 78,32 9,32 92,32 93,32 98,38 10,38 15,38 29,38 30,38 32,38 38,38 52,38 53,38 58,38 72,38 73,38 78,38 9,38 92,38 93,38 98,52 10,52 15,52 29,52 30,52 32,52 38,52 52,52 53,52 58,52 72,52 73,52 78,52 9,52 92,52 93,52 98,53 10,53 15,53 29,53 30,53 32,53 38,53 52,53 53,53 58,53 72,53 73,53 78,53 9,53 92,53 93,53 98,58 10,58 15,58 29,58 30,58 32,58 38,58 52,58 53,58 58,58 72,58 73,58 78,58 9,58 92,58 93,58 98,72 10,72 15,72 29,72 30,72 32,72 38,72 52,72 53,72 58,72 72,72 73,72 78,72 9,72 92,72 93,72 98,73 10,73 15,73 29,73 30,73 32,73 38,73 52,73 53,73 58,73 72,73 73,73 78,73 9,73 92,73 93,73 98,78 10,78 15,78 29,78 30,78 32,78 38,78 52,78 53,78 58,78 72,78 73,78 78,78 9,78 92,78 93,78 98,9 10,9 15,9 29,9 30,9 32,9 38,9 52,9 53,9 58,9 72,9 73,9 78,9 9,9 92,9 93,9 98,92 10,92 15,92 29,92 30,92 32,92 38,92 52,92 53,92 58,92 72,92 73,92 78,92 9,92 92,92 93,92 98,93 10,93 15,93 29,93 30,93 32,93 38,93 52,93 53,93 58,93 72,93 73,93 78,93 9,93 92,93 93,93 98,98 10,98 15,98 29,98 30,98 32,98 38,98 52,98 53,98 58,98 72,98 73,98 78,98 9,98 92,98 93,98 98
+5000
+29 - Follows test,wildcard and print
+print pn1,pn2;
+Select <pn1.varName,pn2.varName> such that Follows(_,pn2)
+aa aa,aa ab,aa ac,aa ai,aa aj,aa ak,aa c,aa d,aa e,aa k,aa l,aa m,aa s,aa t,aa u,ab aa,ab ab,ab ac,ab ai,ab aj,ab ak,ab c,ab d,ab e,ab k,ab l,ab m,ab s,ab t,ab u,ac aa,ac ab,ac ac,ac ai,ac aj,ac ak,ac c,ac d,ac e,ac k,ac l,ac m,ac s,ac t,ac u,ai aa,ai ab,ai ac,ai ai,ai aj,ai ak,ai c,ai d,ai e,ai k,ai l,ai m,ai s,ai t,ai u,aj aa,aj ab,aj ac,aj ai,aj aj,aj ak,aj c,aj d,aj e,aj k,aj l,aj m,aj s,aj t,aj u,ak aa,ak ab,ak ac,ak ai,ak aj,ak ak,ak c,ak d,ak e,ak k,ak l,ak m,ak s,ak t,ak u,c aa,c ab,c ac,c ai,c aj,c ak,c c,c d,c e,c k,c l,c m,c s,c t,c u,d aa,d ab,d ac,d ai,d aj,d ak,d c,d d,d e,d k,d l,d m,d s,d t,d u,e aa,e ab,e ac,e ai,e aj,e ak,e c,e d,e e,e k,e l,e m,e s,e t,e u,k aa,k ab,k ac,k ai,k aj,k ak,k c,k d,k e,k k,k l,k m,k s,k t,k u,l aa,l ab,l ac,l ai,l aj,l ak,l c,l d,l e,l k,l l,l m,l s,l t,l u,m aa,m ab,m ac,m ai,m aj,m ak,m c,m d,m e,m k,m l,m m,m s,m t,m u,s aa,s ab,s ac,s ai,s aj,s ak,s c,s d,s e,s k,s l,s m,s s,s t,s u,t aa,t ab,t ac,t ai,t aj,t ak,t c,t d,t e,t k,t l,t m,t s,t t,t u,u aa,u ab,u ac,u ai,u aj,u ak,u c,u d,u e,u k,u l,u m,u s,u t,u u
+5000
+30 - Follows* test, integer and wildcard
+stmt s;
+Select <s, s.stmt#> such that Follows*(1, _)
+1 1,10 10,100 100,101 101,102 102,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,2 2,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27,28 28,29 29,3 3,30 30,31 31,32 32,33 33,34 34,35 35,36 36,37 37,38 38,39 39,4 4,40 40,41 41,42 42,43 43,44 44,45 45,46 46,47 47,48 48,49 49,5 5,50 50,51 51,52 52,53 53,54 54,55 55,56 56,57 57,58 58,59 59,6 6,60 60,61 61,62 62,63 63,64 64,65 65,66 66,67 67,68 68,69 69,7 7,70 70,71 71,72 72,73 73,74 74,75 75,76 76,77 77,78 78,79 79,8 8,80 80,81 81,82 82,83 83,84 84,85 85,86 86,87 87,88 88,89 89,9 9,90 90,91 91,92 92,93 93,94 94,95 95,96 96,97 97,98 98,99 99
+5000
+31 - Follows* test, stmt and stmt
+stmt s1, s2;
+Select <s1, s2> such that Follows*(s1, s2)
+1 17,1 18,1 19,1 2,1 20,1 3,1 4,10 11,10 12,100 101,100 102,101 102,11 12,13 14,15 16,17 18,17 19,17 20,18 19,18 20,19 20,2 17,2 18,2 19,2 20,2 3,2 4,21 22,21 23,21 24,21 40,21 41,21 42,21 43,22 23,22 24,22 40,22 41,22 42,22 43,23 24,23 40,23 41,23 42,23 43,24 40,24 41,24 42,24 43,25 26,25 27,25 38,25 39,26 27,26 38,26 39,27 38,27 39,28 29,28 30,28 31,28 32,28 33,28 34,29 30,29 31,29 32,29 33,29 34,3 17,3 18,3 19,3 20,3 4,30 31,30 32,30 33,30 34,31 32,31 33,31 34,32 33,32 34,33 34,35 36,35 37,36 37,38 39,4 17,4 18,4 19,4 20,40 41,40 42,40 43,41 42,41 43,42 43,44 45,44 46,44 47,44 60,44 61,44 62,44 63,45 46,45 47,45 60,45 61,45 62,45 63,46 47,46 60,46 61,46 62,46 63,47 60,47 61,47 62,47 63,48 49,48 50,48 58,48 59,49 50,49 58,49 59,5 15,5 16,5 6,5 7,50 58,50 59,51 52,51 53,51 54,51 55,52 53,52 54,52 55,53 54,53 55,54 55,56 57,58 59,6 15,6 16,6 7,60 61,60 62,60 63,61 62,61 63,62 63,64 65,64 66,64 67,64 80,64 81,64 82,64 83,65 66,65 67,65 80,65 81,65 82,65 83,66 67,66 80,66 81,66 82,66 83,67 80,67 81,67 82,67 83,68 69,68 70,68 78,68 79,69 70,69 78,69 79,7 15,7 16,70 78,70 79,71 72,71 73,71 74,71 75,72 73,72 74,72 75,73 74,73 75,74 75,76 77,78 79,8 10,8 11,8 12,8 9,80 81,80 82,80 83,81 82,81 83,82 83,84 100,84 101,84 102,84 85,84 86,84 87,85 100,85 101,85 102,85 86,85 87,86 100,86 101,86 102,86 87,87 100,87 101,87 102,88 89,88 90,88 98,88 99,89 90,89 98,89 99,9 10,9 11,9 12,90 98,90 99,91 92,91 93,91 94,91 95,92 93,92 94,92 95,93 94,93 95,94 95,96 97,98 99
+5000
+32 - Follows* test, stmt and assign
+stmt s; assign a;
+Select <s, a> such that Follows*(s, a)
+1 18,1 19,1 2,1 20,1 3,10 11,10 12,100 101,100 102,101 102,11 12,13 14,15 16,17 18,17 19,17 20,18 19,18 20,19 20,2 18,2 19,2 20,2 3,21 22,21 23,21 41,21 42,21 43,22 23,22 41,22 42,22 43,23 41,23 42,23 43,24 41,24 42,24 43,25 39,26 39,27 39,28 31,28 33,28 34,29 31,29 33,29 34,3 18,3 19,3 20,30 31,30 33,30 34,31 33,31 34,32 33,32 34,33 34,35 36,35 37,36 37,38 39,4 18,4 19,4 20,40 41,40 42,40 43,41 42,41 43,42 43,44 45,44 46,44 61,44 62,44 63,45 46,45 61,45 62,45 63,46 61,46 62,46 63,47 61,47 62,47 63,48 59,49 59,5 16,50 59,51 54,51 55,52 54,52 55,53 54,53 55,54 55,56 57,58 59,6 16,60 61,60 62,60 63,61 62,61 63,62 63,64 65,64 66,64 81,64 82,64 83,65 66,65 81,65 82,65 83,66 81,66 82,66 83,67 81,67 82,67 83,68 79,69 79,7 16,70 79,71 74,71 75,72 74,72 75,73 74,73 75,74 75,76 77,78 79,8 11,8 12,80 81,80 82,80 83,81 82,81 83,82 83,84 100,84 101,84 102,84 85,84 86,85 100,85 101,85 102,85 86,86 100,86 101,86 102,87 100,87 101,87 102,88 99,89 99,9 11,9 12,90 99,91 94,91 95,92 94,92 95,93 94,93 95,94 95,96 97,98 99
+5000
+33 - Follows* test, assign and if
+assign a; if i;
+Select <a, i> such that Follows*(a, i)
+none
+5000
+34 - Follows* test, assign and assign
+assign a1, a2;
+Select BOOLEAN such that Follows*(a1, a2)
+TRUE
+5000
+35 - Follows* test, assign and assign
+assign a1, a2;
+Select <a1, a2> such that Follows*(a1, a2)
+1 18,1 19,1 2,1 20,1 3,100 101,100 102,101 102,11 12,13 14,18 19,18 20,19 20,2 18,2 19,2 20,2 3,21 22,21 23,21 41,21 42,21 43,22 23,22 41,22 42,22 43,23 41,23 42,23 43,28 31,28 33,28 34,3 18,3 19,3 20,31 33,31 34,33 34,35 36,35 37,36 37,41 42,41 43,42 43,44 45,44 46,44 61,44 62,44 63,45 46,45 61,45 62,45 63,46 61,46 62,46 63,51 54,51 55,54 55,56 57,61 62,61 63,62 63,64 65,64 66,64 81,64 82,64 83,65 66,65 81,65 82,65 83,66 81,66 82,66 83,71 74,71 75,74 75,76 77,8 11,8 12,81 82,81 83,82 83,84 100,84 101,84 102,84 85,84 86,85 100,85 101,85 102,85 86,86 100,86 101,86 102,91 94,91 95,94 95,96 97
+5000
+36 - Follows* test, call and wildcard
+call c; assign a;
+Select <c.procName, a> such that Follows*(c, _)
+main2 1,main2 100,main2 101,main2 102,main2 11,main2 12,main2 13,main2 14,main2 16,main2 18,main2 19,main2 2,main2 20,main2 21,main2 22,main2 23,main2 28,main2 3,main2 31,main2 33,main2 34,main2 35,main2 36,main2 37,main2 39,main2 41,main2 42,main2 43,main2 44,main2 45,main2 46,main2 51,main2 54,main2 55,main2 56,main2 57,main2 59,main2 61,main2 62,main2 63,main2 64,main2 65,main2 66,main2 71,main2 74,main2 75,main2 76,main2 77,main2 79,main2 8,main2 81,main2 82,main2 83,main2 84,main2 85,main2 86,main2 91,main2 94,main2 95,main2 96,main2 97,main2 99,main3 1,main3 100,main3 101,main3 102,main3 11,main3 12,main3 13,main3 14,main3 16,main3 18,main3 19,main3 2,main3 20,main3 21,main3 22,main3 23,main3 28,main3 3,main3 31,main3 33,main3 34,main3 35,main3 36,main3 37,main3 39,main3 41,main3 42,main3 43,main3 44,main3 45,main3 46,main3 51,main3 54,main3 55,main3 56,main3 57,main3 59,main3 61,main3 62,main3 63,main3 64,main3 65,main3 66,main3 71,main3 74,main3 75,main3 76,main3 77,main3 79,main3 8,main3 81,main3 82,main3 83,main3 84,main3 85,main3 86,main3 91,main3 94,main3 95,main3 96,main3 97,main3 99,main4 1,main4 100,main4 101,main4 102,main4 11,main4 12,main4 13,main4 14,main4 16,main4 18,main4 19,main4 2,main4 20,main4 21,main4 22,main4 23,main4 28,main4 3,main4 31,main4 33,main4 34,main4 35,main4 36,main4 37,main4 39,main4 41,main4 42,main4 43,main4 44,main4 45,main4 46,main4 51,main4 54,main4 55,main4 56,main4 57,main4 59,main4 61,main4 62,main4 63,main4 64,main4 65,main4 66,main4 71,main4 74,main4 75,main4 76,main4 77,main4 79,main4 8,main4 81,main4 82,main4 83,main4 84,main4 85,main4 86,main4 91,main4 94,main4 95,main4 96,main4 97,main4 99,main5 1,main5 100,main5 101,main5 102,main5 11,main5 12,main5 13,main5 14,main5 16,main5 18,main5 19,main5 2,main5 20,main5 21,main5 22,main5 23,main5 28,main5 3,main5 31,main5 33,main5 34,main5 35,main5 36,main5 37,main5 39,main5 41,main5 42,main5 43,main5 44,main5 45,main5 46,main5 51,main5 54,main5 55,main5 56,main5 57,main5 59,main5 61,main5 62,main5 63,main5 64,main5 65,main5 66,main5 71,main5 74,main5 75,main5 76,main5 77,main5 79,main5 8,main5 81,main5 82,main5 83,main5 84,main5 85,main5 86,main5 91,main5 94,main5 95,main5 96,main5 97,main5 99
+5000
+37 - Modifies test, procedure and synonym
+variable v; procedure p;
+Select p.procName such that Modifies(p, v)
+main1,main2,main3,main4,main5
+5000
+38 - Modifies test, procedure and synonym
+variable v; procedure p;
+Select <p, v> such that Modifies(p, v)
+main1 a,main1 aa,main1 ab,main1 ac,main1 ad,main1 ae,main1 af,main1 ag,main1 ah,main1 ai,main1 aj,main1 ak,main1 al,main1 am,main1 an,main1 b,main1 c,main1 d,main1 e,main1 f,main1 g,main1 h,main1 i,main1 j,main1 k,main1 l,main1 m,main1 n,main1 o,main1 p,main1 q,main1 r,main1 s,main1 t,main1 u,main1 v,main1 w,main1 x,main1 y,main1 z,main2 a,main2 aa,main2 ab,main2 ac,main2 ad,main2 ae,main2 af,main2 ag,main2 ah,main2 ai,main2 aj,main2 ak,main2 al,main2 am,main2 an,main2 b,main2 i,main2 j,main2 k,main2 l,main2 m,main2 n,main2 o,main2 p,main2 q,main2 r,main2 s,main2 t,main2 u,main2 v,main2 w,main2 x,main2 y,main2 z,main3 aa,main3 ab,main3 ac,main3 ad,main3 ae,main3 af,main3 ag,main3 ah,main3 ai,main3 aj,main3 ak,main3 al,main3 am,main3 an,main3 q,main3 r,main3 s,main3 t,main3 u,main3 v,main3 w,main3 x,main3 y,main3 z,main4 aa,main4 ab,main4 ac,main4 ad,main4 ae,main4 af,main4 ag,main4 ah,main4 ai,main4 aj,main4 ak,main4 al,main4 am,main4 an,main4 y,main4 z,main5 ag,main5 ah,main5 ai,main5 aj,main5 ak,main5 al,main5 am,main5 an
+5000
+39 - Modifies test, stmt and synonym
+variable v; stmt s;
+Select v.varName such that Modifies(s, v)
+a,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+5000
+40 - Modifies test, stmt and synonym
+variable v; stmt s;
+Select <s, v> such that Modifies(s, v)
+1 a,100 al,101 am,102 an,11 a,12 b,13 a,14 b,16 c,17 a,17 aa,17 ab,17 ac,17 ad,17 ae,17 af,17 ag,17 ah,17 ai,17 aj,17 ak,17 al,17 am,17 an,17 b,17 i,17 j,17 k,17 l,17 m,17 n,17 o,17 p,17 q,17 r,17 s,17 t,17 u,17 v,17 w,17 x,17 y,17 z,18 f,19 g,2 b,20 h,21 i,22 j,23 k,24 a,24 b,24 i,24 j,24 k,24 l,24 m,25 l,26 m,27 a,27 b,27 i,27 j,27 l,28 l,3 c,31 i,33 a,34 j,35 i,36 b,37 j,39 k,4 a,4 b,4 c,4 d,4 e,40 aa,40 ab,40 ac,40 ad,40 ae,40 af,40 ag,40 ah,40 ai,40 aj,40 ak,40 al,40 am,40 an,40 q,40 r,40 s,40 t,40 u,40 v,40 w,40 x,40 y,40 z,41 n,42 o,43 p,44 q,45 r,46 s,47 q,47 r,47 s,47 t,47 u,48 t,49 u,5 d,50 q,50 r,50 t,51 t,54 q,55 r,56 q,57 r,59 s,6 e,60 aa,60 ab,60 ac,60 ad,60 ae,60 af,60 ag,60 ah,60 ai,60 aj,60 ak,60 al,60 am,60 an,60 y,60 z,61 v,62 w,63 x,64 y,65 z,66 aa,67 aa,67 ab,67 ac,67 y,67 z,68 ab,69 ac,7 a,7 b,7 d,70 ab,70 y,70 z,71 ab,74 y,75 z,76 y,77 z,79 aa,8 d,80 ag,80 ah,80 ai,80 aj,80 ak,80 al,80 am,80 an,81 ad,82 ae,83 af,84 ag,85 ah,86 ai,87 ag,87 ah,87 ai,87 aj,87 ak,88 aj,89 ak,90 ag,90 ah,90 aj,91 aj,94 ag,95 ah,96 ag,97 ah,99 ai
+5000
+41 - Modifies test, read and synonym
+variable v; read r;
+Select <r.stmt#,v> such that Modifies(r, v)
+25 l,26 m,48 t,49 u,5 d,6 e,68 ab,69 ac,88 aj,89 ak
+5000
+42 - Modifies test, while and synonym
+variable v; while w;
+Select w.stmt# such that Modifies(w, v)
+24,4,47,67,87
+5000
+43 - Modifies test, if and synonym
+variable v; if i;
+Select <i, v> such that Modifies(i, v)
+27 a,27 b,27 i,27 j,27 l,50 q,50 r,50 t,7 a,7 b,7 d,70 ab,70 y,70 z,90 ag,90 ah,90 aj
+5000
+44 - Modifies test, assign and synonym
+variable v; assign a;
+Select BOOLEAN such that Modifies(a, v)
+TRUE
+5000
+45 - Modifies test, assign and synonym
+variable v; assign a;
+Select a.stmt# such that Modifies(a, v)
+1,100,101,102,11,12,13,14,16,18,19,2,20,21,22,23,28,3,31,33,34,35,36,37,39,41,42,43,44,45,46,51,54,55,56,57,59,61,62,63,64,65,66,71,74,75,76,77,79,8,81,82,83,84,85,86,91,94,95,96,97,99
+5000
+46 - Modifies test, assign and synonym
+variable v; assign a;
+Select v.varName such that Modifies(a, v)
+a,aa,ab,ad,ae,af,ag,ah,ai,aj,al,am,an,b,c,d,f,g,h,i,j,k,l,n,o,p,q,r,s,t,v,w,x,y,z
+5000
+47 - Modifies test, assign and synonym
+variable v; assign a;
+Select <a, v> such that Modifies(a, v)
+1 a,100 al,101 am,102 an,11 a,12 b,13 a,14 b,16 c,18 f,19 g,2 b,20 h,21 i,22 j,23 k,28 l,3 c,31 i,33 a,34 j,35 i,36 b,37 j,39 k,41 n,42 o,43 p,44 q,45 r,46 s,51 t,54 q,55 r,56 q,57 r,59 s,61 v,62 w,63 x,64 y,65 z,66 aa,71 ab,74 y,75 z,76 y,77 z,79 aa,8 d,81 ad,82 ae,83 af,84 ag,85 ah,86 ai,91 aj,94 ag,95 ah,96 ag,97 ah,99 ai
+5000
+48 - Modifies test, calls and synonym
+variable v; call c;
+Select BOOLEAN such that Modifies(c, v)
+TRUE
+5000
+49 - Modifies test, calls and synonym
+variable v; call c;
+Select c.stmt# such that Modifies(c, v)
+17,40,60,80
+5000
+50 - such that Follows such that Follows
+stmt s; assign a; call c;
+Select a such that Follows(s, a) such that Follows(a, c)
+none
+5000
+51 - such that Follows such that ModifiesS
+assign a1, a2; variable v;
+Select a2 such that Follows(a1, a2) such that Modifies(a2, v)
+101,102,12,14,19,2,20,22,23,3,34,36,37,42,43,45,46,55,57,62,63,65,66,75,77,82,83,85,86,95,97
+5000
+52 - such that Follows such that ModifiesS (not sure about this)
+assign a1, a2; variable v;
+Select a1 such that Follows(a1, a2) such that Modifies(a2, v)
+1,100,101,11,13,18,19,2,21,22,33,35,36,41,42,44,45,54,56,61,62,64,65,74,76,81,82,84,85,94,96
+5000
+53 - such that Follows such that UsesS
+stmt s; assign a; variable v;
+Select a such that Follows(a, s) such that Uses(a, v)
+1,100,101,11,13,18,19,2,21,22,23,28,3,31,33,35,36,41,42,44,45,46,51,54,56,61,62,64,65,66,71,74,76,8,81,82,84,85,86,91,94,96
+5000
+54 - such that Follows such that UsesP
+stmt s; procedure p; variable v;
+Select v.varName such that Follows(s, _) and Uses(p, v)
+a,aa,ab,ac,ad,ag,ah,ai,aj,ak,al,b,c,d,e,f,i,j,k,l,m,n,q,r,s,t,u,v,varAMain1,varAMain10,varAMain100,varAMain11,varAMain12,varAMain13,varAMain14,varAMain15,varAMain16,varAMain17,varAMain18,varAMain19,varAMain2,varAMain20,varAMain21,varAMain22,varAMain23,varAMain24,varAMain25,varAMain26,varAMain27,varAMain28,varAMain29,varAMain3,varAMain30,varAMain31,varAMain32,varAMain33,varAMain34,varAMain35,varAMain36,varAMain37,varAMain38,varAMain39,varAMain4,varAMain40,varAMain41,varAMain42,varAMain43,varAMain44,varAMain45,varAMain46,varAMain47,varAMain48,varAMain49,varAMain5,varAMain50,varAMain51,varAMain52,varAMain53,varAMain54,varAMain55,varAMain56,varAMain57,varAMain58,varAMain59,varAMain6,varAMain60,varAMain61,varAMain62,varAMain63,varAMain64,varAMain65,varAMain66,varAMain67,varAMain68,varAMain69,varAMain7,varAMain70,varAMain71,varAMain72,varAMain73,varAMain74,varAMain75,varAMain76,varAMain77,varAMain78,varAMain79,varAMain8,varAMain80,varAMain81,varAMain82,varAMain83,varAMain84,varAMain85,varAMain86,varAMain87,varAMain88,varAMain89,varAMain9,varAMain90,varAMain91,varAMain92,varAMain93,varAMain94,varAMain95,varAMain96,varAMain97,varAMain98,varAMain99,varBMain1,varBMain10,varBMain100,varBMain11,varBMain12,varBMain13,varBMain14,varBMain15,varBMain16,varBMain17,varBMain18,varBMain19,varBMain2,varBMain20,varBMain21,varBMain22,varBMain23,varBMain24,varBMain25,varBMain26,varBMain27,varBMain28,varBMain29,varBMain3,varBMain30,varBMain31,varBMain32,varBMain33,varBMain34,varBMain35,varBMain36,varBMain37,varBMain38,varBMain39,varBMain4,varBMain40,varBMain41,varBMain42,varBMain43,varBMain44,varBMain45,varBMain46,varBMain47,varBMain48,varBMain49,varBMain5,varBMain50,varBMain51,varBMain52,varBMain53,varBMain54,varBMain55,varBMain56,varBMain57,varBMain58,varBMain59,varBMain6,varBMain60,varBMain61,varBMain62,varBMain63,varBMain64,varBMain65,varBMain66,varBMain67,varBMain68,varBMain69,varBMain7,varBMain70,varBMain71,varBMain72,varBMain73,varBMain74,varBMain75,varBMain76,varBMain77,varBMain78,varBMain79,varBMain8,varBMain80,varBMain81,varBMain82,varBMain83,varBMain84,varBMain85,varBMain86,varBMain87,varBMain88,varBMain89,varBMain9,varBMain90,varBMain91,varBMain92,varBMain93,varBMain94,varBMain95,varBMain96,varBMain97,varBMain98,varBMain99,varCMain1,varCMain10,varCMain100,varCMain11,varCMain12,varCMain13,varCMain14,varCMain15,varCMain16,varCMain17,varCMain18,varCMain19,varCMain2,varCMain20,varCMain21,varCMain22,varCMain23,varCMain24,varCMain25,varCMain26,varCMain27,varCMain28,varCMain29,varCMain3,varCMain30,varCMain31,varCMain32,varCMain33,varCMain34,varCMain35,varCMain36,varCMain37,varCMain38,varCMain39,varCMain4,varCMain40,varCMain41,varCMain42,varCMain43,varCMain44,varCMain45,varCMain46,varCMain47,varCMain48,varCMain49,varCMain5,varCMain50,varCMain51,varCMain52,varCMain53,varCMain54,varCMain55,varCMain56,varCMain57,varCMain58,varCMain59,varCMain6,varCMain60,varCMain61,varCMain62,varCMain63,varCMain64,varCMain65,varCMain66,varCMain67,varCMain68,varCMain69,varCMain7,varCMain70,varCMain71,varCMain72,varCMain73,varCMain74,varCMain75,varCMain76,varCMain77,varCMain78,varCMain79,varCMain8,varCMain80,varCMain81,varCMain82,varCMain83,varCMain84,varCMain85,varCMain86,varCMain87,varCMain88,varCMain89,varCMain9,varCMain90,varCMain91,varCMain92,varCMain93,varCMain94,varCMain95,varCMain96,varCMain97,varCMain98,varCMain99,varDMain1,varDMain10,varDMain100,varDMain11,varDMain12,varDMain13,varDMain14,varDMain15,varDMain16,varDMain17,varDMain18,varDMain19,varDMain2,varDMain20,varDMain21,varDMain22,varDMain23,varDMain24,varDMain25,varDMain26,varDMain27,varDMain28,varDMain29,varDMain3,varDMain30,varDMain31,varDMain32,varDMain33,varDMain34,varDMain35,varDMain36,varDMain37,varDMain38,varDMain39,varDMain4,varDMain40,varDMain41,varDMain42,varDMain43,varDMain44,varDMain45,varDMain46,varDMain47,varDMain48,varDMain49,varDMain5,varDMain50,varDMain51,varDMain52,varDMain53,varDMain54,varDMain55,varDMain56,varDMain57,varDMain58,varDMain59,varDMain6,varDMain60,varDMain61,varDMain62,varDMain63,varDMain64,varDMain65,varDMain66,varDMain67,varDMain68,varDMain69,varDMain7,varDMain70,varDMain71,varDMain72,varDMain73,varDMain74,varDMain75,varDMain76,varDMain77,varDMain78,varDMain79,varDMain8,varDMain80,varDMain81,varDMain82,varDMain83,varDMain84,varDMain85,varDMain86,varDMain87,varDMain88,varDMain89,varDMain9,varDMain90,varDMain91,varDMain92,varDMain93,varDMain94,varDMain95,varDMain96,varDMain97,varDMain98,varDMain99,varMain1,varMain10,varMain100,varMain11,varMain12,varMain13,varMain14,varMain15,varMain16,varMain17,varMain18,varMain19,varMain2,varMain20,varMain21,varMain22,varMain23,varMain24,varMain25,varMain26,varMain27,varMain28,varMain29,varMain3,varMain30,varMain31,varMain32,varMain33,varMain34,varMain35,varMain36,varMain37,varMain38,varMain39,varMain4,varMain40,varMain41,varMain42,varMain43,varMain44,varMain45,varMain46,varMain47,varMain48,varMain49,varMain5,varMain50,varMain51,varMain52,varMain53,varMain54,varMain55,varMain56,varMain57,varMain58,varMain59,varMain6,varMain60,varMain61,varMain62,varMain63,varMain64,varMain65,varMain66,varMain67,varMain68,varMain69,varMain7,varMain70,varMain71,varMain72,varMain73,varMain74,varMain75,varMain76,varMain77,varMain78,varMain79,varMain8,varMain80,varMain81,varMain82,varMain83,varMain84,varMain85,varMain86,varMain87,varMain88,varMain89,varMain9,varMain90,varMain91,varMain92,varMain93,varMain94,varMain95,varMain96,varMain97,varMain98,varMain99,y,z
+5000
+55 - such that Follows such that Next
+stmt s; assign a;
+Select a such that Follows(s, a) such that Next(_,_)
+100,101,102,11,12,14,16,18,19,2,20,22,23,3,31,33,34,36,37,39,41,42,43,45,46,54,55,57,59,61,62,63,65,66,74,75,77,79,81,82,83,85,86,94,95,97,99
+5000
+56 - such that Follows such that Next*
+prog_line p; assign a;
+Select p such that Follows(p, a) such that Next*(14, p)
+10,11,13,15,17,18,19
+5000
+57 - such that Follows* such that ModifiesS
+call c; assign a; variable v;
+Select a such that Follows*(c, a) such that Modifies(a, v)
+18,19,20,41,42,43,61,62,63,81,82,83
+5000
+58 - such that Follows* such that UsesP
+stmt s; if i; procedure p;
+Select BOOLEAN such that Follows*(s, i) such that Uses(p, _)
+TRUE
+5000
+59 - such that Follows* such that Calls*
+stmt s; procedure p;
+Select p such that Follows*(s, _) such that Calls*(p, "readPoint")
+none
+5000
+60 - such that Follows* such that Next
+prog_line p; while w; if i;
+Select p such that Follows*(_,_) such that Next(19, p)
+20
+5000
+61 - such that Follows* such that Next*
+prog_line p; stmt s;
+Select p such that Follows*(s, p) such that Next*(17, p)
+18,19,20
+5000
+62 - such that Parent such that ModifiesS
+stmt s; variable v;
+Select s such that Parent(s, _) such that Modifies(s, v)
+24,27,4,47,50,67,7,70,87,90
+5000
+63 - such that Parent such that Next*
+prog_line p; while w;
+Select p such that Parent(w, p) such that Next*(10, p)
+15,16,5,6,7
+5000
+64 - such that UsesS such that Follows
+stmt s; assign a; variable v;
+Select a such that Uses(a, v) such that Follows(a, s)
+1,100,101,11,13,18,19,2,21,22,23,28,3,31,33,35,36,41,42,44,45,46,51,54,56,61,62,64,65,66,71,74,76,8,81,82,84,85,86,91,94,96
+5000
+65 - such that UsesS such that Follows*
+assign a; variable v;
+Select a.stmt# such that Modifies(a, "count") such that Follows*(_, a)
+none
+5000
+66 - such that UsesS such that Parent
+stmt s; variable v;
+Select s such that Uses(s, v) such that Parent(_, s)
+10,11,12,13,14,15,16,27,28,29,30,31,32,33,34,35,36,37,38,39,50,51,52,53,54,55,56,57,58,59,7,70,71,72,73,74,75,76,77,78,79,8,9,90,91,92,93,94,95,96,97,98,99
+5000
+68 - such that UsesS such that ModifiesP
+assign a; procedure p; variable v;
+Select <p,v> such that Uses(a, v) such that Modifies(p, v)
+main1 a,main1 aa,main1 ab,main1 ac,main1 ad,main1 ag,main1 ah,main1 ai,main1 aj,main1 ak,main1 al,main1 b,main1 c,main1 d,main1 e,main1 f,main1 i,main1 j,main1 k,main1 l,main1 m,main1 n,main1 q,main1 r,main1 s,main1 t,main1 u,main1 v,main1 y,main1 z,main2 a,main2 aa,main2 ab,main2 ac,main2 ad,main2 ag,main2 ah,main2 ai,main2 aj,main2 ak,main2 al,main2 b,main2 i,main2 j,main2 k,main2 l,main2 m,main2 n,main2 q,main2 r,main2 s,main2 t,main2 u,main2 v,main2 y,main2 z,main3 aa,main3 ab,main3 ac,main3 ad,main3 ag,main3 ah,main3 ai,main3 aj,main3 ak,main3 al,main3 q,main3 r,main3 s,main3 t,main3 u,main3 v,main3 y,main3 z,main4 aa,main4 ab,main4 ac,main4 ad,main4 ag,main4 ah,main4 ai,main4 aj,main4 ak,main4 al,main4 y,main4 z,main5 ag,main5 ah,main5 ai,main5 aj,main5 ak,main5 al
+5000
+69 - such that UsesS such that Next
+prog_line p; variable v;
+Select p such that Uses(p, v) such that Next(p, 15)
+12,14
+5000
+70 - such that UsesS such that Next* (not sure about this)
+prog_line p; variable v;
+Select <p, v> such that Uses(p, v) such that Next*(p, 20)
+1 varMain1,1 varMain10,1 varMain2,1 varMain3,1 varMain4,1 varMain5,1 varMain6,1 varMain7,1 varMain8,1 varMain9,10 e,11 a,11 d,11 varMain41,11 varMain42,11 varMain43,11 varMain44,11 varMain45,11 varMain46,11 varMain47,11 varMain48,11 varMain49,11 varMain50,12 b,12 e,12 varMain51,12 varMain52,12 varMain53,12 varMain54,12 varMain55,12 varMain56,12 varMain57,12 varMain58,12 varMain59,12 varMain60,13 a,13 b,13 varMain61,13 varMain62,13 varMain63,13 varMain64,13 varMain65,13 varMain66,13 varMain67,13 varMain68,13 varMain69,13 varMain70,14 b,14 c,14 varMain71,14 varMain72,14 varMain73,14 varMain74,14 varMain75,14 varMain76,14 varMain77,14 varMain78,14 varMain79,14 varMain80,15 c,16 c,16 varMain81,16 varMain82,16 varMain83,16 varMain84,16 varMain85,16 varMain86,16 varMain87,16 varMain88,16 varMain89,16 varMain90,17 a,17 aa,17 ab,17 ac,17 ad,17 ag,17 ah,17 ai,17 aj,17 ak,17 al,17 b,17 c,17 d,17 e,17 i,17 j,17 k,17 l,17 m,17 n,17 q,17 r,17 s,17 t,17 u,17 v,17 varAMain1,17 varAMain10,17 varAMain100,17 varAMain11,17 varAMain12,17 varAMain13,17 varAMain14,17 varAMain15,17 varAMain16,17 varAMain17,17 varAMain18,17 varAMain19,17 varAMain2,17 varAMain20,17 varAMain21,17 varAMain22,17 varAMain23,17 varAMain24,17 varAMain25,17 varAMain26,17 varAMain27,17 varAMain28,17 varAMain29,17 varAMain3,17 varAMain30,17 varAMain31,17 varAMain32,17 varAMain33,17 varAMain34,17 varAMain35,17 varAMain36,17 varAMain37,17 varAMain38,17 varAMain39,17 varAMain4,17 varAMain40,17 varAMain41,17 varAMain42,17 varAMain43,17 varAMain44,17 varAMain45,17 varAMain46,17 varAMain47,17 varAMain48,17 varAMain49,17 varAMain5,17 varAMain50,17 varAMain51,17 varAMain52,17 varAMain53,17 varAMain54,17 varAMain55,17 varAMain56,17 varAMain57,17 varAMain58,17 varAMain59,17 varAMain6,17 varAMain60,17 varAMain61,17 varAMain62,17 varAMain63,17 varAMain64,17 varAMain65,17 varAMain66,17 varAMain67,17 varAMain68,17 varAMain69,17 varAMain7,17 varAMain70,17 varAMain71,17 varAMain72,17 varAMain73,17 varAMain74,17 varAMain75,17 varAMain76,17 varAMain77,17 varAMain78,17 varAMain79,17 varAMain8,17 varAMain80,17 varAMain81,17 varAMain82,17 varAMain83,17 varAMain84,17 varAMain85,17 varAMain86,17 varAMain87,17 varAMain88,17 varAMain89,17 varAMain9,17 varAMain90,17 varAMain91,17 varAMain92,17 varAMain93,17 varAMain94,17 varAMain95,17 varAMain96,17 varAMain97,17 varAMain98,17 varAMain99,17 varBMain1,17 varBMain10,17 varBMain100,17 varBMain11,17 varBMain12,17 varBMain13,17 varBMain14,17 varBMain15,17 varBMain16,17 varBMain17,17 varBMain18,17 varBMain19,17 varBMain2,17 varBMain20,17 varBMain21,17 varBMain22,17 varBMain23,17 varBMain24,17 varBMain25,17 varBMain26,17 varBMain27,17 varBMain28,17 varBMain29,17 varBMain3,17 varBMain30,17 varBMain31,17 varBMain32,17 varBMain33,17 varBMain34,17 varBMain35,17 varBMain36,17 varBMain37,17 varBMain38,17 varBMain39,17 varBMain4,17 varBMain40,17 varBMain41,17 varBMain42,17 varBMain43,17 varBMain44,17 varBMain45,17 varBMain46,17 varBMain47,17 varBMain48,17 varBMain49,17 varBMain5,17 varBMain50,17 varBMain51,17 varBMain52,17 varBMain53,17 varBMain54,17 varBMain55,17 varBMain56,17 varBMain57,17 varBMain58,17 varBMain59,17 varBMain6,17 varBMain60,17 varBMain61,17 varBMain62,17 varBMain63,17 varBMain64,17 varBMain65,17 varBMain66,17 varBMain67,17 varBMain68,17 varBMain69,17 varBMain7,17 varBMain70,17 varBMain71,17 varBMain72,17 varBMain73,17 varBMain74,17 varBMain75,17 varBMain76,17 varBMain77,17 varBMain78,17 varBMain79,17 varBMain8,17 varBMain80,17 varBMain81,17 varBMain82,17 varBMain83,17 varBMain84,17 varBMain85,17 varBMain86,17 varBMain87,17 varBMain88,17 varBMain89,17 varBMain9,17 varBMain90,17 varBMain91,17 varBMain92,17 varBMain93,17 varBMain94,17 varBMain95,17 varBMain96,17 varBMain97,17 varBMain98,17 varBMain99,17 varCMain1,17 varCMain10,17 varCMain100,17 varCMain11,17 varCMain12,17 varCMain13,17 varCMain14,17 varCMain15,17 varCMain16,17 varCMain17,17 varCMain18,17 varCMain19,17 varCMain2,17 varCMain20,17 varCMain21,17 varCMain22,17 varCMain23,17 varCMain24,17 varCMain25,17 varCMain26,17 varCMain27,17 varCMain28,17 varCMain29,17 varCMain3,17 varCMain30,17 varCMain31,17 varCMain32,17 varCMain33,17 varCMain34,17 varCMain35,17 varCMain36,17 varCMain37,17 varCMain38,17 varCMain39,17 varCMain4,17 varCMain40,17 varCMain41,17 varCMain42,17 varCMain43,17 varCMain44,17 varCMain45,17 varCMain46,17 varCMain47,17 varCMain48,17 varCMain49,17 varCMain5,17 varCMain50,17 varCMain51,17 varCMain52,17 varCMain53,17 varCMain54,17 varCMain55,17 varCMain56,17 varCMain57,17 varCMain58,17 varCMain59,17 varCMain6,17 varCMain60,17 varCMain61,17 varCMain62,17 varCMain63,17 varCMain64,17 varCMain65,17 varCMain66,17 varCMain67,17 varCMain68,17 varCMain69,17 varCMain7,17 varCMain70,17 varCMain71,17 varCMain72,17 varCMain73,17 varCMain74,17 varCMain75,17 varCMain76,17 varCMain77,17 varCMain78,17 varCMain79,17 varCMain8,17 varCMain80,17 varCMain81,17 varCMain82,17 varCMain83,17 varCMain84,17 varCMain85,17 varCMain86,17 varCMain87,17 varCMain88,17 varCMain89,17 varCMain9,17 varCMain90,17 varCMain91,17 varCMain92,17 varCMain93,17 varCMain94,17 varCMain95,17 varCMain96,17 varCMain97,17 varCMain98,17 varCMain99,17 varDMain1,17 varDMain10,17 varDMain100,17 varDMain11,17 varDMain12,17 varDMain13,17 varDMain14,17 varDMain15,17 varDMain16,17 varDMain17,17 varDMain18,17 varDMain19,17 varDMain2,17 varDMain20,17 varDMain21,17 varDMain22,17 varDMain23,17 varDMain24,17 varDMain25,17 varDMain26,17 varDMain27,17 varDMain28,17 varDMain29,17 varDMain3,17 varDMain30,17 varDMain31,17 varDMain32,17 varDMain33,17 varDMain34,17 varDMain35,17 varDMain36,17 varDMain37,17 varDMain38,17 varDMain39,17 varDMain4,17 varDMain40,17 varDMain41,17 varDMain42,17 varDMain43,17 varDMain44,17 varDMain45,17 varDMain46,17 varDMain47,17 varDMain48,17 varDMain49,17 varDMain5,17 varDMain50,17 varDMain51,17 varDMain52,17 varDMain53,17 varDMain54,17 varDMain55,17 varDMain56,17 varDMain57,17 varDMain58,17 varDMain59,17 varDMain6,17 varDMain60,17 varDMain61,17 varDMain62,17 varDMain63,17 varDMain64,17 varDMain65,17 varDMain66,17 varDMain67,17 varDMain68,17 varDMain69,17 varDMain7,17 varDMain70,17 varDMain71,17 varDMain72,17 varDMain73,17 varDMain74,17 varDMain75,17 varDMain76,17 varDMain77,17 varDMain78,17 varDMain79,17 varDMain8,17 varDMain80,17 varDMain81,17 varDMain82,17 varDMain83,17 varDMain84,17 varDMain85,17 varDMain86,17 varDMain87,17 varDMain88,17 varDMain89,17 varDMain9,17 varDMain90,17 varDMain91,17 varDMain92,17 varDMain93,17 varDMain94,17 varDMain95,17 varDMain96,17 varDMain97,17 varDMain98,17 varDMain99,17 y,17 z,18 c,18 d,18 e,19 f,19 varMain100,19 varMain91,19 varMain92,19 varMain93,19 varMain94,19 varMain95,19 varMain96,19 varMain97,19 varMain98,19 varMain99,2 varMain11,2 varMain12,2 varMain13,2 varMain14,2 varMain15,2 varMain16,2 varMain17,2 varMain18,2 varMain19,2 varMain20,3 a,3 b,3 varMain21,3 varMain22,3 varMain23,3 varMain24,3 varMain25,3 varMain26,3 varMain27,3 varMain28,3 varMain29,3 varMain30,4 a,4 b,4 c,4 d,4 e,4 varMain31,4 varMain32,4 varMain33,4 varMain34,4 varMain35,4 varMain36,4 varMain37,4 varMain38,4 varMain39,4 varMain40,4 varMain41,4 varMain42,4 varMain43,4 varMain44,4 varMain45,4 varMain46,4 varMain47,4 varMain48,4 varMain49,4 varMain50,4 varMain51,4 varMain52,4 varMain53,4 varMain54,4 varMain55,4 varMain56,4 varMain57,4 varMain58,4 varMain59,4 varMain60,4 varMain61,4 varMain62,4 varMain63,4 varMain64,4 varMain65,4 varMain66,4 varMain67,4 varMain68,4 varMain69,4 varMain70,4 varMain71,4 varMain72,4 varMain73,4 varMain74,4 varMain75,4 varMain76,4 varMain77,4 varMain78,4 varMain79,4 varMain80,4 varMain81,4 varMain82,4 varMain83,4 varMain84,4 varMain85,4 varMain86,4 varMain87,4 varMain88,4 varMain89,4 varMain90,7 a,7 b,7 c,7 d,7 e,7 varMain31,7 varMain32,7 varMain33,7 varMain34,7 varMain35,7 varMain36,7 varMain37,7 varMain38,7 varMain39,7 varMain40,7 varMain41,7 varMain42,7 varMain43,7 varMain44,7 varMain45,7 varMain46,7 varMain47,7 varMain48,7 varMain49,7 varMain50,7 varMain51,7 varMain52,7 varMain53,7 varMain54,7 varMain55,7 varMain56,7 varMain57,7 varMain58,7 varMain59,7 varMain60,7 varMain61,7 varMain62,7 varMain63,7 varMain64,7 varMain65,7 varMain66,7 varMain67,7 varMain68,7 varMain69,7 varMain70,7 varMain71,7 varMain72,7 varMain73,7 varMain74,7 varMain75,7 varMain76,7 varMain77,7 varMain78,7 varMain79,7 varMain80,8 e,8 varMain31,8 varMain32,8 varMain33,8 varMain34,8 varMain35,8 varMain36,8 varMain37,8 varMain38,8 varMain39,8 varMain40,9 d
+5000
+71 - such that UsesP such that ModifiesS
+variable v; read r;
+Select v such that Uses("computeCentroid", v) such that Modifies(r, v)
+none
+5000
+72 - such that UsesP such that ModifiesP
+procedure p; variable v;
+Select v such that Uses(p, _) such that Modifies(p, _)
+a,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,varAMain1,varAMain10,varAMain100,varAMain11,varAMain12,varAMain13,varAMain14,varAMain15,varAMain16,varAMain17,varAMain18,varAMain19,varAMain2,varAMain20,varAMain21,varAMain22,varAMain23,varAMain24,varAMain25,varAMain26,varAMain27,varAMain28,varAMain29,varAMain3,varAMain30,varAMain31,varAMain32,varAMain33,varAMain34,varAMain35,varAMain36,varAMain37,varAMain38,varAMain39,varAMain4,varAMain40,varAMain41,varAMain42,varAMain43,varAMain44,varAMain45,varAMain46,varAMain47,varAMain48,varAMain49,varAMain5,varAMain50,varAMain51,varAMain52,varAMain53,varAMain54,varAMain55,varAMain56,varAMain57,varAMain58,varAMain59,varAMain6,varAMain60,varAMain61,varAMain62,varAMain63,varAMain64,varAMain65,varAMain66,varAMain67,varAMain68,varAMain69,varAMain7,varAMain70,varAMain71,varAMain72,varAMain73,varAMain74,varAMain75,varAMain76,varAMain77,varAMain78,varAMain79,varAMain8,varAMain80,varAMain81,varAMain82,varAMain83,varAMain84,varAMain85,varAMain86,varAMain87,varAMain88,varAMain89,varAMain9,varAMain90,varAMain91,varAMain92,varAMain93,varAMain94,varAMain95,varAMain96,varAMain97,varAMain98,varAMain99,varBMain1,varBMain10,varBMain100,varBMain11,varBMain12,varBMain13,varBMain14,varBMain15,varBMain16,varBMain17,varBMain18,varBMain19,varBMain2,varBMain20,varBMain21,varBMain22,varBMain23,varBMain24,varBMain25,varBMain26,varBMain27,varBMain28,varBMain29,varBMain3,varBMain30,varBMain31,varBMain32,varBMain33,varBMain34,varBMain35,varBMain36,varBMain37,varBMain38,varBMain39,varBMain4,varBMain40,varBMain41,varBMain42,varBMain43,varBMain44,varBMain45,varBMain46,varBMain47,varBMain48,varBMain49,varBMain5,varBMain50,varBMain51,varBMain52,varBMain53,varBMain54,varBMain55,varBMain56,varBMain57,varBMain58,varBMain59,varBMain6,varBMain60,varBMain61,varBMain62,varBMain63,varBMain64,varBMain65,varBMain66,varBMain67,varBMain68,varBMain69,varBMain7,varBMain70,varBMain71,varBMain72,varBMain73,varBMain74,varBMain75,varBMain76,varBMain77,varBMain78,varBMain79,varBMain8,varBMain80,varBMain81,varBMain82,varBMain83,varBMain84,varBMain85,varBMain86,varBMain87,varBMain88,varBMain89,varBMain9,varBMain90,varBMain91,varBMain92,varBMain93,varBMain94,varBMain95,varBMain96,varBMain97,varBMain98,varBMain99,varCMain1,varCMain10,varCMain100,varCMain11,varCMain12,varCMain13,varCMain14,varCMain15,varCMain16,varCMain17,varCMain18,varCMain19,varCMain2,varCMain20,varCMain21,varCMain22,varCMain23,varCMain24,varCMain25,varCMain26,varCMain27,varCMain28,varCMain29,varCMain3,varCMain30,varCMain31,varCMain32,varCMain33,varCMain34,varCMain35,varCMain36,varCMain37,varCMain38,varCMain39,varCMain4,varCMain40,varCMain41,varCMain42,varCMain43,varCMain44,varCMain45,varCMain46,varCMain47,varCMain48,varCMain49,varCMain5,varCMain50,varCMain51,varCMain52,varCMain53,varCMain54,varCMain55,varCMain56,varCMain57,varCMain58,varCMain59,varCMain6,varCMain60,varCMain61,varCMain62,varCMain63,varCMain64,varCMain65,varCMain66,varCMain67,varCMain68,varCMain69,varCMain7,varCMain70,varCMain71,varCMain72,varCMain73,varCMain74,varCMain75,varCMain76,varCMain77,varCMain78,varCMain79,varCMain8,varCMain80,varCMain81,varCMain82,varCMain83,varCMain84,varCMain85,varCMain86,varCMain87,varCMain88,varCMain89,varCMain9,varCMain90,varCMain91,varCMain92,varCMain93,varCMain94,varCMain95,varCMain96,varCMain97,varCMain98,varCMain99,varDMain1,varDMain10,varDMain100,varDMain11,varDMain12,varDMain13,varDMain14,varDMain15,varDMain16,varDMain17,varDMain18,varDMain19,varDMain2,varDMain20,varDMain21,varDMain22,varDMain23,varDMain24,varDMain25,varDMain26,varDMain27,varDMain28,varDMain29,varDMain3,varDMain30,varDMain31,varDMain32,varDMain33,varDMain34,varDMain35,varDMain36,varDMain37,varDMain38,varDMain39,varDMain4,varDMain40,varDMain41,varDMain42,varDMain43,varDMain44,varDMain45,varDMain46,varDMain47,varDMain48,varDMain49,varDMain5,varDMain50,varDMain51,varDMain52,varDMain53,varDMain54,varDMain55,varDMain56,varDMain57,varDMain58,varDMain59,varDMain6,varDMain60,varDMain61,varDMain62,varDMain63,varDMain64,varDMain65,varDMain66,varDMain67,varDMain68,varDMain69,varDMain7,varDMain70,varDMain71,varDMain72,varDMain73,varDMain74,varDMain75,varDMain76,varDMain77,varDMain78,varDMain79,varDMain8,varDMain80,varDMain81,varDMain82,varDMain83,varDMain84,varDMain85,varDMain86,varDMain87,varDMain88,varDMain89,varDMain9,varDMain90,varDMain91,varDMain92,varDMain93,varDMain94,varDMain95,varDMain96,varDMain97,varDMain98,varDMain99,varMain1,varMain10,varMain100,varMain11,varMain12,varMain13,varMain14,varMain15,varMain16,varMain17,varMain18,varMain19,varMain2,varMain20,varMain21,varMain22,varMain23,varMain24,varMain25,varMain26,varMain27,varMain28,varMain29,varMain3,varMain30,varMain31,varMain32,varMain33,varMain34,varMain35,varMain36,varMain37,varMain38,varMain39,varMain4,varMain40,varMain41,varMain42,varMain43,varMain44,varMain45,varMain46,varMain47,varMain48,varMain49,varMain5,varMain50,varMain51,varMain52,varMain53,varMain54,varMain55,varMain56,varMain57,varMain58,varMain59,varMain6,varMain60,varMain61,varMain62,varMain63,varMain64,varMain65,varMain66,varMain67,varMain68,varMain69,varMain7,varMain70,varMain71,varMain72,varMain73,varMain74,varMain75,varMain76,varMain77,varMain78,varMain79,varMain8,varMain80,varMain81,varMain82,varMain83,varMain84,varMain85,varMain86,varMain87,varMain88,varMain89,varMain9,varMain90,varMain91,varMain92,varMain93,varMain94,varMain95,varMain96,varMain97,varMain98,varMain99,w,x,y,z
+5000
+73 - such that UsesP such that Calls
+procedure p;
+Select p such that Uses(p, _) such that Calls(p, _)
+main1,main2,main3,main4
+5000
+75 - such that UsesP such that Next
+prog_line n; procedure p; variable v;
+Select BOOLEAN such that Uses(p, v) such that Next(n, 14)
+TRUE
+5000
+76 - such that UsesP such that Next*
+prog_line p;
+Select p such that Uses("computeCentroid", _) such that Next*(p, 15)
+none
+5000
+77 - such that ModifiesS such that Next
+prog_line pl; if i;
+Select pl such that Modifies(i, _) such that Next(19, pl)
+20
+5000
+78 - such that ModifiesS such that Next*
+prog_line p; variable v;
+Select <p, v> such that Modifies(p, v) such that Next*(17, p)
+18 f,19 g,20 h
+5000
+79 - such that ModifiesP such that Calls*
+procedure p; variable v;
+Select p such that Modifies(p, "x") such that Calls*(p, _)
+main1,main2,main3
+5000
+80 - such that ModifiesP such that Next
+prog_line n; procedure p;
+Select p such that Modifies(p, _) such that Next(n, 19)
+main1,main2,main3,main4,main5
+5000
+81 - such that ModifiesP such that Next*
+prog_line n; procedure p;
+Select n such that Modifies(p, _) such that Next*(n, 19)
+1,10,11,12,13,14,15,16,17,18,2,3,4,5,6,7,8,9
+5000
+82 - such that Calls such that Calls
+procedure p, q;
+Select q such that Calls(p, q) such that Calls(q, _)
+main2,main3,main4
+5000
+83 - such that Calls such that Calls*
+procedure p, q;
+Select <p, q> such that Calls(p, _) such that Calls*(_, q)
+main1 main2,main1 main3,main1 main4,main1 main5,main2 main2,main2 main3,main2 main4,main2 main5,main3 main2,main3 main3,main3 main4,main3 main5,main4 main2,main4 main3,main4 main4,main4 main5
+5000
+84 - such that Calls such that Next
+procedure p; prog_line n;
+Select BOOLEAN such that Calls(_, p) such that Next(n, _)
+TRUE
+5000
+85 - such that Calls such that Next*
+procedure p; prog_line n;
+Select <p, n> such that Calls(p, _) such that Next*(19, _)
+main1 1,main1 10,main1 100,main1 101,main1 102,main1 11,main1 12,main1 13,main1 14,main1 15,main1 16,main1 17,main1 18,main1 19,main1 2,main1 20,main1 21,main1 22,main1 23,main1 24,main1 25,main1 26,main1 27,main1 28,main1 29,main1 3,main1 30,main1 31,main1 32,main1 33,main1 34,main1 35,main1 36,main1 37,main1 38,main1 39,main1 4,main1 40,main1 41,main1 42,main1 43,main1 44,main1 45,main1 46,main1 47,main1 48,main1 49,main1 5,main1 50,main1 51,main1 52,main1 53,main1 54,main1 55,main1 56,main1 57,main1 58,main1 59,main1 6,main1 60,main1 61,main1 62,main1 63,main1 64,main1 65,main1 66,main1 67,main1 68,main1 69,main1 7,main1 70,main1 71,main1 72,main1 73,main1 74,main1 75,main1 76,main1 77,main1 78,main1 79,main1 8,main1 80,main1 81,main1 82,main1 83,main1 84,main1 85,main1 86,main1 87,main1 88,main1 89,main1 9,main1 90,main1 91,main1 92,main1 93,main1 94,main1 95,main1 96,main1 97,main1 98,main1 99,main2 1,main2 10,main2 100,main2 101,main2 102,main2 11,main2 12,main2 13,main2 14,main2 15,main2 16,main2 17,main2 18,main2 19,main2 2,main2 20,main2 21,main2 22,main2 23,main2 24,main2 25,main2 26,main2 27,main2 28,main2 29,main2 3,main2 30,main2 31,main2 32,main2 33,main2 34,main2 35,main2 36,main2 37,main2 38,main2 39,main2 4,main2 40,main2 41,main2 42,main2 43,main2 44,main2 45,main2 46,main2 47,main2 48,main2 49,main2 5,main2 50,main2 51,main2 52,main2 53,main2 54,main2 55,main2 56,main2 57,main2 58,main2 59,main2 6,main2 60,main2 61,main2 62,main2 63,main2 64,main2 65,main2 66,main2 67,main2 68,main2 69,main2 7,main2 70,main2 71,main2 72,main2 73,main2 74,main2 75,main2 76,main2 77,main2 78,main2 79,main2 8,main2 80,main2 81,main2 82,main2 83,main2 84,main2 85,main2 86,main2 87,main2 88,main2 89,main2 9,main2 90,main2 91,main2 92,main2 93,main2 94,main2 95,main2 96,main2 97,main2 98,main2 99,main3 1,main3 10,main3 100,main3 101,main3 102,main3 11,main3 12,main3 13,main3 14,main3 15,main3 16,main3 17,main3 18,main3 19,main3 2,main3 20,main3 21,main3 22,main3 23,main3 24,main3 25,main3 26,main3 27,main3 28,main3 29,main3 3,main3 30,main3 31,main3 32,main3 33,main3 34,main3 35,main3 36,main3 37,main3 38,main3 39,main3 4,main3 40,main3 41,main3 42,main3 43,main3 44,main3 45,main3 46,main3 47,main3 48,main3 49,main3 5,main3 50,main3 51,main3 52,main3 53,main3 54,main3 55,main3 56,main3 57,main3 58,main3 59,main3 6,main3 60,main3 61,main3 62,main3 63,main3 64,main3 65,main3 66,main3 67,main3 68,main3 69,main3 7,main3 70,main3 71,main3 72,main3 73,main3 74,main3 75,main3 76,main3 77,main3 78,main3 79,main3 8,main3 80,main3 81,main3 82,main3 83,main3 84,main3 85,main3 86,main3 87,main3 88,main3 89,main3 9,main3 90,main3 91,main3 92,main3 93,main3 94,main3 95,main3 96,main3 97,main3 98,main3 99,main4 1,main4 10,main4 100,main4 101,main4 102,main4 11,main4 12,main4 13,main4 14,main4 15,main4 16,main4 17,main4 18,main4 19,main4 2,main4 20,main4 21,main4 22,main4 23,main4 24,main4 25,main4 26,main4 27,main4 28,main4 29,main4 3,main4 30,main4 31,main4 32,main4 33,main4 34,main4 35,main4 36,main4 37,main4 38,main4 39,main4 4,main4 40,main4 41,main4 42,main4 43,main4 44,main4 45,main4 46,main4 47,main4 48,main4 49,main4 5,main4 50,main4 51,main4 52,main4 53,main4 54,main4 55,main4 56,main4 57,main4 58,main4 59,main4 6,main4 60,main4 61,main4 62,main4 63,main4 64,main4 65,main4 66,main4 67,main4 68,main4 69,main4 7,main4 70,main4 71,main4 72,main4 73,main4 74,main4 75,main4 76,main4 77,main4 78,main4 79,main4 8,main4 80,main4 81,main4 82,main4 83,main4 84,main4 85,main4 86,main4 87,main4 88,main4 89,main4 9,main4 90,main4 91,main4 92,main4 93,main4 94,main4 95,main4 96,main4 97,main4 98,main4 99
+5000
+86 - such that Calls* such that Calls*
+procedure p, q;
+Select p.procName such that Calls*(p, _) such that Calls*(q, p)
+main2,main3,main4
+5000
+87 - such that Calls* such that Next
+procedure p; prog_line n;
+Select n such that Calls*(p, _) such that Next(14, n)
+15
+5000
+88 - such that Calls* such that Next*
+procedure p; prog_line n;
+Select <n, p> such that Calls*(p, _) such that Next*(1, n)
+10 main1,10 main2,10 main3,10 main4,11 main1,11 main2,11 main3,11 main4,12 main1,12 main2,12 main3,12 main4,13 main1,13 main2,13 main3,13 main4,14 main1,14 main2,14 main3,14 main4,15 main1,15 main2,15 main3,15 main4,16 main1,16 main2,16 main3,16 main4,17 main1,17 main2,17 main3,17 main4,18 main1,18 main2,18 main3,18 main4,19 main1,19 main2,19 main3,19 main4,2 main1,2 main2,2 main3,2 main4,20 main1,20 main2,20 main3,20 main4,3 main1,3 main2,3 main3,3 main4,4 main1,4 main2,4 main3,4 main4,5 main1,5 main2,5 main3,5 main4,6 main1,6 main2,6 main3,6 main4,7 main1,7 main2,7 main3,7 main4,8 main1,8 main2,8 main3,8 main4,9 main1,9 main2,9 main3,9 main4
+5000
+89 - such that Next such that Next
+prog_line p, q;
+Select p such that Next(19, p) such that Next(p, 23)
+none
+5000
+90 - such that Next such that Next*
+prog_line p;
+Select p such that Next(19, p) such that Next*(p, 23)
+none
+5000
+91 - such that Next* such that Follows
+prog_line p; assign a;
+Select p such that Next*(14, p) such that Follows(p, a)
+10,11,13,15,17,18,19
+5000
+92 - such that Next* such that UsesS (not sure about this)
+prog_line p; variable v;
+Select <p, v> such that Next*(p, 20) such that Uses(p, v)
+1 varMain1,1 varMain10,1 varMain2,1 varMain3,1 varMain4,1 varMain5,1 varMain6,1 varMain7,1 varMain8,1 varMain9,10 e,11 a,11 d,11 varMain41,11 varMain42,11 varMain43,11 varMain44,11 varMain45,11 varMain46,11 varMain47,11 varMain48,11 varMain49,11 varMain50,12 b,12 e,12 varMain51,12 varMain52,12 varMain53,12 varMain54,12 varMain55,12 varMain56,12 varMain57,12 varMain58,12 varMain59,12 varMain60,13 a,13 b,13 varMain61,13 varMain62,13 varMain63,13 varMain64,13 varMain65,13 varMain66,13 varMain67,13 varMain68,13 varMain69,13 varMain70,14 b,14 c,14 varMain71,14 varMain72,14 varMain73,14 varMain74,14 varMain75,14 varMain76,14 varMain77,14 varMain78,14 varMain79,14 varMain80,15 c,16 c,16 varMain81,16 varMain82,16 varMain83,16 varMain84,16 varMain85,16 varMain86,16 varMain87,16 varMain88,16 varMain89,16 varMain90,17 a,17 aa,17 ab,17 ac,17 ad,17 ag,17 ah,17 ai,17 aj,17 ak,17 al,17 b,17 c,17 d,17 e,17 i,17 j,17 k,17 l,17 m,17 n,17 q,17 r,17 s,17 t,17 u,17 v,17 varAMain1,17 varAMain10,17 varAMain100,17 varAMain11,17 varAMain12,17 varAMain13,17 varAMain14,17 varAMain15,17 varAMain16,17 varAMain17,17 varAMain18,17 varAMain19,17 varAMain2,17 varAMain20,17 varAMain21,17 varAMain22,17 varAMain23,17 varAMain24,17 varAMain25,17 varAMain26,17 varAMain27,17 varAMain28,17 varAMain29,17 varAMain3,17 varAMain30,17 varAMain31,17 varAMain32,17 varAMain33,17 varAMain34,17 varAMain35,17 varAMain36,17 varAMain37,17 varAMain38,17 varAMain39,17 varAMain4,17 varAMain40,17 varAMain41,17 varAMain42,17 varAMain43,17 varAMain44,17 varAMain45,17 varAMain46,17 varAMain47,17 varAMain48,17 varAMain49,17 varAMain5,17 varAMain50,17 varAMain51,17 varAMain52,17 varAMain53,17 varAMain54,17 varAMain55,17 varAMain56,17 varAMain57,17 varAMain58,17 varAMain59,17 varAMain6,17 varAMain60,17 varAMain61,17 varAMain62,17 varAMain63,17 varAMain64,17 varAMain65,17 varAMain66,17 varAMain67,17 varAMain68,17 varAMain69,17 varAMain7,17 varAMain70,17 varAMain71,17 varAMain72,17 varAMain73,17 varAMain74,17 varAMain75,17 varAMain76,17 varAMain77,17 varAMain78,17 varAMain79,17 varAMain8,17 varAMain80,17 varAMain81,17 varAMain82,17 varAMain83,17 varAMain84,17 varAMain85,17 varAMain86,17 varAMain87,17 varAMain88,17 varAMain89,17 varAMain9,17 varAMain90,17 varAMain91,17 varAMain92,17 varAMain93,17 varAMain94,17 varAMain95,17 varAMain96,17 varAMain97,17 varAMain98,17 varAMain99,17 varBMain1,17 varBMain10,17 varBMain100,17 varBMain11,17 varBMain12,17 varBMain13,17 varBMain14,17 varBMain15,17 varBMain16,17 varBMain17,17 varBMain18,17 varBMain19,17 varBMain2,17 varBMain20,17 varBMain21,17 varBMain22,17 varBMain23,17 varBMain24,17 varBMain25,17 varBMain26,17 varBMain27,17 varBMain28,17 varBMain29,17 varBMain3,17 varBMain30,17 varBMain31,17 varBMain32,17 varBMain33,17 varBMain34,17 varBMain35,17 varBMain36,17 varBMain37,17 varBMain38,17 varBMain39,17 varBMain4,17 varBMain40,17 varBMain41,17 varBMain42,17 varBMain43,17 varBMain44,17 varBMain45,17 varBMain46,17 varBMain47,17 varBMain48,17 varBMain49,17 varBMain5,17 varBMain50,17 varBMain51,17 varBMain52,17 varBMain53,17 varBMain54,17 varBMain55,17 varBMain56,17 varBMain57,17 varBMain58,17 varBMain59,17 varBMain6,17 varBMain60,17 varBMain61,17 varBMain62,17 varBMain63,17 varBMain64,17 varBMain65,17 varBMain66,17 varBMain67,17 varBMain68,17 varBMain69,17 varBMain7,17 varBMain70,17 varBMain71,17 varBMain72,17 varBMain73,17 varBMain74,17 varBMain75,17 varBMain76,17 varBMain77,17 varBMain78,17 varBMain79,17 varBMain8,17 varBMain80,17 varBMain81,17 varBMain82,17 varBMain83,17 varBMain84,17 varBMain85,17 varBMain86,17 varBMain87,17 varBMain88,17 varBMain89,17 varBMain9,17 varBMain90,17 varBMain91,17 varBMain92,17 varBMain93,17 varBMain94,17 varBMain95,17 varBMain96,17 varBMain97,17 varBMain98,17 varBMain99,17 varCMain1,17 varCMain10,17 varCMain100,17 varCMain11,17 varCMain12,17 varCMain13,17 varCMain14,17 varCMain15,17 varCMain16,17 varCMain17,17 varCMain18,17 varCMain19,17 varCMain2,17 varCMain20,17 varCMain21,17 varCMain22,17 varCMain23,17 varCMain24,17 varCMain25,17 varCMain26,17 varCMain27,17 varCMain28,17 varCMain29,17 varCMain3,17 varCMain30,17 varCMain31,17 varCMain32,17 varCMain33,17 varCMain34,17 varCMain35,17 varCMain36,17 varCMain37,17 varCMain38,17 varCMain39,17 varCMain4,17 varCMain40,17 varCMain41,17 varCMain42,17 varCMain43,17 varCMain44,17 varCMain45,17 varCMain46,17 varCMain47,17 varCMain48,17 varCMain49,17 varCMain5,17 varCMain50,17 varCMain51,17 varCMain52,17 varCMain53,17 varCMain54,17 varCMain55,17 varCMain56,17 varCMain57,17 varCMain58,17 varCMain59,17 varCMain6,17 varCMain60,17 varCMain61,17 varCMain62,17 varCMain63,17 varCMain64,17 varCMain65,17 varCMain66,17 varCMain67,17 varCMain68,17 varCMain69,17 varCMain7,17 varCMain70,17 varCMain71,17 varCMain72,17 varCMain73,17 varCMain74,17 varCMain75,17 varCMain76,17 varCMain77,17 varCMain78,17 varCMain79,17 varCMain8,17 varCMain80,17 varCMain81,17 varCMain82,17 varCMain83,17 varCMain84,17 varCMain85,17 varCMain86,17 varCMain87,17 varCMain88,17 varCMain89,17 varCMain9,17 varCMain90,17 varCMain91,17 varCMain92,17 varCMain93,17 varCMain94,17 varCMain95,17 varCMain96,17 varCMain97,17 varCMain98,17 varCMain99,17 varDMain1,17 varDMain10,17 varDMain100,17 varDMain11,17 varDMain12,17 varDMain13,17 varDMain14,17 varDMain15,17 varDMain16,17 varDMain17,17 varDMain18,17 varDMain19,17 varDMain2,17 varDMain20,17 varDMain21,17 varDMain22,17 varDMain23,17 varDMain24,17 varDMain25,17 varDMain26,17 varDMain27,17 varDMain28,17 varDMain29,17 varDMain3,17 varDMain30,17 varDMain31,17 varDMain32,17 varDMain33,17 varDMain34,17 varDMain35,17 varDMain36,17 varDMain37,17 varDMain38,17 varDMain39,17 varDMain4,17 varDMain40,17 varDMain41,17 varDMain42,17 varDMain43,17 varDMain44,17 varDMain45,17 varDMain46,17 varDMain47,17 varDMain48,17 varDMain49,17 varDMain5,17 varDMain50,17 varDMain51,17 varDMain52,17 varDMain53,17 varDMain54,17 varDMain55,17 varDMain56,17 varDMain57,17 varDMain58,17 varDMain59,17 varDMain6,17 varDMain60,17 varDMain61,17 varDMain62,17 varDMain63,17 varDMain64,17 varDMain65,17 varDMain66,17 varDMain67,17 varDMain68,17 varDMain69,17 varDMain7,17 varDMain70,17 varDMain71,17 varDMain72,17 varDMain73,17 varDMain74,17 varDMain75,17 varDMain76,17 varDMain77,17 varDMain78,17 varDMain79,17 varDMain8,17 varDMain80,17 varDMain81,17 varDMain82,17 varDMain83,17 varDMain84,17 varDMain85,17 varDMain86,17 varDMain87,17 varDMain88,17 varDMain89,17 varDMain9,17 varDMain90,17 varDMain91,17 varDMain92,17 varDMain93,17 varDMain94,17 varDMain95,17 varDMain96,17 varDMain97,17 varDMain98,17 varDMain99,17 y,17 z,18 c,18 d,18 e,19 f,19 varMain100,19 varMain91,19 varMain92,19 varMain93,19 varMain94,19 varMain95,19 varMain96,19 varMain97,19 varMain98,19 varMain99,2 varMain11,2 varMain12,2 varMain13,2 varMain14,2 varMain15,2 varMain16,2 varMain17,2 varMain18,2 varMain19,2 varMain20,3 a,3 b,3 varMain21,3 varMain22,3 varMain23,3 varMain24,3 varMain25,3 varMain26,3 varMain27,3 varMain28,3 varMain29,3 varMain30,4 a,4 b,4 c,4 d,4 e,4 varMain31,4 varMain32,4 varMain33,4 varMain34,4 varMain35,4 varMain36,4 varMain37,4 varMain38,4 varMain39,4 varMain40,4 varMain41,4 varMain42,4 varMain43,4 varMain44,4 varMain45,4 varMain46,4 varMain47,4 varMain48,4 varMain49,4 varMain50,4 varMain51,4 varMain52,4 varMain53,4 varMain54,4 varMain55,4 varMain56,4 varMain57,4 varMain58,4 varMain59,4 varMain60,4 varMain61,4 varMain62,4 varMain63,4 varMain64,4 varMain65,4 varMain66,4 varMain67,4 varMain68,4 varMain69,4 varMain70,4 varMain71,4 varMain72,4 varMain73,4 varMain74,4 varMain75,4 varMain76,4 varMain77,4 varMain78,4 varMain79,4 varMain80,4 varMain81,4 varMain82,4 varMain83,4 varMain84,4 varMain85,4 varMain86,4 varMain87,4 varMain88,4 varMain89,4 varMain90,7 a,7 b,7 c,7 d,7 e,7 varMain31,7 varMain32,7 varMain33,7 varMain34,7 varMain35,7 varMain36,7 varMain37,7 varMain38,7 varMain39,7 varMain40,7 varMain41,7 varMain42,7 varMain43,7 varMain44,7 varMain45,7 varMain46,7 varMain47,7 varMain48,7 varMain49,7 varMain50,7 varMain51,7 varMain52,7 varMain53,7 varMain54,7 varMain55,7 varMain56,7 varMain57,7 varMain58,7 varMain59,7 varMain60,7 varMain61,7 varMain62,7 varMain63,7 varMain64,7 varMain65,7 varMain66,7 varMain67,7 varMain68,7 varMain69,7 varMain70,7 varMain71,7 varMain72,7 varMain73,7 varMain74,7 varMain75,7 varMain76,7 varMain77,7 varMain78,7 varMain79,7 varMain80,8 e,8 varMain31,8 varMain32,8 varMain33,8 varMain34,8 varMain35,8 varMain36,8 varMain37,8 varMain38,8 varMain39,8 varMain40,9 d
+5000
+93 - such that Next* such that UsesP
+prog_line p;
+Select p such that Next*(p, 15) such that Uses("computeCentroid", _)
+none
+5000
+94 - such that Next* such that ModifiesS
+prog_line p; variable v;
+Select <p, v> such that Next*(17, p) such that Modifies(p, v)
+18 f,19 g,20 h
+5000
+95 - such that Next* such that ModifiesP
+prog_line n; procedure p;
+Select n such that Modifies(p, _) such that Next*(n, 19)
+1,10,11,12,13,14,15,16,17,18,2,3,4,5,6,7,8,9
+5000
+96 - pattern assign pattern assign
+assign a; variable v;
+Select <a,v> pattern a(v, "cenX + x") pattern a(v, _"cenX"_)
+none
+5000
+97 - with attr with synonym
+prog_line p; constant c; assign a;
+Select p with c.value = p with a.stmt# = p
+1,2
+5000
+98 - with attr and ident
+variable v1, v2;
+Select v1 with v1.varName = "cenX" and v2.varName = "cenY"
+none
+5000
+99 - with synonym with attr with ident
+prog_line p; call c; assign a;
+Select <p, c> with p = a.stmt# with p = p with c.procName = "readPoint"
+none
+5000
+100 - such that Uses pattern assign with attr
+assign a; variable v; prog_line p;
+Select a such that Uses(a, v) pattern a(v, _"count"_) with a.stmt# = p
+none
+5000
+101 - Next* prog_line and prog_line
+prog_line p1, p2;
+Select <p2, p1> such that Next*(p1, p2)
+10 1,10 10,10 11,10 12,10 13,10 14,10 15,10 16,10 2,10 3,10 4,10 5,10 6,10 7,10 8,10 9,100 84,100 85,100 86,100 87,100 88,100 89,100 90,100 91,100 92,100 93,100 94,100 95,100 96,100 97,100 98,100 99,101 100,101 84,101 85,101 86,101 87,101 88,101 89,101 90,101 91,101 92,101 93,101 94,101 95,101 96,101 97,101 98,101 99,102 100,102 101,102 84,102 85,102 86,102 87,102 88,102 89,102 90,102 91,102 92,102 93,102 94,102 95,102 96,102 97,102 98,102 99,11 1,11 10,11 11,11 12,11 13,11 14,11 15,11 16,11 2,11 3,11 4,11 5,11 6,11 7,11 8,11 9,12 1,12 10,12 11,12 12,12 13,12 14,12 15,12 16,12 2,12 3,12 4,12 5,12 6,12 7,12 8,12 9,13 1,13 10,13 11,13 12,13 13,13 14,13 15,13 16,13 2,13 3,13 4,13 5,13 6,13 7,13 8,13 9,14 1,14 10,14 11,14 12,14 13,14 14,14 15,14 16,14 2,14 3,14 4,14 5,14 6,14 7,14 8,14 9,15 1,15 10,15 11,15 12,15 13,15 14,15 15,15 16,15 2,15 3,15 4,15 5,15 6,15 7,15 8,15 9,16 1,16 10,16 11,16 12,16 13,16 14,16 15,16 16,16 2,16 3,16 4,16 5,16 6,16 7,16 8,16 9,17 1,17 10,17 11,17 12,17 13,17 14,17 15,17 16,17 2,17 3,17 4,17 5,17 6,17 7,17 8,17 9,18 1,18 10,18 11,18 12,18 13,18 14,18 15,18 16,18 17,18 2,18 3,18 4,18 5,18 6,18 7,18 8,18 9,19 1,19 10,19 11,19 12,19 13,19 14,19 15,19 16,19 17,19 18,19 2,19 3,19 4,19 5,19 6,19 7,19 8,19 9,2 1,20 1,20 10,20 11,20 12,20 13,20 14,20 15,20 16,20 17,20 18,20 19,20 2,20 3,20 4,20 5,20 6,20 7,20 8,20 9,22 21,23 21,23 22,24 21,24 22,24 23,24 24,24 25,24 26,24 27,24 28,24 29,24 30,24 31,24 32,24 33,24 34,24 35,24 36,24 37,24 38,24 39,25 21,25 22,25 23,25 24,25 25,25 26,25 27,25 28,25 29,25 30,25 31,25 32,25 33,25 34,25 35,25 36,25 37,25 38,25 39,26 21,26 22,26 23,26 24,26 25,26 26,26 27,26 28,26 29,26 30,26 31,26 32,26 33,26 34,26 35,26 36,26 37,26 38,26 39,27 21,27 22,27 23,27 24,27 25,27 26,27 27,27 28,27 29,27 30,27 31,27 32,27 33,27 34,27 35,27 36,27 37,27 38,27 39,28 21,28 22,28 23,28 24,28 25,28 26,28 27,28 28,28 29,28 30,28 31,28 32,28 33,28 34,28 35,28 36,28 37,28 38,28 39,29 21,29 22,29 23,29 24,29 25,29 26,29 27,29 28,29 29,29 30,29 31,29 32,29 33,29 34,29 35,29 36,29 37,29 38,29 39,3 1,3 2,30 21,30 22,30 23,30 24,30 25,30 26,30 27,30 28,30 29,30 30,30 31,30 32,30 33,30 34,30 35,30 36,30 37,30 38,30 39,31 21,31 22,31 23,31 24,31 25,31 26,31 27,31 28,31 29,31 30,31 31,31 32,31 33,31 34,31 35,31 36,31 37,31 38,31 39,32 21,32 22,32 23,32 24,32 25,32 26,32 27,32 28,32 29,32 30,32 31,32 32,32 33,32 34,32 35,32 36,32 37,32 38,32 39,33 21,33 22,33 23,33 24,33 25,33 26,33 27,33 28,33 29,33 30,33 31,33 32,33 33,33 34,33 35,33 36,33 37,33 38,33 39,34 21,34 22,34 23,34 24,34 25,34 26,34 27,34 28,34 29,34 30,34 31,34 32,34 33,34 34,34 35,34 36,34 37,34 38,34 39,35 21,35 22,35 23,35 24,35 25,35 26,35 27,35 28,35 29,35 30,35 31,35 32,35 33,35 34,35 35,35 36,35 37,35 38,35 39,36 21,36 22,36 23,36 24,36 25,36 26,36 27,36 28,36 29,36 30,36 31,36 32,36 33,36 34,36 35,36 36,36 37,36 38,36 39,37 21,37 22,37 23,37 24,37 25,37 26,37 27,37 28,37 29,37 30,37 31,37 32,37 33,37 34,37 35,37 36,37 37,37 38,37 39,38 21,38 22,38 23,38 24,38 25,38 26,38 27,38 28,38 29,38 30,38 31,38 32,38 33,38 34,38 35,38 36,38 37,38 38,38 39,39 21,39 22,39 23,39 24,39 25,39 26,39 27,39 28,39 29,39 30,39 31,39 32,39 33,39 34,39 35,39 36,39 37,39 38,39 39,4 1,4 10,4 11,4 12,4 13,4 14,4 15,4 16,4 2,4 3,4 4,4 5,4 6,4 7,4 8,4 9,40 21,40 22,40 23,40 24,40 25,40 26,40 27,40 28,40 29,40 30,40 31,40 32,40 33,40 34,40 35,40 36,40 37,40 38,40 39,41 21,41 22,41 23,41 24,41 25,41 26,41 27,41 28,41 29,41 30,41 31,41 32,41 33,41 34,41 35,41 36,41 37,41 38,41 39,41 40,42 21,42 22,42 23,42 24,42 25,42 26,42 27,42 28,42 29,42 30,42 31,42 32,42 33,42 34,42 35,42 36,42 37,42 38,42 39,42 40,42 41,43 21,43 22,43 23,43 24,43 25,43 26,43 27,43 28,43 29,43 30,43 31,43 32,43 33,43 34,43 35,43 36,43 37,43 38,43 39,43 40,43 41,43 42,45 44,46 44,46 45,47 44,47 45,47 46,47 47,47 48,47 49,47 50,47 51,47 52,47 53,47 54,47 55,47 56,47 57,47 58,47 59,48 44,48 45,48 46,48 47,48 48,48 49,48 50,48 51,48 52,48 53,48 54,48 55,48 56,48 57,48 58,48 59,49 44,49 45,49 46,49 47,49 48,49 49,49 50,49 51,49 52,49 53,49 54,49 55,49 56,49 57,49 58,49 59,5 1,5 10,5 11,5 12,5 13,5 14,5 15,5 16,5 2,5 3,5 4,5 5,5 6,5 7,5 8,5 9,50 44,50 45,50 46,50 47,50 48,50 49,50 50,50 51,50 52,50 53,50 54,50 55,50 56,50 57,50 58,50 59,51 44,51 45,51 46,51 47,51 48,51 49,51 50,51 51,51 52,51 53,51 54,51 55,51 56,51 57,51 58,51 59,52 44,52 45,52 46,52 47,52 48,52 49,52 50,52 51,52 52,52 53,52 54,52 55,52 56,52 57,52 58,52 59,53 44,53 45,53 46,53 47,53 48,53 49,53 50,53 51,53 52,53 53,53 54,53 55,53 56,53 57,53 58,53 59,54 44,54 45,54 46,54 47,54 48,54 49,54 50,54 51,54 52,54 53,54 54,54 55,54 56,54 57,54 58,54 59,55 44,55 45,55 46,55 47,55 48,55 49,55 50,55 51,55 52,55 53,55 54,55 55,55 56,55 57,55 58,55 59,56 44,56 45,56 46,56 47,56 48,56 49,56 50,56 51,56 52,56 53,56 54,56 55,56 56,56 57,56 58,56 59,57 44,57 45,57 46,57 47,57 48,57 49,57 50,57 51,57 52,57 53,57 54,57 55,57 56,57 57,57 58,57 59,58 44,58 45,58 46,58 47,58 48,58 49,58 50,58 51,58 52,58 53,58 54,58 55,58 56,58 57,58 58,58 59,59 44,59 45,59 46,59 47,59 48,59 49,59 50,59 51,59 52,59 53,59 54,59 55,59 56,59 57,59 58,59 59,6 1,6 10,6 11,6 12,6 13,6 14,6 15,6 16,6 2,6 3,6 4,6 5,6 6,6 7,6 8,6 9,60 44,60 45,60 46,60 47,60 48,60 49,60 50,60 51,60 52,60 53,60 54,60 55,60 56,60 57,60 58,60 59,61 44,61 45,61 46,61 47,61 48,61 49,61 50,61 51,61 52,61 53,61 54,61 55,61 56,61 57,61 58,61 59,61 60,62 44,62 45,62 46,62 47,62 48,62 49,62 50,62 51,62 52,62 53,62 54,62 55,62 56,62 57,62 58,62 59,62 60,62 61,63 44,63 45,63 46,63 47,63 48,63 49,63 50,63 51,63 52,63 53,63 54,63 55,63 56,63 57,63 58,63 59,63 60,63 61,63 62,65 64,66 64,66 65,67 64,67 65,67 66,67 67,67 68,67 69,67 70,67 71,67 72,67 73,67 74,67 75,67 76,67 77,67 78,67 79,68 64,68 65,68 66,68 67,68 68,68 69,68 70,68 71,68 72,68 73,68 74,68 75,68 76,68 77,68 78,68 79,69 64,69 65,69 66,69 67,69 68,69 69,69 70,69 71,69 72,69 73,69 74,69 75,69 76,69 77,69 78,69 79,7 1,7 10,7 11,7 12,7 13,7 14,7 15,7 16,7 2,7 3,7 4,7 5,7 6,7 7,7 8,7 9,70 64,70 65,70 66,70 67,70 68,70 69,70 70,70 71,70 72,70 73,70 74,70 75,70 76,70 77,70 78,70 79,71 64,71 65,71 66,71 67,71 68,71 69,71 70,71 71,71 72,71 73,71 74,71 75,71 76,71 77,71 78,71 79,72 64,72 65,72 66,72 67,72 68,72 69,72 70,72 71,72 72,72 73,72 74,72 75,72 76,72 77,72 78,72 79,73 64,73 65,73 66,73 67,73 68,73 69,73 70,73 71,73 72,73 73,73 74,73 75,73 76,73 77,73 78,73 79,74 64,74 65,74 66,74 67,74 68,74 69,74 70,74 71,74 72,74 73,74 74,74 75,74 76,74 77,74 78,74 79,75 64,75 65,75 66,75 67,75 68,75 69,75 70,75 71,75 72,75 73,75 74,75 75,75 76,75 77,75 78,75 79,76 64,76 65,76 66,76 67,76 68,76 69,76 70,76 71,76 72,76 73,76 74,76 75,76 76,76 77,76 78,76 79,77 64,77 65,77 66,77 67,77 68,77 69,77 70,77 71,77 72,77 73,77 74,77 75,77 76,77 77,77 78,77 79,78 64,78 65,78 66,78 67,78 68,78 69,78 70,78 71,78 72,78 73,78 74,78 75,78 76,78 77,78 78,78 79,79 64,79 65,79 66,79 67,79 68,79 69,79 70,79 71,79 72,79 73,79 74,79 75,79 76,79 77,79 78,79 79,8 1,8 10,8 11,8 12,8 13,8 14,8 15,8 16,8 2,8 3,8 4,8 5,8 6,8 7,8 8,8 9,80 64,80 65,80 66,80 67,80 68,80 69,80 70,80 71,80 72,80 73,80 74,80 75,80 76,80 77,80 78,80 79,81 64,81 65,81 66,81 67,81 68,81 69,81 70,81 71,81 72,81 73,81 74,81 75,81 76,81 77,81 78,81 79,81 80,82 64,82 65,82 66,82 67,82 68,82 69,82 70,82 71,82 72,82 73,82 74,82 75,82 76,82 77,82 78,82 79,82 80,82 81,83 64,83 65,83 66,83 67,83 68,83 69,83 70,83 71,83 72,83 73,83 74,83 75,83 76,83 77,83 78,83 79,83 80,83 81,83 82,85 84,86 84,86 85,87 84,87 85,87 86,87 87,87 88,87 89,87 90,87 91,87 92,87 93,87 94,87 95,87 96,87 97,87 98,87 99,88 84,88 85,88 86,88 87,88 88,88 89,88 90,88 91,88 92,88 93,88 94,88 95,88 96,88 97,88 98,88 99,89 84,89 85,89 86,89 87,89 88,89 89,89 90,89 91,89 92,89 93,89 94,89 95,89 96,89 97,89 98,89 99,9 1,9 10,9 11,9 12,9 13,9 14,9 15,9 16,9 2,9 3,9 4,9 5,9 6,9 7,9 8,9 9,90 84,90 85,90 86,90 87,90 88,90 89,90 90,90 91,90 92,90 93,90 94,90 95,90 96,90 97,90 98,90 99,91 84,91 85,91 86,91 87,91 88,91 89,91 90,91 91,91 92,91 93,91 94,91 95,91 96,91 97,91 98,91 99,92 84,92 85,92 86,92 87,92 88,92 89,92 90,92 91,92 92,92 93,92 94,92 95,92 96,92 97,92 98,92 99,93 84,93 85,93 86,93 87,93 88,93 89,93 90,93 91,93 92,93 93,93 94,93 95,93 96,93 97,93 98,93 99,94 84,94 85,94 86,94 87,94 88,94 89,94 90,94 91,94 92,94 93,94 94,94 95,94 96,94 97,94 98,94 99,95 84,95 85,95 86,95 87,95 88,95 89,95 90,95 91,95 92,95 93,95 94,95 95,95 96,95 97,95 98,95 99,96 84,96 85,96 86,96 87,96 88,96 89,96 90,96 91,96 92,96 93,96 94,96 95,96 96,96 97,96 98,96 99,97 84,97 85,97 86,97 87,97 88,97 89,97 90,97 91,97 92,97 93,97 94,97 95,97 96,97 97,97 98,97 99,98 84,98 85,98 86,98 87,98 88,98 89,98 90,98 91,98 92,98 93,98 94,98 95,98 96,98 97,98 98,98 99,99 84,99 85,99 86,99 87,99 88,99 89,99 90,99 91,99 92,99 93,99 94,99 95,99 96,99 97,99 98,99 99
+5000
+102 - Uses test, procedure and synonym
+variable v; procedure p;
+Select <v, p> such that Uses(p, v)
+a main1,a main2,aa main1,aa main2,aa main3,aa main4,ab main1,ab main2,ab main3,ab main4,ac main1,ac main2,ac main3,ac main4,ad main1,ad main2,ad main3,ad main4,ag main1,ag main2,ag main3,ag main4,ag main5,ah main1,ah main2,ah main3,ah main4,ah main5,ai main1,ai main2,ai main3,ai main4,ai main5,aj main1,aj main2,aj main3,aj main4,aj main5,ak main1,ak main2,ak main3,ak main4,ak main5,al main1,al main2,al main3,al main4,al main5,b main1,b main2,c main1,c main2,d main1,d main2,e main1,e main2,f main1,i main1,i main2,j main1,j main2,k main1,k main2,l main1,l main2,m main1,m main2,n main1,n main2,q main1,q main2,q main3,r main1,r main2,r main3,s main1,s main2,s main3,t main1,t main2,t main3,u main1,u main2,u main3,v main1,v main2,v main3,varAMain1 main1,varAMain1 main2,varAMain10 main1,varAMain10 main2,varAMain100 main1,varAMain100 main2,varAMain11 main1,varAMain11 main2,varAMain12 main1,varAMain12 main2,varAMain13 main1,varAMain13 main2,varAMain14 main1,varAMain14 main2,varAMain15 main1,varAMain15 main2,varAMain16 main1,varAMain16 main2,varAMain17 main1,varAMain17 main2,varAMain18 main1,varAMain18 main2,varAMain19 main1,varAMain19 main2,varAMain2 main1,varAMain2 main2,varAMain20 main1,varAMain20 main2,varAMain21 main1,varAMain21 main2,varAMain22 main1,varAMain22 main2,varAMain23 main1,varAMain23 main2,varAMain24 main1,varAMain24 main2,varAMain25 main1,varAMain25 main2,varAMain26 main1,varAMain26 main2,varAMain27 main1,varAMain27 main2,varAMain28 main1,varAMain28 main2,varAMain29 main1,varAMain29 main2,varAMain3 main1,varAMain3 main2,varAMain30 main1,varAMain30 main2,varAMain31 main1,varAMain31 main2,varAMain32 main1,varAMain32 main2,varAMain33 main1,varAMain33 main2,varAMain34 main1,varAMain34 main2,varAMain35 main1,varAMain35 main2,varAMain36 main1,varAMain36 main2,varAMain37 main1,varAMain37 main2,varAMain38 main1,varAMain38 main2,varAMain39 main1,varAMain39 main2,varAMain4 main1,varAMain4 main2,varAMain40 main1,varAMain40 main2,varAMain41 main1,varAMain41 main2,varAMain42 main1,varAMain42 main2,varAMain43 main1,varAMain43 main2,varAMain44 main1,varAMain44 main2,varAMain45 main1,varAMain45 main2,varAMain46 main1,varAMain46 main2,varAMain47 main1,varAMain47 main2,varAMain48 main1,varAMain48 main2,varAMain49 main1,varAMain49 main2,varAMain5 main1,varAMain5 main2,varAMain50 main1,varAMain50 main2,varAMain51 main1,varAMain51 main2,varAMain52 main1,varAMain52 main2,varAMain53 main1,varAMain53 main2,varAMain54 main1,varAMain54 main2,varAMain55 main1,varAMain55 main2,varAMain56 main1,varAMain56 main2,varAMain57 main1,varAMain57 main2,varAMain58 main1,varAMain58 main2,varAMain59 main1,varAMain59 main2,varAMain6 main1,varAMain6 main2,varAMain60 main1,varAMain60 main2,varAMain61 main1,varAMain61 main2,varAMain62 main1,varAMain62 main2,varAMain63 main1,varAMain63 main2,varAMain64 main1,varAMain64 main2,varAMain65 main1,varAMain65 main2,varAMain66 main1,varAMain66 main2,varAMain67 main1,varAMain67 main2,varAMain68 main1,varAMain68 main2,varAMain69 main1,varAMain69 main2,varAMain7 main1,varAMain7 main2,varAMain70 main1,varAMain70 main2,varAMain71 main1,varAMain71 main2,varAMain72 main1,varAMain72 main2,varAMain73 main1,varAMain73 main2,varAMain74 main1,varAMain74 main2,varAMain75 main1,varAMain75 main2,varAMain76 main1,varAMain76 main2,varAMain77 main1,varAMain77 main2,varAMain78 main1,varAMain78 main2,varAMain79 main1,varAMain79 main2,varAMain8 main1,varAMain8 main2,varAMain80 main1,varAMain80 main2,varAMain81 main1,varAMain81 main2,varAMain82 main1,varAMain82 main2,varAMain83 main1,varAMain83 main2,varAMain84 main1,varAMain84 main2,varAMain85 main1,varAMain85 main2,varAMain86 main1,varAMain86 main2,varAMain87 main1,varAMain87 main2,varAMain88 main1,varAMain88 main2,varAMain89 main1,varAMain89 main2,varAMain9 main1,varAMain9 main2,varAMain90 main1,varAMain90 main2,varAMain91 main1,varAMain91 main2,varAMain92 main1,varAMain92 main2,varAMain93 main1,varAMain93 main2,varAMain94 main1,varAMain94 main2,varAMain95 main1,varAMain95 main2,varAMain96 main1,varAMain96 main2,varAMain97 main1,varAMain97 main2,varAMain98 main1,varAMain98 main2,varAMain99 main1,varAMain99 main2,varBMain1 main1,varBMain1 main2,varBMain1 main3,varBMain10 main1,varBMain10 main2,varBMain10 main3,varBMain100 main1,varBMain100 main2,varBMain100 main3,varBMain11 main1,varBMain11 main2,varBMain11 main3,varBMain12 main1,varBMain12 main2,varBMain12 main3,varBMain13 main1,varBMain13 main2,varBMain13 main3,varBMain14 main1,varBMain14 main2,varBMain14 main3,varBMain15 main1,varBMain15 main2,varBMain15 main3,varBMain16 main1,varBMain16 main2,varBMain16 main3,varBMain17 main1,varBMain17 main2,varBMain17 main3,varBMain18 main1,varBMain18 main2,varBMain18 main3,varBMain19 main1,varBMain19 main2,varBMain19 main3,varBMain2 main1,varBMain2 main2,varBMain2 main3,varBMain20 main1,varBMain20 main2,varBMain20 main3,varBMain21 main1,varBMain21 main2,varBMain21 main3,varBMain22 main1,varBMain22 main2,varBMain22 main3,varBMain23 main1,varBMain23 main2,varBMain23 main3,varBMain24 main1,varBMain24 main2,varBMain24 main3,varBMain25 main1,varBMain25 main2,varBMain25 main3,varBMain26 main1,varBMain26 main2,varBMain26 main3,varBMain27 main1,varBMain27 main2,varBMain27 main3,varBMain28 main1,varBMain28 main2,varBMain28 main3,varBMain29 main1,varBMain29 main2,varBMain29 main3,varBMain3 main1,varBMain3 main2,varBMain3 main3,varBMain30 main1,varBMain30 main2,varBMain30 main3,varBMain31 main1,varBMain31 main2,varBMain31 main3,varBMain32 main1,varBMain32 main2,varBMain32 main3,varBMain33 main1,varBMain33 main2,varBMain33 main3,varBMain34 main1,varBMain34 main2,varBMain34 main3,varBMain35 main1,varBMain35 main2,varBMain35 main3,varBMain36 main1,varBMain36 main2,varBMain36 main3,varBMain37 main1,varBMain37 main2,varBMain37 main3,varBMain38 main1,varBMain38 main2,varBMain38 main3,varBMain39 main1,varBMain39 main2,varBMain39 main3,varBMain4 main1,varBMain4 main2,varBMain4 main3,varBMain40 main1,varBMain40 main2,varBMain40 main3,varBMain41 main1,varBMain41 main2,varBMain41 main3,varBMain42 main1,varBMain42 main2,varBMain42 main3,varBMain43 main1,varBMain43 main2,varBMain43 main3,varBMain44 main1,varBMain44 main2,varBMain44 main3,varBMain45 main1,varBMain45 main2,varBMain45 main3,varBMain46 main1,varBMain46 main2,varBMain46 main3,varBMain47 main1,varBMain47 main2,varBMain47 main3,varBMain48 main1,varBMain48 main2,varBMain48 main3,varBMain49 main1,varBMain49 main2,varBMain49 main3,varBMain5 main1,varBMain5 main2,varBMain5 main3,varBMain50 main1,varBMain50 main2,varBMain50 main3,varBMain51 main1,varBMain51 main2,varBMain51 main3,varBMain52 main1,varBMain52 main2,varBMain52 main3,varBMain53 main1,varBMain53 main2,varBMain53 main3,varBMain54 main1,varBMain54 main2,varBMain54 main3,varBMain55 main1,varBMain55 main2,varBMain55 main3,varBMain56 main1,varBMain56 main2,varBMain56 main3,varBMain57 main1,varBMain57 main2,varBMain57 main3,varBMain58 main1,varBMain58 main2,varBMain58 main3,varBMain59 main1,varBMain59 main2,varBMain59 main3,varBMain6 main1,varBMain6 main2,varBMain6 main3,varBMain60 main1,varBMain60 main2,varBMain60 main3,varBMain61 main1,varBMain61 main2,varBMain61 main3,varBMain62 main1,varBMain62 main2,varBMain62 main3,varBMain63 main1,varBMain63 main2,varBMain63 main3,varBMain64 main1,varBMain64 main2,varBMain64 main3,varBMain65 main1,varBMain65 main2,varBMain65 main3,varBMain66 main1,varBMain66 main2,varBMain66 main3,varBMain67 main1,varBMain67 main2,varBMain67 main3,varBMain68 main1,varBMain68 main2,varBMain68 main3,varBMain69 main1,varBMain69 main2,varBMain69 main3,varBMain7 main1,varBMain7 main2,varBMain7 main3,varBMain70 main1,varBMain70 main2,varBMain70 main3,varBMain71 main1,varBMain71 main2,varBMain71 main3,varBMain72 main1,varBMain72 main2,varBMain72 main3,varBMain73 main1,varBMain73 main2,varBMain73 main3,varBMain74 main1,varBMain74 main2,varBMain74 main3,varBMain75 main1,varBMain75 main2,varBMain75 main3,varBMain76 main1,varBMain76 main2,varBMain76 main3,varBMain77 main1,varBMain77 main2,varBMain77 main3,varBMain78 main1,varBMain78 main2,varBMain78 main3,varBMain79 main1,varBMain79 main2,varBMain79 main3,varBMain8 main1,varBMain8 main2,varBMain8 main3,varBMain80 main1,varBMain80 main2,varBMain80 main3,varBMain81 main1,varBMain81 main2,varBMain81 main3,varBMain82 main1,varBMain82 main2,varBMain82 main3,varBMain83 main1,varBMain83 main2,varBMain83 main3,varBMain84 main1,varBMain84 main2,varBMain84 main3,varBMain85 main1,varBMain85 main2,varBMain85 main3,varBMain86 main1,varBMain86 main2,varBMain86 main3,varBMain87 main1,varBMain87 main2,varBMain87 main3,varBMain88 main1,varBMain88 main2,varBMain88 main3,varBMain89 main1,varBMain89 main2,varBMain89 main3,varBMain9 main1,varBMain9 main2,varBMain9 main3,varBMain90 main1,varBMain90 main2,varBMain90 main3,varBMain91 main1,varBMain91 main2,varBMain91 main3,varBMain92 main1,varBMain92 main2,varBMain92 main3,varBMain93 main1,varBMain93 main2,varBMain93 main3,varBMain94 main1,varBMain94 main2,varBMain94 main3,varBMain95 main1,varBMain95 main2,varBMain95 main3,varBMain96 main1,varBMain96 main2,varBMain96 main3,varBMain97 main1,varBMain97 main2,varBMain97 main3,varBMain98 main1,varBMain98 main2,varBMain98 main3,varBMain99 main1,varBMain99 main2,varBMain99 main3,varCMain1 main1,varCMain1 main2,varCMain1 main3,varCMain1 main4,varCMain10 main1,varCMain10 main2,varCMain10 main3,varCMain10 main4,varCMain100 main1,varCMain100 main2,varCMain100 main3,varCMain100 main4,varCMain11 main1,varCMain11 main2,varCMain11 main3,varCMain11 main4,varCMain12 main1,varCMain12 main2,varCMain12 main3,varCMain12 main4,varCMain13 main1,varCMain13 main2,varCMain13 main3,varCMain13 main4,varCMain14 main1,varCMain14 main2,varCMain14 main3,varCMain14 main4,varCMain15 main1,varCMain15 main2,varCMain15 main3,varCMain15 main4,varCMain16 main1,varCMain16 main2,varCMain16 main3,varCMain16 main4,varCMain17 main1,varCMain17 main2,varCMain17 main3,varCMain17 main4,varCMain18 main1,varCMain18 main2,varCMain18 main3,varCMain18 main4,varCMain19 main1,varCMain19 main2,varCMain19 main3,varCMain19 main4,varCMain2 main1,varCMain2 main2,varCMain2 main3,varCMain2 main4,varCMain20 main1,varCMain20 main2,varCMain20 main3,varCMain20 main4,varCMain21 main1,varCMain21 main2,varCMain21 main3,varCMain21 main4,varCMain22 main1,varCMain22 main2,varCMain22 main3,varCMain22 main4,varCMain23 main1,varCMain23 main2,varCMain23 main3,varCMain23 main4,varCMain24 main1,varCMain24 main2,varCMain24 main3,varCMain24 main4,varCMain25 main1,varCMain25 main2,varCMain25 main3,varCMain25 main4,varCMain26 main1,varCMain26 main2,varCMain26 main3,varCMain26 main4,varCMain27 main1,varCMain27 main2,varCMain27 main3,varCMain27 main4,varCMain28 main1,varCMain28 main2,varCMain28 main3,varCMain28 main4,varCMain29 main1,varCMain29 main2,varCMain29 main3,varCMain29 main4,varCMain3 main1,varCMain3 main2,varCMain3 main3,varCMain3 main4,varCMain30 main1,varCMain30 main2,varCMain30 main3,varCMain30 main4,varCMain31 main1,varCMain31 main2,varCMain31 main3,varCMain31 main4,varCMain32 main1,varCMain32 main2,varCMain32 main3,varCMain32 main4,varCMain33 main1,varCMain33 main2,varCMain33 main3,varCMain33 main4,varCMain34 main1,varCMain34 main2,varCMain34 main3,varCMain34 main4,varCMain35 main1,varCMain35 main2,varCMain35 main3,varCMain35 main4,varCMain36 main1,varCMain36 main2,varCMain36 main3,varCMain36 main4,varCMain37 main1,varCMain37 main2,varCMain37 main3,varCMain37 main4,varCMain38 main1,varCMain38 main2,varCMain38 main3,varCMain38 main4,varCMain39 main1,varCMain39 main2,varCMain39 main3,varCMain39 main4,varCMain4 main1,varCMain4 main2,varCMain4 main3,varCMain4 main4,varCMain40 main1,varCMain40 main2,varCMain40 main3,varCMain40 main4,varCMain41 main1,varCMain41 main2,varCMain41 main3,varCMain41 main4,varCMain42 main1,varCMain42 main2,varCMain42 main3,varCMain42 main4,varCMain43 main1,varCMain43 main2,varCMain43 main3,varCMain43 main4,varCMain44 main1,varCMain44 main2,varCMain44 main3,varCMain44 main4,varCMain45 main1,varCMain45 main2,varCMain45 main3,varCMain45 main4,varCMain46 main1,varCMain46 main2,varCMain46 main3,varCMain46 main4,varCMain47 main1,varCMain47 main2,varCMain47 main3,varCMain47 main4,varCMain48 main1,varCMain48 main2,varCMain48 main3,varCMain48 main4,varCMain49 main1,varCMain49 main2,varCMain49 main3,varCMain49 main4,varCMain5 main1,varCMain5 main2,varCMain5 main3,varCMain5 main4,varCMain50 main1,varCMain50 main2,varCMain50 main3,varCMain50 main4,varCMain51 main1,varCMain51 main2,varCMain51 main3,varCMain51 main4,varCMain52 main1,varCMain52 main2,varCMain52 main3,varCMain52 main4,varCMain53 main1,varCMain53 main2,varCMain53 main3,varCMain53 main4,varCMain54 main1,varCMain54 main2,varCMain54 main3,varCMain54 main4,varCMain55 main1,varCMain55 main2,varCMain55 main3,varCMain55 main4,varCMain56 main1,varCMain56 main2,varCMain56 main3,varCMain56 main4,varCMain57 main1,varCMain57 main2,varCMain57 main3,varCMain57 main4,varCMain58 main1,varCMain58 main2,varCMain58 main3,varCMain58 main4,varCMain59 main1,varCMain59 main2,varCMain59 main3,varCMain59 main4,varCMain6 main1,varCMain6 main2,varCMain6 main3,varCMain6 main4,varCMain60 main1,varCMain60 main2,varCMain60 main3,varCMain60 main4,varCMain61 main1,varCMain61 main2,varCMain61 main3,varCMain61 main4,varCMain62 main1,varCMain62 main2,varCMain62 main3,varCMain62 main4,varCMain63 main1,varCMain63 main2,varCMain63 main3,varCMain63 main4,varCMain64 main1,varCMain64 main2,varCMain64 main3,varCMain64 main4,varCMain65 main1,varCMain65 main2,varCMain65 main3,varCMain65 main4,varCMain66 main1,varCMain66 main2,varCMain66 main3,varCMain66 main4,varCMain67 main1,varCMain67 main2,varCMain67 main3,varCMain67 main4,varCMain68 main1,varCMain68 main2,varCMain68 main3,varCMain68 main4,varCMain69 main1,varCMain69 main2,varCMain69 main3,varCMain69 main4,varCMain7 main1,varCMain7 main2,varCMain7 main3,varCMain7 main4,varCMain70 main1,varCMain70 main2,varCMain70 main3,varCMain70 main4,varCMain71 main1,varCMain71 main2,varCMain71 main3,varCMain71 main4,varCMain72 main1,varCMain72 main2,varCMain72 main3,varCMain72 main4,varCMain73 main1,varCMain73 main2,varCMain73 main3,varCMain73 main4,varCMain74 main1,varCMain74 main2,varCMain74 main3,varCMain74 main4,varCMain75 main1,varCMain75 main2,varCMain75 main3,varCMain75 main4,varCMain76 main1,varCMain76 main2,varCMain76 main3,varCMain76 main4,varCMain77 main1,varCMain77 main2,varCMain77 main3,varCMain77 main4,varCMain78 main1,varCMain78 main2,varCMain78 main3,varCMain78 main4,varCMain79 main1,varCMain79 main2,varCMain79 main3,varCMain79 main4,varCMain8 main1,varCMain8 main2,varCMain8 main3,varCMain8 main4,varCMain80 main1,varCMain80 main2,varCMain80 main3,varCMain80 main4,varCMain81 main1,varCMain81 main2,varCMain81 main3,varCMain81 main4,varCMain82 main1,varCMain82 main2,varCMain82 main3,varCMain82 main4,varCMain83 main1,varCMain83 main2,varCMain83 main3,varCMain83 main4,varCMain84 main1,varCMain84 main2,varCMain84 main3,varCMain84 main4,varCMain85 main1,varCMain85 main2,varCMain85 main3,varCMain85 main4,varCMain86 main1,varCMain86 main2,varCMain86 main3,varCMain86 main4,varCMain87 main1,varCMain87 main2,varCMain87 main3,varCMain87 main4,varCMain88 main1,varCMain88 main2,varCMain88 main3,varCMain88 main4,varCMain89 main1,varCMain89 main2,varCMain89 main3,varCMain89 main4,varCMain9 main1,varCMain9 main2,varCMain9 main3,varCMain9 main4,varCMain90 main1,varCMain90 main2,varCMain90 main3,varCMain90 main4,varCMain91 main1,varCMain91 main2,varCMain91 main3,varCMain91 main4,varCMain92 main1,varCMain92 main2,varCMain92 main3,varCMain92 main4,varCMain93 main1,varCMain93 main2,varCMain93 main3,varCMain93 main4,varCMain94 main1,varCMain94 main2,varCMain94 main3,varCMain94 main4,varCMain95 main1,varCMain95 main2,varCMain95 main3,varCMain95 main4,varCMain96 main1,varCMain96 main2,varCMain96 main3,varCMain96 main4,varCMain97 main1,varCMain97 main2,varCMain97 main3,varCMain97 main4,varCMain98 main1,varCMain98 main2,varCMain98 main3,varCMain98 main4,varCMain99 main1,varCMain99 main2,varCMain99 main3,varCMain99 main4,varDMain1 main1,varDMain1 main2,varDMain1 main3,varDMain1 main4,varDMain1 main5,varDMain10 main1,varDMain10 main2,varDMain10 main3,varDMain10 main4,varDMain10 main5,varDMain100 main1,varDMain100 main2,varDMain100 main3,varDMain100 main4,varDMain100 main5,varDMain11 main1,varDMain11 main2,varDMain11 main3,varDMain11 main4,varDMain11 main5,varDMain12 main1,varDMain12 main2,varDMain12 main3,varDMain12 main4,varDMain12 main5,varDMain13 main1,varDMain13 main2,varDMain13 main3,varDMain13 main4,varDMain13 main5,varDMain14 main1,varDMain14 main2,varDMain14 main3,varDMain14 main4,varDMain14 main5,varDMain15 main1,varDMain15 main2,varDMain15 main3,varDMain15 main4,varDMain15 main5,varDMain16 main1,varDMain16 main2,varDMain16 main3,varDMain16 main4,varDMain16 main5,varDMain17 main1,varDMain17 main2,varDMain17 main3,varDMain17 main4,varDMain17 main5,varDMain18 main1,varDMain18 main2,varDMain18 main3,varDMain18 main4,varDMain18 main5,varDMain19 main1,varDMain19 main2,varDMain19 main3,varDMain19 main4,varDMain19 main5,varDMain2 main1,varDMain2 main2,varDMain2 main3,varDMain2 main4,varDMain2 main5,varDMain20 main1,varDMain20 main2,varDMain20 main3,varDMain20 main4,varDMain20 main5,varDMain21 main1,varDMain21 main2,varDMain21 main3,varDMain21 main4,varDMain21 main5,varDMain22 main1,varDMain22 main2,varDMain22 main3,varDMain22 main4,varDMain22 main5,varDMain23 main1,varDMain23 main2,varDMain23 main3,varDMain23 main4,varDMain23 main5,varDMain24 main1,varDMain24 main2,varDMain24 main3,varDMain24 main4,varDMain24 main5,varDMain25 main1,varDMain25 main2,varDMain25 main3,varDMain25 main4,varDMain25 main5,varDMain26 main1,varDMain26 main2,varDMain26 main3,varDMain26 main4,varDMain26 main5,varDMain27 main1,varDMain27 main2,varDMain27 main3,varDMain27 main4,varDMain27 main5,varDMain28 main1,varDMain28 main2,varDMain28 main3,varDMain28 main4,varDMain28 main5,varDMain29 main1,varDMain29 main2,varDMain29 main3,varDMain29 main4,varDMain29 main5,varDMain3 main1,varDMain3 main2,varDMain3 main3,varDMain3 main4,varDMain3 main5,varDMain30 main1,varDMain30 main2,varDMain30 main3,varDMain30 main4,varDMain30 main5,varDMain31 main1,varDMain31 main2,varDMain31 main3,varDMain31 main4,varDMain31 main5,varDMain32 main1,varDMain32 main2,varDMain32 main3,varDMain32 main4,varDMain32 main5,varDMain33 main1,varDMain33 main2,varDMain33 main3,varDMain33 main4,varDMain33 main5,varDMain34 main1,varDMain34 main2,varDMain34 main3,varDMain34 main4,varDMain34 main5,varDMain35 main1,varDMain35 main2,varDMain35 main3,varDMain35 main4,varDMain35 main5,varDMain36 main1,varDMain36 main2,varDMain36 main3,varDMain36 main4,varDMain36 main5,varDMain37 main1,varDMain37 main2,varDMain37 main3,varDMain37 main4,varDMain37 main5,varDMain38 main1,varDMain38 main2,varDMain38 main3,varDMain38 main4,varDMain38 main5,varDMain39 main1,varDMain39 main2,varDMain39 main3,varDMain39 main4,varDMain39 main5,varDMain4 main1,varDMain4 main2,varDMain4 main3,varDMain4 main4,varDMain4 main5,varDMain40 main1,varDMain40 main2,varDMain40 main3,varDMain40 main4,varDMain40 main5,varDMain41 main1,varDMain41 main2,varDMain41 main3,varDMain41 main4,varDMain41 main5,varDMain42 main1,varDMain42 main2,varDMain42 main3,varDMain42 main4,varDMain42 main5,varDMain43 main1,varDMain43 main2,varDMain43 main3,varDMain43 main4,varDMain43 main5,varDMain44 main1,varDMain44 main2,varDMain44 main3,varDMain44 main4,varDMain44 main5,varDMain45 main1,varDMain45 main2,varDMain45 main3,varDMain45 main4,varDMain45 main5,varDMain46 main1,varDMain46 main2,varDMain46 main3,varDMain46 main4,varDMain46 main5,varDMain47 main1,varDMain47 main2,varDMain47 main3,varDMain47 main4,varDMain47 main5,varDMain48 main1,varDMain48 main2,varDMain48 main3,varDMain48 main4,varDMain48 main5,varDMain49 main1,varDMain49 main2,varDMain49 main3,varDMain49 main4,varDMain49 main5,varDMain5 main1,varDMain5 main2,varDMain5 main3,varDMain5 main4,varDMain5 main5,varDMain50 main1,varDMain50 main2,varDMain50 main3,varDMain50 main4,varDMain50 main5,varDMain51 main1,varDMain51 main2,varDMain51 main3,varDMain51 main4,varDMain51 main5,varDMain52 main1,varDMain52 main2,varDMain52 main3,varDMain52 main4,varDMain52 main5,varDMain53 main1,varDMain53 main2,varDMain53 main3,varDMain53 main4,varDMain53 main5,varDMain54 main1,varDMain54 main2,varDMain54 main3,varDMain54 main4,varDMain54 main5,varDMain55 main1,varDMain55 main2,varDMain55 main3,varDMain55 main4,varDMain55 main5,varDMain56 main1,varDMain56 main2,varDMain56 main3,varDMain56 main4,varDMain56 main5,varDMain57 main1,varDMain57 main2,varDMain57 main3,varDMain57 main4,varDMain57 main5,varDMain58 main1,varDMain58 main2,varDMain58 main3,varDMain58 main4,varDMain58 main5,varDMain59 main1,varDMain59 main2,varDMain59 main3,varDMain59 main4,varDMain59 main5,varDMain6 main1,varDMain6 main2,varDMain6 main3,varDMain6 main4,varDMain6 main5,varDMain60 main1,varDMain60 main2,varDMain60 main3,varDMain60 main4,varDMain60 main5,varDMain61 main1,varDMain61 main2,varDMain61 main3,varDMain61 main4,varDMain61 main5,varDMain62 main1,varDMain62 main2,varDMain62 main3,varDMain62 main4,varDMain62 main5,varDMain63 main1,varDMain63 main2,varDMain63 main3,varDMain63 main4,varDMain63 main5,varDMain64 main1,varDMain64 main2,varDMain64 main3,varDMain64 main4,varDMain64 main5,varDMain65 main1,varDMain65 main2,varDMain65 main3,varDMain65 main4,varDMain65 main5,varDMain66 main1,varDMain66 main2,varDMain66 main3,varDMain66 main4,varDMain66 main5,varDMain67 main1,varDMain67 main2,varDMain67 main3,varDMain67 main4,varDMain67 main5,varDMain68 main1,varDMain68 main2,varDMain68 main3,varDMain68 main4,varDMain68 main5,varDMain69 main1,varDMain69 main2,varDMain69 main3,varDMain69 main4,varDMain69 main5,varDMain7 main1,varDMain7 main2,varDMain7 main3,varDMain7 main4,varDMain7 main5,varDMain70 main1,varDMain70 main2,varDMain70 main3,varDMain70 main4,varDMain70 main5,varDMain71 main1,varDMain71 main2,varDMain71 main3,varDMain71 main4,varDMain71 main5,varDMain72 main1,varDMain72 main2,varDMain72 main3,varDMain72 main4,varDMain72 main5,varDMain73 main1,varDMain73 main2,varDMain73 main3,varDMain73 main4,varDMain73 main5,varDMain74 main1,varDMain74 main2,varDMain74 main3,varDMain74 main4,varDMain74 main5,varDMain75 main1,varDMain75 main2,varDMain75 main3,varDMain75 main4,varDMain75 main5,varDMain76 main1,varDMain76 main2,varDMain76 main3,varDMain76 main4,varDMain76 main5,varDMain77 main1,varDMain77 main2,varDMain77 main3,varDMain77 main4,varDMain77 main5,varDMain78 main1,varDMain78 main2,varDMain78 main3,varDMain78 main4,varDMain78 main5,varDMain79 main1,varDMain79 main2,varDMain79 main3,varDMain79 main4,varDMain79 main5,varDMain8 main1,varDMain8 main2,varDMain8 main3,varDMain8 main4,varDMain8 main5,varDMain80 main1,varDMain80 main2,varDMain80 main3,varDMain80 main4,varDMain80 main5,varDMain81 main1,varDMain81 main2,varDMain81 main3,varDMain81 main4,varDMain81 main5,varDMain82 main1,varDMain82 main2,varDMain82 main3,varDMain82 main4,varDMain82 main5,varDMain83 main1,varDMain83 main2,varDMain83 main3,varDMain83 main4,varDMain83 main5,varDMain84 main1,varDMain84 main2,varDMain84 main3,varDMain84 main4,varDMain84 main5,varDMain85 main1,varDMain85 main2,varDMain85 main3,varDMain85 main4,varDMain85 main5,varDMain86 main1,varDMain86 main2,varDMain86 main3,varDMain86 main4,varDMain86 main5,varDMain87 main1,varDMain87 main2,varDMain87 main3,varDMain87 main4,varDMain87 main5,varDMain88 main1,varDMain88 main2,varDMain88 main3,varDMain88 main4,varDMain88 main5,varDMain89 main1,varDMain89 main2,varDMain89 main3,varDMain89 main4,varDMain89 main5,varDMain9 main1,varDMain9 main2,varDMain9 main3,varDMain9 main4,varDMain9 main5,varDMain90 main1,varDMain90 main2,varDMain90 main3,varDMain90 main4,varDMain90 main5,varDMain91 main1,varDMain91 main2,varDMain91 main3,varDMain91 main4,varDMain91 main5,varDMain92 main1,varDMain92 main2,varDMain92 main3,varDMain92 main4,varDMain92 main5,varDMain93 main1,varDMain93 main2,varDMain93 main3,varDMain93 main4,varDMain93 main5,varDMain94 main1,varDMain94 main2,varDMain94 main3,varDMain94 main4,varDMain94 main5,varDMain95 main1,varDMain95 main2,varDMain95 main3,varDMain95 main4,varDMain95 main5,varDMain96 main1,varDMain96 main2,varDMain96 main3,varDMain96 main4,varDMain96 main5,varDMain97 main1,varDMain97 main2,varDMain97 main3,varDMain97 main4,varDMain97 main5,varDMain98 main1,varDMain98 main2,varDMain98 main3,varDMain98 main4,varDMain98 main5,varDMain99 main1,varDMain99 main2,varDMain99 main3,varDMain99 main4,varDMain99 main5,varMain1 main1,varMain10 main1,varMain100 main1,varMain11 main1,varMain12 main1,varMain13 main1,varMain14 main1,varMain15 main1,varMain16 main1,varMain17 main1,varMain18 main1,varMain19 main1,varMain2 main1,varMain20 main1,varMain21 main1,varMain22 main1,varMain23 main1,varMain24 main1,varMain25 main1,varMain26 main1,varMain27 main1,varMain28 main1,varMain29 main1,varMain3 main1,varMain30 main1,varMain31 main1,varMain32 main1,varMain33 main1,varMain34 main1,varMain35 main1,varMain36 main1,varMain37 main1,varMain38 main1,varMain39 main1,varMain4 main1,varMain40 main1,varMain41 main1,varMain42 main1,varMain43 main1,varMain44 main1,varMain45 main1,varMain46 main1,varMain47 main1,varMain48 main1,varMain49 main1,varMain5 main1,varMain50 main1,varMain51 main1,varMain52 main1,varMain53 main1,varMain54 main1,varMain55 main1,varMain56 main1,varMain57 main1,varMain58 main1,varMain59 main1,varMain6 main1,varMain60 main1,varMain61 main1,varMain62 main1,varMain63 main1,varMain64 main1,varMain65 main1,varMain66 main1,varMain67 main1,varMain68 main1,varMain69 main1,varMain7 main1,varMain70 main1,varMain71 main1,varMain72 main1,varMain73 main1,varMain74 main1,varMain75 main1,varMain76 main1,varMain77 main1,varMain78 main1,varMain79 main1,varMain8 main1,varMain80 main1,varMain81 main1,varMain82 main1,varMain83 main1,varMain84 main1,varMain85 main1,varMain86 main1,varMain87 main1,varMain88 main1,varMain89 main1,varMain9 main1,varMain90 main1,varMain91 main1,varMain92 main1,varMain93 main1,varMain94 main1,varMain95 main1,varMain96 main1,varMain97 main1,varMain98 main1,varMain99 main1,y main1,y main2,y main3,y main4,z main1,z main2,z main3,z main4
+5000
+103 - Stress test
+assign a; variable v; while w;
+Select <a, v> such that Parent(_, a) such that Affects(a, _) such that Follows*(a, _) such that Modifies(a, _) and Uses(a, _) with v.varName = "x" pattern a("x", _) and a(v, _"x"_) such that Next(a, _) and Next(w, a) with w.stmt# = 3
+none
+5000
+104 - Stress test
+assign a; variable v;
+Select a such that Parent(_, a) such that Affects(a, _) such that Follows*(a, _) such that Modifies(a, _) and Uses(a, _) with v.varName = "x" pattern a("x", _) and a(v, _"x"_) such that Next(a, _) and Next(_, a)
+none
+5000
+105 - such that Next* such that UsesS (not sure about this)
+stmt s; variable v; assign a; procedure p;
+Select <s, v> such that Next*(a, 20) such that Uses(s, v) and Modifies(s,v) and Parent(s, _) such that Next*(10, s) and Follows(a, s) such that Uses(p, _) such that Modifies(p, _) and Calls(p, _)
+4 a,4 b,4 c,4 d,4 e
+5000
+106 - such that Next* such that UsesS (not sure about this)
+stmt s; variable v; assign a; procedure p;
+Select <s, v, a> such that Next*(a, 20) such that Uses(s, v) and Modifies(s,v) and Parent(s, _) such that Next*(10, s) and Follows(a, s) such that Uses(p, _) such that Modifies(p, _) and Calls(p, _)
+4 a 3,4 b 3,4 c 3,4 d 3,4 e 3
+5000
+107 - such that Next* such that UsesS (not sure about this)
+stmt s; variable v; assign a; procedure p;
+Select <s, v, a, p> such that Next*(a, 20) such that Uses(a, v) and Modifies(s,v) and Parent(s, _) such that Next*(10, s) and Follows(a, s) such that Uses(p, _) such that Modifies(p, v) and Calls(p, _)
+4 a 3 main1,4 a 3 main2,4 b 3 main1,4 b 3 main2
+5000
+108 - multiple Follows*
+stmt s1, s2, s3, s4;
+Select <s1, s2, s3, s4> such that Follows*(s1, s2) and Follows*(s2, s3) and Follows*(s3, s4)
+1 17 18 19,1 17 18 20,1 17 19 20,1 18 19 20,1 2 17 18,1 2 17 19,1 2 17 20,1 2 18 19,1 2 18 20,1 2 19 20,1 2 3 17,1 2 3 18,1 2 3 19,1 2 3 20,1 2 3 4,1 2 4 17,1 2 4 18,1 2 4 19,1 2 4 20,1 3 17 18,1 3 17 19,1 3 17 20,1 3 18 19,1 3 18 20,1 3 19 20,1 3 4 17,1 3 4 18,1 3 4 19,1 3 4 20,1 4 17 18,1 4 17 19,1 4 17 20,1 4 18 19,1 4 18 20,1 4 19 20,17 18 19 20,2 17 18 19,2 17 18 20,2 17 19 20,2 18 19 20,2 3 17 18,2 3 17 19,2 3 17 20,2 3 18 19,2 3 18 20,2 3 19 20,2 3 4 17,2 3 4 18,2 3 4 19,2 3 4 20,2 4 17 18,2 4 17 19,2 4 17 20,2 4 18 19,2 4 18 20,2 4 19 20,21 22 23 24,21 22 23 40,21 22 23 41,21 22 23 42,21 22 23 43,21 22 24 40,21 22 24 41,21 22 24 42,21 22 24 43,21 22 40 41,21 22 40 42,21 22 40 43,21 22 41 42,21 22 41 43,21 22 42 43,21 23 24 40,21 23 24 41,21 23 24 42,21 23 24 43,21 23 40 41,21 23 40 42,21 23 40 43,21 23 41 42,21 23 41 43,21 23 42 43,21 24 40 41,21 24 40 42,21 24 40 43,21 24 41 42,21 24 41 43,21 24 42 43,21 40 41 42,21 40 41 43,21 40 42 43,21 41 42 43,22 23 24 40,22 23 24 41,22 23 24 42,22 23 24 43,22 23 40 41,22 23 40 42,22 23 40 43,22 23 41 42,22 23 41 43,22 23 42 43,22 24 40 41,22 24 40 42,22 24 40 43,22 24 41 42,22 24 41 43,22 24 42 43,22 40 41 42,22 40 41 43,22 40 42 43,22 41 42 43,23 24 40 41,23 24 40 42,23 24 40 43,23 24 41 42,23 24 41 43,23 24 42 43,23 40 41 42,23 40 41 43,23 40 42 43,23 41 42 43,24 40 41 42,24 40 41 43,24 40 42 43,24 41 42 43,25 26 27 38,25 26 27 39,25 26 38 39,25 27 38 39,26 27 38 39,28 29 30 31,28 29 30 32,28 29 30 33,28 29 30 34,28 29 31 32,28 29 31 33,28 29 31 34,28 29 32 33,28 29 32 34,28 29 33 34,28 30 31 32,28 30 31 33,28 30 31 34,28 30 32 33,28 30 32 34,28 30 33 34,28 31 32 33,28 31 32 34,28 31 33 34,28 32 33 34,29 30 31 32,29 30 31 33,29 30 31 34,29 30 32 33,29 30 32 34,29 30 33 34,29 31 32 33,29 31 32 34,29 31 33 34,29 32 33 34,3 17 18 19,3 17 18 20,3 17 19 20,3 18 19 20,3 4 17 18,3 4 17 19,3 4 17 20,3 4 18 19,3 4 18 20,3 4 19 20,30 31 32 33,30 31 32 34,30 31 33 34,30 32 33 34,31 32 33 34,4 17 18 19,4 17 18 20,4 17 19 20,4 18 19 20,40 41 42 43,44 45 46 47,44 45 46 60,44 45 46 61,44 45 46 62,44 45 46 63,44 45 47 60,44 45 47 61,44 45 47 62,44 45 47 63,44 45 60 61,44 45 60 62,44 45 60 63,44 45 61 62,44 45 61 63,44 45 62 63,44 46 47 60,44 46 47 61,44 46 47 62,44 46 47 63,44 46 60 61,44 46 60 62,44 46 60 63,44 46 61 62,44 46 61 63,44 46 62 63,44 47 60 61,44 47 60 62,44 47 60 63,44 47 61 62,44 47 61 63,44 47 62 63,44 60 61 62,44 60 61 63,44 60 62 63,44 61 62 63,45 46 47 60,45 46 47 61,45 46 47 62,45 46 47 63,45 46 60 61,45 46 60 62,45 46 60 63,45 46 61 62,45 46 61 63,45 46 62 63,45 47 60 61,45 47 60 62,45 47 60 63,45 47 61 62,45 47 61 63,45 47 62 63,45 60 61 62,45 60 61 63,45 60 62 63,45 61 62 63,46 47 60 61,46 47 60 62,46 47 60 63,46 47 61 62,46 47 61 63,46 47 62 63,46 60 61 62,46 60 61 63,46 60 62 63,46 61 62 63,47 60 61 62,47 60 61 63,47 60 62 63,47 61 62 63,48 49 50 58,48 49 50 59,48 49 58 59,48 50 58 59,49 50 58 59,5 6 15 16,5 6 7 15,5 6 7 16,5 7 15 16,51 52 53 54,51 52 53 55,51 52 54 55,51 53 54 55,52 53 54 55,6 7 15 16,60 61 62 63,64 65 66 67,64 65 66 80,64 65 66 81,64 65 66 82,64 65 66 83,64 65 67 80,64 65 67 81,64 65 67 82,64 65 67 83,64 65 80 81,64 65 80 82,64 65 80 83,64 65 81 82,64 65 81 83,64 65 82 83,64 66 67 80,64 66 67 81,64 66 67 82,64 66 67 83,64 66 80 81,64 66 80 82,64 66 80 83,64 66 81 82,64 66 81 83,64 66 82 83,64 67 80 81,64 67 80 82,64 67 80 83,64 67 81 82,64 67 81 83,64 67 82 83,64 80 81 82,64 80 81 83,64 80 82 83,64 81 82 83,65 66 67 80,65 66 67 81,65 66 67 82,65 66 67 83,65 66 80 81,65 66 80 82,65 66 80 83,65 66 81 82,65 66 81 83,65 66 82 83,65 67 80 81,65 67 80 82,65 67 80 83,65 67 81 82,65 67 81 83,65 67 82 83,65 80 81 82,65 80 81 83,65 80 82 83,65 81 82 83,66 67 80 81,66 67 80 82,66 67 80 83,66 67 81 82,66 67 81 83,66 67 82 83,66 80 81 82,66 80 81 83,66 80 82 83,66 81 82 83,67 80 81 82,67 80 81 83,67 80 82 83,67 81 82 83,68 69 70 78,68 69 70 79,68 69 78 79,68 70 78 79,69 70 78 79,71 72 73 74,71 72 73 75,71 72 74 75,71 73 74 75,72 73 74 75,8 10 11 12,8 9 10 11,8 9 10 12,8 9 11 12,80 81 82 83,84 100 101 102,84 85 100 101,84 85 100 102,84 85 101 102,84 85 86 100,84 85 86 101,84 85 86 102,84 85 86 87,84 85 87 100,84 85 87 101,84 85 87 102,84 86 100 101,84 86 100 102,84 86 101 102,84 86 87 100,84 86 87 101,84 86 87 102,84 87 100 101,84 87 100 102,84 87 101 102,85 100 101 102,85 86 100 101,85 86 100 102,85 86 101 102,85 86 87 100,85 86 87 101,85 86 87 102,85 87 100 101,85 87 100 102,85 87 101 102,86 100 101 102,86 87 100 101,86 87 100 102,86 87 101 102,87 100 101 102,88 89 90 98,88 89 90 99,88 89 98 99,88 90 98 99,89 90 98 99,9 10 11 12,91 92 93 94,91 92 93 95,91 92 94 95,91 93 94 95,92 93 94 95
+5000
+109 - identical Follows*
+stmt s1, s2;
+Select <s1, s2> such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) such that Follows*(s1, s2) 
+1 17,1 18,1 19,1 2,1 20,1 3,1 4,10 11,10 12,100 101,100 102,101 102,11 12,13 14,15 16,17 18,17 19,17 20,18 19,18 20,19 20,2 17,2 18,2 19,2 20,2 3,2 4,21 22,21 23,21 24,21 40,21 41,21 42,21 43,22 23,22 24,22 40,22 41,22 42,22 43,23 24,23 40,23 41,23 42,23 43,24 40,24 41,24 42,24 43,25 26,25 27,25 38,25 39,26 27,26 38,26 39,27 38,27 39,28 29,28 30,28 31,28 32,28 33,28 34,29 30,29 31,29 32,29 33,29 34,3 17,3 18,3 19,3 20,3 4,30 31,30 32,30 33,30 34,31 32,31 33,31 34,32 33,32 34,33 34,35 36,35 37,36 37,38 39,4 17,4 18,4 19,4 20,40 41,40 42,40 43,41 42,41 43,42 43,44 45,44 46,44 47,44 60,44 61,44 62,44 63,45 46,45 47,45 60,45 61,45 62,45 63,46 47,46 60,46 61,46 62,46 63,47 60,47 61,47 62,47 63,48 49,48 50,48 58,48 59,49 50,49 58,49 59,5 15,5 16,5 6,5 7,50 58,50 59,51 52,51 53,51 54,51 55,52 53,52 54,52 55,53 54,53 55,54 55,56 57,58 59,6 15,6 16,6 7,60 61,60 62,60 63,61 62,61 63,62 63,64 65,64 66,64 67,64 80,64 81,64 82,64 83,65 66,65 67,65 80,65 81,65 82,65 83,66 67,66 80,66 81,66 82,66 83,67 80,67 81,67 82,67 83,68 69,68 70,68 78,68 79,69 70,69 78,69 79,7 15,7 16,70 78,70 79,71 72,71 73,71 74,71 75,72 73,72 74,72 75,73 74,73 75,74 75,76 77,78 79,8 10,8 11,8 12,8 9,80 81,80 82,80 83,81 82,81 83,82 83,84 100,84 101,84 102,84 85,84 86,84 87,85 100,85 101,85 102,85 86,85 87,86 100,86 101,86 102,86 87,87 100,87 101,87 102,88 89,88 90,88 98,88 99,89 90,89 98,89 99,9 10,9 11,9 12,90 98,90 99,91 92,91 93,91 94,91 95,92 93,92 94,92 95,93 94,93 95,94 95,96 97,98 99
+5000
+111 - multiple Follows
+stmt s1, s2, s3, s4;
+Select <s1, s2, s3, s4> such that Follows(s1, s2) and Follows(s2, s3) and Follows(s3, s4)
+1 2 3 4,17 18 19 20,2 3 4 17,21 22 23 24,22 23 24 40,23 24 40 41,24 40 41 42,25 26 27 38,26 27 38 39,28 29 30 31,29 30 31 32,3 4 17 18,30 31 32 33,31 32 33 34,4 17 18 19,40 41 42 43,44 45 46 47,45 46 47 60,46 47 60 61,47 60 61 62,48 49 50 58,49 50 58 59,5 6 7 15,51 52 53 54,52 53 54 55,6 7 15 16,60 61 62 63,64 65 66 67,65 66 67 80,66 67 80 81,67 80 81 82,68 69 70 78,69 70 78 79,71 72 73 74,72 73 74 75,8 9 10 11,80 81 82 83,84 85 86 87,85 86 87 100,86 87 100 101,87 100 101 102,88 89 90 98,89 90 98 99,9 10 11 12,91 92 93 94,92 93 94 95
+5000
+112 - multiple Follows
+stmt s1, s2, s3, s4; constant co;
+Select <s1, s2, s3, s4> such that Follows(s1, s2) and Follows(s2, s3) and Follows(s3, s4) with co.value = s1.stmt# and 10 = 10
+1 2 3 4,2 3 4 17,4 17 18 19,5 6 7 15
+5000
+113 - multiple Parent
+stmt s1, s2, s3, s4;
+Select <s1, s2, s3, s4> such that Parent(s1, s2) and Parent(s2, s3) and Parent(s3, s4)
+none
+5000
+114 - multiple Parent*
+stmt s1, s2, s3, s4;
+Select <s1, s2, s3, s4> such that Parent*(s1, s2) and Parent*(s2, s3) and Parent*(s3, s4)
+none
+5000
+116 - multiple Next
+stmt s1, s2, s3, s4;
+Select <s1, s2, s3, s4> such that Next(s1, s2) and Next(s2, s3) and Next(s3, s4)
+1 2 3 4,10 11 12 15,11 12 15 16,12 15 16 4,13 14 15 16,14 15 16 4,15 16 4 17,15 16 4 5,16 4 17 18,16 4 5 6,17 18 19 20,2 3 4 17,2 3 4 5,21 22 23 24,22 23 24 25,22 23 24 40,23 24 25 26,23 24 40 41,24 25 26 27,24 40 41 42,25 26 27 28,25 26 27 35,26 27 28 29,26 27 35 36,27 28 29 30,27 35 36 37,28 29 30 31,29 30 31 32,3 4 17 18,3 4 5 6,30 31 32 33,31 32 33 34,32 33 34 38,33 34 38 39,34 38 39 24,35 36 37 38,36 37 38 39,37 38 39 24,38 39 24 25,38 39 24 40,39 24 25 26,39 24 40 41,4 17 18 19,4 5 6 7,40 41 42 43,44 45 46 47,45 46 47 48,45 46 47 60,46 47 48 49,46 47 60 61,47 48 49 50,47 60 61 62,48 49 50 51,48 49 50 56,49 50 51 52,49 50 56 57,5 6 7 13,5 6 7 8,50 51 52 53,50 56 57 58,51 52 53 54,52 53 54 55,53 54 55 58,54 55 58 59,55 58 59 47,56 57 58 59,57 58 59 47,58 59 47 48,58 59 47 60,59 47 48 49,59 47 60 61,6 7 13 14,6 7 8 9,60 61 62 63,64 65 66 67,65 66 67 68,65 66 67 80,66 67 68 69,66 67 80 81,67 68 69 70,67 80 81 82,68 69 70 71,68 69 70 76,69 70 71 72,69 70 76 77,7 13 14 15,7 8 9 10,70 71 72 73,70 76 77 78,71 72 73 74,72 73 74 75,73 74 75 78,74 75 78 79,75 78 79 67,76 77 78 79,77 78 79 67,78 79 67 68,78 79 67 80,79 67 68 69,79 67 80 81,8 9 10 11,80 81 82 83,84 85 86 87,85 86 87 100,85 86 87 88,86 87 100 101,86 87 88 89,87 100 101 102,87 88 89 90,88 89 90 91,88 89 90 96,89 90 91 92,89 90 96 97,9 10 11 12,90 91 92 93,90 96 97 98,91 92 93 94,92 93 94 95,93 94 95 98,94 95 98 99,95 98 99 87,96 97 98 99,97 98 99 87,98 99 87 100,98 99 87 88,99 87 100 101,99 87 88 89
+5000

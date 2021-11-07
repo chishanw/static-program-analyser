@@ -1,0 +1,128 @@
+procedure mainOne {
+    a = 1;
+    b = 2;
+    c = a + b;
+    while (c < 10) {
+        read d;
+        read e;
+        if (d > e) then {
+            d = e - 7;
+            print d;
+            print e;
+            a = a + d;
+            b = b + e;
+        } else {
+            a = a * b;
+            b = b * c;
+        }
+        print c;
+        c = c + 1;
+    }
+    call mainTwo;
+    f = d * e + c;
+    g = f % 5;
+    h = a / d + f * b + 4; 
+}
+
+procedure mainTwo {
+    i = 1;
+    j = 2;
+    k = a + b;
+    while (k < 10) {
+        read l;
+        read m;
+        if (l > m) then {
+            l = m - 7;
+            print l;
+            print m;
+            i = i + l;
+            j = j + m;
+        } else {
+            i = i * j;
+            j = j * c;
+        }
+        print k;
+        k = k + 1;
+    }
+    call mainThree;
+    n = l * m + k;
+    o = n % 5;
+    p = i / l + n * j + 4; 
+}
+
+procedure mainThree {
+    q = 1;
+    r = 2;
+    s = q + r;
+    while (s < 10) {
+        read t;
+        read u;
+        if (t > u) then {
+            t = u - 7;
+            print t;
+            print u;
+            q = q + t;
+            r = r + u;
+        } else {
+            q = q * r;
+            r = r * s;
+        }
+        print s;
+        s = s + 1;
+    }
+    call mainFour;
+    v = t * u + s;
+    w = v % 5;
+    x = q / t + v * r + 4; 
+}
+
+procedure mainFour {
+    y = 1;
+    z = 2;
+    aa = y + z;
+    while (aa < 10) {
+        read ab;
+        read ac;
+        if (ab > ac) then {
+            ab = ac - 7;
+            print ab;
+            print ac;
+            y = y + ab;
+            z = z + ac;
+        } else {
+            y = y * z;
+            z = z * aa;
+        }
+        print aa;
+        aa = aa + 1;
+    }
+    call mainFive;
+    ad = ab * ac + aa;
+    ae = ad % 5;
+    af = y / ab + ad * z + 4; 
+}
+
+procedure mainFive {
+    ag = 1;
+    ah = 2;
+    ai = ag + ah;
+    while (ai < 10) {
+        read aj;
+        read ak;
+        if (aj > ak) then {
+            aj = ak - 7;
+            print aj;
+            print ak;
+            ag = ag + aj;
+            ah = ah + ak;
+        } else {
+            ag = ag * ah;
+            ah = ah * ai;
+        }
+        print ai;
+        ai = ai + 1;
+    }
+    al = aj * ak + ai;
+    am = al % 5;
+    an = ag / aj + al * ah + 4; 
+}

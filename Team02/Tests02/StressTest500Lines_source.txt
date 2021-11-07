@@ -1,0 +1,652 @@
+procedure main1 {
+    a = 1;
+    b = 2;
+    c = a + b;
+    while (c < 10) {
+        read d;
+        read e;
+        if (d > e) then {
+            d = e - 7;
+            print d;
+            print e;
+            a = a + d;
+            b = b + e;
+        } else {
+            a = a * b;
+            b = b * c;
+        }
+        print c;
+        c = c + 1;
+    }
+    call main2;
+    f = d * e + c;
+    g = f % 5;
+    h = a / d + f * b + 4; 
+}
+
+procedure main2 {
+    i = 1;
+    j = 2;
+    k = a + b;
+    while (k < 10) {
+        read l;
+        read m;
+        if (l > m) then {
+            l = m - 7;
+            print l;
+            print m;
+            i = i + l;
+            j = j + m;
+        } else {
+            i = i * j;
+            j = j * c;
+        }
+        print k;
+        k = k + 1;
+    }
+    call main3;
+    n = l * m + k;
+    o = n % 5;
+    p = i / l + n * j + 4; 
+}
+
+procedure main3 {
+    q = 1;
+    r = 2;
+    s = q + r;
+    while (s < 10) {
+        read t;
+        read u;
+        if (t > u) then {
+            t = u - 7;
+            print t;
+            print u;
+            q = q + t;
+            r = r + u;
+        } else {
+            q = q * r;
+            r = r * s;
+        }
+        print s;
+        s = s + 1;
+    }
+    call main4;
+    v = t * u + s;
+    w = v % 5;
+    x = q / t + v * r + 4; 
+}
+
+procedure main4 {
+    y = 1;
+    z = 2;
+    aa = y + z;
+    while (aa < 10) {
+        read ab;
+        read ac;
+        if (ab > ac) then {
+            ab = ac - 7;
+            print ab;
+            print ac;
+            y = y + ab;
+            z = z + ac;
+        } else {
+            y = y * z;
+            z = z * aa;
+        }
+        print aa;
+        aa = aa + 1;
+    }
+    call main5;
+    ad = ab * ac + aa;
+    ae = ad % 5;
+    af = y / ab + ad * z + 4; 
+}
+
+procedure main5 {
+    ag = 1;
+    ah = 2;
+    ai = ag + ah;
+    while (ai < 10) {
+        read aj;
+        read ak;
+        if (aj > ak) then {
+            aj = ak - 7;
+            print aj;
+            print ak;
+            ag = ag + aj;
+            ah = ah + ak;
+        } else {
+            ag = ag * ah;
+            ah = ah * ai;
+        }
+        print ai;
+        ai = ai + 1;
+    }
+    call main6;
+    al = aj * ak + ai;
+    am = al % 5;
+    an = ag / aj + al * ah + 4; 
+}
+
+procedure main6 {
+    ao = 1;
+    ap = 2;
+    aq = ao + ap;
+    while (aq < 10) {
+        read ar;
+        read as;
+        if (ar > as) then {
+            ar = as - 7;
+            print ar;
+            print as;
+            ao = ao + ar;
+            ap = ap + as;
+        } else {
+            ao = ao * ap;
+            ap = ap * aq;
+        }
+        print aq;
+        aq = aq + 1;
+    }
+    call main7;
+    at = ar * as + aq;
+    au = at % 5;
+    av = ao / ar + at * ap + 4; 
+}
+
+procedure main7 {
+    aw = 1;
+    ax = 2;
+    ay = aw + ax;
+    while (ay < 10) {
+        read az;
+        read ba;
+        if (az > ba) then {
+            az = ba - 7;
+            print az;
+            print ba;
+            aw = aw + az;
+            ax = ax + ba;
+        } else {
+            aw = aw * ax;
+            ax = ax * ay;
+        }
+        print ay;
+        ay = ay + 1;
+    }
+    call main8;
+    bb = az * ba + ay;
+    bc = bb % 5;
+    bd = aw / az + bb * ax + 4; 
+}
+
+procedure main8 {
+    be = 1;
+    bf = 2;
+    bg = be + bf;
+    while (bg < 10) {
+        read bh;
+        read bi;
+        if (bh > bi) then {
+            bh = bi - 7;
+            print bh;
+            print bi;
+            be = be + bh;
+            bf = bf + bi;
+        } else {
+            be = be * bf;
+            bf = bf * bg;
+        }
+        print bg;
+        bg = bg + 1;
+    }
+    call main9;
+    bj = bh * bi + bg;
+    bk = bj % 5;
+    bl = be / bh + bj * bf + 4; 
+}
+
+procedure main9 {
+    bm = 1;
+    bn = 2;
+    bo = bm + bn;
+    while (bo < 10) {
+        read bp;
+        read bq;
+        if (bp > bq) then {
+            bp = bq - 7;
+            print bp;
+            print bq;
+            bm = bm + bp;
+            bn = bn + bq;
+        } else {
+            bm = bm * bn;
+            bn = bn * bo;
+        }
+        print bo;
+        bo = bo + 1;
+    }
+    call main10;
+    br = bp * bq + bo;
+    bs = br % 5;
+    bt = bm / bp + br * bn + 4; 
+}
+
+procedure main10 {
+    bu = 1;
+    bv = 2;
+    bw = bu + bv;
+    while (bw < 10) {
+        read bx;
+        read by;
+        if (bx > by) then {
+            bx = by - 7;
+            print bx;
+            print by;
+            bu = bu + bx;
+            bv = bv + by;
+        } else {
+            bu = bu * bv;
+            bv = bv * bw;
+        }
+        print bw;
+        bw = bw + 1;
+    }
+    call main11;
+    bz = bx * by + bw;
+    ca = bz % 5;
+    cb = bu / bx + bz * bv + 4; 
+}
+
+procedure main11 {
+    cc = 1;
+    cd = 2;
+    ce = cc + cd;
+    while (ce < 10) {
+        read cf;
+        read cg;
+        if (cf > cg) then {
+            cf = cg - 7;
+            print cf;
+            print cg;
+            cc = cc + cf;
+            cd = cd + cg;
+        } else {
+            cc = cc * cd;
+            cd = cd * ce;
+        }
+        print ce;
+        ce = ce + 1;
+    }
+    call main12;
+    ch = cf * cg + ce;
+    ci = ch % 5;
+    cj = cc / cf + ch * cd + 4; 
+}
+
+procedure main12 {
+    ck = 1;
+    cl = 2;
+    cm = ck + cl;
+    while (cm < 10) {
+        read cn;
+        read co;
+        if (cn > co) then {
+            cn = co - 7;
+            print cn;
+            print co;
+            ck = ck + cn;
+            cl = cl + co;
+        } else {
+            ck = ck * cl;
+            cl = cl * cm;
+        }
+        print cm;
+        cm = cm + 1;
+    }
+    call main13;
+    cp = cn * co + cm;
+    cq = cp % 5;
+    cr = ck / cn + cp * cl + 4; 
+}
+
+procedure main13 {
+    cs = 1;
+    ct = 2;
+    cu = cs + ct;
+    while (cu < 10) {
+        read cv;
+        read cw;
+        if (cv > cw) then {
+            cv = cw - 7;
+            print cv;
+            print cw;
+            cs = cs + cv;
+            ct = ct + cw;
+        } else {
+            cs = cs * ct;
+            ct = ct * cu;
+        }
+        print cu;
+        cu = cu + 1;
+    }
+    call main14;
+    cx = cv * cw + cu;
+    cy = cx % 5;
+    cz = cs / cv + cx * ct + 4; 
+}
+
+procedure main14 {
+    da = 1;
+    db = 2;
+    dc = da + db;
+    while (dc < 10) {
+        read dd;
+        read de;
+        if (dd > de) then {
+            dd = de - 7;
+            print dd;
+            print de;
+            da = da + dd;
+            db = db + de;
+        } else {
+            da = da * db;
+            db = db * dc;
+        }
+        print dc;
+        dc = dc + 1;
+    }
+    call main15;
+    df = dd * de + dc;
+    dg = df % 5;
+    dh = bu / dd + df * db + 4; 
+}
+
+procedure main15 {
+    di = 1;
+    dj = 2;
+    dk = di + dj;
+    while (dk < 10) {
+        read dl;
+        read dm;
+        if (dl > dm) then {
+            dl = dm - 7;
+            print dl;
+            print dm;
+            di = di + dl;
+            dj = dj + dm;
+        } else {
+            di = di * dj;
+            dj = dj * dk;
+        }
+        print dk;
+        dk = dk + 1;
+    }
+    call main16;
+    dn = dl * dm + dk;
+    do = dn % 5;
+    dp = di / dl + dn * dj + 4; 
+}
+
+procedure main16 {
+    dq = 1;
+    dr = 2;
+    ds = dq + dr;
+    while (ds < 10) {
+        read dt;
+        read du;
+        if (dt > du) then {
+            dt = du - 7;
+            print dt;
+            print du;
+            dq = dq + dt;
+            dr = dr + du;
+        } else {
+            dq = dq * dr;
+            dr = dr * ds;
+        }
+        print ds;
+        ds = ds + 1;
+    }
+    call main17;
+    dv = dt * du + ds;
+    dw = dv % 5;
+    dx = dq / dt + dv * dr + 4; 
+}
+
+
+procedure main17 {
+    dy = 1;
+    dz = 2;
+    ea = dy + dz;
+    while (ea < 10) {
+        read eb;
+        read ec;
+        if (eb > ec) then {
+            eb = ec - 7;
+            print eb;
+            print ec;
+            dy = dy + eb;
+            dz = dz + ec;
+        } else {
+            dy = dy * dz;
+            dz = dz * ea;
+        }
+        print ea;
+        ea = ea + 1;
+    }
+    call main18;
+    ed = eb * ec + ea;
+    ee = ed % 5;
+    ef = dy / eb + ed * dz + 4; 
+}
+
+
+procedure main18 {
+    eg = 1;
+    eh = 2;
+    ei = eg + eh;
+    while (ei < 10) {
+        read ej;
+        read ek;
+        if (ej > ek) then {
+            ej = ek - 7;
+            print ej;
+            print ek;
+            eg = eg + ej;
+            eh = eh + ek;
+        } else {
+            eg = eg * eh;
+            eh = eh * ei;
+        }
+        print ei;
+        ei = ei + 1;
+    }
+    call main19;
+    el = ej * ek + ei;
+    em = el % 5;
+    en = eg / ej + el * eh + 4; 
+}
+
+procedure main19 {
+    eo = 1;
+    ep = 2;
+    eq = eo + ep;
+    while (eq < 10) {
+        read er;
+        read es;
+        if (er > es) then {
+            er = es - 7;
+            print er;
+            print es;
+            eo = eo + er;
+            ep = ep + es;
+        } else {
+            eo = eo * ep;
+            ep = ep * eq;
+        }
+        print eq;
+        eq = eq + 1;
+    }
+    call main20;
+    et = er * es + eq;
+    eu = et % 5;
+    ev = eo / er + et * ep + 4; 
+}
+
+procedure main20 {
+    ew = 1;
+    ex = 2;
+    ey = ew + ex;
+    while (ey < 10) {
+        read ez;
+        read fa;
+        if (ez > fa) then {
+            ez = fa - 7;
+            print ez;
+            print fa;
+            ew = ew + ez;
+            ex = ex + fa;
+        } else {
+            ew = ew * ex;
+            ex = ex * ey;
+        }
+        print ey;
+        ey = ey + 1;
+    }
+    call main21;
+    fb = ez * fa + ey;
+    fc = fb % 5;
+    fd = ew / ez + fb * ex + 4; 
+}
+
+procedure main21 {
+    fe = 1;
+    ff = 2;
+    fg = fe + ff;
+    while (fg < 10) {
+        read fh;
+        read fi;
+        if (fh > fi) then {
+            fh = fi - 7;
+            print fh;
+            print fi;
+            fe = fe + fh;
+            ff = ff + fi;
+        } else {
+            fe = fe * ff;
+            ff = ff * fg;
+        }
+        print fg;
+        fg = fg + 1;
+    }
+    call main22;
+    fj = fh * fi + fg;
+    fk = fj % 5;
+    fl = fe / fh + fj * ff + 4; 
+}
+
+procedure main22 {
+    fm = 1;
+    fn = 2;
+    fo = fm + fn;
+    while (fo < 10) {
+        read fp;
+        read fq;
+        if (fp > fq) then {
+            fp = fq - 7;
+            print fp;
+            print fq;
+            fm = fm + fp;
+            fn = fn + fq;
+        } else {
+            fm = fm * fn;
+            fn = fn * fo;
+        }
+        print fo;
+        fo = fo + 1;
+    }
+    call main23;
+    fr = fp * fq + fo;
+    fs = fr % 5;
+    ft = fm / fp + fr * fn + 4; 
+}
+
+procedure main23 {
+    fu = 1;
+    fv = 2;
+    fw = fu + fv;
+    while (fw < 10) {
+        read fx;
+        read fy;
+        if (fx > fy) then {
+            fx = fy - 7;
+            print fx;
+            print fy;
+            fu = fu + fx;
+            fv = fv + fy;
+        } else {
+            fu = fu * fv;
+            fv = fv * fw;
+        }
+        print fw;
+        fw = fw + 1;
+    }
+    call main24;
+    fz = fx * fy + fw;
+    ga = fz % 5;
+    gb = fu / fx + fz * fv + 4; 
+}
+
+procedure main24 {
+    gc = 1;
+    gd = 2;
+    ge = gc + gd;
+    while (ge < 10) {
+        read gf;
+        read gg;
+        if (gf > gg) then {
+            gf = gg - 7;
+            print gf;
+            print gg;
+            gc = gc + gf;
+            gd = gd + gg;
+        } else {
+            gc = gc * gd;
+            gd = gd * ge;
+        }
+        print ge;
+        ge = ge + 1;
+    }
+    call main25;
+    gh = gf * gg + ge;
+    gi = gh % 5;
+    gj = gc / gf + gh * gd + 4; 
+}
+
+procedure main25 {
+    gk = 1;
+    gl = 2;
+    gm = gk + gl;
+    while (gm < 10) {
+        read gn;
+        read go;
+        if (gn > go) then {
+            gn = go - 7;
+            print gn;
+            print go;
+            gk = gk + gn;
+            gl = gl + go;
+        } else {
+            gk = gk * gl;
+            gl = gl * gm;
+        }
+        print gm;
+        gm = gm + 1;
+    }
+    gp = gn * go + gm;
+    gq = gp % 5;
+    gr = gk / gn + gp * gl + 4; 
+}
+
+

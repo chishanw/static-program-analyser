@@ -1,0 +1,131 @@
+procedure main1 {
+    a = 1 + varMain1 + varMain2 + varMain3 + varMain4 + varMain5 + varMain6 + varMain7 + varMain8 + varMain9 + varMain10;
+    b = 2 + varMain11 + varMain12 + varMain13 + varMain14 + varMain15 + varMain16 + varMain17 + varMain18 + varMain19 + varMain20;
+    c = a + b + varMain21 + varMain22 + varMain23 + varMain24 + varMain25 + varMain26 + varMain27 + varMain28 + varMain29 + varMain30;
+    while (c < 10) {
+        read d;
+        read e;
+        if (d > e) then {
+            d = e - 7 + varMain31 + varMain32 + varMain33 + varMain34 + varMain35 + varMain36 + varMain37 + varMain38 + varMain39 + varMain40;
+            print d;
+            print e;
+            a = a + d + varMain41 + varMain42 + varMain43 + varMain44 + varMain45 + varMain46 + varMain47 + varMain48 + varMain49 + varMain50;
+            b = b + e + varMain51 + varMain52 + varMain53 + varMain54 + varMain55 + varMain56 + varMain57 + varMain58 + varMain59 + varMain60;
+        } else {
+            a = a * b + varMain61 + varMain62 + varMain63 + varMain64 + varMain65 + varMain66 + varMain67 + varMain68 + varMain69 + varMain70;
+            b = b * c + varMain71 + varMain72 + varMain73 + varMain74 + varMain75 + varMain76 + varMain77 + varMain78 + varMain79 + varMain80;
+        }
+        print c;
+        c = c + 1 + varMain81 + varMain82 + varMain83 + varMain84 + varMain85 + varMain86 + varMain87 + varMain88 + varMain89 + varMain90;
+    }
+    call main2;
+    f = d * e + c;
+    g = f % 5 + varMain91 + varMain92 + varMain93 + varMain94 + varMain95 + varMain96 + varMain97 + varMain98 + varMain99 + varMain100;
+    h = a / d + f * b + 4; 
+}
+
+procedure main2 {
+    i = 1 + varAMain1 + varAMain2 + varAMain3 + varAMain4 + varAMain5 + varAMain6 + varAMain7 + varAMain8 + varAMain9 + varAMain10;
+    j = 2 + varAMain11 + varAMain12 + varAMain13 + varAMain14 + varAMain15 + varAMain16 + varAMain17 + varAMain18 + varAMain19 + varAMain20;
+    k = a + b + varAMain21 + varAMain22 + varAMain23 + varAMain24 + varAMain25 + varAMain26 + varAMain27 + varAMain28 + varAMain29 + varAMain30;
+    while (k < 10) {
+        read l;
+        read m;
+        if (l > m) then {
+            l = m - 7 + varAMain31 + varAMain32 + varAMain33 + varAMain34 + varAMain35 + varAMain36 + varAMain37 + varAMain38 + varAMain39 + varAMain40;
+            print l;
+            print m;
+            i = i + l;
+            print e;
+            a = a + d + varAMain41 + varAMain42 + varAMain43 + varAMain44 + varAMain45 + varAMain46 + varAMain47 + varAMain48 + varAMain49 + varAMain50;
+            j = j + m + varAMain51 + varAMain52 + varAMain53 + varAMain54 + varAMain55 + varAMain56 + varAMain57 + varAMain58 + varAMain59 + varAMain60;
+        } else {
+            i = i * j + varAMain61 + varAMain62 + varAMain63 + varAMain64 + varAMain65 + varAMain66 + varAMain67 + varAMain68 + varAMain69 + varAMain70;
+            b = b * c + varAMain71 + varAMain72 + varAMain73 + varAMain74 + varAMain75 + varAMain76 + varAMain77 + varAMain78 + varAMain79 + varAMain80;
+            j = j * c + varAMain81 + varAMain82 + varAMain83 + varAMain84 + varAMain85 + varAMain86 + varAMain87 + varAMain88 + varAMain89 + varAMain90;
+        }
+        print k;
+        k = k + 1;
+    }
+    call main3;
+    n = l * m + k;
+    o = n % 5 + varAMain91 + varAMain92 + varAMain93 + varAMain94 + varAMain95 + varAMain96 + varAMain97 + varAMain98 + varAMain99 + varAMain100;
+    p = i / l + n * j + 4; 
+}
+
+procedure main3 {
+    q = 1 + varBMain1 + varBMain2 + varBMain3 + varBMain4 + varBMain5 + varBMain6 + varBMain7 + varBMain8 + varBMain9 + varBMain10;
+    r = 2 + varBMain11 + varBMain12 + varBMain13 + varBMain14 + varBMain15 + varBMain16 + varBMain17 + varBMain18 + varBMain19 + varBMain20;
+    s = q + r + varBMain21 + varBMain22 + varBMain23 + varBMain24 + varBMain25 + varBMain26 + varBMain27 + varBMain28 + varBMain29 + varBMain30;
+    while (s < 10) {
+        read t;
+        read u;
+        if (t > u) then {
+            t = u - 7 + varBMain31 + varBMain32 + varBMain33 + varBMain34 + varBMain35 + varBMain36 + varBMain37 + varBMain38 + varBMain39 + varBMain40;
+            print t;
+            print u;
+            q = q + t + varBMain41 + varBMain42 + varBMain43 + varBMain44 + varBMain45 + varBMain46 + varBMain47 + varBMain48 + varBMain49 + varBMain50;
+            r = r + u + varBMain51 + varBMain52 + varBMain53 + varBMain54 + varBMain55 + varBMain56 + varBMain57 + varBMain58 + varBMain59 + varBMain60;
+        } else {
+            q = q * r + varBMain61 + varBMain62 + varBMain63 + varBMain64 + varBMain65 + varBMain66 + varBMain67 + varBMain68 + varBMain69 + varBMain70;
+            r = r * s + varBMain71 + varBMain72 + varBMain73 + varBMain74 + varBMain75 + varBMain76 + varBMain77 + varBMain78 + varBMain79 + varBMain80;
+        }
+        print s;
+        s = s + 1 + varBMain81 + varBMain82 + varBMain83 + varBMain84 + varBMain85 + varBMain86 + varBMain87 + varBMain88 + varBMain89 + varBMain90;
+    }
+    call main4;
+    v = t * u + s;
+    w = v % 5 + varBMain91 + varBMain92 + varBMain93 + varBMain94 + varBMain95 + varBMain96 + varBMain97 + varBMain98 + varBMain99 + varBMain100;
+    x = q / t + v * r + 4; 
+}
+
+procedure main4 {
+    y = 1 + varCMain1 + varCMain2 + varCMain3 + varCMain4 + varCMain5 + varCMain6 + varCMain7 + varCMain8 + varCMain9 + varCMain10;
+    z = 2 + varCMain11 + varCMain12 + varCMain13 + varCMain14 + varCMain15 + varCMain16 + varCMain17 + varCMain18 + varCMain19 + varCMain20;
+    aa = y + z + varCMain21 + varCMain22 + varCMain23 + varCMain24 + varCMain25 + varCMain26 + varCMain27 + varCMain28 + varCMain29 + varCMain30;
+    while (aa < 10) {
+        read ab;
+        read ac;
+        if (ab > ac) then {
+            ab = ac - 7 + varCMain31 + varCMain32 + varCMain33 + varCMain34 + varCMain35 + varCMain36 + varCMain37 + varCMain38 + varCMain39 + varCMain40;
+            print ab;
+            print ac;
+            y = y + ab + varCMain41 + varCMain42 + varCMain43 + varCMain44 + varCMain45 + varCMain46 + varCMain47 + varCMain48 + varCMain49 + varCMain50;
+            z = z + ac + varCMain51 + varCMain52 + varCMain53 + varCMain54 + varCMain55 + varCMain56 + varCMain57 + varCMain58 + varCMain59 + varCMain60;
+        } else {
+            y = y * z + varCMain61 + varCMain62 + varCMain63 + varCMain64 + varCMain65 + varCMain66 + varCMain67 + varCMain68 + varCMain69 + varCMain70;
+            z = z * aa + varCMain71 + varCMain72 + varCMain73 + varCMain74 + varCMain75 + varCMain76 + varCMain77 + varCMain78 + varCMain79 + varCMain80;
+        }
+        print aa;
+        aa = aa + 1 + varCMain81 + varCMain82 + varCMain83 + varCMain84 + varCMain85 + varCMain86 + varCMain87 + varCMain88 + varCMain89 + varCMain90;
+    }
+    call main5;
+    ad = ab * ac + aa;
+    ae = ad % 5 + varCMain91 + varCMain92 + varCMain93 + varCMain94 + varCMain95 + varCMain96 + varCMain97 + varCMain98 + varCMain99 + varCMain100;
+    af = y / ab + ad * z + 4; 
+}
+
+procedure main5 {
+    ag = 1 + varDMain1 + varDMain2 + varDMain3 + varDMain4 + varDMain5 + varDMain6 + varDMain7 + varDMain8 + varDMain9 + varDMain10;
+    ah = 2 + varDMain11 + varDMain12 + varDMain13 + varDMain14 + varDMain15 + varDMain16 + varDMain17 + varDMain18 + varDMain19 + varDMain20;
+    ai = ag + ah + varDMain21 + varDMain22 + varDMain23 + varDMain24 + varDMain25 + varDMain26 + varDMain27 + varDMain28 + varDMain29 + varDMain30;
+    while (ai < 10) {
+        read aj;
+        read ak;
+        if (aj > ak) then {
+            aj = ak - 7 + varDMain31 + varDMain32 + varDMain33 + varDMain34 + varDMain35 + varDMain36 + varDMain37 + varDMain38 + varDMain39 + varDMain40;
+            print aj;
+            print ak;
+            ag = ag + aj + varDMain41 + varDMain42 + varDMain43 + varDMain44 + varDMain45 + varDMain46 + varDMain47 + varDMain48 + varDMain49 + varDMain50;
+            ah = ah + ak + varDMain51 + varDMain52 + varDMain53 + varDMain54 + varDMain55 + varDMain56 + varDMain57 + varDMain58 + varDMain59 + varDMain60;
+        } else {
+            ag = ag * ah + varDMain61 + varDMain62 + varDMain63 + varDMain64 + varDMain65 + varDMain66 + varDMain67 + varDMain68 + varDMain69 + varDMain70;
+            ah = ah * ai + varDMain71 + varDMain72 + varDMain73 + varDMain74 + varDMain75 + varDMain76 + varDMain77 + varDMain78 + varDMain79 + varDMain80;
+        }
+        print ai;
+        ai = ai + 1 + varDMain81 + varDMain82 + varDMain83 + varDMain84 + varDMain85 + varDMain86 + varDMain87 + varDMain88 + varDMain89 + varDMain90;
+    }
+    al = aj * ak + ai;
+    am = al % 5 + varDMain91 + varDMain92 + varDMain93 + varDMain94 + varDMain95 + varDMain96 + varDMain97 + varDMain98 + varDMain99 + varDMain100;
+    an = ag / aj + al * ah + 4; 
+}
