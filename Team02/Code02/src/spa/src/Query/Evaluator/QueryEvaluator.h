@@ -3,9 +3,8 @@
 #include <Common/Common.h>
 #include <PKB/PKB.h>
 #include <Query/Common.h>
-#include <Query/Evaluator/AffectsEvaluator.h>
-#include <Query/Evaluator/NextEvaluator.h>
-#include <Query/Evaluator/PatternEvaluator.h>
+#include <Query/Evaluator/AffectsOnDemandEvaluator.h>
+#include <Query/Evaluator/NextOnDemandEvaluator.h>
 #include <Query/Evaluator/WithEvaluator.h>
 #include <Query/Optimizer/QueryOptimizer.h>
 
@@ -29,9 +28,8 @@ class QueryEvaluator {
   SynonymMap synonymMap;
   PKB* pkb;
   QueryOptimizer* optimizer;
-  NextEvaluator nextEvaluator;
-  AffectsEvaluator affectsEvaluator;
-  PatternEvaluator patternEvaluator;
+  NextOnDemandEvaluator nextOnDemandEvaluator;
+  AffectsOnDemandEvaluator affectsOnDemandEvaluator;
   WithEvaluator withEvaluator;
 
   bool areAllClausesTrue;
@@ -73,28 +71,24 @@ class QueryEvaluator {
       std::vector<std::string> incomingResultsSynonyms);
 
   // methods to process different types of clauses
-  void evaluateSuchThatClause(query::SuchThatClause);
-  void evaluateSuchThatClauseHelper(query::SuchThatClause);
-  void evaluateSuchThatOnDemandClause(query::SuchThatClause);
-  bool callSubEvaluatorBool(RelationshipType relationshipType,
-                            const query::Param& left,
-                            const query::Param& right);
-  query::ClauseIncomingResults callSubEvaluatorRef(
+  void evaluateSuchThatClause(query::SuchThatClause clause);
+  void evaluateSuchThatClauseHelper(query::SuchThatClause clause);
+  void evaluateSuchThatOnDemandClause(query::SuchThatClause clause);
+  bool callOnDemandEvaluatorBool(RelationshipType relationshipType,
+                                 const query::Param& left,
+                                 const query::Param& right);
+  query::ClauseIncomingResults callOnDemandEvaluatorRef(
       RelationshipType relationshipType, const query::Param& left,
       const query::Param& right);
-  query::ClauseIncomingResults callSubEvaluatorPair(
+  query::ClauseIncomingResults callOnDemandEvaluatorPair(
       RelationshipType relationshipType, const query::Param& left,
       const query::Param& right);
 
-  void evaluatePatternClause(query::PatternClause);
-  query::ClauseIncomingResults callPatternSubEvaluatorRef(
-      DesignEntity designEntity, const query::Param& varParam,
-      const query::PatternExpr& patternExpr);
-  query::ClauseIncomingResults callPatternSubEvaluatorPair(
-      DesignEntity designEntity, const query::Param& varParam,
-      const query::PatternExpr& patternExpr);
+  void evaluatePatternClause(query::PatternClause clause);
+  RelationshipType getRsTypeForPatternClause(query::PatternClause clause);
+  bool isPatternWithExpr(query::PatternClause clause);
 
-  void evaluateWithClause(query::WithClause);
+  void evaluateWithClause(query::WithClause clause);
 
   // helpers for query optimization
   void insertClauseSynonymValue(query::IntermediateQueryResult queryResult);
@@ -111,6 +105,11 @@ class QueryEvaluator {
   std::unordered_set<int> resolveLeftParam(query::SuchThatClause clause);
   query::ClauseIncomingResults resolveRightParamFromLeftValues(
       query::SuchThatClause clause, std::unordered_set<int> leftValues);
+
+  std::unordered_set<int> resolveVarParam(query::PatternClause clause);
+  query::ClauseIncomingResults resolveSynonymParamFromVarValues(
+      query::PatternClause, std::unordered_set<int> varValues);
+
   int convertLeftNameLiteralToInt(RelationshipType rsType,
                                   std::string nameLiteral);
   int convertRightNameLiteralToInt(RelationshipType rsType,

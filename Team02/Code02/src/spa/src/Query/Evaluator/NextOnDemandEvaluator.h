@@ -7,19 +7,9 @@
 #include <unordered_set>
 #include <vector>
 
-class NextEvaluator {
+class NextOnDemandEvaluator {
  public:
-  explicit NextEvaluator(PKB* pkb);
-
-  bool evaluateBoolNextNextBip(RelationshipType rsType,
-                               const query::Param& left,
-                               const query::Param& right);
-  std::unordered_set<int> evaluateNextNextBip(RelationshipType rsType,
-                                              const query::Param& left,
-                                              const query::Param& right);
-  query::ClauseIncomingResults evaluatePairNextNextBip(
-      RelationshipType rsType, const query::Param& left,
-      const query::Param& right);
+  explicit NextOnDemandEvaluator(PKB* pkb);
 
   bool evaluateBoolNextTNextBipT(RelationshipType rsType,
                                  const query::Param& left,

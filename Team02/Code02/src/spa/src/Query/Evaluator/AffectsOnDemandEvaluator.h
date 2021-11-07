@@ -18,9 +18,9 @@ enum class BoolParamCombo {
   WILDCARD_LITERAL
 };
 
-class AffectsEvaluator {
+class AffectsOnDemandEvaluator {
  public:
-  explicit AffectsEvaluator(PKB*);
+  explicit AffectsOnDemandEvaluator(PKB*);
 
   bool isAffects(RelationshipType rsType, STMT_NO a1, STMT_NO a2);
   std::unordered_set<STMT_NO> getAffects(RelationshipType rsType, STMT_NO a1);
@@ -35,9 +35,9 @@ class AffectsEvaluator {
   query::ClauseIncomingResults evaluateSynonymWildcard(
       RelationshipType rsType, const query::Param& left,
       const query::Param& right);
-  query::ClauseIncomingResults evaluatePairAffects(
-      RelationshipType rsType, const query::Param& left,
-      const query::Param& right);
+  query::ClauseIncomingResults evaluatePairAffects(RelationshipType rsType,
+                                                   const query::Param& left,
+                                                   const query::Param& right);
 
   bool evaluateBoolAffectsT(const query::Param& left,
                             const query::Param& right);
@@ -46,15 +46,15 @@ class AffectsEvaluator {
   std::unordered_set<STMT_NO> evaluateStmtAffectsTHelper(
       const query::Param& left, const query::Param& right,
       std::unordered_set<STMT_NO>* visited);
-  query::ClauseIncomingResults evaluatePairAffectsT(
-      const query::Param& left, const query::Param& right);
+  query::ClauseIncomingResults evaluatePairAffectsT(const query::Param& left,
+                                                    const query::Param& right);
 
  private:
   PKB* pkb;
 
   /* Affects Results Cache ------------------------------------------ */
   bool isCompleteAffectsCache = false;  // true when Affects(s1, _) or (_, s2)
-                                 // or (s1, s2) have been computed before
+                                        // or (s1, s2) have been computed before
   bool isCompleteAffectsTCache = false;
   std::unordered_set<STMT_NO> allVisitedStmts = {};
   std::unordered_map<RelationshipType, std::unordered_set<STMT_NO>>

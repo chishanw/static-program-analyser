@@ -1,6 +1,6 @@
 #include <PKB/PKB.h>
 #include <Query/Common.h>
-#include <Query/Evaluator/NextEvaluator.h>
+#include <Query/Evaluator/NextOnDemandEvaluator.h>
 
 #include <iostream>
 
@@ -10,70 +10,7 @@ using namespace std;
 using namespace query;
 using Catch::Matchers::VectorContains;
 
-TEST_CASE("NextEvaluator: Next") {
-  PKB* pkb = new PKB();
-  for (int i = 1; i <= 7; i++) {
-    pkb->addStmt(DesignEntity::STATEMENT, i);
-  }
-  // example procedure
-  // 1: x = 1;
-  // 2: if (z == 4) then {
-  // 3:   z = 5; }
-  // 4: else { z = 6; }
-  // 5: while (z == 2) {
-  // 6:  z = 3 }
-  // 7: x = 5;
-  pkb->addRs(RelationshipType::NEXT, 1, 2);
-  pkb->addRs(RelationshipType::NEXT, 2, 3);
-  pkb->addRs(RelationshipType::NEXT, 2, 4);
-  pkb->addRs(RelationshipType::NEXT, 3, 5);
-  pkb->addRs(RelationshipType::NEXT, 4, 5);
-  pkb->addRs(RelationshipType::NEXT, 5, 6);
-  pkb->addRs(RelationshipType::NEXT, 5, 7);
-  pkb->addRs(RelationshipType::NEXT, 6, 5);
-
-  RelationshipType rsType = RelationshipType::NEXT;
-
-  NextEvaluator ne(pkb);
-
-  SECTION("Next(1, 2)") {
-    Param left = {ParamType::INTEGER_LITERAL, "1"};
-    Param right = {ParamType::INTEGER_LITERAL, "2"};
-    bool result = ne.evaluateBoolNextNextBip(rsType, left, right);
-    REQUIRE(result == true);
-  }
-
-  SECTION("Next(1, _)") {
-    Param left = {ParamType::INTEGER_LITERAL, "1"};
-    Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextNextBip(rsType, left, right);
-    REQUIRE(result == true);
-  }
-
-  SECTION("Next(s, 5)") {
-    Param left = {ParamType::SYNONYM, "s"};
-    Param right = {ParamType::INTEGER_LITERAL, "5"};
-    unordered_set<int> result = ne.evaluateNextNextBip(rsType, left, right);
-    REQUIRE(result == unordered_set<int>({3, 4, 6}));
-  }
-
-  SECTION("Next(s1, s2)") {
-    Param left = {ParamType::SYNONYM, "s1"};
-    Param right = {ParamType::SYNONYM, "s2"};
-    auto setOfResults = ne.evaluatePairNextNextBip(rsType, left, right);
-    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
-    REQUIRE_THAT(result, VectorContains(vector<int>({1, 2})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({2, 3})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({2, 4})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({3, 5})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({4, 5})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({5, 6})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({5, 7})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({6, 5})));
-  }
-}
-
-TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
+TEST_CASE("NextOnDemandEvaluator: NextT - No Nested If/While") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 7; i++) {
     pkb->addStmt(DesignEntity::STATEMENT, i);
@@ -97,7 +34,7 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
 
   RelationshipType rsType = RelationshipType::NEXT_T;
 
-  NextEvaluator ne(pkb);
+  NextOnDemandEvaluator ne(pkb);
 
   /* Integer and Integer --------------------------- */
   SECTION("NextT(1, 3)") {
@@ -237,7 +174,7 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   }
 }
 
-TEST_CASE("NextEvaluator: NextT - Nested If/While") {
+TEST_CASE("NextOnDemandEvaluator: NextT - Nested If/While") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 14; i++) {
     pkb->addStmt(DesignEntity::STATEMENT, i);
@@ -279,7 +216,7 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
 
   RelationshipType rsType = RelationshipType::NEXT_T;
 
-  NextEvaluator ne(pkb);
+  NextOnDemandEvaluator ne(pkb);
 
   /* Integer and Integer --------------------------- */
   SECTION("NextT(2, 2)") {
@@ -497,7 +434,7 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   }
 }
 
-TEST_CASE("NextEvaluator: NextBip & NextBipT") {
+TEST_CASE("NextOnDemandEvaluator: NextBipT") {
   PKB* pkb = new PKB();
   for (int i = 1; i <= 6; i++) {
     pkb->addStmt(DesignEntity::STATEMENT, i);
@@ -522,42 +459,7 @@ TEST_CASE("NextEvaluator: NextBip & NextBipT") {
   pkb->addRs(nextBipRsType, 4, 6);
   pkb->addRs(nextBipRsType, 5, 6);
 
-  NextEvaluator ne(pkb);
-
-  /* NextBip --------------------------------------------------------- */
-  SECTION("NextBip(2, 3))") {
-    Param left = {ParamType::INTEGER_LITERAL, "2"};
-    Param right = {ParamType::INTEGER_LITERAL, "3"};
-    bool result = ne.evaluateBoolNextNextBip(nextBipRsType, left, right);
-    REQUIRE(result == true);
-  }
-
-  SECTION("NextBip(2, _)") {
-    Param left = {ParamType::INTEGER_LITERAL, "2"};
-    Param right = {ParamType::WILDCARD, "_"};
-    bool result = ne.evaluateBoolNextNextBip(nextBipRsType, left, right);
-    REQUIRE(result == true);
-  }
-
-  SECTION("NextBip(s, 6)") {
-    Param left = {ParamType::SYNONYM, "s"};
-    Param right = {ParamType::INTEGER_LITERAL, "6"};
-    unordered_set<int> result =
-        ne.evaluateNextNextBip(nextBipRsType, left, right);
-    REQUIRE(result == unordered_set<int>({4, 5}));
-  }
-
-  SECTION("NextBip(s1, s2)") {
-    Param left = {ParamType::SYNONYM, "s1"};
-    Param right = {ParamType::SYNONYM, "s2"};
-    auto setOfResults = ne.evaluatePairNextNextBip(nextBipRsType, left, right);
-    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
-    REQUIRE_THAT(result, VectorContains(vector<int>({1, 2})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({2, 3})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({3, 4})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({4, 6})));
-    REQUIRE_THAT(result, VectorContains(vector<int>({5, 6})));
-  }
+  NextOnDemandEvaluator ne(pkb);
 
   /* NextBip* -------------------------------------------------------- */
   SECTION("NextBipT(1, 3))") {

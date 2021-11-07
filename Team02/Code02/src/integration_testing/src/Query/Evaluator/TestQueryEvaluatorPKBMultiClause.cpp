@@ -1119,7 +1119,7 @@ TEST_CASE("QueryEvaluator: Test With Clause + Such That/Pattern") {
 }
 
 TEST_CASE("QueryEvaluator: Multiple NextT - Ensure Cache Correctness") {
-  // Essentially a duplicate of the unit tests in TestNextEvaluator
+  // Essentially a duplicate of the unit tests in TestNextOnDemandEvaluator
   // But we have two of the same clause in the query
   // Ensures results are stored and retrieved correctly for NextT
 

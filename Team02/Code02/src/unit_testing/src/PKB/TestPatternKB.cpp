@@ -10,9 +10,7 @@ TEST_CASE("WHILE_PATTERN") {
   RelationshipType rs = RelationshipType::PTT_WHILE;
 
   // Empty Results
-  REQUIRE(db.getVarMappings(rs) == SetOfStmtLists());
-  REQUIRE(db.getStmtsForVar(rs, "d") ==
-          unordered_set<int>());
+  REQUIRE(db.getStmtsForVar(rs, 5) == unordered_set<int>());
 
   db.addPatternRs(rs, 1, "a");
   db.addPatternRs(rs, 2, "a");
@@ -21,94 +19,73 @@ TEST_CASE("WHILE_PATTERN") {
   db.addPatternRs(rs, 5, "c");
   db.addPatternRs(rs, 5, "d");
 
-  REQUIRE(db.isPatternRs(rs, 1, "a"));
-  REQUIRE(db.isPatternRs(rs, 2, "a"));
-  REQUIRE(db.isPatternRs(rs, 3, "b"));
-  REQUIRE(db.isPatternRs(rs, 4, "b"));
-  REQUIRE(db.isPatternRs(rs, 5, "c"));
-  REQUIRE(db.isPatternRs(rs, 5, "d"));
-  REQUIRE(!db.isPatternRs(rs, 1, "b"));
-  REQUIRE(!db.isPatternRs(rs, 5, "b"));
-  REQUIRE(!db.isPatternRs(rs, 16, "a"));
-  REQUIRE(!db.isPatternRs(RelationshipType::PTT_WHILE, 1, "b"));
+  VarIdx aIndex = db.getIndexOf(TableType::VAR_TABLE, "a");
+  VarIdx bIndex = db.getIndexOf(TableType::VAR_TABLE, "b");
+  VarIdx cIndex = db.getIndexOf(TableType::VAR_TABLE, "c");
+  VarIdx dIndex = db.getIndexOf(TableType::VAR_TABLE, "d");
+
+  REQUIRE(db.isPatternRs(rs, 1, aIndex));
+  REQUIRE(db.isPatternRs(rs, 2, aIndex));
+  REQUIRE(db.isPatternRs(rs, 3, bIndex));
+  REQUIRE(db.isPatternRs(rs, 4, bIndex));
+  REQUIRE(db.isPatternRs(rs, 5, cIndex));
+  REQUIRE(db.isPatternRs(rs, 5, dIndex));
+  REQUIRE(!db.isPatternRs(rs, 1, bIndex));
+  REQUIRE(!db.isPatternRs(rs, 5, bIndex));
+  REQUIRE(!db.isPatternRs(rs, 16, aIndex));
+  REQUIRE(!db.isPatternRs(RelationshipType::PTT_WHILE, 1, bIndex));
 
   // w("a", _) = {1, 2}
-  REQUIRE(db.getStmtsForVar(rs, "a") ==
-          unordered_set({1, 2}));
-  REQUIRE(db.getStmtsForVar(rs, "b") ==
-          unordered_set({3, 4}));
-  REQUIRE(db.getStmtsForVar(rs, "c") ==
-          unordered_set({5}));
-  REQUIRE(db.getStmtsForVar(rs, "d") ==
-          unordered_set({5}));
-
-  // w("_", _) = All possible pairs of <s, index(var_name)>
-  int aIndex = db.getIndexOf(TableType::VAR_TABLE, "a");
-  int bIndex = db.getIndexOf(TableType::VAR_TABLE, "b");
-  int cIndex = db.getIndexOf(TableType::VAR_TABLE, "c");
-  int dIndex = db.getIndexOf(TableType::VAR_TABLE, "d");
-  REQUIRE(db.getVarMappings(rs) ==
-          SetOfIntLists({
-              vector({1, aIndex}),
-              vector({2, aIndex}),
-              vector({3, bIndex}),
-              vector({4, bIndex}),
-              vector({5, cIndex}),
-              vector({5, dIndex}),
-          }));
+  REQUIRE(db.getStmtsForVar(rs, aIndex) == unordered_set({1, 2}));
+  REQUIRE(db.getStmtsForVar(rs, bIndex) == unordered_set({3, 4}));
+  REQUIRE(db.getStmtsForVar(rs, cIndex) == unordered_set({5}));
+  REQUIRE(db.getStmtsForVar(rs, dIndex) == unordered_set({5}));
 }
 
 TEST_CASE("ASSIGNMENT PATTERN") {
   // Init PKB
   PKB db = PKB();
   RelationshipType rs = RelationshipType::PTT_ASSIGN_FULL_EXPR;
-  REQUIRE(db.getStmtsForVarAndExpr(rs, "y", "bellow").empty());
-  REQUIRE(db.getStmtsForVar(rs, "").empty());
-  REQUIRE(db.getStmtsForExpr(rs, "").empty());
-  REQUIRE(db.getVarMappingsForExpr(rs, "x+y") == SetOfStmtLists());
-  REQUIRE(db.getVarMappings(rs) == SetOfStmtLists());
+  REQUIRE(db.getStmtsForVarAndExpr(rs, 0, "bellow").empty());
+  REQUIRE(db.getStmtsForVar(rs, 1).empty());
+  REQUIRE(db.getVarsForExpr(rs, "").empty());
 
   db.addPatternRs(rs, 1, "y", "x+1");
   db.addPatternRs(rs, 2, "y", "x+1");
   db.addPatternRs(rs, 3, "v", "x+1");
   db.addPatternRs(rs, 4, "v", "x+2");
 
-  REQUIRE(db.isPatternRs(rs, 1, "y", "x+1"));
-  REQUIRE(db.isPatternRs(rs, 2, "y", "x+1"));
-  REQUIRE(db.isPatternRs(rs, 3, "v", "x+1"));
-  REQUIRE(db.isPatternRs(rs, 4, "v", "x+2"));
+  VarIdx yIndex = db.getIndexOf(TableType::VAR_TABLE, "y");
+  VarIdx vIndex = db.getIndexOf(TableType::VAR_TABLE, "v");
+  VarIdx aIndex = db.getIndexOf(TableType::VAR_TABLE, "a");
 
-  REQUIRE(!db.isPatternRs(rs, 5, "v", "x+2"));
-  REQUIRE(!db.isPatternRs(rs, 2, "v", "x"));
-  REQUIRE(!db.isPatternRs(rs, 3, "a", "x+1"));
-  REQUIRE(!db.isPatternRs(RelationshipType::PTT_IF, 4, "v", "x+2"));
+  REQUIRE(db.isPatternRs(rs, 1, yIndex, "x+1"));
+  REQUIRE(db.isPatternRs(rs, 2, yIndex, "x+1"));
+  REQUIRE(db.isPatternRs(rs, 3, vIndex, "x+1"));
+  REQUIRE(db.isPatternRs(rs, 4, vIndex, "x+2"));
+
+  REQUIRE(!db.isPatternRs(rs, 5, vIndex, "x+2"));
+  REQUIRE(!db.isPatternRs(rs, 2, vIndex, "x"));
+  REQUIRE(!db.isPatternRs(rs, 3, aIndex, "x+1"));
+  REQUIRE(!db.isPatternRs(RelationshipType::PTT_IF, 4, vIndex, "x+2"));
 
   // a (_, "x+1") = {1, 2, 3}
-  REQUIRE(db.getStmtsForExpr(rs, "x+1") == unordered_set({1, 2, 3}));
+  REQUIRE(db.getVarsForExpr(rs, "x+1") == unordered_set({yIndex, vIndex}));
 
-  // a ("y", "x+1") = {1, 2}
-  REQUIRE(db.getStmtsForVarAndExpr(rs, "y", "x+1") == unordered_set({1, 2}));
+  // a (yIndex, "x+1") = {1, 2}
+  REQUIRE(db.getStmtsForVarAndExpr(rs, yIndex, "x+1") == unordered_set({1, 2}));
 
   // a (v, "x+1") = { {1, index(y)}, {2, index(y)}, {3, index(v)} }
   int yIdx = db.getIndexOf(TableType::VAR_TABLE, "y");
   int vIdx = db.getIndexOf(TableType::VAR_TABLE, "v");
-  REQUIRE(db.getVarMappingsForExpr(rs, "x+1") ==
-          SetOfStmtLists({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
-                          vector<int>({3, vIdx})}));
 
   // a ("y",_) = {1, 2}, a("v",_) = {3, 4}
-  REQUIRE(db.getStmtsForVar(rs, "y") == unordered_set({1, 2}));
-  REQUIRE(db.getStmtsForVar(rs, "v") == unordered_set({3, 4}));
-
-  // a(v, _)  = return all pairs for filtering (s, varidx), etc etc
-  REQUIRE(db.getVarMappings(rs) ==
-          SetOfStmtLists({vector<int>({1, yIdx}), vector<int>({2, yIdx}),
-                          vector<int>({3, vIdx}), vector<int>({4, vIdx})}));
+  REQUIRE(db.getStmtsForVar(rs, yIndex) == unordered_set({1, 2}));
+  REQUIRE(db.getStmtsForVar(rs, vIndex) == unordered_set({3, 4}));
 
   // Invalid Queries
 
-  REQUIRE(db.getStmtsForVarAndExpr(rs, "y", "bellow").empty());
-  REQUIRE(db.getStmtsForVar(rs, "good").empty());
-  REQUIRE(db.getStmtsForExpr(rs, "bad").empty());
-  REQUIRE(db.getVarMappingsForExpr(rs, "x+3").empty());
+  REQUIRE(db.getStmtsForVarAndExpr(rs, yIndex, "bellow").empty());
+  REQUIRE(db.getStmtsForVar(rs, 20).empty());
+  REQUIRE(db.getVarsForExpr(rs, "bad").empty());
 }

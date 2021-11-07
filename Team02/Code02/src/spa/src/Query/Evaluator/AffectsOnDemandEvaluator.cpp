@@ -1,4 +1,4 @@
-#include "AffectsEvaluator.h"
+#include "AffectsOnDemandEvaluator.h"
 
 #include <Common/Global.h>
 
@@ -12,26 +12,28 @@
 using namespace std;
 using namespace query;
 
-AffectsEvaluator::AffectsEvaluator(PKB* pkb) { this->pkb = pkb; }
+AffectsOnDemandEvaluator::AffectsOnDemandEvaluator(PKB* pkb) {
+  this->pkb = pkb;
+}
 
 /* Getter Methods -------------------------------------------------------- */
-bool AffectsEvaluator::isAffects(RelationshipType rsType, STMT_NO a1,
-                                 STMT_NO a2) {
+bool AffectsOnDemandEvaluator::isAffects(RelationshipType rsType, STMT_NO a1,
+                                         STMT_NO a2) {
   return tableOfAffects[rsType].find(a1) != tableOfAffects[rsType].end() &&
          tableOfAffects[rsType].at(a1).find(a2) !=
              tableOfAffects[rsType].at(a1).end();
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::getAffects(RelationshipType rsType,
-                                                    STMT_NO a1) {
+unordered_set<STMT_NO> AffectsOnDemandEvaluator::getAffects(
+    RelationshipType rsType, STMT_NO a1) {
   if (tableOfAffects[rsType].find(a1) != tableOfAffects[rsType].end()) {
     return tableOfAffects[rsType].at(a1);
   }
   return {};
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::getAffectsInv(RelationshipType rsType,
-                                                       STMT_NO a2) {
+unordered_set<STMT_NO> AffectsOnDemandEvaluator::getAffectsInv(
+    RelationshipType rsType, STMT_NO a2) {
   if (tableOfAffectsInv[rsType].find(a2) != tableOfAffectsInv[rsType].end()) {
     return tableOfAffectsInv[rsType].at(a2);
   }
@@ -40,9 +42,9 @@ unordered_set<STMT_NO> AffectsEvaluator::getAffectsInv(RelationshipType rsType,
 
 /* Evaluation Methods --------------------------------------------------- */
 // Affects(1, 2), Affects(_, _), Affects(1, _), Affects(_, 2)
-bool AffectsEvaluator::evaluateBoolAffects(RelationshipType rsType,
-                                           const Param& left,
-                                           const Param& right) {
+bool AffectsOnDemandEvaluator::evaluateBoolAffects(RelationshipType rsType,
+                                                   const Param& left,
+                                                   const Param& right) {
   vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
 
   if (left.type == ParamType::INTEGER_LITERAL &&
@@ -143,12 +145,12 @@ bool AffectsEvaluator::evaluateBoolAffects(RelationshipType rsType,
     return !getAffectsInv(rsType, rightStmt).empty();
   }
 
-  DMOprintErrMsgAndExit("[AffectsEvaluator] Invalid bool clause");
+  DMOprintErrMsgAndExit("[AffectsOnDemandEvaluator] Invalid bool clause");
   return false;
 }
 
 // synonym & integer literal - Affects(a1, 2), Affects(1, a2)
-unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffects(
+unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffects(
     RelationshipType rsType, const Param& left, const Param& right) {
   if (left.type == ParamType::INTEGER_LITERAL) {
     STMT_NO leftStmt = stoi(left.value);
@@ -194,7 +196,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffects(
 }
 
 // Affects(a1, _), Affects(_, a2)
-ClauseIncomingResults AffectsEvaluator::evaluateSynonymWildcard(
+ClauseIncomingResults AffectsOnDemandEvaluator::evaluateSynonymWildcard(
     RelationshipType rsType, const Param& left, const Param& right) {
   if (isCompleteAffectsCache) {
     if (left.type == ParamType::SYNONYM) {
@@ -219,7 +221,7 @@ ClauseIncomingResults AffectsEvaluator::evaluateSynonymWildcard(
 }
 
 // synonym & synonym - Affects(a1, a2)
-ClauseIncomingResults AffectsEvaluator::evaluatePairAffects(
+ClauseIncomingResults AffectsOnDemandEvaluator::evaluatePairAffects(
     RelationshipType rsType, const Param& left, const Param& right) {
   if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
     return evaluateSynonymWildcard(rsType, left, right);
@@ -239,8 +241,8 @@ ClauseIncomingResults AffectsEvaluator::evaluatePairAffects(
   return affectsStmtPairs[rsType];
 }
 
-bool AffectsEvaluator::evaluateBoolAffectsT(const query::Param& left,
-                                            const query::Param& right) {
+bool AffectsOnDemandEvaluator::evaluateBoolAffectsT(const query::Param& left,
+                                                    const query::Param& right) {
   if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
     return evaluateBoolAffects(RelationshipType::AFFECTS, left, right);
   }
@@ -255,9 +257,9 @@ bool AffectsEvaluator::evaluateBoolAffectsT(const query::Param& left,
   return evalBoolLitAffectsT(left, right, &visited);
 }
 
-bool AffectsEvaluator::evalBoolLitAffectsT(const query::Param& left,
-                                           const query::Param& right,
-                                           unordered_set<STMT_NO>* visited) {
+bool AffectsOnDemandEvaluator::evalBoolLitAffectsT(
+    const query::Param& left, const query::Param& right,
+    unordered_set<STMT_NO>* visited) {
   bool hasFoundAffectsT =
       evaluateBoolAffects(RelationshipType::AFFECTS, left, right);
   bool allCombosTested = false;
@@ -290,7 +292,7 @@ bool AffectsEvaluator::evalBoolLitAffectsT(const query::Param& left,
 }
 
 // Affects(a, 2), (1, a)
-unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsT(
+unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffectsT(
     const query::Param& left, const query::Param& right) {
   if (isCompleteAffectsTCache) {
     if (left.type == ParamType::INTEGER_LITERAL) {
@@ -304,7 +306,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsT(
   return evaluateStmtAffectsTHelper(left, right, &visited);
 }
 
-unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsTHelper(
+unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffectsTHelper(
     const query::Param& left, const query::Param& right,
     unordered_set<STMT_NO>* visited) {
   unordered_set<STMT_NO> result;
@@ -332,7 +334,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsTHelper(
   return result;
 }
 
-ClauseIncomingResults AffectsEvaluator::evaluatePairAffectsT(
+ClauseIncomingResults AffectsOnDemandEvaluator::evaluatePairAffectsT(
     const Param& left, const Param& right) {
   // Affects(a, _) or (_, a)
   if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
@@ -357,8 +359,8 @@ ClauseIncomingResults AffectsEvaluator::evaluatePairAffectsT(
   return result;
 }
 
-void AffectsEvaluator::populateAffectsTCache(const Param& left,
-                                             const Param& right) {
+void AffectsOnDemandEvaluator::populateAffectsTCache(const Param& left,
+                                                     const Param& right) {
   if (!isCompleteAffectsCache) {
     // ensure affects cache is populated first
     evaluatePairAffects(RelationshipType::AFFECTS, left, right);
@@ -370,7 +372,7 @@ void AffectsEvaluator::populateAffectsTCache(const Param& left,
   isCompleteAffectsTCache = true;
 }
 
-void AffectsEvaluator::populateAffectsTTable(
+void AffectsOnDemandEvaluator::populateAffectsTTable(
     unordered_map<STMT_NO, unordered_set<STMT_NO>>* target,
     unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
   for (auto it : *base) {
@@ -385,7 +387,7 @@ void AffectsEvaluator::populateAffectsTTable(
   }
 }
 
-void AffectsEvaluator::populateAffectsTTableHelper(
+void AffectsOnDemandEvaluator::populateAffectsTTableHelper(
     STMT_NO orig, STMT_NO affected, unordered_set<STMT_NO>* visited,
     unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
   if (visited->count(affected) > 0) {
@@ -407,11 +409,12 @@ void AffectsEvaluator::populateAffectsTTableHelper(
 
 /* Affects Extraction Method ---------------------------------------------- */
 // affects & affects bip?
-void AffectsEvaluator::extractAffects(RelationshipType rsType,
-                                      STMT_NO startStmt, STMT_NO endStmt,
-                                      STMT_NO stmtAfterIfOrWhile,
-                                      LastModifiedTable* LMT,
-                                      BoolParamCombo paramCombo) {
+void AffectsOnDemandEvaluator::extractAffects(RelationshipType rsType,
+                                              STMT_NO startStmt,
+                                              STMT_NO endStmt,
+                                              STMT_NO stmtAfterIfOrWhile,
+                                              LastModifiedTable* LMT,
+                                              BoolParamCombo paramCombo) {
   queue<int> stmtQueue = {};
   stmtQueue.push(startStmt);
 
@@ -470,9 +473,9 @@ void AffectsEvaluator::extractAffects(RelationshipType rsType,
 }
 
 /* Helper Methods For Affects Extraction ---------------------------- */
-void AffectsEvaluator::processAssignStmt(RelationshipType rsType,
-                                         STMT_NO currStmt,
-                                         LastModifiedTable* LMT) {
+void AffectsOnDemandEvaluator::processAssignStmt(RelationshipType rsType,
+                                                 STMT_NO currStmt,
+                                                 LastModifiedTable* LMT) {
   unordered_set<VarIdx> usedVars =
       pkb->getRight(RelationshipType::USES_S, currStmt);
   for (VarIdx usedVar : usedVars) {
@@ -488,11 +491,9 @@ void AffectsEvaluator::processAssignStmt(RelationshipType rsType,
   updateLastModifiedVariables(currStmt, LMT);
 }
 
-void AffectsEvaluator::processWhileLoop(RelationshipType rsType,
-                                        STMT_NO firstStmtInWhile,
-                                        STMT_NO endStmt, STMT_NO whileStmt,
-                                        LastModifiedTable* LMT,
-                                        BoolParamCombo paramCombo) {
+void AffectsOnDemandEvaluator::processWhileLoop(
+    RelationshipType rsType, STMT_NO firstStmtInWhile, STMT_NO endStmt,
+    STMT_NO whileStmt, LastModifiedTable* LMT, BoolParamCombo paramCombo) {
   LastModifiedTable originalLMT = *LMT;
   LastModifiedTable beforeLMT;
   while (LMT->empty() || beforeLMT != *LMT) {
@@ -503,7 +504,7 @@ void AffectsEvaluator::processWhileLoop(RelationshipType rsType,
   *LMT = mergeLMT(&originalLMT, LMT);
 }
 
-void AffectsEvaluator::processThenElseBlocks(
+void AffectsOnDemandEvaluator::processThenElseBlocks(
     RelationshipType rsType, unordered_set<STMT_NO> thenElseStmts,
     STMT_NO endStmt, STMT_NO nextStmtForIf, LastModifiedTable* LMT,
     BoolParamCombo paramCombo) {
@@ -518,8 +519,8 @@ void AffectsEvaluator::processThenElseBlocks(
   *LMT = mergeLMT(&thenElseLMTs.front(), &thenElseLMTs.back());
 }
 
-void AffectsEvaluator::updateLastModifiedVariables(STMT_NO currStmt,
-                                                   LastModifiedTable* LMT) {
+void AffectsOnDemandEvaluator::updateLastModifiedVariables(
+    STMT_NO currStmt, LastModifiedTable* LMT) {
   unordered_set<VarIdx> modifiedVars =
       pkb->getRight(RelationshipType::MODIFIES_S, currStmt);
   for (auto modifiedVar : modifiedVars) {
@@ -530,10 +531,10 @@ void AffectsEvaluator::updateLastModifiedVariables(STMT_NO currStmt,
   }
 }
 
-void AffectsEvaluator::addAffectsRelationship(RelationshipType rsType,
-                                              LastModifiedTable* LMT,
-                                              STMT_NO LMTStmt,
-                                              STMT_NO currStmt) {
+void AffectsOnDemandEvaluator::addAffectsRelationship(RelationshipType rsType,
+                                                      LastModifiedTable* LMT,
+                                                      STMT_NO LMTStmt,
+                                                      STMT_NO currStmt) {
   affectsStmts[rsType].insert(LMTStmt);
   affectsInvStmts[rsType].insert(currStmt);
   affectsLeftStmtPairs[rsType].insert({LMTStmt});
@@ -552,10 +553,9 @@ void AffectsEvaluator::addAffectsRelationship(RelationshipType rsType,
   tableOfAffectsInv[rsType].at(currStmt).insert(LMTStmt);
 }
 
-bool AffectsEvaluator::shouldTerminateBoolEarly(RelationshipType rsType,
-                                                BoolParamCombo paramCombo,
-                                                STMT_NO startStmt,
-                                                STMT_NO endStmt) {
+bool AffectsOnDemandEvaluator::shouldTerminateBoolEarly(
+    RelationshipType rsType, BoolParamCombo paramCombo, STMT_NO startStmt,
+    STMT_NO endStmt) {
   switch (paramCombo) {
     case BoolParamCombo::LITERALS:
       return tableOfAffects[rsType].find(startStmt) !=
@@ -576,8 +576,8 @@ bool AffectsEvaluator::shouldTerminateBoolEarly(RelationshipType rsType,
   }
 }
 
-LastModifiedTable AffectsEvaluator::mergeLMT(LastModifiedTable* firstLMT,
-                                             LastModifiedTable* secondLMT) {
+LastModifiedTable AffectsOnDemandEvaluator::mergeLMT(
+    LastModifiedTable* firstLMT, LastModifiedTable* secondLMT) {
   LastModifiedTable finalLMT = {};
   unordered_set<VarIdx> allVariables = {};
   for (auto varStmtSetPair : *firstLMT) {
@@ -600,13 +600,15 @@ LastModifiedTable AffectsEvaluator::mergeLMT(LastModifiedTable* firstLMT,
   return finalLMT;
 }
 
-RelationshipType AffectsEvaluator::getCFGRsType(RelationshipType rsType) {
+RelationshipType AffectsOnDemandEvaluator::getCFGRsType(
+    RelationshipType rsType) {
   if (rsType == RelationshipType::AFFECTS) {
     return RelationshipType::NEXT;
   } else if (rsType == RelationshipType::AFFECTS_BIP) {
     return RelationshipType::NEXT_BIP;
   } else {
-    DMOprintErrMsgAndExit("[AffectsEvaluator][getCFGRsType] Invalid rsType");
+    DMOprintErrMsgAndExit(
+        "[AffectsOnDemandEvaluator][getCFGRsType] Invalid rsType");
     return {};
   }
 }

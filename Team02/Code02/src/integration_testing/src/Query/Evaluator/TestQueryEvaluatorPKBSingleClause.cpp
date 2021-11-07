@@ -4559,7 +4559,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
     FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
-            set<int>({1, 2, 3, 4}));
+            set<int>({1, 2, 3}));
   }
 
   SECTION("Select w pattern w (v, _)") {

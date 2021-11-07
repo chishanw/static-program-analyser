@@ -1,6 +1,6 @@
 #include <PKB/PKB.h>
 #include <Query/Common.h>
-#include <Query/Evaluator/AffectsEvaluator.h>
+#include <Query/Evaluator/AffectsOnDemandEvaluator.h>
 
 #include <iostream>
 
@@ -10,7 +10,7 @@ using namespace std;
 using namespace query;
 using Catch::Matchers::VectorContains;
 
-TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects, No Nested If/While") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -72,7 +72,7 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "y");
   pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "z");
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS;
 
@@ -333,7 +333,7 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects, Nested If/While Separately") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -409,7 +409,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   // 12: z = z + x;
   // 13: x = x * y + z;
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS;
 
@@ -535,7 +535,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects, Nested If/While Together") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -591,7 +591,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   // 7:       x = x; } }
   // 8: y = x + 1;
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS;
 
@@ -704,7 +704,7 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects, Multiple Procedures") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -757,7 +757,7 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   // 6:   y = 3; }
   // 7: z = y * 2; }
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS;
 
@@ -859,7 +859,7 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects, Test Call & Read Stmts") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -918,7 +918,7 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   // procedure C {
   // 9: y = 2; }
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS;
 
@@ -962,7 +962,7 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects*, No Nested If/While") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects*, No Nested If/While") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -1025,7 +1025,7 @@ TEST_CASE("AffectsEvaluator: Affects*, No Nested If/While") {
   pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "y");
   pkb->addRs(RelationshipType::USES_S, 12, TableType::VAR_TABLE, "z");
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   /* Boolean results ---------------------------------------- */
   SECTION("Affects*(1, 7)") {
@@ -1153,7 +1153,7 @@ TEST_CASE("AffectsEvaluator: Affects*, No Nested If/While") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Separately") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Separately") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -1248,7 +1248,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Separately") {
   19 m = l + 3;
      }*/
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS_T;
 
@@ -1344,7 +1344,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Separately") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Together") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Together") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -1428,7 +1428,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Together") {
   16   x = z;
      }*/
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS_T;
 
@@ -1577,7 +1577,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Together") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects*, Multiple Procedures") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects*, Multiple Procedures") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -1642,7 +1642,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Multiple Procedures") {
   11   x = y + z;
      }*/
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS_T;
 
@@ -1728,7 +1728,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Multiple Procedures") {
   }
 }
 
-TEST_CASE("AffectsEvaluator: Affects*, Test Call & Read Stmts") {
+TEST_CASE("AffectsOnDemandEvaluator: Affects*, Test Call & Read Stmts") {
   PKB* pkb = new PKB();
   pkb->insertAt(TableType::PROC_TABLE, "A");
   pkb->addFirstStmtOfProc("A", 1);
@@ -1813,7 +1813,7 @@ TEST_CASE("AffectsEvaluator: Affects*, Test Call & Read Stmts") {
   13   z = z + y;
      }
   */
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
 
   RelationshipType rsType = RelationshipType::AFFECTS_T;
 
@@ -1999,7 +1999,7 @@ TEST_CASE("AffectsBip - Truthy Values") {
   Synonym a2 = {DesignEntity::ASSIGN, "a2"};
   vector<ConditionClause> conditionClauses = {};
 
-  AffectsEvaluator ae(pkb);
+  AffectsOnDemandEvaluator ae(pkb);
   RelationshipType rsType = RelationshipType::AFFECTS_BIP;
 
   SECTION("AffectsBip(_, _)") {

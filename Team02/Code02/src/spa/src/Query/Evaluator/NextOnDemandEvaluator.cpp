@@ -1,4 +1,4 @@
-#include "NextEvaluator.h"
+#include "NextOnDemandEvaluator.h"
 
 #include <Common/Global.h>
 
@@ -12,7 +12,7 @@
 using namespace std;
 using namespace query;
 
-NextEvaluator::NextEvaluator(PKB* pkb) {
+NextOnDemandEvaluator::NextOnDemandEvaluator(PKB* pkb) {
   this->pkb = pkb;
   stmtToStmtsCache.insert(
       {{RelationshipType::NEXT_T, {}}, {RelationshipType::NEXT_BIP_T, {}}});
@@ -20,65 +20,9 @@ NextEvaluator::NextEvaluator(PKB* pkb) {
       {{RelationshipType::NEXT_T, {}}, {RelationshipType::NEXT_BIP_T, {}}});
 }
 
-bool NextEvaluator::evaluateBoolNextNextBip(RelationshipType rsType,
-                                            const Param& left,
-                                            const Param& right) {
-  ParamType leftType = left.type;
-  ParamType rightType = right.type;
-
-  // if both literal - Next(1,2)
-  // if one literal + underscore - Next(_, 2), Next(2, _)
-  // if both underscore - Next(_, _)
-  if (leftType == ParamType::INTEGER_LITERAL &&
-      rightType == ParamType::INTEGER_LITERAL) {
-    unordered_set<STMT_NO> nextStmts = pkb->getRight(rsType, stoi(left.value));
-    return nextStmts.find(stoi(right.value)) != nextStmts.end();
-  }
-
-  if (leftType == ParamType::WILDCARD && rightType == ParamType::WILDCARD) {
-    return !pkb->getMappings(rsType, ParamPosition::BOTH).empty();
-  }
-
-  if (leftType == ParamType::WILDCARD) {
-    return !(pkb->getLeft(rsType, stoi(right.value)).empty());
-  }
-
-  return !(pkb->getRight(rsType, stoi(left.value)).empty());
-}
-
-// synonym & literal
-unordered_set<int> NextEvaluator::evaluateNextNextBip(RelationshipType rsType,
+bool NextOnDemandEvaluator::evaluateBoolNextTNextBipT(RelationshipType rsType,
                                                       const Param& left,
                                                       const Param& right) {
-  // if one literal + synonym - Next(s, 2), Next(1, s)
-  ParamType leftType = left.type;
-  ParamType rightType = right.type;
-
-  if (leftType == ParamType::INTEGER_LITERAL) {
-    return pkb->getRight(rsType, stoi(left.value));
-  }
-
-  // rightType == ParamType::LITERAL
-  return pkb->getLeft(rsType, stoi(right.value));
-}
-
-// synonym & wildcard - Next(s, _) -> getAllNextStmtPairs()
-// synonym & synonym - Next(s1, s2) -> getAllNextStmtPairs()
-ClauseIncomingResults NextEvaluator::evaluatePairNextNextBip(
-    RelationshipType rsType, const Param& left, const Param& right) {
-  if (left.type == ParamType::WILDCARD) {
-    return pkb->getMappings(rsType, ParamPosition::RIGHT);
-  }
-  if (right.type == ParamType::WILDCARD) {
-    return pkb->getMappings(rsType, ParamPosition::LEFT);
-  }
-  // both synonyms
-  return pkb->getMappings(rsType, ParamPosition::BOTH);
-}
-
-bool NextEvaluator::evaluateBoolNextTNextBipT(RelationshipType rsType,
-                                              const Param& left,
-                                              const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
@@ -111,9 +55,8 @@ bool NextEvaluator::evaluateBoolNextTNextBipT(RelationshipType rsType,
   return !pkb->getRight(nonTransitiveRsType, stoi(left.value)).empty();
 }
 
-unordered_set<int> NextEvaluator::evaluateNextTNextBipT(RelationshipType rsType,
-                                                        const Param& left,
-                                                        const Param& right) {
+unordered_set<int> NextOnDemandEvaluator::evaluateNextTNextBipT(
+    RelationshipType rsType, const Param& left, const Param& right) {
   ParamType leftType = left.type;
   ParamType rightType = right.type;
 
@@ -144,7 +87,7 @@ unordered_set<int> NextEvaluator::evaluateNextTNextBipT(RelationshipType rsType,
   return results;
 }
 
-ClauseIncomingResults NextEvaluator::evaluatePairNextTNextBipT(
+ClauseIncomingResults NextOnDemandEvaluator::evaluatePairNextTNextBipT(
     RelationshipType rsType, const Param& left, const Param& right) {
   ClauseIncomingResults results = {};
   unordered_set<int> allStmts = pkb->getAllStmts(DesignEntity::STATEMENT);
@@ -172,8 +115,8 @@ ClauseIncomingResults NextEvaluator::evaluatePairNextTNextBipT(
   return results;
 }
 
-bool NextEvaluator::getIsNextTNextBipT(RelationshipType rsType, int startStmt,
-                                       int endStmt) {
+bool NextOnDemandEvaluator::getIsNextTNextBipT(RelationshipType rsType,
+                                               int startStmt, int endStmt) {
   queue<int> stmtQueue = {};
   unordered_map<int, unordered_set<int>> visited = {};
   RelationshipType nonTransitiveRsType = getNonTransitiveRsType(rsType);
@@ -217,8 +160,8 @@ bool NextEvaluator::getIsNextTNextBipT(RelationshipType rsType, int startStmt,
   return false;
 }
 
-unordered_set<int> NextEvaluator::getNextTNextBipTStmts(RelationshipType rsType,
-                                                        int startStmt) {
+unordered_set<int> NextOnDemandEvaluator::getNextTNextBipTStmts(
+    RelationshipType rsType, int startStmt) {
   unordered_set<int> results = {};
   queue<int> stmtQueue = {};
   unordered_map<int, unordered_set<int>> visited = {};
@@ -263,7 +206,7 @@ unordered_set<int> NextEvaluator::getNextTNextBipTStmts(RelationshipType rsType,
   return results;
 }
 
-unordered_set<int> NextEvaluator::getInvNextTNextBipTStmts(
+unordered_set<int> NextOnDemandEvaluator::getInvNextTNextBipTStmts(
     RelationshipType rsType, int endStmt) {
   unordered_set<int> results = {};
   queue<int> stmtQueue = {};
@@ -309,54 +252,58 @@ unordered_set<int> NextEvaluator::getInvNextTNextBipTStmts(
   return results;
 }
 
-RelationshipType NextEvaluator::getNonTransitiveRsType(
+RelationshipType NextOnDemandEvaluator::getNonTransitiveRsType(
     RelationshipType rsType) {
   if (rsType == RelationshipType::NEXT_T) {
     return RelationshipType::NEXT;
   } else if (rsType == RelationshipType::NEXT_BIP_T) {
     return RelationshipType::NEXT_BIP;
   } else {
-    DMOprintErrMsgAndExit("[NextEvaluator] Invalid transitive rs type");
+    DMOprintErrMsgAndExit("[NextOnDemandEvaluator] Invalid transitive rs type");
     return {};
   }
 }
 
 /* Cache getter methods -------------------------------------- */
-bool NextEvaluator::isStmtInStmtsCache(RelationshipType rsType,
-                                       StmtNo leftStmt) {
+bool NextOnDemandEvaluator::isStmtInStmtsCache(RelationshipType rsType,
+                                               StmtNo leftStmt) {
   return stmtToStmtsCache[rsType].find(leftStmt) !=
          stmtToStmtsCache[rsType].end();
 }
 
-bool NextEvaluator::isStmtInInvStmtsCache(RelationshipType rsType,
-                                          StmtNo rightStmt) {
+bool NextOnDemandEvaluator::isStmtInInvStmtsCache(RelationshipType rsType,
+                                                  StmtNo rightStmt) {
   return invStmtToStmtsCache[rsType].find(rightStmt) !=
          invStmtToStmtsCache[rsType].end();
 }
 
-bool NextEvaluator::isRelationship(RelationshipType rsType, StmtNo left,
-                                   StmtNo right) {
+bool NextOnDemandEvaluator::isRelationship(RelationshipType rsType, StmtNo left,
+                                           StmtNo right) {
   return stmtToStmtsCache[rsType][left].find(right) !=
              stmtToStmtsCache[rsType][left].end() ||
          invStmtToStmtsCache[rsType][right].find(left) !=
              stmtToStmtsCache[rsType][right].end();
 }
 
-SetOfInts& NextEvaluator::getStmts(RelationshipType rsType, StmtNo stmt) {
+SetOfInts& NextOnDemandEvaluator::getStmts(RelationshipType rsType,
+                                           StmtNo stmt) {
   return stmtToStmtsCache[rsType][stmt];
 }
 
-SetOfInts& NextEvaluator::getInvStmts(RelationshipType rsType, StmtNo stmt) {
+SetOfInts& NextOnDemandEvaluator::getInvStmts(RelationshipType rsType,
+                                              StmtNo stmt) {
   return invStmtToStmtsCache[rsType][stmt];
 }
 
 /* Cache setter methods --------------------------------------- */
-void NextEvaluator::addToStmtsCache(RelationshipType rsType, StmtNo leftStmt,
-                                    SetOfInts rightStmts) {
+void NextOnDemandEvaluator::addToStmtsCache(RelationshipType rsType,
+                                            StmtNo leftStmt,
+                                            SetOfInts rightStmts) {
   stmtToStmtsCache[rsType].insert({leftStmt, rightStmts});
 }
 
-void NextEvaluator::addToInvStmtsCache(RelationshipType rsType,
-                                       StmtNo rightStmt, SetOfInts leftStmts) {
+void NextOnDemandEvaluator::addToInvStmtsCache(RelationshipType rsType,
+                                               StmtNo rightStmt,
+                                               SetOfInts leftStmts) {
   invStmtToStmtsCache[rsType].insert({rightStmt, leftStmts});
 }

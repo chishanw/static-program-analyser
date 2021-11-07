@@ -145,7 +145,7 @@ void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName,
   int exprIndex = insertAt(TableType::EXPR_TABLE, expr);
   int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
 
-  insertToTableRs(&tablesExpr, rs, exprIndex, stmtNo);
+  insertToTableRs(&tablesExpr, rs, exprIndex, varIndex);
 
   // Insert to Special Mappings Table
   ListOfInts newList({stmtNo, varIndex});
@@ -156,43 +156,31 @@ void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName,
   tablesPttRs[rs][newPair].insert(stmtNo);
 }
 
-bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, string varName,
+bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, int varIndex,
                       string expr) {
-  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
   int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
   auto key = pair(varIndex, exprIndex);
   return tablesPttRs[rs][key].count(stmtno) != 0;
 }
 
-bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, string varName) {
-  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
+bool PKB::isPatternRs(RelationshipType rs, StmtNo stmtno, int varIndex) {
   return isRs(rs, varIndex, stmtno);
 }
 
-SetOfStmts PKB::getStmtsForVarAndExpr(RelationshipType rs, string varName,
+SetOfStmts PKB::getStmtsForVarAndExpr(RelationshipType rs, int varIndex,
                                       string expr) {
-  int varIndex = getIndexOf(TableType::VAR_TABLE, varName);
   int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
   pair newPair(varIndex, exprIndex);
   return tablesPttRs[rs][newPair];
 }
 
-SetOfStmts PKB::getStmtsForVar(RelationshipType rs, string varName) {
-  return getRight(rs, TableType::VAR_TABLE, varName);
+SetOfStmts PKB::getStmtsForVar(RelationshipType rs, int varIndex) {
+  return getRight(rs, varIndex);
 }
 
-SetOfStmts PKB::getStmtsForExpr(RelationshipType rs, std::string expr) {
+SetOfStmts PKB::getVarsForExpr(RelationshipType rs, std::string expr) {
   int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
   return getValue(&tablesExpr, rs, exprIndex);
-}
-
-SetOfStmtLists PKB::getVarMappings(RelationshipType rs) {
-  return getMappings(rs, ParamPosition::BOTH);
-}
-
-SetOfStmtLists PKB::getVarMappingsForExpr(RelationshipType rs, string expr) {
-  int exprIndex = getIndexOf(TableType::EXPR_TABLE, expr);
-  return mappingsForExpr[rs][exprIndex];
 }
 
 // Affects Info API

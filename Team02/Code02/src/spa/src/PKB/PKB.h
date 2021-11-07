@@ -55,15 +55,13 @@ class PKB {
   void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName,
                     std::string expr);
   void addPatternRs(RelationshipType rs, StmtNo stmtNo, std::string varName);
-  bool isPatternRs(RelationshipType rs, StmtNo stmtno, std::string varName,
+  bool isPatternRs(RelationshipType rs, StmtNo stmtno, VarIdx varIndex,
                    std::string expr);
-  bool isPatternRs(RelationshipType rs, StmtNo stmtno, std::string varName);
-  SetOfStmts getStmtsForVarAndExpr(RelationshipType rs, std::string varName,
+  bool isPatternRs(RelationshipType rs, StmtNo stmtno, VarIdx varIndex);
+  SetOfStmts getStmtsForVarAndExpr(RelationshipType rs, VarIdx varIndex,
                                    std::string expr);
-  SetOfStmts getStmtsForVar(RelationshipType rs, std::string varName);
-  SetOfStmts getStmtsForExpr(RelationshipType type, std::string expr);
-  SetOfStmtLists getVarMappingsForExpr(RelationshipType rs, std::string expr);
-  SetOfStmtLists getVarMappings(RelationshipType rs);
+  SetOfStmts getStmtsForVar(RelationshipType rs, VarIdx varIndex);
+  SetOfStmts getVarsForExpr(RelationshipType type, std::string expr);
 
   // Affects Info API
   void addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmt);

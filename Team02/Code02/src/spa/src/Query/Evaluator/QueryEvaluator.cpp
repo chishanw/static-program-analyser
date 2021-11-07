@@ -17,9 +17,8 @@ using namespace std;
 using namespace query;
 
 QueryEvaluator::QueryEvaluator(PKB* pkb, QueryOptimizer* optimizer)
-    : nextEvaluator(pkb),
-      affectsEvaluator(pkb),
-      patternEvaluator(pkb),
+    : nextOnDemandEvaluator(pkb),
+      affectsOnDemandEvaluator(pkb),
       withEvaluator(pkb) {
   this->pkb = pkb;
   this->optimizer = optimizer;
@@ -154,24 +153,19 @@ void QueryEvaluator::evaluateSuchThatClauseHelper(SuchThatClause clause) {
   }
 
   // transform data if it's (syn, integer) or a (syn, wildcard) combination
-  if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM) {
-    // do nothing
-  } else if (left.type == ParamType::SYNONYM) {
-    unordered_set<int> uniqueValues;
+  if (left.type == ParamType::SYNONYM && right.type != ParamType::SYNONYM) {
+    ClauseIncomingResults leftValues;
     for (auto p : leftRightValuePairs) {
-      uniqueValues.insert(p.front());
+      leftValues.insert({p.front()});
     }
-    leftRightValuePairs = formatRefResults(uniqueValues);
-  } else if (right.type == ParamType::SYNONYM) {
-    unordered_set<int> uniqueValues;
+    leftRightValuePairs = leftValues;
+  } else if (left.type != ParamType::SYNONYM &&
+             right.type == ParamType::SYNONYM) {
+    ClauseIncomingResults rightValues;
     for (auto p : leftRightValuePairs) {
-      uniqueValues.insert(p.back());
+      rightValues.insert({p.back()});
     }
-    leftRightValuePairs = formatRefResults(uniqueValues);
-  } else {
-    DMOprintErrMsgAndExit(
-        "shouldn't reach here, this if-else block asserts that at least one "
-        "of the params is a syn");
+    leftRightValuePairs = rightValues;
   }
 
   filterAndAddIncomingResults(leftRightValuePairs, left, right);
@@ -201,7 +195,8 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
 
   // evaluate clause that returns a boolean
   if (isBoolClause) {
-    areAllClausesTrue = callSubEvaluatorBool(relationshipType, left, right);
+    areAllClausesTrue =
+        callOnDemandEvaluatorBool(relationshipType, left, right);
     return;
   }
 
@@ -219,14 +214,14 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
       if (newLeft.type == ParamType::SYNONYM ||
           newRight.type == ParamType::SYNONYM) {
         ClauseIncomingResults newResults =
-            callSubEvaluatorRef(relationshipType, newLeft, newRight);
+            callOnDemandEvaluatorRef(relationshipType, newLeft, newRight);
         incomingResults.insert(newResults.begin(), newResults.end());
         continue;
       }
 
       // fully converted to literals & wildcards
       bool isClauseTrue =
-          callSubEvaluatorBool(relationshipType, newLeft, newRight);
+          callOnDemandEvaluatorBool(relationshipType, newLeft, newRight);
       if (isClauseTrue) {
         ParamPosition paramPosition = get<2>(newParam);
         switch (paramPosition) {
@@ -251,51 +246,51 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
   } else {
     if (isPairClause) {  // 1 syn & 1 wildcard | 2 syn | 2 wildcards
       // evaluate clause that returns a vector of ref pairs
-      incomingResults = callSubEvaluatorPair(relationshipType, left, right);
+      incomingResults =
+          callOnDemandEvaluatorPair(relationshipType, left, right);
     } else {  // one synonym
       // evaluate clause that returns a vector of single refs
-      incomingResults = callSubEvaluatorRef(relationshipType, left, right);
+      incomingResults = callOnDemandEvaluatorRef(relationshipType, left, right);
     }
   }
 
   filterAndAddIncomingResults(incomingResults, left, right);
 }
 
-bool QueryEvaluator::callSubEvaluatorBool(RelationshipType relationshipType,
-                                          const Param& left,
-                                          const Param& right) {
+bool QueryEvaluator::callOnDemandEvaluatorBool(
+    RelationshipType relationshipType, const Param& left, const Param& right) {
   switch (relationshipType) {
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
-      return nextEvaluator.evaluateBoolNextTNextBipT(relationshipType, left,
-                                                     right);
+      return nextOnDemandEvaluator.evaluateBoolNextTNextBipT(relationshipType,
+                                                             left, right);
     case RelationshipType::AFFECTS:
     case RelationshipType::AFFECTS_BIP:
-      return affectsEvaluator.evaluateBoolAffects(relationshipType, left,
-                                                  right);
+      return affectsOnDemandEvaluator.evaluateBoolAffects(relationshipType,
+                                                          left, right);
     case RelationshipType::AFFECTS_T:
-      return affectsEvaluator.evaluateBoolAffectsT(left, right);
+      return affectsOnDemandEvaluator.evaluateBoolAffectsT(left, right);
     default:
       return false;
   }
 }
 
-ClauseIncomingResults QueryEvaluator::callSubEvaluatorRef(
+ClauseIncomingResults QueryEvaluator::callOnDemandEvaluatorRef(
     RelationshipType relationshipType, const Param& left, const Param& right) {
   unordered_set<STMT_NO> refResults = {};
   switch (relationshipType) {
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
-      refResults =
-          nextEvaluator.evaluateNextTNextBipT(relationshipType, left, right);
+      refResults = nextOnDemandEvaluator.evaluateNextTNextBipT(relationshipType,
+                                                               left, right);
       break;
     case RelationshipType::AFFECTS:
     case RelationshipType::AFFECTS_BIP:
-      refResults =
-          affectsEvaluator.evaluateStmtAffects(relationshipType, left, right);
+      refResults = affectsOnDemandEvaluator.evaluateStmtAffects(
+          relationshipType, left, right);
       break;
     case RelationshipType::AFFECTS_T:
-      refResults = affectsEvaluator.evaluateStmtAffectsT(left, right);
+      refResults = affectsOnDemandEvaluator.evaluateStmtAffectsT(left, right);
       break;
     default:
       return {};
@@ -303,19 +298,19 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorRef(
   return formatRefResults(refResults);
 }
 
-ClauseIncomingResults QueryEvaluator::callSubEvaluatorPair(
+ClauseIncomingResults QueryEvaluator::callOnDemandEvaluatorPair(
     RelationshipType relationshipType, const Param& left, const Param& right) {
   switch (relationshipType) {
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
-      return nextEvaluator.evaluatePairNextTNextBipT(relationshipType, left,
-                                                     right);
+      return nextOnDemandEvaluator.evaluatePairNextTNextBipT(relationshipType,
+                                                             left, right);
     case RelationshipType::AFFECTS:
     case RelationshipType::AFFECTS_BIP:
-      return affectsEvaluator.evaluatePairAffects(relationshipType, left,
-                                                  right);
+      return affectsOnDemandEvaluator.evaluatePairAffects(relationshipType,
+                                                          left, right);
     case RelationshipType::AFFECTS_T:
-      return affectsEvaluator.evaluatePairAffectsT(left, right);
+      return affectsOnDemandEvaluator.evaluatePairAffectsT(left, right);
     default:
       return {};
   }
@@ -323,60 +318,87 @@ ClauseIncomingResults QueryEvaluator::callSubEvaluatorPair(
 
 /* Evaluate Pattern Clauses ---------------------------------------------- */
 void QueryEvaluator::evaluatePatternClause(PatternClause clause) {
-  Synonym matchSynonym = clause.matchSynonym;
-  Param varParam = clause.leftParam;
-  PatternExpr patternExpr = clause.patternExpr;
-  DesignEntity designEntity = clause.matchSynonym.entity;
+  auto varParam = clause.leftParam;
+  auto synonym = clause.matchSynonym;
+  auto expr = clause.patternExpr.expr;
+  auto rsType = getRsTypeForPatternClause(clause);
 
-  ClauseIncomingResults incomingResults;
-  bool isRefClause = varParam.type == ParamType::NAME_LITERAL ||
-                     varParam.type == ParamType::WILDCARD;
+  ClauseIncomingResults synVarPairValues;
 
-  if (isRefClause) {
-    incomingResults =
-        callPatternSubEvaluatorRef(designEntity, varParam, patternExpr);
+  if (varParam.type == ParamType::SYNONYM &&
+      queryResultsSynonyms.count(varParam.value) > 0 &&
+      queryResultsSynonyms.count(synonym.name) > 0) {
+    for (auto resultEntry : groupQueryResults) {
+      int synValue = resultEntry.at(synonym.name);
+      int varValue = resultEntry.at(varParam.value);
+
+      bool isPatternRs =
+          isPatternWithExpr(clause)
+              ? pkb->isPatternRs(rsType, synValue, varValue, expr)
+              : pkb->isPatternRs(rsType, synValue, varValue);
+
+      if (isPatternRs) {
+        synVarPairValues.insert({synValue, varValue});
+      }
+    }
   } else {
-    incomingResults =
-        callPatternSubEvaluatorPair(designEntity, varParam, patternExpr);
+    auto varValues = resolveVarParam(clause);
+    synVarPairValues = resolveSynonymParamFromVarValues(clause, varValues);
   }
 
-  Param patternSynonymParam = {ParamType::SYNONYM, matchSynonym.name};
-  filterAndAddIncomingResults(incomingResults, patternSynonymParam, varParam);
+  // transform data if varParam is name literal or wildcard
+  if (varParam.type != ParamType::SYNONYM) {
+    unordered_set<int> uniqueValues;
+    for (auto p : synVarPairValues) {
+      uniqueValues.insert(p.front());
+    }
+    synVarPairValues = formatRefResults(uniqueValues);
+  }
+
+  filterAndAddIncomingResults(synVarPairValues,
+                              {ParamType::SYNONYM, synonym.name}, varParam);
 }
 
-ClauseIncomingResults QueryEvaluator::callPatternSubEvaluatorRef(
-    DesignEntity designEntity, const Param& varParam,
-    const PatternExpr& patternExpr) {
-  unordered_set<int> refResults = {};
-  switch (designEntity) {
-    case DesignEntity::ASSIGN:
-      refResults =
-          patternEvaluator.evaluateAssignPattern(varParam, patternExpr);
-      break;
+RelationshipType QueryEvaluator::getRsTypeForPatternClause(
+    PatternClause clause) {
+  DesignEntity designEntityOfSynonym = clause.matchSynonym.entity;
+  MatchType matchType = clause.patternExpr.matchType;
+  switch (designEntityOfSynonym) {
+    case DesignEntity::ASSIGN: {
+      if (matchType == MatchType::EXACT || matchType == MatchType::ANY) {
+        return RelationshipType::PTT_ASSIGN_FULL_EXPR;
+      } else {
+        return RelationshipType::PTT_ASSIGN_SUB_EXPR;
+      }
+    }
     case DesignEntity::IF:
-      refResults = patternEvaluator.evaluateIfPattern(varParam);
-      break;
+      return RelationshipType::PTT_IF;
     case DesignEntity::WHILE:
-      refResults = patternEvaluator.evaluateWhilePattern(varParam);
-      break;
+      return RelationshipType::PTT_WHILE;
     default:
+      DMOprintErrMsgAndExit("[QueryEvaluator] Invalid pattern clause");
       return {};
   }
-  return formatRefResults(refResults);
 }
 
-ClauseIncomingResults QueryEvaluator::callPatternSubEvaluatorPair(
-    DesignEntity designEntity, const Param& varParam,
-    const PatternExpr& patternExpr) {
-  switch (designEntity) {
-    case DesignEntity::ASSIGN:
-      return patternEvaluator.evaluateAssignPairPattern(varParam, patternExpr);
+bool QueryEvaluator::isPatternWithExpr(PatternClause clause) {
+  DesignEntity designEntityOfSynonym = clause.matchSynonym.entity;
+  MatchType matchType = clause.patternExpr.matchType;
+  switch (designEntityOfSynonym) {
+    case DesignEntity::ASSIGN: {
+      if (matchType == MatchType::EXACT ||
+          matchType == MatchType::SUB_EXPRESSION) {
+        return true;
+      } else {
+        return false;
+      }
+    }
     case DesignEntity::IF:
-      return patternEvaluator.evaluateIfPairPattern(varParam);
     case DesignEntity::WHILE:
-      return patternEvaluator.evaluateWhilePairPattern(varParam);
+      return false;
     default:
-      return {};
+      DMOprintErrMsgAndExit("[QueryEvaluator] Invalid pattern clause");
+      return false;
   }
 }
 
@@ -821,25 +843,24 @@ void QueryEvaluator::filterQuerySynonymsBySelectSynonyms(
 
 /* Helpers to Evaluate Based on Previous Clauses ----------------------- */
 ClauseIncomingResults QueryEvaluator::resolveBothParamsFromResultTable(
-    query::SuchThatClause clause) {
+    SuchThatClause clause) {
   auto rsType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
-  ClauseIncomingResults leftRightValuePairsSet;
+  ClauseIncomingResults leftRightValuePairs;
 
   for (auto resultEntry : groupQueryResults) {
     int leftValue = resultEntry.at(left.value);
     int rightValue = resultEntry.at(right.value);
 
     if (pkb->isRs(rsType, leftValue, rightValue))
-      leftRightValuePairsSet.insert({leftValue, rightValue});
+      leftRightValuePairs.insert({leftValue, rightValue});
   }
 
-  return leftRightValuePairsSet;
+  return leftRightValuePairs;
 }
 
-unordered_set<int> QueryEvaluator::resolveLeftParam(
-    query::SuchThatClause clause) {
+unordered_set<int> QueryEvaluator::resolveLeftParam(SuchThatClause clause) {
   auto rsType = clause.relationshipType;
   auto left = clause.leftParam;
   unordered_set<int> leftValues;
@@ -894,7 +915,7 @@ unordered_set<int> QueryEvaluator::resolveLeftParam(
 }
 
 ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
-    query::SuchThatClause clause, unordered_set<int> leftValues) {
+    SuchThatClause clause, unordered_set<int> leftValues) {
   auto rsType = clause.relationshipType;
   auto right = clause.rightParam;
   ClauseIncomingResults leftRightValuePairs;
@@ -966,9 +987,108 @@ ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
   return leftRightValuePairs;
 }
 
+unordered_set<int> QueryEvaluator::resolveVarParam(PatternClause clause) {
+  auto varParam = clause.leftParam;
+  auto expr = clause.patternExpr.expr;
+  auto rsType = getRsTypeForPatternClause(clause);
+  unordered_set<int> varValues;
+
+  switch (varParam.type) {
+    case ParamType::INTEGER_LITERAL:
+      varValues.insert(stoi(varParam.value));
+      break;
+
+    case ParamType::NAME_LITERAL:
+      varValues.insert(convertLeftNameLiteralToInt(rsType, varParam.value));
+      break;
+
+    case ParamType::SYNONYM:
+      if (queryResultsSynonyms.find(varParam.value) !=
+          queryResultsSynonyms.end()) {
+        // get from existing results
+        for (auto entry : groupQueryResults) {
+          varValues.insert(entry[varParam.value]);
+        }
+        break;
+      }
+
+      // get from PKB, fall through to WILDCARD case
+
+    case ParamType::WILDCARD:
+      if (isPatternWithExpr(clause)) {
+        // if pattern assign types with expr, get variables from expr
+        for (auto varValue : pkb->getVarsForExpr(rsType, expr)) {
+          varValues.insert(varValue);
+        }
+      } else {
+        // if pattern if/while or assign with no expr, get variables
+        for (auto valueList : pkb->getMappings(rsType, ParamPosition::RIGHT)) {
+          varValues.insert(valueList.front());
+        }
+      }
+      break;
+
+    default:
+      DMOprintErrMsgAndExit(
+          "RsType " + to_string(static_cast<int>(rsType)) + " shouldn't have " +
+          to_string(static_cast<int>(varParam.type)) +
+          " as left param, param's value = " + varParam.value);
+      break;
+  }
+
+  return varValues;
+}
+
+ClauseIncomingResults QueryEvaluator::resolveSynonymParamFromVarValues(
+    PatternClause clause, unordered_set<int> varValues) {
+  auto rsType = getRsTypeForPatternClause(clause);
+  auto synonym = clause.matchSynonym;
+  auto expr = clause.patternExpr.expr;
+
+  ClauseIncomingResults leftRightValuePairs;
+
+  // if synonym is alr in the groupQueryResults
+  if (queryResultsSynonyms.find(synonym.name) != queryResultsSynonyms.end()) {
+    unordered_set<int> synValues;
+    for (auto entry : groupQueryResults) {
+      synValues.insert(entry[synonym.name]);
+    }
+
+    // cross product left values and right values
+    for (int varValue : varValues) {
+      for (int synValue : synValues) {
+        bool isPatternRs =
+            isPatternWithExpr(clause)
+                ? pkb->isPatternRs(rsType, synValue, varValue, expr)
+                : pkb->isPatternRs(rsType, synValue, varValue);
+
+        if (isPatternRs) {
+          leftRightValuePairs.insert({synValue, varValue});
+        }
+      }
+    }
+  } else {
+    for (int varValue : varValues) {
+      auto synValues = isPatternWithExpr(clause)
+                           ? pkb->getStmtsForVarAndExpr(rsType, varValue, expr)
+                           : pkb->getStmtsForVar(rsType, varValue);
+      for (int synValue : synValues) {
+        leftRightValuePairs.insert({synValue, varValue});
+      }
+    }
+  }
+
+  return leftRightValuePairs;
+}
+
 int QueryEvaluator::convertLeftNameLiteralToInt(RelationshipType rsType,
                                                 string pValue) {
   switch (rsType) {
+    case RelationshipType::PTT_ASSIGN_FULL_EXPR:
+    case RelationshipType::PTT_ASSIGN_SUB_EXPR:
+    case RelationshipType::PTT_IF:
+    case RelationshipType::PTT_WHILE:
+      return pkb->getIndexOf(TableType::VAR_TABLE, pValue);
     case RelationshipType::USES_P:
     case RelationshipType::MODIFIES_P:
     case RelationshipType::CALLS:
