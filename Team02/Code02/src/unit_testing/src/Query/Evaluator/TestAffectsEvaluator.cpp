@@ -116,7 +116,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   SECTION("Affects(s1, _)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::WILDCARD, "_"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4})));
@@ -131,7 +132,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   SECTION("Affects(_, s2)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({7})));
@@ -171,7 +173,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
   SECTION("Affects(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4, 4})));
@@ -193,7 +196,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
     Param right = {ParamType::SYNONYM, "s2"};
     ae.evaluatePairAffects(rsType, left, right);
 
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4, 4})));
@@ -217,7 +221,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
 
     Param left2 = {ParamType::SYNONYM, "s1"};
     Param right2 = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left2, right2);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left2, right2);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4, 4})));
@@ -240,7 +245,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
 
     Param left1 = {ParamType::SYNONYM, "s1"};
     Param right1 = {ParamType::WILDCARD, "_"};
-    auto results1 = ae.evaluatePairAffects(rsType, left1, right1);
+    auto setOfResults1 = ae.evaluatePairAffects(rsType, left1, right1);
+    vector<vector<int>> results1(setOfResults1.begin(), setOfResults1.end());
     REQUIRE_THAT(results1, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results1, VectorContains(vector<int>({2})));
     REQUIRE_THAT(results1, VectorContains(vector<int>({4})));
@@ -253,7 +259,8 @@ TEST_CASE("AffectsEvaluator: Affects, No Nested If/While") {
 
     Param left2 = {ParamType::WILDCARD, "_"};
     Param right2 = {ParamType::SYNONYM, "s2"};
-    auto results2 = ae.evaluatePairAffects(rsType, left2, right2);
+    auto setOfResults2 = ae.evaluatePairAffects(rsType, left2, right2);
+    vector<vector<int>> results2(setOfResults2.begin(), setOfResults2.end());
     REQUIRE_THAT(results2, VectorContains(vector<int>({4})));
     REQUIRE_THAT(results2, VectorContains(vector<int>({5})));
     REQUIRE_THAT(results2, VectorContains(vector<int>({7})));
@@ -446,7 +453,8 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   SECTION("Affects(s1, _)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::WILDCARD, "_"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
@@ -460,7 +468,8 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   SECTION("Affects(_, s2)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({7})));
@@ -501,7 +510,8 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Separately") {
   SECTION("Affects(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 3})));
@@ -625,7 +635,8 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   SECTION("Affects(s1, _)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::WILDCARD, "_"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
@@ -635,7 +646,8 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   SECTION("Affects(_, s2)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({7})));
@@ -674,7 +686,8 @@ TEST_CASE("AffectsEvaluator: Affects, Nested If/While Together") {
   SECTION("Affects(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5, 3})));
@@ -788,7 +801,8 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   SECTION("Affects(s1, _)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::WILDCARD, "_"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({6})));
   }
@@ -796,7 +810,8 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   SECTION("Affects(_, s2)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({7})));
@@ -834,7 +849,8 @@ TEST_CASE("AffectsEvaluator: Affects, Multiple Procedures") {
   SECTION("Affects(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 4})));
     REQUIRE_THAT(results, !VectorContains(vector<int>({3, 4})));
@@ -940,7 +956,8 @@ TEST_CASE("AffectsEvaluator: Affects, Test Call & Read Stmts") {
   SECTION("Affects(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE(results.empty());
   }
 }
@@ -1050,7 +1067,8 @@ TEST_CASE("AffectsEvaluator: Affects*, No Nested If/While") {
   SECTION("Affects*(s1, _)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::WILDCARD, "_"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4})));
@@ -1065,7 +1083,8 @@ TEST_CASE("AffectsEvaluator: Affects*, No Nested If/While") {
   SECTION("Affects*(_, s2)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({7})));
@@ -1105,7 +1124,8 @@ TEST_CASE("AffectsEvaluator: Affects*, No Nested If/While") {
   SECTION("Affects*(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 7})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 10})));
@@ -1305,7 +1325,8 @@ TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Separately") {
   SECTION("Affects*(s1,s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 7})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 9})));
@@ -1491,7 +1512,8 @@ TEST_CASE("AffectsEvaluator: Affects*, Nested If/While Together") {
   SECTION("Affects*(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 6})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 13})));
@@ -1690,7 +1712,8 @@ TEST_CASE("AffectsEvaluator: Affects*, Multiple Procedures") {
   SECTION("Affects*(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 2})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 6})));
@@ -1891,7 +1914,8 @@ TEST_CASE("AffectsEvaluator: Affects*, Test Call & Read Stmts") {
   SECTION("Affects*(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffectsT(left, right);
+    auto setOfResults = ae.evaluatePairAffectsT(left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 4})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 6})));
     REQUIRE_THAT(results, VectorContains(vector<int>({4, 6})));
@@ -2030,7 +2054,8 @@ TEST_CASE("AffectsBip - Truthy Values") {
   SECTION("AffectsBip(s, _)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::WILDCARD, "_"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5})));
@@ -2041,7 +2066,8 @@ TEST_CASE("AffectsBip - Truthy Values") {
   SECTION("AffectsBip(_, s)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({7})));
     REQUIRE_THAT(results, VectorContains(vector<int>({9})));
@@ -2050,7 +2076,8 @@ TEST_CASE("AffectsBip - Truthy Values") {
   SECTION("AffectsBip(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    auto results = ae.evaluatePairAffects(rsType, left, right);
+    auto setOfResults = ae.evaluatePairAffects(rsType, left, right);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5, 3})));

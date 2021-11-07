@@ -194,7 +194,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffects(
 }
 
 // Affects(a1, _), Affects(_, a2)
-vector<vector<STMT_NO>> AffectsEvaluator::evaluateSynonymWildcard(
+ClauseIncomingResults AffectsEvaluator::evaluateSynonymWildcard(
     RelationshipType rsType, const Param& left, const Param& right) {
   if (isCompleteAffectsCache) {
     if (left.type == ParamType::SYNONYM) {
@@ -219,7 +219,7 @@ vector<vector<STMT_NO>> AffectsEvaluator::evaluateSynonymWildcard(
 }
 
 // synonym & synonym - Affects(a1, a2)
-vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffects(
+ClauseIncomingResults AffectsEvaluator::evaluatePairAffects(
     RelationshipType rsType, const Param& left, const Param& right) {
   if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
     return evaluateSynonymWildcard(rsType, left, right);
@@ -332,7 +332,7 @@ unordered_set<STMT_NO> AffectsEvaluator::evaluateStmtAffectsTHelper(
   return result;
 }
 
-vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffectsT(
+ClauseIncomingResults AffectsEvaluator::evaluatePairAffectsT(
     const Param& left, const Param& right) {
   // Affects(a, _) or (_, a)
   if (left.type == ParamType::WILDCARD || right.type == ParamType::WILDCARD) {
@@ -345,12 +345,12 @@ vector<vector<STMT_NO>> AffectsEvaluator::evaluatePairAffectsT(
   }
 
   populateAffectsTCache(left, right);
-  vector<vector<STMT_NO>> result;
+  ClauseIncomingResults result;
   for (auto it : tableOfAffects[RelationshipType::AFFECTS_T]) {
     STMT_NO curr = it.first;
     for (STMT_NO affectedT : it.second) {
       vector<STMT_NO> currPair{curr, affectedT};
-      result.push_back(currPair);
+      result.insert(currPair);
     }
   }
   affectsStmtPairs[RelationshipType::AFFECTS_T] = result;
@@ -536,9 +536,9 @@ void AffectsEvaluator::addAffectsRelationship(RelationshipType rsType,
                                               STMT_NO currStmt) {
   affectsStmts[rsType].insert(LMTStmt);
   affectsInvStmts[rsType].insert(currStmt);
-  affectsLeftStmtPairs[rsType].push_back({LMTStmt});
-  affectsRightStmtPairs[rsType].push_back({currStmt});
-  affectsStmtPairs[rsType].push_back({LMTStmt, currStmt});
+  affectsLeftStmtPairs[rsType].insert({LMTStmt});
+  affectsRightStmtPairs[rsType].insert({currStmt});
+  affectsStmtPairs[rsType].insert({LMTStmt, currStmt});
 
   if (tableOfAffects[rsType].find(LMTStmt) == tableOfAffects[rsType].end()) {
     tableOfAffects[rsType].insert({LMTStmt, {}});

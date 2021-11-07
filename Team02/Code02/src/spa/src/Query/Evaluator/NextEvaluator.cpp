@@ -64,27 +64,16 @@ unordered_set<int> NextEvaluator::evaluateNextNextBip(RelationshipType rsType,
 
 // synonym & wildcard - Next(s, _) -> getAllNextStmtPairs()
 // synonym & synonym - Next(s1, s2) -> getAllNextStmtPairs()
-vector<vector<int>> NextEvaluator::evaluatePairNextNextBip(
+ClauseIncomingResults NextEvaluator::evaluatePairNextNextBip(
     RelationshipType rsType, const Param& left, const Param& right) {
-  vector<vector<int>> formattedResults = {};
-
   if (left.type == ParamType::WILDCARD) {
-    SetOfStmtLists results = pkb->getMappings(rsType, ParamPosition::RIGHT);
-    formattedResults.insert(formattedResults.end(), results.begin(),
-                            results.end());
-    return formattedResults;
+    return pkb->getMappings(rsType, ParamPosition::RIGHT);
   }
   if (right.type == ParamType::WILDCARD) {
-    SetOfStmtLists results = pkb->getMappings(rsType, ParamPosition::LEFT);
-    formattedResults.insert(formattedResults.end(), results.begin(),
-                            results.end());
-    return formattedResults;
+    return pkb->getMappings(rsType, ParamPosition::LEFT);
   }
   // both synonyms
-  SetOfStmtLists results = pkb->getMappings(rsType, ParamPosition::BOTH);
-  formattedResults.insert(formattedResults.end(), results.begin(),
-                          results.end());
-  return formattedResults;
+  return pkb->getMappings(rsType, ParamPosition::BOTH);
 }
 
 bool NextEvaluator::evaluateBoolNextTNextBipT(RelationshipType rsType,
@@ -155,9 +144,9 @@ unordered_set<int> NextEvaluator::evaluateNextTNextBipT(RelationshipType rsType,
   return results;
 }
 
-vector<vector<int>> NextEvaluator::evaluatePairNextTNextBipT(
+ClauseIncomingResults NextEvaluator::evaluatePairNextTNextBipT(
     RelationshipType rsType, const Param& left, const Param& right) {
-  vector<vector<int>> results = {};
+  ClauseIncomingResults results = {};
   unordered_set<int> allStmts = pkb->getAllStmts(DesignEntity::STATEMENT);
 
   for (auto stmtNum : allStmts) {
@@ -172,11 +161,11 @@ vector<vector<int>> NextEvaluator::evaluatePairNextTNextBipT(
 
     for (auto nextTStmt : nextTNextBipTStmts) {
       if (left.type == ParamType::WILDCARD) {
-        results.push_back({nextTStmt});
+        results.insert({nextTStmt});
       } else if (right.type == ParamType::WILDCARD) {
-        results.push_back({stmtNum});
+        results.insert({stmtNum});
       } else {
-        results.push_back({stmtNum, nextTStmt});
+        results.insert({stmtNum, nextTStmt});
       }
     }
   }

@@ -60,8 +60,8 @@ TEST_CASE("NextEvaluator: Next") {
   SECTION("Next(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextNextBip(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextNextBip(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(result, VectorContains(vector<int>({1, 2})));
     REQUIRE_THAT(result, VectorContains(vector<int>({2, 3})));
     REQUIRE_THAT(result, VectorContains(vector<int>({2, 4})));
@@ -184,8 +184,8 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(s, _)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::WILDCARD, "_"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextTNextBipT(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextTNextBipT(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     for (int i = 1; i < 7; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -195,8 +195,8 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(_, s)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextTNextBipT(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextTNextBipT(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     for (int i = 2; i <= 7; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -207,8 +207,8 @@ TEST_CASE("NextEvaluator: NextT - No Nested If/While") {
   SECTION("NextT(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextTNextBipT(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextTNextBipT(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     // check NextT(1, _)
     for (int i = 2; i <= 7; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({1, i})));
@@ -411,8 +411,8 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(s, _)") {
     Param left = {ParamType::SYNONYM, "s"};
     Param right = {ParamType::WILDCARD, "_"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextTNextBipT(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextTNextBipT(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     for (int i = 1; i < 14; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -422,8 +422,8 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(_, s)") {
     Param left = {ParamType::WILDCARD, "_"};
     Param right = {ParamType::SYNONYM, "s"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextTNextBipT(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextTNextBipT(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     for (int i = 2; i <= 14; i++) {
       REQUIRE_THAT(result, VectorContains(vector<int>({i})));
     }
@@ -434,8 +434,8 @@ TEST_CASE("NextEvaluator: NextT - Nested If/While") {
   SECTION("NextT(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextTNextBipT(rsType, left, right);
+    auto setOfResults = ne.evaluatePairNextTNextBipT(rsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
 
     // check NextT(1, _)
     for (int i = 2; i <= 14; i++) {
@@ -550,8 +550,8 @@ TEST_CASE("NextEvaluator: NextBip & NextBipT") {
   SECTION("NextBip(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result =
-        ne.evaluatePairNextNextBip(nextBipRsType, left, right);
+    auto setOfResults = ne.evaluatePairNextNextBip(nextBipRsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(result, VectorContains(vector<int>({1, 2})));
     REQUIRE_THAT(result, VectorContains(vector<int>({2, 3})));
     REQUIRE_THAT(result, VectorContains(vector<int>({3, 4})));
@@ -593,8 +593,9 @@ TEST_CASE("NextEvaluator: NextBip & NextBipT") {
   SECTION("NextBipT(s1, s2)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::SYNONYM, "s2"};
-    vector<vector<int>> result =
+    auto setOfResults =
         ne.evaluatePairNextTNextBipT(nextBipTRsType, left, right);
+    vector<vector<int>> result(setOfResults.begin(), setOfResults.end());
     for (int i = 1; i < 5; i++) {
       for (int j = i + 1; j <= 6; j++) {
         if (!(i == 4 && j == 5)) {

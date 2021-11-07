@@ -67,64 +67,64 @@ void WithEvaluator::evaluateNameAttributes(const Param& left,
     DesignEntity leftDesignEntity = synonymMap.at(leftValue);
     DesignEntity rightDesignEntity = synonymMap.at(rightValue);
     for (auto results : currentQueryResults) {
-      int leftProcIdx = getIndexOfProcNameAttrOfSynonym(results.at(leftValue),
-                                                        leftDesignEntity);
-      int rightProcIdx = getIndexOfProcNameAttrOfSynonym(results.at(rightValue),
-                                                         rightDesignEntity);
+      int leftProcIdx =
+          getIndexOfNameAttrOfSynonym(results.at(leftValue), leftDesignEntity);
+      int rightProcIdx = getIndexOfNameAttrOfSynonym(results.at(rightValue),
+                                                     rightDesignEntity);
 
       if (leftProcIdx == rightProcIdx) {
         isClauseTrue = true;
         addClauseResultAndUpdateCount(results);
       }
     }
+    return;
   }
+
   if (leftType == ParamType::ATTRIBUTE_VAR_NAME &&
       rightType == ParamType::ATTRIBUTE_VAR_NAME) {
     DesignEntity leftDesignEntity = synonymMap.at(leftValue);
     DesignEntity rightDesignEntity = synonymMap.at(rightValue);
     for (auto results : currentQueryResults) {
-      string leftVarName =
-          getVarNameAttrOfSynonym(results.at(leftValue), leftDesignEntity);
-      string rightVarName =
-          getVarNameAttrOfSynonym(results.at(rightValue), rightDesignEntity);
+      string leftVarName = getNameAttrOfSynonym(results.at(leftValue),
+                                                leftDesignEntity, leftType);
+      string rightVarName = getNameAttrOfSynonym(results.at(rightValue),
+                                                 rightDesignEntity, rightType);
       if (leftVarName == rightVarName) {
         isClauseTrue = true;
         addClauseResultAndUpdateCount(results);
       }
     }
+    return;
   }
+
   if (leftType == ParamType::NAME_LITERAL &&
       rightType == ParamType::NAME_LITERAL) {
     if (leftValue == rightValue) {
       isClauseTrue = true;
       newQueryResults = currentQueryResults;
     }
+    return;
   }
 
   /* Different Attribute Types --------------------------------------- */
-  if (leftType == ParamType::ATTRIBUTE_PROC_NAME &&
-      rightType == ParamType::ATTRIBUTE_VAR_NAME) {
-    evaluateProcNameAndVarName(leftValue, rightValue);
+  if ((leftType == ParamType::ATTRIBUTE_PROC_NAME &&
+       rightType == ParamType::ATTRIBUTE_VAR_NAME) ||
+      (leftType == ParamType::ATTRIBUTE_VAR_NAME &&
+       rightType == ParamType::ATTRIBUTE_PROC_NAME)) {
+    return evaluateProcNameAndVarName(leftValue, rightValue, leftType,
+                                      rightType);
   }
-  if (leftType == ParamType::ATTRIBUTE_VAR_NAME &&
-      rightType == ParamType::ATTRIBUTE_PROC_NAME) {
-    evaluateProcNameAndVarName(rightValue, leftValue);
+  if ((leftType == ParamType::ATTRIBUTE_PROC_NAME &&
+       rightType == ParamType::NAME_LITERAL) ||
+      (leftType == ParamType::ATTRIBUTE_VAR_NAME &&
+       rightType == ParamType::NAME_LITERAL)) {
+    return evaluateNameAttrAndNameLiteral(leftValue, rightValue, leftType);
   }
-  if (leftType == ParamType::ATTRIBUTE_PROC_NAME &&
-      rightType == ParamType::NAME_LITERAL) {
-    evaluateProcNameAndNameLiteral(leftValue, rightValue);
-  }
-  if (leftType == ParamType::NAME_LITERAL &&
-      rightType == ParamType::ATTRIBUTE_PROC_NAME) {
-    evaluateProcNameAndNameLiteral(rightValue, leftValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_VAR_NAME &&
-      rightType == ParamType::NAME_LITERAL) {
-    evaluateVarNameAndNameLiteral(leftValue, rightValue);
-  }
-  if (leftType == ParamType::NAME_LITERAL &&
-      rightType == ParamType::ATTRIBUTE_VAR_NAME) {
-    evaluateVarNameAndNameLiteral(rightValue, leftValue);
+  if ((leftType == ParamType::NAME_LITERAL &&
+       rightType == ParamType::ATTRIBUTE_PROC_NAME) ||
+      (leftType == ParamType::NAME_LITERAL &&
+       rightType == ParamType::ATTRIBUTE_VAR_NAME)) {
+    return evaluateNameAttrAndNameLiteral(rightValue, leftValue, rightType);
   }
 }
 
@@ -136,76 +136,27 @@ void WithEvaluator::evaluateIntegerAttributes(const Param& left,
   string leftValue = left.value;
   string rightValue = right.value;
 
-  /* Same Attribute Types ------------------------------------------- */
-  if (leftType == ParamType::SYNONYM && rightType == ParamType::SYNONYM) {
-    // compare prog_line synonyms
-    evaluateIndexes(leftValue, rightValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_VALUE &&
-      rightType == ParamType::ATTRIBUTE_VALUE) {
-    // compare constant indexes
-    evaluateIndexes(leftValue, rightValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
-      rightType == ParamType::ATTRIBUTE_STMT_NUM) {
-    // compare stmt numbers
-    evaluateIndexes(leftValue, rightValue);
-  }
   if (leftType == ParamType::INTEGER_LITERAL &&
       rightType == ParamType::INTEGER_LITERAL) {
     if (leftValue == rightValue) {
       isClauseTrue = true;
       newQueryResults = currentQueryResults;
     }
+    return;
   }
 
-  /* Different Attribute Types --------------------------------------- */
-  if ((leftType == ParamType::SYNONYM &&
+  // same types - (syn, syn), (.value, .value). (.stmt#, .stmt#)
+  // diff types - (syn, .stmt#), (.stmt#, syn)
+  if (leftType == rightType ||
+      (leftType == ParamType::SYNONYM &&
        rightType == ParamType::ATTRIBUTE_STMT_NUM) ||
       (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
        rightType == ParamType::SYNONYM)) {
-    evaluateIndexes(leftValue, rightValue);
+    return evaluateIndexes(leftValue, rightValue);
   }
-  if (leftType == ParamType::SYNONYM &&
-      rightType == ParamType::ATTRIBUTE_VALUE) {
-    evaluateValueAndStmt(rightValue, leftValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_VALUE &&
-      rightType == ParamType::SYNONYM) {
-    evaluateValueAndStmt(leftValue, rightValue);
-  }
-  if (leftType == ParamType::SYNONYM &&
-      rightType == ParamType::INTEGER_LITERAL) {
-    evaluateStmtAndIntegerLiteral(leftValue, rightValue);
-  }
-  if (leftType == ParamType::INTEGER_LITERAL &&
-      rightType == ParamType::SYNONYM) {
-    evaluateStmtAndIntegerLiteral(rightValue, leftValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_VALUE &&
-      rightType == ParamType::ATTRIBUTE_STMT_NUM) {
-    evaluateValueAndStmt(leftValue, rightValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
-      rightType == ParamType::ATTRIBUTE_VALUE) {
-    evaluateValueAndStmt(rightValue, leftValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_VALUE &&
-      rightType == ParamType::INTEGER_LITERAL) {
-    evaluateValueAndIntegerLiteral(leftValue, rightValue);
-  }
-  if (leftType == ParamType::INTEGER_LITERAL &&
-      rightType == ParamType::ATTRIBUTE_VALUE) {
-    evaluateValueAndIntegerLiteral(rightValue, leftValue);
-  }
-  if (leftType == ParamType::ATTRIBUTE_STMT_NUM &&
-      rightType == ParamType::INTEGER_LITERAL) {
-    evaluateStmtAndIntegerLiteral(leftValue, rightValue);
-  }
-  if (leftType == ParamType::INTEGER_LITERAL &&
-      rightType == ParamType::ATTRIBUTE_STMT_NUM) {
-    evaluateStmtAndIntegerLiteral(rightValue, leftValue);
-  }
+
+  // any other combo of .value, .stmt#, int literal
+  return evaluateNumbers(leftValue, rightValue, leftType, rightType);
 }
 
 void WithEvaluator::addClauseResultAndUpdateCount(
@@ -221,19 +172,22 @@ void WithEvaluator::addClauseResultAndUpdateCount(
   }
 }
 
-void WithEvaluator::evaluateProcNameAndVarName(string synWithProcName,
-                                               string synWithVarName) {
-  DesignEntity designEntOfSynWithProcName = synonymMap.at(synWithProcName);
-  DesignEntity designEntOfSynWithVarName = synonymMap.at(synWithVarName);
+// (.procName, .varName)
+void WithEvaluator::evaluateProcNameAndVarName(string firstSyn,
+                                               string secondSyn,
+                                               ParamType firstParamType,
+                                               ParamType secondParamType) {
+  DesignEntity designEntOfSynWithProcName = synonymMap.at(firstSyn);
+  DesignEntity designEntOfSynWithVarName = synonymMap.at(secondSyn);
 
   for (auto results : currentQueryResults) {
-    int valueOfSynWithProcName = results.at(synWithProcName);
-    string procName = getProcNameAttrOfSynonym(valueOfSynWithProcName,
-                                               designEntOfSynWithProcName);
+    int valueOfSynWithProcName = results.at(firstSyn);
+    string procName = getNameAttrOfSynonym(
+        valueOfSynWithProcName, designEntOfSynWithProcName, firstParamType);
 
-    int valueOfSynWithVarName = results.at(synWithVarName);
-    string varName = getVarNameAttrOfSynonym(valueOfSynWithVarName,
-                                             designEntOfSynWithVarName);
+    int valueOfSynWithVarName = results.at(secondSyn);
+    string varName = getNameAttrOfSynonym(
+        valueOfSynWithVarName, designEntOfSynWithVarName, secondParamType);
 
     if (procName == varName) {
       isClauseTrue = true;
@@ -242,32 +196,17 @@ void WithEvaluator::evaluateProcNameAndVarName(string synWithProcName,
   }
 }
 
-void WithEvaluator::evaluateProcNameAndNameLiteral(string synWithProcName,
-                                                   string nameLiteral) {
-  DesignEntity designEntOfSynWithProcName = synonymMap.at(synWithProcName);
+void WithEvaluator::evaluateNameAttrAndNameLiteral(string synWithNameAttr,
+                                                   string nameLiteral,
+                                                   ParamType paramTypeOfSyn) {
+  DesignEntity designEntOfSyn = synonymMap.at(synWithNameAttr);
 
   for (auto results : currentQueryResults) {
-    int valueOfSynWithProcName = results.at(synWithProcName);
-    string procName = getProcNameAttrOfSynonym(valueOfSynWithProcName,
-                                               designEntOfSynWithProcName);
+    int valueOfSynWithNameAttr = results.at(synWithNameAttr);
+    string nameOfSyn = getNameAttrOfSynonym(valueOfSynWithNameAttr,
+                                            designEntOfSyn, paramTypeOfSyn);
 
-    if (procName == nameLiteral) {
-      isClauseTrue = true;
-      addClauseResultAndUpdateCount(results);
-    }
-  }
-}
-
-void WithEvaluator::evaluateVarNameAndNameLiteral(string synWithVarName,
-                                                  string nameLiteral) {
-  DesignEntity designEntOfSynWithVarName = synonymMap.at(synWithVarName);
-
-  for (auto results : currentQueryResults) {
-    int valueOfSynWithVarName = results.at(synWithVarName);
-    string varName = getVarNameAttrOfSynonym(valueOfSynWithVarName,
-                                             designEntOfSynWithVarName);
-
-    if (varName == nameLiteral) {
+    if (nameOfSyn == nameLiteral) {
       isClauseTrue = true;
       addClauseResultAndUpdateCount(results);
     }
@@ -286,98 +225,69 @@ void WithEvaluator::evaluateIndexes(string firstSyn, string secondSyn) {
   }
 }
 
-void WithEvaluator::evaluateValueAndStmt(string constSyn, string stmtSyn) {
+// (value, syn/stmt), (value, int lit), (syn/stmt, int lit)
+void WithEvaluator::evaluateNumbers(string firstValue, string secondValue,
+                                    ParamType firstParamType,
+                                    ParamType secondParamType) {
   for (auto results : currentQueryResults) {
-    string constValue =
-        pkb->getElementAt(TableType::CONST_TABLE, results.at(constSyn));
-    string stmtNum = to_string(results.at(stmtSyn));
+    string firstNumber = getNumber(firstValue, firstParamType, results);
+    string secondNumber = getNumber(secondValue, secondParamType, results);
 
-    if (constValue == stmtNum) {
+    if (firstNumber == secondNumber) {
       isClauseTrue = true;
       addClauseResultAndUpdateCount(results);
     }
   }
 }
 
-void WithEvaluator::evaluateValueAndIntegerLiteral(string constSyn,
-                                                   string integerLiteral) {
-  for (auto results : currentQueryResults) {
-    string constValue =
-        pkb->getElementAt(TableType::CONST_TABLE, results.at(constSyn));
-
-    if (constValue == integerLiteral) {
-      isClauseTrue = true;
-      addClauseResultAndUpdateCount(results);
-    }
+string WithEvaluator::getNumber(string value, ParamType paramType,
+                                const IntermediateQueryResult& results) {
+  if (paramType == ParamType::ATTRIBUTE_VALUE) {
+    return pkb->getElementAt(TableType::CONST_TABLE, results.at(value));
+  } else if (paramType == ParamType::SYNONYM ||
+             paramType == ParamType::ATTRIBUTE_STMT_NUM) {
+    return to_string(results.at(value));
+  } else {
+    return value;
   }
 }
 
-void WithEvaluator::evaluateStmtAndIntegerLiteral(string stmtSyn,
-                                                  string integerLiteral) {
-  for (auto results : currentQueryResults) {
-    string stmtNum = to_string(results.at(stmtSyn));
-
-    if (stmtNum == integerLiteral) {
-      isClauseTrue = true;
-      addClauseResultAndUpdateCount(results);
-    }
-  }
-}
-
-int WithEvaluator::getIndexOfProcNameAttrOfSynonym(
+int WithEvaluator::getIndexOfNameAttrOfSynonym(
     int valueOfSynonym, DesignEntity designEntityOfSynonym) {
-  int procIdx;
+  int idx;
   switch (designEntityOfSynonym) {
     case DesignEntity::PROCEDURE:
-      procIdx = valueOfSynonym;
+      idx = valueOfSynonym;
       break;
     case DesignEntity::CALL:
-      procIdx =
-          *(pkb->getRight(RelationshipType::CALLS_S, valueOfSynonym).begin());
+      idx = *(pkb->getRight(RelationshipType::CALLS_S, valueOfSynonym).begin());
+      break;
+    case DesignEntity::VARIABLE:
+      idx = valueOfSynonym;
+      break;
+    case DesignEntity::READ:
+      idx = *(pkb->getRight(RelationshipType::MODIFIES_S, valueOfSynonym))
+                 .begin();
+      break;
+    case DesignEntity::PRINT:
+      idx = *(pkb->getRight(RelationshipType::USES_S, valueOfSynonym)).begin();
       break;
     default:
       DMOprintErrMsgAndExit(
           "[WithEvaluator][getIndexOfProcName] invalid design entity of "
-          "synonym.procName");
+          "synonym.procName or synonym.varName");
       break;
   }
-  return procIdx;
+  return idx;
 }
 
-int WithEvaluator::getIndexOfVarNameAttrOfSynonym(
-    int valueOfSynonym, DesignEntity designEntityOfSynonym) {
-  int varIdx;
-  switch (designEntityOfSynonym) {
-    case DesignEntity::VARIABLE:
-      varIdx = valueOfSynonym;
-      break;
-    case DesignEntity::READ:
-      varIdx = *(pkb->getRight(RelationshipType::MODIFIES_S, valueOfSynonym))
-                    .begin();
-      break;
-    case DesignEntity::PRINT:
-      varIdx =
-          *(pkb->getRight(RelationshipType::USES_S, valueOfSynonym)).begin();
-      break;
-    default:
-      DMOprintErrMsgAndExit(
-          "[WithEvaluator][getIndexOfVarName] invalid design entity of "
-          "synonym.varName");
-      break;
+string WithEvaluator::getNameAttrOfSynonym(int valueOfSynonym,
+                                           DesignEntity designEntity,
+                                           ParamType paramType) {
+  int idx = getIndexOfNameAttrOfSynonym(valueOfSynonym, designEntity);
+  if (paramType == ParamType::ATTRIBUTE_PROC_NAME) {
+    return pkb->getElementAt(TableType::PROC_TABLE, idx);
+  } else {
+    return pkb->getElementAt(TableType::VAR_TABLE, idx);
   }
-  return varIdx;
-}
-
-string WithEvaluator::getProcNameAttrOfSynonym(
-    int valueOfSynonym, DesignEntity designEntityOfSynonym) {
-  int procIdx =
-      getIndexOfProcNameAttrOfSynonym(valueOfSynonym, designEntityOfSynonym);
-  return pkb->getElementAt(TableType::PROC_TABLE, procIdx);
-}
-
-string WithEvaluator::getVarNameAttrOfSynonym(
-    int valueOfSynonym, DesignEntity designEntityOfSynonym) {
-  int varIdx =
-      getIndexOfVarNameAttrOfSynonym(valueOfSynonym, designEntityOfSynonym);
-  return pkb->getElementAt(TableType::VAR_TABLE, varIdx);
 }

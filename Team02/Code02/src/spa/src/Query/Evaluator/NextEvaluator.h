@@ -17,7 +17,7 @@ class NextEvaluator {
   std::unordered_set<int> evaluateNextNextBip(RelationshipType rsType,
                                               const query::Param& left,
                                               const query::Param& right);
-  std::vector<std::vector<int>> evaluatePairNextNextBip(
+  query::ClauseIncomingResults evaluatePairNextNextBip(
       RelationshipType rsType, const query::Param& left,
       const query::Param& right);
 
@@ -27,7 +27,7 @@ class NextEvaluator {
   std::unordered_set<int> evaluateNextTNextBipT(RelationshipType rsType,
                                                 const query::Param& left,
                                                 const query::Param& right);
-  std::vector<std::vector<int>> evaluatePairNextTNextBipT(
+  query::ClauseIncomingResults evaluatePairNextTNextBipT(
       RelationshipType rsType, const query::Param& left,
       const query::Param& right);
 

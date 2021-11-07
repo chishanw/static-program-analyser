@@ -36,25 +36,21 @@ class WithEvaluator {
   void addClauseResultAndUpdateCount(
       const query::IntermediateQueryResult& queryResult);
 
-  void evaluateProcNameAndVarName(std::string synWithProcName,
-                                  std::string synWithVarName);
-  void evaluateProcNameAndNameLiteral(std::string synWithProcName,
-                                      std::string nameLiteral);
-  void evaluateVarNameAndNameLiteral(std::string synWithVarName,
-                                     std::string nameLiteral);
+  void evaluateProcNameAndVarName(std::string firstSyn, std::string secondSyn,
+                                  query::ParamType firstParamType,
+                                  query::ParamType secondParamType);
+  void evaluateNameAttrAndNameLiteral(std::string synWithProcName,
+                                      std::string nameLiteral,
+                                      query::ParamType paramTypeOfSyn);
   void evaluateIndexes(std::string firstSyn, std::string secondSyn);
-  void evaluateValueAndStmt(std::string constSyn, std::string stmtSyn);
-  void evaluateValueAndIntegerLiteral(std::string constSyn,
-                                      std::string integerLiteral);
-  void evaluateStmtAndIntegerLiteral(std::string stmtSyn,
-                                     std::string integerLiteral);
-
-  int getIndexOfProcNameAttrOfSynonym(int valueOfSynonym,
-                                      DesignEntity designEntityOfSynonym);
-  int getIndexOfVarNameAttrOfSynonym(int valueOfSynonym,
-                                     DesignEntity designEntityOfSynonym);
-  std::string getProcNameAttrOfSynonym(int valueOfSynonym,
-                                       DesignEntity designEntityOfSynonym);
-  std::string getVarNameAttrOfSynonym(int valueOfSynonym,
-                                      DesignEntity designEntityOfSynonym);
+  void evaluateNumbers(std::string firstValue, std::string secondValue,
+                       query::ParamType firstParamType,
+                       query::ParamType secondParamType);
+  std::string getNumber(std::string value, query::ParamType paramType,
+                        const query::IntermediateQueryResult& results);
+  int getIndexOfNameAttrOfSynonym(int valueOfSynonym,
+                                  DesignEntity designEntity);
+  std::string getNameAttrOfSynonym(int valueOfSynonym,
+                                   DesignEntity designEntityOfSynonym,
+                                   query::ParamType paramType);
 };

@@ -70,7 +70,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
     QueryOptimizer* queryOptimizer = new QueryOptimizer(pkb);
     queryOptimizer->PreprocessClauses(get<0>(parsedQuery), get<1>(parsedQuery));
 
-    std::vector<std::vector<int>> evaluatedResult =
+    query::FinalQueryResults evaluatedResult =
         QueryEvaluator(pkb, queryOptimizer)
             .evaluateQuery(get<0>(parsedQuery), get<1>(parsedQuery));
     DMOprintInfoMsg("Query Evaluator was successful");

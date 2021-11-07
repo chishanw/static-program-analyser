@@ -16,18 +16,19 @@
 #include <utility>
 #include <vector>
 
+typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
+
 class QueryEvaluator {
  public:
   explicit QueryEvaluator(PKB* pkb, QueryOptimizer* optimizer);
-  query::FinalQueryResults evaluateQuery(
-      std::unordered_map<std::string, DesignEntity> synonymMap,
-      query::SelectClause select);
+  query::FinalQueryResults evaluateQuery(SynonymMap synonymMap,
+                                         query::SelectClause select);
   query::SynonymCountsTable getSynonymCounts();
 
  private:
+  SynonymMap synonymMap;
   PKB* pkb;
   QueryOptimizer* optimizer;
-  std::unordered_map<std::string, DesignEntity> synonymMap;
   NextEvaluator nextEvaluator;
   AffectsEvaluator affectsEvaluator;
   PatternEvaluator patternEvaluator;
@@ -105,10 +106,10 @@ class QueryEvaluator {
   void mergeGroupResultsIntoFinalResults();
 
   // helpers for evaluating based on prev clauses - non on demand rs
-  std::vector<std::vector<int>> resolveBothParamsFromResultTable(
+  query::ClauseIncomingResults resolveBothParamsFromResultTable(
       query::SuchThatClause clause);
   std::unordered_set<int> resolveLeftParam(query::SuchThatClause clause);
-  std::vector<std::vector<int>> resolveRightParamFromLeftValues(
+  query::ClauseIncomingResults resolveRightParamFromLeftValues(
       query::SuchThatClause clause, std::unordered_set<int> leftValues);
   int convertLeftNameLiteralToInt(RelationshipType rsType,
                                   std::string nameLiteral);

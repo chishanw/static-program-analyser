@@ -101,7 +101,7 @@ class QueryOptimizer {
   void sortGroups();
   void sortClausesAtGroupIndex(int);
 
-  static std::vector<query::SYN_NAME> extractSynonymsUsed(
+  static std::vector<query::SynName> extractSynonymsUsed(
       const query::ConditionClause&);
   unsigned long getSizeOfClause(query::ConditionClauseType,
                                 const std::vector<std::string>&);

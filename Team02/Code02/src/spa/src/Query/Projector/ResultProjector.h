@@ -12,7 +12,7 @@ class ResultProjector {
   explicit ResultProjector(PKB*);
   std::list<std::string> formatResults(
       query::SelectType selectType, std::vector<query::Synonym> selectSynonyms,
-      std::vector<std::vector<int>> results);
+      query::FinalQueryResults results);
 
  private:
   PKB* pkb;

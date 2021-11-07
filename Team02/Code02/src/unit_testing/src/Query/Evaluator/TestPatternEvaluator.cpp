@@ -113,8 +113,8 @@ TEST_CASE("PatternEvaluator: Assign") {
   SECTION("a (v, 'w')") {
     Param varParam = {ParamType::SYNONYM, "v"};
     PatternExpr patternExpr = {MatchType::EXACT, "w"};
-    vector<vector<int>> results =
-        pe.evaluateAssignPairPattern(varParam, patternExpr);
+    auto setOfResults = pe.evaluateAssignPairPattern(varParam, patternExpr);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, xVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, yVarIdx})));
   }
@@ -122,8 +122,8 @@ TEST_CASE("PatternEvaluator: Assign") {
   SECTION("a (v, _'w'_)") {
     Param varParam = {ParamType::SYNONYM, "v"};
     PatternExpr patternExpr = {MatchType::SUB_EXPRESSION, "w"};
-    vector<vector<int>> results =
-        pe.evaluateAssignPairPattern(varParam, patternExpr);
+    auto setOfResults = pe.evaluateAssignPairPattern(varParam, patternExpr);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, xVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, yVarIdx})));
   }
@@ -131,8 +131,8 @@ TEST_CASE("PatternEvaluator: Assign") {
   SECTION("a (v, _)") {
     Param varParam = {ParamType::SYNONYM, "v"};
     PatternExpr patternExpr = {MatchType::ANY, "_"};
-    vector<vector<int>> results =
-        pe.evaluateAssignPairPattern(varParam, patternExpr);
+    auto setOfResults = pe.evaluateAssignPairPattern(varParam, patternExpr);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, xVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, yVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, zVarIdx})));
@@ -169,7 +169,8 @@ TEST_CASE("PatternEvaluator: If") {
 
   SECTION("ifs (v, _, _)") {
     Param varParam = {ParamType::SYNONYM, "v"};
-    vector<vector<int>> results = pe.evaluateIfPairPattern(varParam);
+    auto setOfResults = pe.evaluateIfPairPattern(varParam);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, xVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, yVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, zVarIdx})));
@@ -206,7 +207,8 @@ TEST_CASE("PatternEvaluator: While") {
 
   SECTION("w (v, _)") {
     Param varParam = {ParamType::SYNONYM, "v"};
-    vector<vector<int>> results = pe.evaluateWhilePairPattern(varParam);
+    auto setOfResults = pe.evaluateWhilePairPattern(varParam);
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, xVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, yVarIdx})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, zVarIdx})));

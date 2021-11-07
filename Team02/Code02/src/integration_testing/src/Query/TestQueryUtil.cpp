@@ -62,7 +62,7 @@ query::ConditionClause TestQueryUtil::BuildWithClause(ParamType leftParamType,
   return conditionClause;
 }
 
-vector<vector<int>> TestQueryUtil::EvaluateQuery(
+query::FinalQueryResults TestQueryUtil::EvaluateQuery(
     PKB* pkb, vector<ConditionClause> clauses, SelectType selectType,
     unordered_map<string, DesignEntity> synonymMap,
     vector<Synonym> selectSynonyms) {
@@ -76,7 +76,7 @@ vector<vector<int>> TestQueryUtil::EvaluateQuery(
 }
 
 set<int> TestQueryUtil::GetUniqueSelectSingleQEResults(
-    vector<vector<int>> results) {
+    query::FinalQueryResults results) {
   // used for QE testing to prevent macOS tests from failing
   // due to reversed order of vectors
   set<int> uniqueValues = {};

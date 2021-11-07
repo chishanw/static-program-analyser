@@ -39,9 +39,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that Follows(1, _)") {
@@ -51,9 +51,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that Follows(1, s1)") {
@@ -63,9 +63,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{2}}));
+    REQUIRE(results == FinalQueryResults({{2}}));
   }
 
   SECTION("Select s1 such that Follows(s1, 2)") {
@@ -75,9 +75,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}}));
+    REQUIRE(results == FinalQueryResults({{1}}));
   }
 
   SECTION("Select s1 such that Follows(s1, _)") {
@@ -87,7 +87,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -100,7 +100,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -113,7 +113,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -126,7 +126,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -139,7 +139,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -152,7 +152,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -166,9 +166,9 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {r});
-    REQUIRE(results == vector<vector<int>>{{2}});
+    REQUIRE(results == FinalQueryResults{{2}});
   }
 }
 
@@ -195,7 +195,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -209,7 +209,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -224,7 +224,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -239,7 +239,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -251,7 +251,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -263,7 +263,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -291,9 +291,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}, {3}}));
   }
 
   SECTION("Select s1 such that FollowsT(1, _)") {
@@ -303,9 +303,9 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}, {3}}));
   }
 
   SECTION("Select s2 such that FollowsT(1, s2)") {
@@ -315,7 +315,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -328,7 +328,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -341,7 +341,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -354,7 +354,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -367,7 +367,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -397,7 +397,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -413,7 +413,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -429,7 +429,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(results.empty());
   }
@@ -441,7 +441,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -453,7 +453,7 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -482,7 +482,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -495,7 +495,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -508,7 +508,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -521,9 +521,9 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}}));
+    REQUIRE(results == FinalQueryResults({{1}}));
   }
 
   SECTION("Select s1 such that Parent(s1, _)") {
@@ -533,7 +533,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
@@ -546,7 +546,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
@@ -559,7 +559,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4}));
@@ -571,7 +571,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
                                      {ParamType::WILDCARD, "_"}};
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -601,7 +601,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -616,7 +616,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -631,7 +631,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -646,7 +646,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -658,7 +658,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -670,7 +670,7 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -700,9 +700,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s1 such that ParentT(1, _)") {
@@ -712,9 +712,9 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}, {3}, {4}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}, {3}, {4}}));
   }
 
   SECTION("Select s2 such that ParentT(1, s2)") {
@@ -724,7 +724,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4}));
@@ -737,7 +737,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
@@ -750,7 +750,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 3}));
@@ -763,7 +763,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4}));
@@ -776,7 +776,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -807,7 +807,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -824,7 +824,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -841,7 +841,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(results.empty());
   }
@@ -853,7 +853,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -865,7 +865,7 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -897,7 +897,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -910,7 +910,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -923,7 +923,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -936,7 +936,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -949,9 +949,9 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
-    REQUIRE(results == vector<vector<int>>({{1}}));
+    REQUIRE(results == FinalQueryResults({{1}}));
   }
 
   SECTION("Select v such that UsesS(s, 'x')") {
@@ -961,7 +961,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -974,7 +974,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -987,7 +987,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1000,7 +1000,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -1013,7 +1013,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1043,7 +1043,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1059,7 +1059,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1075,7 +1075,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1091,7 +1091,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1105,7 +1105,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1119,7 +1119,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1131,7 +1131,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1143,7 +1143,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1155,7 +1155,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1167,7 +1167,7 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1202,7 +1202,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -1215,7 +1215,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1228,7 +1228,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -1241,7 +1241,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1254,7 +1254,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -1267,7 +1267,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx}));
@@ -1280,9 +1280,9 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(results == vector<vector<int>>({{proc1Idx}}));
+    REQUIRE(results == FinalQueryResults({{proc1Idx}}));
   }
 
   SECTION("Select v such that UsesP(p, 'x')") {
@@ -1292,7 +1292,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1305,7 +1305,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -1318,7 +1318,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1331,7 +1331,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -1344,7 +1344,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1373,7 +1373,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -1390,7 +1390,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1407,7 +1407,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -1424,7 +1424,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1439,7 +1439,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -1454,7 +1454,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1469,7 +1469,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -1484,7 +1484,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1496,7 +1496,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -1508,7 +1508,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1520,7 +1520,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -1532,7 +1532,7 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1564,7 +1564,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -1577,7 +1577,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1590,7 +1590,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -1603,7 +1603,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1616,7 +1616,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -1629,7 +1629,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1662,7 +1662,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1678,7 +1678,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1694,7 +1694,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1710,7 +1710,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1724,7 +1724,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1738,7 +1738,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1750,7 +1750,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1762,7 +1762,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1774,7 +1774,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s});
     REQUIRE(results.empty());
   }
@@ -1786,7 +1786,7 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -1821,7 +1821,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -1834,7 +1834,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1847,7 +1847,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -1860,7 +1860,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1873,7 +1873,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -1886,7 +1886,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx}));
@@ -1899,9 +1899,9 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
-    REQUIRE(results == vector<vector<int>>({{proc1Idx}}));
+    REQUIRE(results == FinalQueryResults({{proc1Idx}}));
   }
 
   SECTION("Select v such that ModifiesP(p, 'x')") {
@@ -1911,7 +1911,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1924,7 +1924,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -1937,7 +1937,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1950,7 +1950,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -1963,7 +1963,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -1997,7 +1997,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -2014,7 +2014,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -2031,7 +2031,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -2048,7 +2048,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -2065,7 +2065,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -2082,7 +2082,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -2097,7 +2097,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -2112,7 +2112,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -2124,7 +2124,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -2136,7 +2136,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -2148,7 +2148,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p});
     REQUIRE(results.empty());
   }
@@ -2160,7 +2160,7 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -2194,7 +2194,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -2207,7 +2207,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -2220,7 +2220,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -2233,7 +2233,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx}));
@@ -2246,7 +2246,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -2259,7 +2259,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx}));
@@ -2272,7 +2272,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -2285,7 +2285,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx}));
@@ -2298,7 +2298,7 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx}));
@@ -2331,7 +2331,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2347,7 +2347,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2366,7 +2366,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2382,7 +2382,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(results.empty());
   }
@@ -2398,7 +2398,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2410,7 +2410,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(results.empty());
   }
@@ -2422,7 +2422,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2434,7 +2434,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2446,7 +2446,7 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2490,7 +2490,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
@@ -2503,7 +2503,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
@@ -2516,7 +2516,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
@@ -2529,7 +2529,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx}));
@@ -2542,7 +2542,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc4Idx}));
@@ -2555,7 +2555,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx, proc5Idx}));
@@ -2568,7 +2568,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc4Idx}));
@@ -2581,7 +2581,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc3Idx, proc4Idx, proc5Idx}));
@@ -2594,7 +2594,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc1Idx, proc2Idx, proc4Idx}));
@@ -2607,7 +2607,7 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({proc2Idx, proc3Idx, proc5Idx}));
@@ -2638,7 +2638,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2653,7 +2653,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2670,7 +2670,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2685,7 +2685,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(results.empty());
   }
@@ -2700,7 +2700,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2712,7 +2712,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p2});
     REQUIRE(results.empty());
   }
@@ -2724,7 +2724,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2736,7 +2736,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2748,7 +2748,7 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -2791,7 +2791,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
@@ -2804,7 +2804,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
@@ -2817,7 +2817,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
@@ -2830,7 +2830,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 4, 5}));
@@ -2843,7 +2843,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({7, 8}));
@@ -2856,7 +2856,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -2869,7 +2869,7 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4, 5, 6, 7, 8}));
@@ -2882,8 +2882,9 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, s2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 2})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 4})));
@@ -2938,7 +2939,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -2950,7 +2951,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -2962,7 +2963,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -2974,7 +2975,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -2986,7 +2987,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(results.empty());
   }
@@ -3000,7 +3001,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -3014,7 +3015,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(results.empty());
   }
@@ -3028,7 +3029,7 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, s2});
     REQUIRE(results.empty());
   }
@@ -3090,7 +3091,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
@@ -3103,7 +3104,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
@@ -3116,7 +3117,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8, 9}));
@@ -3129,7 +3130,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6, 7, 8}));
@@ -3142,7 +3143,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3, 4, 5, 6, 7, 8, 9}));
@@ -3155,7 +3156,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
@@ -3168,7 +3169,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({7, 8, 9}));
@@ -3181,7 +3182,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3194,7 +3195,7 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({3, 6}));
@@ -3207,8 +3208,9 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, s2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     // NextT(1, _), NextT(2, _), NextT(3, _), NextT(4, _), NextT(5, _)
     for (int i = 1; i <= 5; i++) {
       for (int j = 2; j <= 9; j++) {
@@ -3281,7 +3283,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -3293,7 +3295,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -3307,7 +3309,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -3321,7 +3323,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -3335,7 +3337,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(results.empty());
   }
@@ -3347,7 +3349,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {pr});
     REQUIRE(results.empty());
   }
@@ -3359,7 +3361,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(results.empty());
   }
@@ -3373,7 +3375,7 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         emptyPkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, s2});
     REQUIRE(results.empty());
   }
@@ -3418,7 +3420,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3430,7 +3432,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3443,7 +3445,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3456,7 +3458,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({4, 5}));
@@ -3469,7 +3471,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({2, 3}));
@@ -3481,7 +3483,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
@@ -3493,7 +3495,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3505,8 +3507,9 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, s2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 2})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
@@ -3524,7 +3527,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3536,7 +3539,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3549,7 +3552,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3562,7 +3565,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
@@ -3575,7 +3578,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3588,7 +3591,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({6}));
@@ -3600,7 +3603,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5}));
@@ -3612,7 +3615,7 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s2});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4, 5, 6}));
@@ -3624,8 +3627,9 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, s2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     for (int i = 1; i < 6; i++) {
       for (int j = i + 1; j <= 6; j++) {
         if (i == 4 && j == 5) {
@@ -3734,8 +3738,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results,
                  VectorContains(vector<int>({TRUE_SELECT_BOOL_RESULT})));
   }
@@ -3747,8 +3752,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results,
                  VectorContains(vector<int>({TRUE_SELECT_BOOL_RESULT})));
   }
@@ -3760,8 +3766,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     vector<int> expectedResults = vector<int>({1, 3, 5, 7, 8, 10, 12, 13});
     for (auto stmt : expectedResults) {
       REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
@@ -3775,8 +3782,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     vector<int> expectedResults = vector<int>({1, 3, 5, 7, 8, 10, 12, 13});
     for (auto stmt : expectedResults) {
       REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
@@ -3790,8 +3798,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     for (int stmt = 1; stmt <= 13; stmt++) {
       REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
     }
@@ -3805,8 +3814,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     vector<int> expectedResults = vector<int>({1, 3, 5, 7, 10});
     for (auto stmt : expectedResults) {
       REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
@@ -3820,8 +3830,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     vector<int> expectedResults = vector<int>({3, 5, 7, 8, 12});
     for (auto stmt : expectedResults) {
       REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
@@ -3835,8 +3846,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     vector<int> expectedResults = vector<int>({1, 3, 5, 7});
     for (auto stmt : expectedResults) {
       REQUIRE_THAT(results, VectorContains(vector<int>({stmt})));
@@ -3850,8 +3862,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({12})));
   }
 
@@ -3863,8 +3876,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1, a2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5, 3})));
@@ -3891,8 +3905,9 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1, a2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 3})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 5})));
     REQUIRE_THAT(results, VectorContains(vector<int>({5, 3})));
@@ -3983,8 +3998,9 @@ TEST_CASE("QueryEvaluator: Affects") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results,
                  VectorContains(vector<int>({FALSE_SELECT_BOOL_RESULT})));
   }
@@ -3996,8 +4012,9 @@ TEST_CASE("QueryEvaluator: Affects") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results,
                  VectorContains(vector<int>({FALSE_SELECT_BOOL_RESULT})));
   }
@@ -4010,7 +4027,7 @@ TEST_CASE("QueryEvaluator: Affects") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1});
     REQUIRE(results.empty());
   }
@@ -4022,7 +4039,7 @@ TEST_CASE("QueryEvaluator: Affects") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -4035,7 +4052,7 @@ TEST_CASE("QueryEvaluator: Affects") {
     conditionClauses.push_back(
         {suchThatClause, {}, {}, ConditionClauseType::SUCH_THAT});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a1, a2});
     REQUIRE(results.empty());
   }
@@ -4072,9 +4089,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(results == vector<vector<int>>({{1}}));
+    REQUIRE(results == FinalQueryResults({{1}}));
   }
 
   SECTION("Select a pattern a ('x', _'w'_)") {
@@ -4083,9 +4100,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(results == vector<vector<int>>({{1}}));
+    REQUIRE(results == FinalQueryResults({{1}}));
   }
 
   SECTION("Select a pattern a ('x', _)") {
@@ -4094,9 +4111,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(results == vector<vector<int>>({{1}}));
+    REQUIRE(results == FinalQueryResults({{1}}));
   }
 
   SECTION("Select a pattern a (_, 'w')") {
@@ -4105,7 +4122,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -4117,7 +4134,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -4129,7 +4146,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -4141,9 +4158,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}}));
   }
 
   SECTION("Select a pattern a (v, _'w'_)") {
@@ -4152,9 +4169,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
-    REQUIRE(results == vector<vector<int>>({{1}, {2}}));
+    REQUIRE(results == FinalQueryResults({{1}, {2}}));
   }
 
   SECTION("Select a pattern a (v, _)") {
@@ -4163,7 +4180,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -4175,9 +4192,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(results == vector<vector<int>>({{xVarIdx}, {yVarIdx}}));
+    REQUIRE(results == FinalQueryResults({{xVarIdx}, {yVarIdx}}));
   }
 
   SECTION("Select v pattern a (v, _'w'_)") {
@@ -4186,9 +4203,9 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
-    REQUIRE(results == vector<vector<int>>({{xVarIdx}, {yVarIdx}}));
+    REQUIRE(results == FinalQueryResults({{xVarIdx}, {yVarIdx}}));
   }
 
   SECTION("Select v pattern a (v, _)") {
@@ -4197,7 +4214,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -4222,7 +4239,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4236,7 +4253,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4250,7 +4267,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4264,7 +4281,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4278,7 +4295,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4289,7 +4306,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4303,7 +4320,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4317,7 +4334,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4330,7 +4347,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {a});
     REQUIRE(results.empty());
   }
@@ -4344,7 +4361,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -4358,7 +4375,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -4371,7 +4388,7 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -4403,7 +4420,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -4414,7 +4431,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -4425,7 +4442,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -4436,7 +4453,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -4460,7 +4477,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(results.empty());
   }
@@ -4470,7 +4487,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(results.empty());
   }
@@ -4483,7 +4500,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {ifs});
     REQUIRE(results.empty());
   }
@@ -4495,7 +4512,7 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -4528,7 +4545,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -4539,7 +4556,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -4550,7 +4567,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3}));
@@ -4561,7 +4578,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({xVarIdx, yVarIdx, zVarIdx}));
@@ -4585,7 +4602,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(results.empty());
   }
@@ -4595,7 +4612,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(results.empty());
   }
@@ -4608,7 +4625,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {w});
     REQUIRE(results.empty());
   }
@@ -4620,7 +4637,7 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
     conditionClauses.push_back(
         {{}, patternClause, {}, ConditionClauseType::PATTERN});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v});
     REQUIRE(results.empty());
   }
@@ -4649,7 +4666,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_PROC_NAME, "p2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({procAIdx, procBIdx}));
@@ -4660,7 +4677,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({procAIdx, procBIdx}));
@@ -4671,7 +4688,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({varAIdx, varBIdx}));
@@ -4682,7 +4699,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::NAME_LITERAL, "A"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({procAIdx}));
@@ -4693,7 +4710,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::NAME_LITERAL, "A"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({varAIdx}));
@@ -4704,7 +4721,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::NAME_LITERAL, "A"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({varAIdx, varBIdx}));
@@ -4715,7 +4732,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
                              {ParamType::NAME_LITERAL, "A"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({TRUE_SELECT_BOOL_RESULT}));
@@ -4741,7 +4758,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_PROC_NAME, "p2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -4754,7 +4771,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -4767,7 +4784,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_VAR_NAME, "v1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
     REQUIRE(results.empty());
   }
@@ -4779,7 +4796,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
                              {ParamType::NAME_LITERAL, "aaa"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {p1});
     REQUIRE(results.empty());
   }
@@ -4791,7 +4808,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
                              {ParamType::NAME_LITERAL, "a"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
     REQUIRE(results.empty());
   }
@@ -4803,7 +4820,7 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
                              {ParamType::NAME_LITERAL, "a"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {v1});
     REQUIRE(results.empty());
   }
@@ -4836,7 +4853,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::SYNONYM, "n2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -4847,8 +4864,9 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::SYNONYM, "n2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults setOfResults = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1, n2});
+    vector<vector<int>> results(setOfResults.begin(), setOfResults.end());
     REQUIRE_THAT(results, VectorContains(vector<int>({1, 1})));
     REQUIRE_THAT(results, VectorContains(vector<int>({2, 2})));
     REQUIRE_THAT(results, VectorContains(vector<int>({3, 3})));
@@ -4860,7 +4878,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_STMT_NUM, "s1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -4871,7 +4889,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_VALUE, "c1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -4882,7 +4900,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::INTEGER_LITERAL, "1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1}));
@@ -4893,7 +4911,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_STMT_NUM, "s2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2, 3, 4}));
@@ -4904,7 +4922,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_VALUE, "c1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1, 2}));
@@ -4915,7 +4933,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::INTEGER_LITERAL, "1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({1}));
@@ -4926,7 +4944,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::ATTRIBUTE_VALUE, "c2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {c1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({const1Idx, const2Idx}));
@@ -4937,7 +4955,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {c1});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({const2Idx}));
@@ -4948,7 +4966,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
                              {ParamType::INTEGER_LITERAL, "1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({TRUE_SELECT_BOOL_RESULT}));
@@ -4976,7 +4994,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::SYNONYM, "n2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(results.empty());
   }
@@ -4986,7 +5004,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::SYNONYM, "n2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1, n2});
     REQUIRE(results.empty());
   }
@@ -4996,7 +5014,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_STMT_NUM, "s1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(results.empty());
   }
@@ -5009,7 +5027,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_VALUE, "c1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(results.empty());
   }
@@ -5022,7 +5040,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::INTEGER_LITERAL, "3"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {n1});
     REQUIRE(results.empty());
   }
@@ -5032,7 +5050,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_STMT_NUM, "s2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -5046,7 +5064,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_VALUE, "c1"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -5058,7 +5076,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {s1});
     REQUIRE(results.empty());
   }
@@ -5068,7 +5086,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::ATTRIBUTE_VALUE, "c2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {c1});
     REQUIRE(results.empty());
   }
@@ -5080,7 +5098,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::SYNONYMS, synonyms, {c1});
     REQUIRE(results.empty());
   }
@@ -5090,7 +5108,7 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
                              {ParamType::INTEGER_LITERAL, "2"}};
     conditionClauses.push_back({{}, {}, withClause, ConditionClauseType::WITH});
 
-    vector<vector<int>> results = TestQueryUtil::EvaluateQuery(
+    FinalQueryResults results = TestQueryUtil::EvaluateQuery(
         pkb, conditionClauses, SelectType::BOOLEAN, synonyms, {});
     REQUIRE(TestQueryUtil::GetUniqueSelectSingleQEResults(results) ==
             set<int>({FALSE_SELECT_BOOL_RESULT}));

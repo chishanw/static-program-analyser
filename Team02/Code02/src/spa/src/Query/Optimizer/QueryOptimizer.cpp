@@ -70,10 +70,10 @@ vector<Group> QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
   unordered_set<ConditionClause, CLAUSE_HASH> clausesSet(clauses.begin(),
                                                          clauses.end());
 
-  unordered_map<SYN_NAME, SUBSET_ID> synNameToSubsetId;
+  unordered_map<SynName, SUBSET_ID> synNameToSubsetId;
   unordered_map<SUBSET_ID, unordered_set<ConditionClause, CLAUSE_HASH>>
       subsetIdToClauses;
-  unordered_map<SUBSET_ID, unordered_set<SYN_NAME>> subsetIdToSynNames;
+  unordered_map<SUBSET_ID, unordered_set<SynName>> subsetIdToSynNames;
 
   int nextOpenGrpIdx = 0;
 
@@ -124,7 +124,7 @@ vector<Group> QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
                                    ? otherSubsetId
                                    : clauseSubsetId;
 
-        for (const SYN_NAME& transferName : subsetIdToSynNames[transferId]) {
+        for (const SynName& transferName : subsetIdToSynNames[transferId]) {
           synNameToSubsetId[transferName] = goalId;
         }
 
@@ -294,7 +294,7 @@ bool QueryOptimizer::hasCommonSynonyms(
                 });
 }
 
-vector<SYN_NAME> QueryOptimizer::extractSynonymsUsed(
+vector<SynName> QueryOptimizer::extractSynonymsUsed(
     const ConditionClause& clause) {
   unordered_set<ParamType> synonymTypes = {
       ParamType::SYNONYM, ParamType::ATTRIBUTE_PROC_NAME,

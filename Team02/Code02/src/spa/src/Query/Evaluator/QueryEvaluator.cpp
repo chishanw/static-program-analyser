@@ -29,8 +29,8 @@ QueryEvaluator::QueryEvaluator(PKB* pkb, QueryOptimizer* optimizer)
   queryResultsSynonyms = {};
 }
 
-FinalQueryResults QueryEvaluator::evaluateQuery(
-    unordered_map<string, DesignEntity> synonymMap, SelectClause select) {
+FinalQueryResults QueryEvaluator::evaluateQuery(SynonymMap synonymMap,
+                                                SelectClause select) {
   this->synonymMap = synonymMap;
   finalQueryResults.clear();
 
@@ -125,7 +125,7 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
 void QueryEvaluator::evaluateSuchThatClauseHelper(SuchThatClause clause) {
   auto left = clause.leftParam;
   auto right = clause.rightParam;
-  vector<vector<int>> leftRightValuePairs;
+  ClauseIncomingResults leftRightValuePairs;
 
   // if both parems are syn and present in the result table, grab them
   if (left.type == ParamType::SYNONYM && right.type == ParamType::SYNONYM &&
@@ -220,8 +220,7 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
           newRight.type == ParamType::SYNONYM) {
         ClauseIncomingResults newResults =
             callSubEvaluatorRef(relationshipType, newLeft, newRight);
-        incomingResults.insert(incomingResults.end(), newResults.begin(),
-                               newResults.end());
+        incomingResults.insert(newResults.begin(), newResults.end());
         continue;
       }
 
@@ -232,14 +231,13 @@ void QueryEvaluator::evaluateSuchThatOnDemandClause(SuchThatClause clause) {
         ParamPosition paramPosition = get<2>(newParam);
         switch (paramPosition) {
           case ParamPosition::BOTH:
-            incomingResults.push_back(
-                {stoi(newLeft.value), stoi(newRight.value)});
+            incomingResults.insert({stoi(newLeft.value), stoi(newRight.value)});
             break;
           case ParamPosition::LEFT:
-            incomingResults.push_back({stoi(newLeft.value)});
+            incomingResults.insert({stoi(newLeft.value)});
             break;
           case ParamPosition::RIGHT:
-            incomingResults.push_back({stoi(newRight.value)});
+            incomingResults.insert({stoi(newRight.value)});
             break;
           default:
             break;
@@ -389,9 +387,9 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
 
   bool isLeftParamSynonym = false;
   bool isRightParamSynonym = false;
-  vector<vector<int>> leftSynoynmValues = {};
-  vector<vector<int>> rightSynoynmValues = {};
-  vector<vector<int>> leftAndRightSynonymValues = {};
+  ClauseIncomingResults leftSynoynmValues = {};
+  ClauseIncomingResults rightSynoynmValues = {};
+  ClauseIncomingResults leftAndRightSynonymValues = {};
 
   unordered_set<ParamType> synonymTypes = {
       ParamType::ATTRIBUTE_PROC_NAME, ParamType::ATTRIBUTE_VAR_NAME,
@@ -402,7 +400,7 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
     isLeftParamSynonym = true;
     unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(left.value);
     for (auto value : allValues) {
-      leftSynoynmValues.push_back({value});
+      leftSynoynmValues.insert({value});
     }
   }
 
@@ -410,13 +408,13 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
     isRightParamSynonym = true;
     unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(right.value);
     for (auto value : allValues) {
-      rightSynoynmValues.push_back({value});
+      rightSynoynmValues.insert({value});
     }
   }
   if (isLeftParamSynonym && isRightParamSynonym) {
     for (auto leftStmt : leftSynoynmValues) {
       for (auto rightStmt : rightSynoynmValues) {
-        leftAndRightSynonymValues.push_back({leftStmt[0], rightStmt[0]});
+        leftAndRightSynonymValues.insert({leftStmt[0], rightStmt[0]});
       }
     }
   }
@@ -538,7 +536,7 @@ ClauseIncomingResults QueryEvaluator::filterIncomingResults(
     if (left.value == right.value) {
       for (vector<int> incomingResult : incomingResults) {
         if (incomingResult[0] == incomingResult[1]) {
-          filteredResults.push_back(incomingResult);
+          filteredResults.insert(incomingResult);
         }
       }
     } else {
@@ -551,7 +549,7 @@ ClauseIncomingResults QueryEvaluator::filterIncomingResults(
       bool isRightSynCorrectDesignEntity = checkIsCorrectDesignEntity(
           incomingResult.back(), synonymMap[right.value]);
       if (isLeftSynCorrectDesignEntity && isRightSynCorrectDesignEntity) {
-        finalResults.push_back(incomingResult);
+        finalResults.insert(incomingResult);
       }
     }
     return finalResults;
@@ -562,7 +560,7 @@ ClauseIncomingResults QueryEvaluator::filterIncomingResults(
       bool isLeftSynCorrectDesignEntity = checkIsCorrectDesignEntity(
           incomingResult.front(), synonymMap[left.value]);
       if (isLeftSynCorrectDesignEntity) {
-        finalResults.push_back(incomingResult);
+        finalResults.insert(incomingResult);
       }
     }
     return finalResults;
@@ -573,7 +571,7 @@ ClauseIncomingResults QueryEvaluator::filterIncomingResults(
     bool isRightSynCorrectDesignEntity = checkIsCorrectDesignEntity(
         incomingResult.back(), synonymMap[right.value]);
     if (isRightSynCorrectDesignEntity) {
-      finalResults.push_back(incomingResult);
+      finalResults.insert(incomingResult);
     }
   }
   return finalResults;
@@ -822,12 +820,12 @@ void QueryEvaluator::filterQuerySynonymsBySelectSynonyms(
 }
 
 /* Helpers to Evaluate Based on Previous Clauses ----------------------- */
-vector<vector<int>> QueryEvaluator::resolveBothParamsFromResultTable(
+ClauseIncomingResults QueryEvaluator::resolveBothParamsFromResultTable(
     query::SuchThatClause clause) {
   auto rsType = clause.relationshipType;
   auto left = clause.leftParam;
   auto right = clause.rightParam;
-  SetOfStmtLists leftRightValuePairsSet;
+  ClauseIncomingResults leftRightValuePairsSet;
 
   for (auto resultEntry : groupQueryResults) {
     int leftValue = resultEntry.at(left.value);
@@ -837,8 +835,7 @@ vector<vector<int>> QueryEvaluator::resolveBothParamsFromResultTable(
       leftRightValuePairsSet.insert({leftValue, rightValue});
   }
 
-  return vector<vector<int>>{leftRightValuePairsSet.begin(),
-                             leftRightValuePairsSet.end()};
+  return leftRightValuePairsSet;
 }
 
 unordered_set<int> QueryEvaluator::resolveLeftParam(
@@ -896,11 +893,11 @@ unordered_set<int> QueryEvaluator::resolveLeftParam(
   return leftValues;
 }
 
-vector<vector<int>> QueryEvaluator::resolveRightParamFromLeftValues(
+ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
     query::SuchThatClause clause, unordered_set<int> leftValues) {
   auto rsType = clause.relationshipType;
   auto right = clause.rightParam;
-  vector<vector<int>> leftRightValuePairs;
+  ClauseIncomingResults leftRightValuePairs;
 
   switch (right.type) {
     case ParamType::INTEGER_LITERAL:
@@ -911,7 +908,7 @@ vector<vector<int>> QueryEvaluator::resolveRightParamFromLeftValues(
 
       for (int leftValue : leftValues) {
         if (pkb->isRs(rsType, leftValue, rightValue)) {
-          leftRightValuePairs.push_back({leftValue, rightValue});
+          leftRightValuePairs.insert({leftValue, rightValue});
         }
       }
       break;
@@ -922,7 +919,7 @@ vector<vector<int>> QueryEvaluator::resolveRightParamFromLeftValues(
 
       for (int leftValue : leftValues) {
         if (pkb->isRs(rsType, leftValue, rightValue)) {
-          leftRightValuePairs.push_back({leftValue, rightValue});
+          leftRightValuePairs.insert({leftValue, rightValue});
         }
       }
       break;
@@ -940,14 +937,14 @@ vector<vector<int>> QueryEvaluator::resolveRightParamFromLeftValues(
         for (int leftValue : leftValues) {
           for (int rightValue : rightValues) {
             if (pkb->isRs(rsType, leftValue, rightValue)) {
-              leftRightValuePairs.push_back({leftValue, rightValue});
+              leftRightValuePairs.insert({leftValue, rightValue});
             }
           }
         }
       } else {
         for (int leftValue : leftValues) {
           for (int rightValue : pkb->getRight(rsType, leftValue)) {
-            leftRightValuePairs.push_back({leftValue, rightValue});
+            leftRightValuePairs.insert({leftValue, rightValue});
           }
         }
       }
@@ -957,7 +954,7 @@ vector<vector<int>> QueryEvaluator::resolveRightParamFromLeftValues(
     case ParamType::WILDCARD:
       for (int leftValue : leftValues) {
         if (!pkb->getRight(rsType, leftValue).empty()) {
-          leftRightValuePairs.push_back({leftValue});
+          leftRightValuePairs.insert({leftValue});
         }
       }
       break;
@@ -1066,7 +1063,7 @@ ClauseIncomingResults QueryEvaluator::formatRefResults(
     unordered_set<int> results) {
   ClauseIncomingResults formattedResults = {};
   for (int res : results) {
-    formattedResults.push_back({res});
+    formattedResults.insert({res});
   }
 
   return formattedResults;
@@ -1130,7 +1127,7 @@ FinalQueryResults QueryEvaluator::getSelectSynonymFinalResults(
       for (auto synonym : select.selectSynonyms) {
         currTupleResult.push_back(result[synonym.name]);
       }
-      finalResults.push_back(currTupleResult);
+      finalResults.insert(currTupleResult);
     }
   }
 

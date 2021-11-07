@@ -41,25 +41,21 @@ unordered_set<int> PatternEvaluator::evaluateAssignPattern(
   }
 }
 
-vector<vector<int>> PatternEvaluator::evaluateAssignPairPattern(
+ClauseIncomingResults PatternEvaluator::evaluateAssignPairPattern(
     const Param& varParam, const query::PatternExpr& patternExpr) {
   // varParam type is synonym here already i.e. a (v, ...)
   MatchType matchType = patternExpr.matchType;
   string expr = patternExpr.expr;
 
-  SetOfIntLists results;
-
   if (matchType == MatchType::EXACT) {
-    results = pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
+    return pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_FULL_EXPR,
                                          expr);
   } else if (matchType == MatchType::SUB_EXPRESSION) {
-    results =
+    return
         pkb->getVarMappingsForExpr(RelationshipType::PTT_ASSIGN_SUB_EXPR, expr);
   } else {
-    results = pkb->getVarMappings(RelationshipType::PTT_ASSIGN_FULL_EXPR);
+    return pkb->getVarMappings(RelationshipType::PTT_ASSIGN_FULL_EXPR);
   }
-
-  return vector<vector<int>>(results.begin(), results.end());
 }
 
 unordered_set<int> PatternEvaluator::evaluateIfPattern(const Param& varParam) {
@@ -74,11 +70,10 @@ unordered_set<int> PatternEvaluator::evaluateIfPattern(const Param& varParam) {
   }
 }
 
-vector<vector<int>> PatternEvaluator::evaluateIfPairPattern(
+ClauseIncomingResults PatternEvaluator::evaluateIfPairPattern(
     const Param& varParam) {
   if (varParam.type == ParamType::SYNONYM) {
-    auto results = pkb->getVarMappings(RelationshipType::PTT_IF);
-    return vector<vector<int>>(results.begin(), results.end());
+    return pkb->getVarMappings(RelationshipType::PTT_IF);
   } else {
     DMOprintErrMsgAndExit(
         "[PatternEvaluator][evaluateIfPairPattern] invalid varParam type");
@@ -99,11 +94,10 @@ unordered_set<int> PatternEvaluator::evaluateWhilePattern(
   }
 }
 
-vector<vector<int>> PatternEvaluator::evaluateWhilePairPattern(
+ClauseIncomingResults PatternEvaluator::evaluateWhilePairPattern(
     const Param& varParam) {
   if (varParam.type == ParamType::SYNONYM) {
-    auto results = pkb->getVarMappings(RelationshipType::PTT_WHILE);
-    return vector<vector<int>>(results.begin(), results.end());
+    return pkb->getVarMappings(RelationshipType::PTT_WHILE);
   } else {
     DMOprintErrMsgAndExit(
         "[PatternEvaluator][evaluateWhilePairPattern] invalid varParam type");

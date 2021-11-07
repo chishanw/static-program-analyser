@@ -13,16 +13,16 @@ ResultProjector::ResultProjector(PKB* pkb) { this->pkb = pkb; }
 
 list<string> ResultProjector::formatResults(SelectType selectType,
                                             vector<Synonym> selectSynonyms,
-                                            vector<vector<int>> results) {
+                                            FinalQueryResults results) {
   list<string> formattedResults = {};
 
   if (selectType == SelectType::BOOLEAN) {
-    if (results.size() != 1 || results[0].size() != 1) {
+    if (results.size() != 1 || results.begin()->size() != 1) {
       DMOprintErrMsgAndExit(
           "[ResultProjector] invalid bool clause results size");
     }
 
-    int boolClauseResult = results[0][0];
+    int boolClauseResult = results.begin()->front();
     if (boolClauseResult == FALSE_SELECT_BOOL_RESULT) {
       formattedResults.push_back({"FALSE"});
     } else if (boolClauseResult == TRUE_SELECT_BOOL_RESULT) {

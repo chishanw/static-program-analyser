@@ -117,12 +117,13 @@ struct GroupDetails {
 const int FALSE_SELECT_BOOL_RESULT = 0;
 const int TRUE_SELECT_BOOL_RESULT = 1;
 
-typedef std::string SYN_NAME;
+typedef std::string SynName;
 typedef std::unordered_map<std::string, int> QueryResult;
 typedef std::unordered_map<std::string, int> IntermediateQueryResult;
-typedef std::vector<std::vector<int>> ClauseIncomingResults, FinalQueryResults;
+typedef std::unordered_set<std::vector<int>, VectorHash> ClauseIncomingResults,
+    FinalQueryResults;
 typedef std::unordered_map<std::string, int> SynonymCountsTable;
 typedef std::unordered_map<std::string, std::unordered_set<int>>
     SynonymValuesTable;
-typedef std::unordered_map<SYN_NAME, int> SynonymCountsTable;
+typedef std::unordered_map<SynName, int> SynonymCountsTable;
 }  // namespace query

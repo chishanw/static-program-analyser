@@ -12,15 +12,15 @@ class PatternEvaluator {
 
   std::unordered_set<int> evaluateAssignPattern(
       const query::Param& varParam, const query::PatternExpr& patternExpr);
-  std::vector<std::vector<int>> evaluateAssignPairPattern(
+  query::ClauseIncomingResults evaluateAssignPairPattern(
       const query::Param& varParam, const query::PatternExpr& patternExpr);
 
   std::unordered_set<int> evaluateIfPattern(const query::Param& varParam);
-  std::vector<std::vector<int>> evaluateIfPairPattern(
+  query::ClauseIncomingResults evaluateIfPairPattern(
       const query::Param& varParam);
 
   std::unordered_set<int> evaluateWhilePattern(const query::Param& varParam);
-  std::vector<std::vector<int>> evaluateWhilePairPattern(
+  query::ClauseIncomingResults evaluateWhilePairPattern(
       const query::Param& varParam);
 
  private:

@@ -32,10 +32,10 @@ class AffectsEvaluator {
   std::unordered_set<STMT_NO> evaluateStmtAffects(RelationshipType rsType,
                                                   const query::Param& left,
                                                   const query::Param& right);
-  std::vector<std::vector<STMT_NO>> evaluateSynonymWildcard(
+  query::ClauseIncomingResults evaluateSynonymWildcard(
       RelationshipType rsType, const query::Param& left,
       const query::Param& right);
-  std::vector<std::vector<STMT_NO>> evaluatePairAffects(
+  query::ClauseIncomingResults evaluatePairAffects(
       RelationshipType rsType, const query::Param& left,
       const query::Param& right);
 
@@ -46,7 +46,7 @@ class AffectsEvaluator {
   std::unordered_set<STMT_NO> evaluateStmtAffectsTHelper(
       const query::Param& left, const query::Param& right,
       std::unordered_set<STMT_NO>* visited);
-  std::vector<std::vector<STMT_NO>> evaluatePairAffectsT(
+  query::ClauseIncomingResults evaluatePairAffectsT(
       const query::Param& left, const query::Param& right);
 
  private:
@@ -68,15 +68,15 @@ class AffectsEvaluator {
                                 {RelationshipType::AFFECTS_T, {}},
                                 {RelationshipType::AFFECTS_BIP, {}}};
   // TODO(CS): change to unordered_set of vector later
-  std::unordered_map<RelationshipType, std::vector<std::vector<STMT_NO>>>
+  std::unordered_map<RelationshipType, query::ClauseIncomingResults>
       affectsLeftStmtPairs = {{RelationshipType::AFFECTS, {}},
                               {RelationshipType::AFFECTS_T, {}},
                               {RelationshipType::AFFECTS_BIP, {}}};
-  std::unordered_map<RelationshipType, std::vector<std::vector<STMT_NO>>>
+  std::unordered_map<RelationshipType, query::ClauseIncomingResults>
       affectsRightStmtPairs = {{RelationshipType::AFFECTS, {}},
                                {RelationshipType::AFFECTS_T, {}},
                                {RelationshipType::AFFECTS_BIP, {}}};
-  std::unordered_map<RelationshipType, std::vector<std::vector<STMT_NO>>>
+  std::unordered_map<RelationshipType, query::ClauseIncomingResults>
       affectsStmtPairs = {{RelationshipType::AFFECTS, {}},
                           {RelationshipType::AFFECTS_T, {}},
                           {RelationshipType::AFFECTS_BIP, {}}};
