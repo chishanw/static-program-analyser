@@ -32,7 +32,6 @@ const unordered_map<string, RelationshipType> keywordToAffectsType = {
     {"Affects", RelationshipType::AFFECTS},
     {"Affects*", RelationshipType::AFFECTS_T},
     {"AffectsBip", RelationshipType::AFFECTS_BIP},
-    {"AffectsBip*", RelationshipType::AFFECTS_BIP_T},
 };
 
 const unordered_map<string, DesignEntity> keywordToDesignEntity = {

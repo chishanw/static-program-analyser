@@ -365,30 +365,14 @@ TEST_CASE("Valid queries for AffectsBip relationship succeeds") {
   }
 }
 
-// ====================== Testing AffectsBip* relationship
-// ======================
-TEST_CASE("Valid queries for AffectsBip* relationship succeeds") {
-  SECTION("Valid AffectsBip*(1, 2)") {
-    string validQuery = "Select BOOLEAN such that AffectsBip*(1, 2)";
-
-    // expected
-    SynonymMap map = {};
-    std::vector<query::Synonym> resultSynonyms = {};
-
-    vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses,
-                                     RelationshipType::AFFECTS_BIP_T,
-                                     query::ParamType::INTEGER_LITERAL, "1",
-                                     query::ParamType::INTEGER_LITERAL, "2");
-
-    tuple<SynonymMap, SelectClause> expected = {
-        map, {resultSynonyms, query::SelectType::BOOLEAN, clauses}};
-
-    // actual
-    tuple<SynonymMap, SelectClause> actual = QueryParser().Parse(validQuery);
-
+// =============== Testing AffectsBip* relationship ===============
+TEST_CASE("Invalid queries for AffectsBip* relationship throws") {
+  SECTION("Invalid AffectsBip*(1, 2)") {
+    string invalidQuery = "Select BOOLEAN such that AffectsBip*(1, 2)";
     // test
-    REQUIRE(get<0>(actual) == get<0>(expected));
-    REQUIRE(get<1>(actual) == get<1>(expected));
+    REQUIRE_THROWS_WITH(QueryParser().Parse(invalidQuery),
+                        QueryParser::INVALID_ST_RELATIONSHIP_MSG);
+    REQUIRE_THROWS_AS(QueryParser().Parse(invalidQuery),
+                      qpp::SyntacticErrorException);
   }
 }
