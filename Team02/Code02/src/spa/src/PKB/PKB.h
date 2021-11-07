@@ -12,9 +12,6 @@
 #include "Common/Common.h"
 #include "Table.h"
 
-typedef std::unordered_map<RelationshipType, std::unordered_map<int, SetOfInts>>
-    TablesRs;
-
 typedef std::unordered_map<RelationshipType,
                            std::unordered_map<ParamPosition, SetOfStmtLists>>
     MappingsRs;
@@ -65,11 +62,11 @@ class PKB {
 
   // Affects Info API
   void addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmt);
-  void addFirstStmtOfProc(PROC_NAME procName, StmtNo firstStmtOfProc);
-  void addProcCallEdge(PROC_NAME callerProcName, PROC_NAME calleeProcName);
+  void addFirstStmtOfProc(ProcName procName, StmtNo firstStmtOfProc);
+  void addProcCallEdge(ProcName callerProcName, ProcName calleeProcName);
   StmtNo getNextStmtForIfStmt(StmtNo ifStmt);
   std::vector<StmtNo> getFirstStmtOfAllProcs();
-  std::unordered_map<PROC_IDX, std::unordered_set<PROC_IDX>> getCallGraph();
+  std::unordered_map<ProcIdx, std::unordered_set<ProcIdx>> getCallGraph();
 
   // Table API
   TableElemIdx insertAt(TableType type, std::string element);

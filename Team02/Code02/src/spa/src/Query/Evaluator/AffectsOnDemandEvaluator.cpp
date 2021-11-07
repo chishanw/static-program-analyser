@@ -17,23 +17,23 @@ AffectsOnDemandEvaluator::AffectsOnDemandEvaluator(PKB* pkb) {
 }
 
 /* Getter Methods -------------------------------------------------------- */
-bool AffectsOnDemandEvaluator::isAffects(RelationshipType rsType, STMT_NO a1,
-                                         STMT_NO a2) {
+bool AffectsOnDemandEvaluator::isAffects(RelationshipType rsType, StmtNo a1,
+                                         StmtNo a2) {
   return tableOfAffects[rsType].find(a1) != tableOfAffects[rsType].end() &&
          tableOfAffects[rsType].at(a1).find(a2) !=
              tableOfAffects[rsType].at(a1).end();
 }
 
-unordered_set<STMT_NO> AffectsOnDemandEvaluator::getAffects(
-    RelationshipType rsType, STMT_NO a1) {
+unordered_set<StmtNo> AffectsOnDemandEvaluator::getAffects(
+    RelationshipType rsType, StmtNo a1) {
   if (tableOfAffects[rsType].find(a1) != tableOfAffects[rsType].end()) {
     return tableOfAffects[rsType].at(a1);
   }
   return {};
 }
 
-unordered_set<STMT_NO> AffectsOnDemandEvaluator::getAffectsInv(
-    RelationshipType rsType, STMT_NO a2) {
+unordered_set<StmtNo> AffectsOnDemandEvaluator::getAffectsInv(
+    RelationshipType rsType, StmtNo a2) {
   if (tableOfAffectsInv[rsType].find(a2) != tableOfAffectsInv[rsType].end()) {
     return tableOfAffectsInv[rsType].at(a2);
   }
@@ -45,7 +45,7 @@ unordered_set<STMT_NO> AffectsOnDemandEvaluator::getAffectsInv(
 bool AffectsOnDemandEvaluator::evaluateBoolAffects(RelationshipType rsType,
                                                    const Param& left,
                                                    const Param& right) {
-  vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
+  vector<StmtNo> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
 
   if (left.type == ParamType::INTEGER_LITERAL &&
       right.type == ParamType::INTEGER_LITERAL) {
@@ -79,7 +79,7 @@ bool AffectsOnDemandEvaluator::evaluateBoolAffects(RelationshipType rsType,
       return true;
     }
 
-    vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
+    vector<StmtNo> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
     for (auto firstStmt : firstStmtOfAllProcs) {
       LastModifiedTable LMT = {};
       extractAffects(rsType, firstStmt, -1, -1, &LMT,
@@ -92,7 +92,7 @@ bool AffectsOnDemandEvaluator::evaluateBoolAffects(RelationshipType rsType,
   }
 
   if (left.type == ParamType::INTEGER_LITERAL) {
-    STMT_NO leftStmt = stoi(left.value);
+    StmtNo leftStmt = stoi(left.value);
     if (isCompleteAffectsCache) {
       return !getAffects(rsType, leftStmt).empty();
     }
@@ -112,7 +112,7 @@ bool AffectsOnDemandEvaluator::evaluateBoolAffects(RelationshipType rsType,
   }
 
   if (right.type == ParamType::INTEGER_LITERAL) {
-    STMT_NO rightStmt = stoi(right.value);
+    StmtNo rightStmt = stoi(right.value);
     if (isCompleteAffectsCache) {
       return !getAffectsInv(rsType, rightStmt).empty();
     }
@@ -150,10 +150,10 @@ bool AffectsOnDemandEvaluator::evaluateBoolAffects(RelationshipType rsType,
 }
 
 // synonym & integer literal - Affects(a1, 2), Affects(1, a2)
-unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffects(
+unordered_set<StmtNo> AffectsOnDemandEvaluator::evaluateStmtAffects(
     RelationshipType rsType, const Param& left, const Param& right) {
   if (left.type == ParamType::INTEGER_LITERAL) {
-    STMT_NO leftStmt = stoi(left.value);
+    StmtNo leftStmt = stoi(left.value);
     if (isCompleteAffectsCache) {
       return getAffects(rsType, leftStmt);
     }
@@ -166,7 +166,7 @@ unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffects(
     return getAffects(rsType, leftStmt);
 
   } else {
-    STMT_NO rightStmt = stoi(right.value);
+    StmtNo rightStmt = stoi(right.value);
     if (isCompleteAffectsCache) {
       return getAffectsInv(rsType, rightStmt);
     }
@@ -174,7 +174,7 @@ unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffects(
       return {};
     }
 
-    vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
+    vector<StmtNo> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
     // check through all procs until a2 has been visited
     for (auto firstStmt : firstStmtOfAllProcs) {
       // skip proc if its first stmt is already larger than a2
@@ -205,7 +205,7 @@ ClauseIncomingResults AffectsOnDemandEvaluator::evaluateSynonymWildcard(
       return affectsRightStmtPairs[rsType];
     }
   }
-  vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
+  vector<StmtNo> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
 
   // get all Affects and return either a1 or a2
   for (auto firstStmt : firstStmtOfAllProcs) {
@@ -230,7 +230,7 @@ ClauseIncomingResults AffectsOnDemandEvaluator::evaluatePairAffects(
   if (isCompleteAffectsCache) {
     return affectsStmtPairs[rsType];
   }
-  vector<STMT_NO> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
+  vector<StmtNo> firstStmtOfAllProcs = pkb->getFirstStmtOfAllProcs();
 
   // get all Affects and return (a1, a2)
   for (auto firstStmt : firstStmtOfAllProcs) {
@@ -253,26 +253,26 @@ bool AffectsOnDemandEvaluator::evaluateBoolAffectsT(const query::Param& left,
                .at(stoi(left.value))
                .count(stoi(right.value)) > 0;
   }
-  unordered_set<STMT_NO> visited;
+  unordered_set<StmtNo> visited;
   return evalBoolLitAffectsT(left, right, &visited);
 }
 
 bool AffectsOnDemandEvaluator::evalBoolLitAffectsT(
     const query::Param& left, const query::Param& right,
-    unordered_set<STMT_NO>* visited) {
+    unordered_set<StmtNo>* visited) {
   bool hasFoundAffectsT =
       evaluateBoolAffects(RelationshipType::AFFECTS, left, right);
   bool allCombosTested = false;
   while (!hasFoundAffectsT && !allCombosTested) {
-    unordered_set<STMT_NO> affectedStmts;
-    unordered_set<STMT_NO> visitedStmts;
+    unordered_set<StmtNo> affectedStmts;
+    unordered_set<StmtNo> visitedStmts;
     try {
       affectedStmts =
           tableOfAffects[RelationshipType::AFFECTS].at(stoi(left.value));
     } catch (const out_of_range& e) {
       break;
     }
-    for (STMT_NO affectedStmt : affectedStmts) {
+    for (StmtNo affectedStmt : affectedStmts) {
       if (affectedStmt == stoi(left.value) ||
           visited->count(affectedStmt) > 0) {
         continue;
@@ -292,7 +292,7 @@ bool AffectsOnDemandEvaluator::evalBoolLitAffectsT(
 }
 
 // Affects(a, 2), (1, a)
-unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffectsT(
+unordered_set<StmtNo> AffectsOnDemandEvaluator::evaluateStmtAffectsT(
     const query::Param& left, const query::Param& right) {
   if (isCompleteAffectsTCache) {
     if (left.type == ParamType::INTEGER_LITERAL) {
@@ -302,17 +302,17 @@ unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffectsT(
           stoi(right.value));
     }
   }
-  unordered_set<STMT_NO> visited;
+  unordered_set<StmtNo> visited;
   return evaluateStmtAffectsTHelper(left, right, &visited);
 }
 
-unordered_set<STMT_NO> AffectsOnDemandEvaluator::evaluateStmtAffectsTHelper(
+unordered_set<StmtNo> AffectsOnDemandEvaluator::evaluateStmtAffectsTHelper(
     const query::Param& left, const query::Param& right,
-    unordered_set<STMT_NO>* visited) {
-  unordered_set<STMT_NO> result;
-  unordered_set<STMT_NO> firstLayer =
+    unordered_set<StmtNo>* visited) {
+  unordered_set<StmtNo> result;
+  unordered_set<StmtNo> firstLayer =
       evaluateStmtAffects(RelationshipType::AFFECTS, left, right);
-  for (STMT_NO affected : firstLayer) {
+  for (StmtNo affected : firstLayer) {
     if (visited->count(affected) > 0) {
       continue;
     }
@@ -349,9 +349,9 @@ ClauseIncomingResults AffectsOnDemandEvaluator::evaluatePairAffectsT(
   populateAffectsTCache(left, right);
   ClauseIncomingResults result;
   for (auto it : tableOfAffects[RelationshipType::AFFECTS_T]) {
-    STMT_NO curr = it.first;
-    for (STMT_NO affectedT : it.second) {
-      vector<STMT_NO> currPair{curr, affectedT};
+    StmtNo curr = it.first;
+    for (StmtNo affectedT : it.second) {
+      vector<StmtNo> currPair{curr, affectedT};
       result.insert(currPair);
     }
   }
@@ -373,13 +373,13 @@ void AffectsOnDemandEvaluator::populateAffectsTCache(const Param& left,
 }
 
 void AffectsOnDemandEvaluator::populateAffectsTTable(
-    unordered_map<STMT_NO, unordered_set<STMT_NO>>* target,
-    unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
+    unordered_map<StmtNo, unordered_set<StmtNo>>* target,
+    unordered_map<StmtNo, unordered_set<StmtNo>>* base) {
   for (auto it : *base) {
-    STMT_NO currStmt = it.first;
-    unordered_set<STMT_NO> affectedStmts = it.second;
-    unordered_set<STMT_NO> visitedForCurr;
-    for (STMT_NO affectedStmt : affectedStmts) {
+    StmtNo currStmt = it.first;
+    unordered_set<StmtNo> affectedStmts = it.second;
+    unordered_set<StmtNo> visitedForCurr;
+    for (StmtNo affectedStmt : affectedStmts) {
       populateAffectsTTableHelper(currStmt, affectedStmt, &visitedForCurr,
                                   base);
     }
@@ -388,17 +388,17 @@ void AffectsOnDemandEvaluator::populateAffectsTTable(
 }
 
 void AffectsOnDemandEvaluator::populateAffectsTTableHelper(
-    STMT_NO orig, STMT_NO affected, unordered_set<STMT_NO>* visited,
-    unordered_map<STMT_NO, unordered_set<STMT_NO>>* base) {
+    StmtNo orig, StmtNo affected, unordered_set<StmtNo>* visited,
+    unordered_map<StmtNo, unordered_set<StmtNo>>* base) {
   if (visited->count(affected) > 0) {
     return;
   }
   visited->insert(affected);
   if (orig != affected) {
-    unordered_set<STMT_NO> nextLayer;
+    unordered_set<StmtNo> nextLayer;
     if (base->find(affected) != base->end()) {
       nextLayer = base->at(affected);
-      for (STMT_NO nextLayerAffects : nextLayer) {
+      for (StmtNo nextLayerAffects : nextLayer) {
         if (affected != nextLayerAffects) {
           populateAffectsTTableHelper(orig, nextLayerAffects, visited, base);
         }
@@ -410,9 +410,9 @@ void AffectsOnDemandEvaluator::populateAffectsTTableHelper(
 /* Affects Extraction Method ---------------------------------------------- */
 // affects & affects bip?
 void AffectsOnDemandEvaluator::extractAffects(RelationshipType rsType,
-                                              STMT_NO startStmt,
-                                              STMT_NO endStmt,
-                                              STMT_NO stmtAfterIfOrWhile,
+                                              StmtNo startStmt,
+                                              StmtNo endStmt,
+                                              StmtNo stmtAfterIfOrWhile,
                                               LastModifiedTable* LMT,
                                               BoolParamCombo paramCombo) {
   queue<int> stmtQueue = {};
@@ -421,7 +421,7 @@ void AffectsOnDemandEvaluator::extractAffects(RelationshipType rsType,
   while (!stmtQueue.empty()) {
     int currStmt = stmtQueue.front();
     stmtQueue.pop();
-    unordered_set<STMT_NO> visitedIfAndWhile = {};
+    unordered_set<StmtNo> visitedIfAndWhile = {};
 
     if (currStmt == stmtAfterIfOrWhile || currStmt == -1) {
       // stop if finished processing of if/while block
@@ -439,19 +439,19 @@ void AffectsOnDemandEvaluator::extractAffects(RelationshipType rsType,
     }
 
     if (pkb->isStmt(DesignEntity::WHILE, currStmt)) {
-      STMT_NO firstStmtInWhile = currStmt + 1;
+      StmtNo firstStmtInWhile = currStmt + 1;
       processWhileLoop(rsType, firstStmtInWhile, endStmt, currStmt, LMT,
                        paramCombo);
       visitedIfAndWhile.insert(firstStmtInWhile);
     }
 
     if (pkb->isStmt(DesignEntity::IF, currStmt)) {
-      STMT_NO nextStmtForIf = pkb->getNextStmtForIfStmt(currStmt);
-      unordered_set<STMT_NO> thenElseStmts =
+      StmtNo nextStmtForIf = pkb->getNextStmtForIfStmt(currStmt);
+      unordered_set<StmtNo> thenElseStmts =
           pkb->getRight(getCFGRsType(rsType), currStmt);
       processThenElseBlocks(rsType, thenElseStmts, endStmt, nextStmtForIf, LMT,
                             paramCombo);
-      for (STMT_NO stmt : thenElseStmts) {
+      for (StmtNo stmt : thenElseStmts) {
         visitedIfAndWhile.insert(stmt);
       }
       stmtQueue.push(nextStmtForIf);
@@ -474,14 +474,14 @@ void AffectsOnDemandEvaluator::extractAffects(RelationshipType rsType,
 
 /* Helper Methods For Affects Extraction ---------------------------- */
 void AffectsOnDemandEvaluator::processAssignStmt(RelationshipType rsType,
-                                                 STMT_NO currStmt,
+                                                 StmtNo currStmt,
                                                  LastModifiedTable* LMT) {
   unordered_set<VarIdx> usedVars =
       pkb->getRight(RelationshipType::USES_S, currStmt);
   for (VarIdx usedVar : usedVars) {
     if (LMT->find(usedVar) != LMT->end()) {
-      unordered_set<STMT_NO> LMTStmts = LMT->at(usedVar);
-      for (STMT_NO LMTStmt : LMTStmts) {
+      unordered_set<StmtNo> LMTStmts = LMT->at(usedVar);
+      for (StmtNo LMTStmt : LMTStmts) {
         if (pkb->isStmt(DesignEntity::ASSIGN, LMTStmt)) {
           addAffectsRelationship(rsType, LMT, LMTStmt, currStmt);
         }
@@ -492,8 +492,8 @@ void AffectsOnDemandEvaluator::processAssignStmt(RelationshipType rsType,
 }
 
 void AffectsOnDemandEvaluator::processWhileLoop(
-    RelationshipType rsType, STMT_NO firstStmtInWhile, STMT_NO endStmt,
-    STMT_NO whileStmt, LastModifiedTable* LMT, BoolParamCombo paramCombo) {
+    RelationshipType rsType, StmtNo firstStmtInWhile, StmtNo endStmt,
+    StmtNo whileStmt, LastModifiedTable* LMT, BoolParamCombo paramCombo) {
   LastModifiedTable originalLMT = *LMT;
   LastModifiedTable beforeLMT;
   while (LMT->empty() || beforeLMT != *LMT) {
@@ -505,10 +505,10 @@ void AffectsOnDemandEvaluator::processWhileLoop(
 }
 
 void AffectsOnDemandEvaluator::processThenElseBlocks(
-    RelationshipType rsType, unordered_set<STMT_NO> thenElseStmts,
-    STMT_NO endStmt, STMT_NO nextStmtForIf, LastModifiedTable* LMT,
+    RelationshipType rsType, unordered_set<StmtNo> thenElseStmts,
+    StmtNo endStmt, StmtNo nextStmtForIf, LastModifiedTable* LMT,
     BoolParamCombo paramCombo) {
-  vector<STMT_NO> stmts(thenElseStmts.begin(), thenElseStmts.end());
+  vector<StmtNo> stmts(thenElseStmts.begin(), thenElseStmts.end());
   vector<LastModifiedTable> thenElseLMTs = {*LMT, *LMT};
 
   // traverse else and then blocks
@@ -520,7 +520,7 @@ void AffectsOnDemandEvaluator::processThenElseBlocks(
 }
 
 void AffectsOnDemandEvaluator::updateLastModifiedVariables(
-    STMT_NO currStmt, LastModifiedTable* LMT) {
+    StmtNo currStmt, LastModifiedTable* LMT) {
   unordered_set<VarIdx> modifiedVars =
       pkb->getRight(RelationshipType::MODIFIES_S, currStmt);
   for (auto modifiedVar : modifiedVars) {
@@ -533,8 +533,8 @@ void AffectsOnDemandEvaluator::updateLastModifiedVariables(
 
 void AffectsOnDemandEvaluator::addAffectsRelationship(RelationshipType rsType,
                                                       LastModifiedTable* LMT,
-                                                      STMT_NO LMTStmt,
-                                                      STMT_NO currStmt) {
+                                                      StmtNo LMTStmt,
+                                                      StmtNo currStmt) {
   affectsStmts[rsType].insert(LMTStmt);
   affectsInvStmts[rsType].insert(currStmt);
   affectsLeftStmtPairs[rsType].insert({LMTStmt});
@@ -554,8 +554,8 @@ void AffectsOnDemandEvaluator::addAffectsRelationship(RelationshipType rsType,
 }
 
 bool AffectsOnDemandEvaluator::shouldTerminateBoolEarly(
-    RelationshipType rsType, BoolParamCombo paramCombo, STMT_NO startStmt,
-    STMT_NO endStmt) {
+    RelationshipType rsType, BoolParamCombo paramCombo, StmtNo startStmt,
+    StmtNo endStmt) {
   switch (paramCombo) {
     case BoolParamCombo::LITERALS:
       return tableOfAffects[rsType].find(startStmt) !=
@@ -588,7 +588,7 @@ LastModifiedTable AffectsOnDemandEvaluator::mergeLMT(
   }
 
   for (auto varIdx : allVariables) {
-    unordered_set<STMT_NO> stmtSet = {};
+    unordered_set<StmtNo> stmtSet = {};
     if (firstLMT->find(varIdx) != firstLMT->end()) {
       stmtSet.merge(firstLMT->at(varIdx));
     }

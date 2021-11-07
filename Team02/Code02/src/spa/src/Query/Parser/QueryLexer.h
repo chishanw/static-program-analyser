@@ -8,7 +8,7 @@
 
 #include "QueryLexerParserCommon.h"
 
-typedef std::basic_string<char>::const_iterator sIterator;
+typedef std::basic_string<char>::const_iterator SIterator;
 class QueryLexer {
  public:
   inline static const std::string INVALID_TOKEN_MSG =
@@ -22,8 +22,8 @@ class QueryLexer {
       const std::string&);
 
  private:
-  sIterator it;
-  sIterator endIt;
+  SIterator it;
+  SIterator endIt;
 
   // used to return FALSE for semantically invalid Select BOOLEAN clause
   bool isSemanticallyValid = true;

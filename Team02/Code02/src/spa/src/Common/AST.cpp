@@ -104,8 +104,8 @@ string FactorAST::GetDebugStr() const {
 // ==================
 // GetAllVarNames
 // ==================
-unordered_set<NAME> ArithAST::GetAllVarNames() const {
-  unordered_set<NAME> res;
+unordered_set<Name> ArithAST::GetAllVarNames() const {
+  unordered_set<Name> res;
   if (LeftNode != nullptr) {
     res.merge(LeftNode->GetAllVarNames());
   }
@@ -115,7 +115,7 @@ unordered_set<NAME> ArithAST::GetAllVarNames() const {
   return res;
 }
 
-unordered_set<NAME> CondExprAST::GetAllVarNames() const {
+unordered_set<Name> CondExprAST::GetAllVarNames() const {
   if (hasOnlyOneRelExpr) {
     return RelExpr->GetAllVarNames();
   }
@@ -124,19 +124,19 @@ unordered_set<NAME> CondExprAST::GetAllVarNames() const {
   }
 
   // has two cond expr
-  unordered_set<NAME> res = LeftNode->GetAllVarNames();
+  unordered_set<Name> res = LeftNode->GetAllVarNames();
   res.merge(RightNode->GetAllVarNames());
   return res;
 }
 
-unordered_set<NAME> RelExprAST::GetAllVarNames() const {
-  unordered_set<NAME> res;
+unordered_set<Name> RelExprAST::GetAllVarNames() const {
+  unordered_set<Name> res;
   res.merge(LeftNode->GetAllVarNames());
   res.merge(RightNode->GetAllVarNames());
   return res;
 }
 
-unordered_set<NAME> FactorAST::GetAllVarNames() const {
+unordered_set<Name> FactorAST::GetAllVarNames() const {
   if (isVarName) {
     return {this->VarName};
   } else if (isConstValue) {

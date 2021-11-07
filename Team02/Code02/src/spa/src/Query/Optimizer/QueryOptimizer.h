@@ -12,7 +12,7 @@
 #include <vector>
 
 namespace optimizer {
-struct CLAUSE_HASH {
+struct ClauseHash {
   size_t operator()(const query::ConditionClause& clause) const {
     int i = static_cast<int>(clause.conditionClauseType);
     std::string s;
@@ -66,8 +66,7 @@ struct DetailedClauseInfo {
   int clauseIndex;
 };
 
-typedef int SUBSET_ID;
-typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
+typedef int SubsetId;
 typedef std::vector<query::ConditionClause> Group;
 typedef std::pair<Group, DetailedGrpInfo> GroupAndInfoPair;
 }  // namespace optimizer
@@ -76,7 +75,7 @@ class QueryOptimizer {
  public:
   explicit QueryOptimizer(PKB*);
 
-  void PreprocessClauses(optimizer::SynonymMap, const query::SelectClause&);
+  void PreprocessClauses(query::SynonymMap, const query::SelectClause&);
 
   std::optional<query::GroupDetails> GetNextGroupDetails();
   std::optional<query::ConditionClause> GetNextClause(
@@ -85,9 +84,9 @@ class QueryOptimizer {
  private:
   PKB* pkb;
 
-  optimizer::SynonymMap synonymMap;
+  query::SynonymMap synonymMap;
   std::unordered_map<query::ConditionClause, optimizer::DetailedClauseInfo,
-                     optimizer::CLAUSE_HASH>
+                     optimizer::ClauseHash>
       clauseToClauseInfo;
   query::SynonymCountsTable* synonymCountTable;
   std::vector<optimizer::GroupAndInfoPair> groupAndInfoPairs;

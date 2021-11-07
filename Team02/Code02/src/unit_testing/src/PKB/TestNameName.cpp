@@ -12,9 +12,9 @@ TEST_CASE("Modifies_P/ Uses_P") {
   TableType leftType = TableType::PROC_TABLE;
   TableType rightType = TableType::VAR_TABLE;
 
-  PROC_NAME a = "a";
-  PROC_NAME b = "b";
-  PROC_NAME c = "c";
+  ProcName a = "a";
+  ProcName b = "b";
+  ProcName c = "c";
 
   // invalid queries when ModifiesKB and VarTable are empty
   unordered_set<int> emptySet({});

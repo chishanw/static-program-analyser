@@ -1,6 +1,6 @@
+#include <Common/Common.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
-#include <Common/Common.h>
 
 #include <string>
 #include <unordered_map>
@@ -10,9 +10,7 @@
 #include "catch.hpp"
 
 using namespace std;
-
-typedef unordered_map<std::string, DesignEntity> SynonymMap;
-typedef query::SelectClause SelectClause;
+using namespace query;
 
 // ====================== Testing Affects relationship ======================
 TEST_CASE("Valid queries for Affects relationship succeeds") {
@@ -321,8 +319,7 @@ TEST_CASE("Valid queries for Affects* relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses,
-                                     RelationshipType::AFFECTS_T,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS_T,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 
@@ -348,8 +345,7 @@ TEST_CASE("Valid queries for AffectsBip relationship succeeds") {
     std::vector<query::Synonym> resultSynonyms = {};
 
     vector<query::ConditionClause> clauses;
-    TestQueryUtil::AddSuchThatClause(clauses,
-                                     RelationshipType::AFFECTS_BIP,
+    TestQueryUtil::AddSuchThatClause(clauses, RelationshipType::AFFECTS_BIP,
                                      query::ParamType::INTEGER_LITERAL, "1",
                                      query::ParamType::INTEGER_LITERAL, "2");
 

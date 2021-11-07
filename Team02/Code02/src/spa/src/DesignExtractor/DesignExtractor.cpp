@@ -53,9 +53,9 @@ void DesignExtractor::Extract(const ProgramAST* programAST) {
   ExtractNextBip(programAST, topoProcs);
 }
 
-unordered_set<NAME> DesignExtractor::ExtractProcAndStmt(
+unordered_set<Name> DesignExtractor::ExtractProcAndStmt(
     const ProgramAST* programAST) {
-  unordered_set<NAME> allProcs;
+  unordered_set<Name> allProcs;
   for (auto procedure : programAST->ProcedureList) {
     if (allProcs.count(procedure->ProcName) > 0) {
       throw runtime_error("2 procedures with same name detected.");
@@ -127,7 +127,7 @@ void DesignExtractor::ExtractUses(const ProgramAST* programAST) {
 
   unordered_set<StmtNoNamePair, StmtNoNamePairHash> result;
 
-  unordered_map<NAME, ProcedureAST*> procNameToAST;
+  unordered_map<Name, ProcedureAST*> procNameToAST;
   for (auto procedure : programAST->ProcedureList) {
     procNameToAST.insert({procedure->ProcName, procedure});
   }
@@ -147,7 +147,7 @@ void DesignExtractor::ExtractUses(const ProgramAST* programAST) {
 unordered_set<StmtNoNamePair, StmtNoNamePairHash>
 DesignExtractor::ExtractUsesHelper(
     const vector<StmtAST*> stmtList,
-    unordered_map<NAME, ProcedureAST*> procNameToAST) {
+    unordered_map<Name, ProcedureAST*> procNameToAST) {
   unordered_set<StmtNoNamePair, StmtNoNamePairHash>
       result;  // resultAtThisNestingLevel
   unordered_set<StmtNoNamePair, StmtNoNamePairHash>
@@ -201,7 +201,7 @@ DesignExtractor::ExtractUsesHelper(
 void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
   unordered_set<StmtNoNamePair, StmtNoNamePairHash> result;
 
-  unordered_map<NAME, ProcedureAST*> procNameToAST;
+  unordered_map<Name, ProcedureAST*> procNameToAST;
   for (auto procedure : programAST->ProcedureList) {
     procNameToAST.insert({procedure->ProcName, procedure});
   }
@@ -220,7 +220,7 @@ void DesignExtractor::ExtractModifies(const ProgramAST* programAST) {
 unordered_set<StmtNoNamePair, StmtNoNamePairHash>
 DesignExtractor::ExtractModifiesHelper(
     const vector<StmtAST*> stmtList,
-    unordered_map<NAME, ProcedureAST*> procNameToAST) {
+    unordered_map<Name, ProcedureAST*> procNameToAST) {
   unordered_set<StmtNoNamePair, StmtNoNamePairHash> result;
   unordered_set<StmtNoNamePair, StmtNoNamePairHash> resultNext;
 
@@ -495,7 +495,7 @@ unordered_set<string> DesignExtractor::ExtractConstHelper(
 }
 
 pair<CallGraph, CallGraph> DesignExtractor::ExtractCalls(
-    const ProgramAST* programAST, unordered_set<NAME> allProcs) {
+    const ProgramAST* programAST, unordered_set<Name> allProcs) {
   CallGraph callGraph;
   CallGraph reverseCallGraph;
 
@@ -539,7 +539,7 @@ pair<CallGraph, CallGraph> DesignExtractor::ExtractCalls(
 }
 
 unordered_map<StmtNo, ProcName> DesignExtractor::ExtractCallsHelper(
-    const vector<StmtAST*> stmtList, unordered_set<NAME> allProcs) {
+    const vector<StmtAST*> stmtList, unordered_set<Name> allProcs) {
   unordered_map<StmtNo, ProcName> res;
   for (auto stmt : stmtList) {
     if (auto callStmt = dynamic_cast<const CallStmtAST*>(stmt)) {
@@ -561,7 +561,7 @@ unordered_map<StmtNo, ProcName> DesignExtractor::ExtractCallsHelper(
 
 void DesignExtractor::ExtractCallsTrans(CallGraph reverseCallGraph,
                                         vector<ProcName> topoProcs,
-                                        unordered_set<NAME> allProcs) {
+                                        unordered_set<Name> allProcs) {
   if (topoProcs.size() != allProcs.size())
     throw runtime_error("Cyclic call detected.");
 
@@ -711,7 +711,7 @@ void DesignExtractor::ExtractNextHelper(const vector<StmtAST*> stmtList,
 
 void DesignExtractor::ExtractNextBip(const ProgramAST* programAST,
                                      vector<ProcName> topoProcs) {
-  unordered_map<NAME, StmtNo> procNameToItsFirstStmt;
+  unordered_map<Name, StmtNo> procNameToItsFirstStmt;
   for (auto procedure : programAST->ProcedureList) {
     procNameToItsFirstStmt[procedure->ProcName] =
         procedure->StmtList[0]->StmtNo;
@@ -736,7 +736,7 @@ void DesignExtractor::ExtractNextBip(const ProgramAST* programAST,
 void DesignExtractor::ExtractNextBipHelper(
     const std::vector<StmtAST*> stmtList, StmtNo prevStmt,
     StmtNo nextStmtForLastStmt, ProcName currProcName,
-    const unordered_map<NAME, StmtNo>& procNameToItsFirstStmt,
+    const unordered_map<Name, StmtNo>& procNameToItsFirstStmt,
     unordered_map<ProcName, unordered_set<StmtNo>>* lastStmtsOfCallPath,
     bool isAtProcLevel) {
   auto addNextBip = [this](StmtNo s1, StmtNo s2) {

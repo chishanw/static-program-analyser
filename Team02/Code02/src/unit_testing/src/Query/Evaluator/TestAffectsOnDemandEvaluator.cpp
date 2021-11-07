@@ -145,28 +145,28 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects, No Nested If/While") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "4"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1, 4}));
+    REQUIRE(results == unordered_set<StmtNo>({1, 4}));
   }
 
   SECTION("Affects(s1, 10)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "10"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({2, 5, 7, 8, 9}));
+    REQUIRE(results == unordered_set<StmtNo>({2, 5, 7, 8, 9}));
   }
 
   SECTION("Affects(1, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({4, 7}));
+    REQUIRE(results == unordered_set<StmtNo>({4, 7}));
   }
 
   SECTION("Affects(5, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "5"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({5, 10}));
+    REQUIRE(results == unordered_set<StmtNo>({5, 10}));
   }
 
   /* Pair results ------------------------------------------- */
@@ -276,24 +276,23 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects, No Nested If/While") {
     Param left1 = {ParamType::SYNONYM, "s1"};
     Param right1 = {ParamType::INTEGER_LITERAL, "10"};
     auto results1 = ae.evaluateStmtAffects(rsType, left1, right1);
-    REQUIRE(results1 == unordered_set<STMT_NO>({2, 5, 7, 8, 9}));
+    REQUIRE(results1 == unordered_set<StmtNo>({2, 5, 7, 8, 9}));
 
     Param left2 = {ParamType::INTEGER_LITERAL, "1"};
     Param right2 = {ParamType::SYNONYM, "s2"};
     auto results2 = ae.evaluateStmtAffects(rsType, left2, right2);
-    REQUIRE(results2 == unordered_set<STMT_NO>({4, 7}));
   }
 
   SECTION("Affects(s1, 10) & Affects(1, s2) - Incomplete Cache, Miss") {
     Param left1 = {ParamType::SYNONYM, "s1"};
     Param right1 = {ParamType::INTEGER_LITERAL, "10"};
     auto results1 = ae.evaluateStmtAffects(rsType, left1, right1);
-    REQUIRE(results1 == unordered_set<STMT_NO>({2, 5, 7, 8, 9}));
+    REQUIRE(results1 == unordered_set<StmtNo>({2, 5, 7, 8, 9}));
 
     Param left2 = {ParamType::INTEGER_LITERAL, "1"};
     Param right2 = {ParamType::SYNONYM, "s2"};
     auto results2 = ae.evaluateStmtAffects(rsType, left2, right2);
-    REQUIRE(results2 == unordered_set<STMT_NO>({4, 7}));
+    REQUIRE(results2 == unordered_set<StmtNo>({4, 7}));
   }
 
   SECTION("Affects(1, 4) & Affects(_, _) - Incomplete Cache, Hit") {
@@ -482,28 +481,28 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects, Nested If/While Separately") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "7"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1, 3, 5}));
+    REQUIRE(results == unordered_set<StmtNo>({1, 3, 5}));
   }
 
   SECTION("Affects(s1, 13)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "13"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({7, 9, 10, 11, 12}));
+    REQUIRE(results == unordered_set<StmtNo>({7, 9, 10, 11, 12}));
   }
 
   SECTION("Affects(9, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "9"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({12, 13}));
+    REQUIRE(results == unordered_set<StmtNo>({12, 13}));
   }
 
   SECTION("Affects(7, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "7"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({10, 12, 13}));
+    REQUIRE(results == unordered_set<StmtNo>({10, 12, 13}));
   }
 
   /* Pair results ------------------------------------------- */
@@ -658,28 +657,28 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects, Nested If/While Together") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "8"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1, 3, 5, 7}));
+    REQUIRE(results == unordered_set<StmtNo>({1, 3, 5, 7}));
   }
 
   SECTION("Affects(s1, 3)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "3"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1, 3, 5, 7}));
+    REQUIRE(results == unordered_set<StmtNo>({1, 3, 5, 7}));
   }
 
   SECTION("Affects(1, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({3, 8}));
+    REQUIRE(results == unordered_set<StmtNo>({3, 8}));
   }
 
   SECTION("Affects(7, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "7"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({3, 7, 8}));
+    REQUIRE(results == unordered_set<StmtNo>({3, 7, 8}));
   }
 
   /* Pair results ------------------------------------------- */
@@ -821,28 +820,28 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects, Multiple Procedures") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "7"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({6}));
+    REQUIRE(results == unordered_set<StmtNo>({6}));
   }
 
   SECTION("Affects(s1, 4)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "4"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1}));
+    REQUIRE(results == unordered_set<StmtNo>({1}));
   }
 
   SECTION("Affects(1, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({3, 4}));
+    REQUIRE(results == unordered_set<StmtNo>({3, 4}));
   }
 
   SECTION("Affects(6, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "6"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffects(rsType, left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({7}));
+    REQUIRE(results == unordered_set<StmtNo>({7}));
   }
 
   /* Pair results ------------------------------------------- */
@@ -1096,28 +1095,28 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, No Nested If/While") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "4"};
     auto results = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1, 4}));
+    REQUIRE(results == unordered_set<StmtNo>({1, 4}));
   }
 
   SECTION("Affects*(s1, 10)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "10"};
     auto results = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({1, 2, 4, 5, 7, 8, 9}));
+    REQUIRE(results == unordered_set<StmtNo>({1, 2, 4, 5, 7, 8, 9}));
   }
 
   SECTION("Affects*(1, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({4, 7, 10, 12}));
+    REQUIRE(results == unordered_set<StmtNo>({4, 7, 10, 12}));
   }
 
   SECTION("Affects*(5, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "5"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto results = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(results == unordered_set<STMT_NO>({5, 10, 12}));
+    REQUIRE(results == unordered_set<StmtNo>({5, 10, 12}));
   }
 
   /* Pair results ------------------------------------------- */
@@ -1189,8 +1188,8 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Separately") {
   pkb->addStmt(DesignEntity::WHILE, 15);
   pkb->addNextStmtForIfStmt(3, 12);
   pkb->addNextStmtForIfStmt(6, 12);
-  vector<STMT_NO> assign{1, 2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 16, 17, 18, 19};
-  for (STMT_NO assignStmt : assign) {
+  vector<StmtNo> assign{1, 2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 16, 17, 18, 19};
+  for (StmtNo assignStmt : assign) {
     pkb->addStmt(DesignEntity::ASSIGN, assignStmt);
   }
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "c");
@@ -1305,21 +1304,21 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Separately") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{4, 7, 9, 11, 13, 16, 17});
+    REQUIRE(result == unordered_set<StmtNo>{4, 7, 9, 11, 13, 16, 17});
   }
 
   SECTION("Affects*(11, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "11"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{});
+    REQUIRE(result == unordered_set<StmtNo>{});
   }
 
   SECTION("Affects*(s1, 16)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "16"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{1, 4, 13, 16});
+    REQUIRE(result == unordered_set<StmtNo>{1, 4, 13, 16});
   }
 
   SECTION("Affects*(s1,s2)") {
@@ -1377,8 +1376,8 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Together") {
   pkb->addStmt(DesignEntity::WHILE, 8);
   pkb->addNextStmtForIfStmt(5, 15);
   pkb->addNextStmtForIfStmt(10, 8);
-  vector<STMT_NO> assign{1, 3, 4, 6, 7, 9, 11, 12, 13, 14, 15, 16};
-  for (STMT_NO assignStmt : assign) {
+  vector<StmtNo> assign{1, 3, 4, 6, 7, 9, 11, 12, 13, 14, 15, 16};
+  for (StmtNo assignStmt : assign) {
     pkb->addStmt(DesignEntity::ASSIGN, assignStmt);
   }
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
@@ -1485,28 +1484,28 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Together") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{3, 6, 13, 15, 16});
+    REQUIRE(result == unordered_set<StmtNo>{3, 6, 13, 15, 16});
   }
 
   SECTION("Affects*(9, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "9"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{12});
+    REQUIRE(result == unordered_set<StmtNo>{12});
   }
 
   SECTION("Affects*(s1, 6)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "6"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{1, 3, 4, 6, 13, 14});
+    REQUIRE(result == unordered_set<StmtNo>{1, 3, 4, 6, 13, 14});
   }
 
   SECTION("Affects*(s1, 15)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "15"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{1, 3, 4, 6, 7, 11, 13, 14});
+    REQUIRE(result == unordered_set<StmtNo>{1, 3, 4, 6, 7, 11, 13, 14});
   }
 
   SECTION("Affects*(s1, s2)") {
@@ -1562,7 +1561,7 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Together") {
     Param left = {ParamType::INTEGER_LITERAL, "7"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{11, 15, 16});
+    REQUIRE(result == unordered_set<StmtNo>{11, 15, 16});
   }
 
   SECTION("Affects*(s1, 15) with complete cacheT - Hit") {
@@ -1573,7 +1572,7 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Nested If/While Together") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "15"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{1, 3, 4, 6, 7, 11, 13, 14});
+    REQUIRE(result == unordered_set<StmtNo>{1, 3, 4, 6, 7, 11, 13, 14});
   }
 }
 
@@ -1600,8 +1599,8 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Multiple Procedures") {
   pkb->addStmt(DesignEntity::IF, 8);
   pkb->addStmt(DesignEntity::WHILE, 4);
   pkb->addNextStmtForIfStmt(8, 11);
-  vector<STMT_NO> assign{1, 2, 3, 5, 6, 7, 9, 10, 11};
-  for (STMT_NO assignStmt : assign) {
+  vector<StmtNo> assign{1, 2, 3, 5, 6, 7, 9, 10, 11};
+  for (StmtNo assignStmt : assign) {
     pkb->addStmt(DesignEntity::ASSIGN, assignStmt);
   }
   pkb->addRs(RelationshipType::MODIFIES_S, 1, TableType::VAR_TABLE, "x");
@@ -1699,14 +1698,14 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Multiple Procedures") {
     Param left = {ParamType::INTEGER_LITERAL, "6"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{5, 6});
+    REQUIRE(result == unordered_set<StmtNo>{5, 6});
   }
 
   SECTION("Affects*(s1, 10)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "10"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{});
+    REQUIRE(result == unordered_set<StmtNo>{});
   }
 
   SECTION("Affects*(s1, s2)") {
@@ -1886,21 +1885,21 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Test Call & Read Stmts") {
     Param left = {ParamType::INTEGER_LITERAL, "1"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{});
+    REQUIRE(result == unordered_set<StmtNo>{});
   }
 
   SECTION("Affects*(2, s2)") {
     Param left = {ParamType::INTEGER_LITERAL, "2"};
     Param right = {ParamType::SYNONYM, "s2"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{4, 6});
+    REQUIRE(result == unordered_set<StmtNo>{4, 6});
   }
 
   SECTION("Affects*(s1, 6)") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "6"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{2, 4});
+    REQUIRE(result == unordered_set<StmtNo>{2, 4});
   }
 
   /* Tests call and read Affects ---------------------------------*/
@@ -1908,7 +1907,7 @@ TEST_CASE("AffectsOnDemandEvaluator: Affects*, Test Call & Read Stmts") {
     Param left = {ParamType::SYNONYM, "s1"};
     Param right = {ParamType::INTEGER_LITERAL, "8"};
     auto result = ae.evaluateStmtAffectsT(left, right);
-    REQUIRE(result == unordered_set<STMT_NO>{});
+    REQUIRE(result == unordered_set<StmtNo>{});
   }
 
   SECTION("Affects*(s1, s2)") {

@@ -41,7 +41,7 @@ class Parser {
   FactorAST* relFactor();
 
   //  name & number methods
-  NAME name();
+  Name name();
 
   // utility methods
   bool expectToken(std::string);

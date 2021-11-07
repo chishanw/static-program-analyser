@@ -17,8 +17,7 @@ WithEvaluator::WithEvaluator(PKB* pkb) { this->pkb = pkb; }
 
 tuple<bool, vector<IntermediateQueryResult>, SynonymValuesTable>
 WithEvaluator::evaluateAttributes(
-    const Param& left, const Param& right,
-    const unordered_map<string, DesignEntity>& synonymMap,
+    const Param& left, const Param& right, const SynonymMap& synonymMap,
     const vector<IntermediateQueryResult>& currentQueryResults) {
   this->newQueryResults = {};
   this->isClauseTrue = false;
@@ -53,7 +52,7 @@ WithEvaluator::evaluateAttributes(
   return make_tuple(isClauseTrue, newQueryResults, clauseSynonymValuesTable);
 }
 
-// ATTRIBUTE_PROC_NAME, ATTRIBUTE_VAR_NAME, NAME_LITERAL
+// ATTRIBUTE_ProcName, ATTRIBUTE_VAR_NAME, NAME_LITERAL
 void WithEvaluator::evaluateNameAttributes(const Param& left,
                                            const Param& right) {
   ParamType leftType = left.type;

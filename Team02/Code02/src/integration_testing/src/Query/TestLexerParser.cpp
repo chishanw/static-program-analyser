@@ -1,4 +1,5 @@
 #include <Common/Common.h>
+#include <Query/Common.h>
 #include <Query/Parser/QueryLexerParserCommon.h>
 #include <Query/Parser/QueryParser.h>
 
@@ -10,9 +11,7 @@
 #include "catch.hpp"
 
 using namespace std;
-
-typedef unordered_map<std::string, DesignEntity> SynonymMap;
-typedef query::SelectClause SelectClause;
+using namespace query;
 
 // ================ Testing semantically invalid tokens ================
 TEST_CASE("Semantically invalid tokens") {

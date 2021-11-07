@@ -10,9 +10,7 @@
 #include "catch.hpp"
 
 using namespace std;
-
-typedef unordered_map<std::string, DesignEntity> SynonymMap;
-typedef query::SelectClause SelectClause;
+using namespace query;
 
 // ====================== Testing Follows relationship ======================
 TEST_CASE(

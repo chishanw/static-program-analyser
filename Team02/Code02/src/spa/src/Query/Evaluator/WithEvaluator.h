@@ -18,13 +18,13 @@ class WithEvaluator {
              query::SynonymValuesTable>
   evaluateAttributes(
       const query::Param& left, const query::Param& right,
-      const std::unordered_map<std::string, DesignEntity>& synonymMap,
+      const query::SynonymMap& synonymMap,
       const std::vector<query::IntermediateQueryResult>& currentQueryResults);
 
  private:
   PKB* pkb;
   std::vector<query::IntermediateQueryResult> newQueryResults;
-  std::unordered_map<std::string, DesignEntity> synonymMap;
+  query::SynonymMap synonymMap;
   std::vector<query::IntermediateQueryResult> currentQueryResults;
   bool isClauseTrue;
   query::SynonymValuesTable clauseSynonymValuesTable;

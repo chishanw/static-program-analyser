@@ -67,13 +67,13 @@ void QueryOptimizer::PreprocessClauses(SynonymMap map,
 }
 
 vector<Group> QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
-  unordered_set<ConditionClause, CLAUSE_HASH> clausesSet(clauses.begin(),
+  unordered_set<ConditionClause, ClauseHash> clausesSet(clauses.begin(),
                                                          clauses.end());
 
-  unordered_map<SynName, SUBSET_ID> synNameToSubsetId;
-  unordered_map<SUBSET_ID, unordered_set<ConditionClause, CLAUSE_HASH>>
+  unordered_map<SynName, SubsetId> synNameToSubsetId;
+  unordered_map<SubsetId, unordered_set<ConditionClause, ClauseHash>>
       subsetIdToClauses;
-  unordered_map<SUBSET_ID, unordered_set<SynName>> subsetIdToSynNames;
+  unordered_map<SubsetId, unordered_set<SynName>> subsetIdToSynNames;
 
   int nextOpenGrpIdx = 0;
 
@@ -114,12 +114,12 @@ vector<Group> QueryOptimizer::groupClauses(vector<ConditionClause> clauses) {
 
       // current clause has a different id, merge both sets
       if (clauseSubsetId != otherSubsetId) {
-        SUBSET_ID goalId = subsetIdToSynNames[clauseSubsetId].size() >
+        SubsetId goalId = subsetIdToSynNames[clauseSubsetId].size() >
                                    subsetIdToSynNames[otherSubsetId].size()
                                ? clauseSubsetId
                                : otherSubsetId;
 
-        SUBSET_ID transferId = subsetIdToSynNames[clauseSubsetId].size() >
+        SubsetId transferId = subsetIdToSynNames[clauseSubsetId].size() >
                                        subsetIdToSynNames[otherSubsetId].size()
                                    ? otherSubsetId
                                    : clauseSubsetId;
@@ -274,7 +274,7 @@ void QueryOptimizer::sortClausesAtGroupIndex(int index) {
 unsigned long QueryOptimizer::getSizeOfClause(
     query::ConditionClauseType type, const std::vector<std::string>& synonyms) {
   vector<int> sizes = {};
-  for (const string s : synonyms) {
+  for (const string& s : synonyms) {
     if (synonymCountTable != nullptr &&
         synonymCountTable->find(s) != synonymCountTable->end()) {
       sizes.push_back(synonymCountTable->at(s));
@@ -340,4 +340,5 @@ vector<SynName> QueryOptimizer::extractSynonymsUsed(
       return synonymNamesUsed;
     }
   }
+  return synonymNamesUsed;
 }

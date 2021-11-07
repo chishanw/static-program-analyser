@@ -114,7 +114,7 @@ FactorAST* ExprParser::factor() {
     consumeToken(")");
     return new FactorAST(exprAST);
   } else if (isName()) {
-    NAME varName = name();
+    Name varName = name();
     return new FactorAST(varName);
   } else if (isNumber()) {
     string constValue = number();
@@ -129,12 +129,12 @@ FactorAST* ExprParser::factor() {
 //  name & number methods
 // =======================================
 
-NAME ExprParser::name() {
+Name ExprParser::name() {
   if (!isName()) {
     errorExpected("name");
     return "";
   }
-  NAME ret = token;
+  Name ret = token;
   nextToken();
   return ret;
 }

@@ -36,8 +36,7 @@ class TestQueryUtil {
                                                 query::ParamType, std::string);
   static query::FinalQueryResults EvaluateQuery(
       PKB* pkb, std::vector<query::ConditionClause> clauses,
-      query::SelectType selectType,
-      std::unordered_map<query::SynName, DesignEntity> synonymMap,
+      query::SelectType selectType, query::SynonymMap synonymMap,
       std::vector<query::Synonym> selectSynonyms);
   static std::set<int> GetUniqueSelectSingleQEResults(
       query::FinalQueryResults results);

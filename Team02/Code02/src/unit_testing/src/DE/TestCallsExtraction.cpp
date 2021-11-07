@@ -69,16 +69,16 @@ TEST_CASE("[DE][Calls R/S] sample source") {
                        30));  // out of bound test, last stmt is #24
 
   SECTION("[DE][AffectsInfo] sample source") {
-    PROC_IDX exampleIdx = pkb->getIndexOf(TableType::PROC_TABLE, "Example");
-    PROC_IDX pIdx = pkb->getIndexOf(TableType::PROC_TABLE, "p");
-    PROC_IDX qIdx = pkb->getIndexOf(TableType::PROC_TABLE, "q");
+    ProcIdx exampleIdx = pkb->getIndexOf(TableType::PROC_TABLE, "Example");
+    ProcIdx pIdx = pkb->getIndexOf(TableType::PROC_TABLE, "p");
+    ProcIdx qIdx = pkb->getIndexOf(TableType::PROC_TABLE, "q");
 
-    unordered_map<PROC_IDX, unordered_set<PROC_IDX>> callGraph =
+    unordered_map<ProcIdx, unordered_set<ProcIdx>> callGraph =
         pkb->getCallGraph();
 
     // positive test
-    CHECK(callGraph.at(exampleIdx) == unordered_set<PROC_IDX>{pIdx});
-    CHECK(callGraph.at(pIdx) == unordered_set<PROC_IDX>{qIdx});
+    CHECK(callGraph.at(exampleIdx) == unordered_set<ProcIdx>{pIdx});
+    CHECK(callGraph.at(pIdx) == unordered_set<ProcIdx>{qIdx});
     // neg test
     CHECK_THROWS_AS(callGraph.at(qIdx), out_of_range);
   }

@@ -27,7 +27,7 @@ class ExprParser {
   FactorAST* factor();
 
   //  name & number methods
-  NAME name();
+  Name name();
   std::string number();
 
   // utility methods

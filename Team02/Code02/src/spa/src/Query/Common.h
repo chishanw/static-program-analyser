@@ -117,6 +117,7 @@ struct GroupDetails {
 const int FALSE_SELECT_BOOL_RESULT = 0;
 const int TRUE_SELECT_BOOL_RESULT = 1;
 
+typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
 typedef std::string SynName;
 typedef std::unordered_map<std::string, int> QueryResult;
 typedef std::unordered_map<std::string, int> IntermediateQueryResult;

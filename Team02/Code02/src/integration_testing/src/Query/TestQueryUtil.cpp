@@ -64,8 +64,7 @@ query::ConditionClause TestQueryUtil::BuildWithClause(ParamType leftParamType,
 
 query::FinalQueryResults TestQueryUtil::EvaluateQuery(
     PKB* pkb, vector<ConditionClause> clauses, SelectType selectType,
-    unordered_map<string, DesignEntity> synonymMap,
-    vector<Synonym> selectSynonyms) {
+    query::SynonymMap synonymMap, vector<Synonym> selectSynonyms) {
   SelectClause select = {{selectSynonyms}, selectType, clauses};
 
   QueryOptimizer* opt = new QueryOptimizer(pkb);

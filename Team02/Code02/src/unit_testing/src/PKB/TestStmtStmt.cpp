@@ -36,16 +36,16 @@ TEST_CASE("PKB_STMT_STMT_RELATIONSHIP") {
       REQUIRE(db.isRs(rs, 2, 1) == false);
       REQUIRE(db.isRs(rs, 3, 1) == false);
 
-      REQUIRE(db.getRight(rs, 1) == unordered_set<STMT_NO>({2}));
-      REQUIRE(db.getRight(rs, 2) == unordered_set<STMT_NO>({3}));
-      REQUIRE(db.getRight(rs, 4) == unordered_set<STMT_NO>({5}));
-      REQUIRE(db.getRight(rs, 10) == unordered_set<STMT_NO>({}));
-      REQUIRE(db.getRight(rs, 9) == unordered_set<STMT_NO>({}));
+      REQUIRE(db.getRight(rs, 1) == unordered_set<StmtNo>({2}));
+      REQUIRE(db.getRight(rs, 2) == unordered_set<StmtNo>({3}));
+      REQUIRE(db.getRight(rs, 4) == unordered_set<StmtNo>({5}));
+      REQUIRE(db.getRight(rs, 10) == unordered_set<StmtNo>({}));
+      REQUIRE(db.getRight(rs, 9) == unordered_set<StmtNo>({}));
 
-      REQUIRE(db.getLeft(rs, 2) == unordered_set<STMT_NO>({1}));
-      REQUIRE(db.getLeft(rs, 3) == unordered_set<STMT_NO>({2}));
-      REQUIRE(db.getLeft(rs, 5) == unordered_set<STMT_NO>({4}));
-      REQUIRE(db.getLeft(rs, 1) == unordered_set<STMT_NO>({}));
+      REQUIRE(db.getLeft(rs, 2) == unordered_set<StmtNo>({1}));
+      REQUIRE(db.getLeft(rs, 3) == unordered_set<StmtNo>({2}));
+      REQUIRE(db.getLeft(rs, 5) == unordered_set<StmtNo>({4}));
+      REQUIRE(db.getLeft(rs, 1) == unordered_set<StmtNo>({}));
 
       SECTION("Check left param") {
         auto expected = unordered_set<vector<int>, VectorHash>(
@@ -82,17 +82,17 @@ TEST_CASE("PKB_STMT_STMT_RELATIONSHIP") {
       REQUIRE(db.isRs(rs, 2, 1) == false);
       REQUIRE(db.isRs(rs, 3, 1) == false);
 
-      REQUIRE(db.getRight(rs, 1) == unordered_set<STMT_NO>({2, 3}));
-      REQUIRE(db.getRight(rs, 4) == unordered_set<STMT_NO>({5}));
-      REQUIRE(db.getRight(rs, 10) == unordered_set<STMT_NO>({}));
+      REQUIRE(db.getRight(rs, 1) == unordered_set<StmtNo>({2, 3}));
+      REQUIRE(db.getRight(rs, 4) == unordered_set<StmtNo>({5}));
+      REQUIRE(db.getRight(rs, 10) == unordered_set<StmtNo>({}));
 
-      REQUIRE(db.getLeft(rs, 2) == unordered_set<STMT_NO>({1}));
-      REQUIRE(db.getLeft(rs, 3) == unordered_set<STMT_NO>({1}));
-      REQUIRE(db.getLeft(rs, 5) == unordered_set<STMT_NO>({4, 2}));
+      REQUIRE(db.getLeft(rs, 2) == unordered_set<StmtNo>({1}));
+      REQUIRE(db.getLeft(rs, 3) == unordered_set<StmtNo>({1}));
+      REQUIRE(db.getLeft(rs, 5) == unordered_set<StmtNo>({4, 2}));
 
       // No Key, return empty set
-      REQUIRE(db.getLeft(rs, 1) == unordered_set<STMT_NO>({}));
-      REQUIRE(db.getLeft(rs, 9) == unordered_set<STMT_NO>({}));
+      REQUIRE(db.getLeft(rs, 1) == unordered_set<StmtNo>({}));
+      REQUIRE(db.getLeft(rs, 9) == unordered_set<StmtNo>({}));
 
       SECTION("Check left param") {
         auto expected = unordered_set<vector<int>, VectorHash>(

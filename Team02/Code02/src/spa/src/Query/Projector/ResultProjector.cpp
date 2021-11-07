@@ -36,9 +36,8 @@ list<string> ResultProjector::formatResults(SelectType selectType,
   if (selectType == SelectType::SYNONYMS) {
     for (auto res : results) {
       string formattedString = "";
-      for (int i = 0; i < selectSynonyms.size(); i++) {
+      for (unsigned long i = 0; i < selectSynonyms.size(); i++) {
         Synonym synonym = selectSynonyms[i];
-        DesignEntity designEntity = synonym.entity;
         formattedString += getStringForSynonym(synonym, res[i]);
 
         if (i != selectSynonyms.size() - 1) {

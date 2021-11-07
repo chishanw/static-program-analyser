@@ -9,44 +9,43 @@ AffectsInfoKB::AffectsInfoKB(Table* procTable) {
 }
 
 // DE Methods
-void AffectsInfoKB::addNextStmtForIfStmt(STMT_NO ifStmt,
-                                         STMT_NO nextStmtForIfStmt) {
+void AffectsInfoKB::addNextStmtForIfStmt(StmtNo ifStmt,
+                                         StmtNo nextStmtForIfStmt) {
   tableOfNextStmtForIfStmts[ifStmt] = nextStmtForIfStmt;
 }
 
-void AffectsInfoKB::addFirstStmtOfProc(PROC_NAME procName,
-                                       STMT_NO firstStmtOfProc) {
-  PROC_IDX procIdx = procTable->insert(procName);
+void AffectsInfoKB::addFirstStmtOfProc(ProcName procName,
+                                       StmtNo firstStmtOfProc) {
+  ProcIdx procIdx = procTable->insert(procName);
   tableOfProcFirstStmts[procIdx] = firstStmtOfProc;
 }
 
-void AffectsInfoKB::addProcCallEdge(PROC_NAME callerProcName,
-                                    PROC_NAME calleeProcName) {
-  PROC_IDX callerProcIdx = procTable->insert(callerProcName);
-  PROC_IDX calleeProcIdx = procTable->insert(calleeProcName);
+void AffectsInfoKB::addProcCallEdge(ProcName callerProcName,
+                                    ProcName calleeProcName) {
+  ProcIdx callerProcIdx = procTable->insert(callerProcName);
+  ProcIdx calleeProcIdx = procTable->insert(calleeProcName);
   if (callGraph.count(callerProcIdx) == 0) {
-    callGraph[callerProcIdx] = unordered_set<PROC_IDX>{};
+    callGraph[callerProcIdx] = unordered_set<ProcIdx>{};
   }
   callGraph[callerProcIdx].insert(calleeProcIdx);
 }
 
 // QE Methods
-STMT_NO AffectsInfoKB::getNextStmtForIfStmt(STMT_NO ifStmt) {
+StmtNo AffectsInfoKB::getNextStmtForIfStmt(StmtNo ifStmt) {
   if (tableOfNextStmtForIfStmts.count(ifStmt) != 0) {
     return tableOfNextStmtForIfStmts.at(ifStmt);
   }
   return -1;
 }
 
-vector<STMT_NO> AffectsInfoKB::getFirstStmtOfAllProcs() {
-  // TODO(PKB): toposort for AffectsBip later
-  vector<STMT_NO> results;
+vector<StmtNo> AffectsInfoKB::getFirstStmtOfAllProcs() {
+  vector<StmtNo> results;
   for (auto procToFirstStmt : tableOfProcFirstStmts) {
     results.push_back(procToFirstStmt.second);
   }
   return results;
 }
 
-unordered_map<PROC_IDX, unordered_set<PROC_IDX>> AffectsInfoKB::getCallGraph() {
+unordered_map<ProcIdx, unordered_set<ProcIdx>> AffectsInfoKB::getCallGraph() {
   return callGraph;
 }

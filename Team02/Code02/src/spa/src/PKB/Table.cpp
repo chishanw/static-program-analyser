@@ -4,17 +4,12 @@
 
 using namespace std;
 
-Table::Table() {
-  nameAsKey = unordered_map<string, int>({});
-  idxAsKey = vector<string>({});
-}
+Table::Table() {}
 
 TableElemIdx Table::insert(string element) {
   try {  // check if variable already exists in table
-    int index = nameAsKey.at(element);
-    return index;
-  }
-  catch (const out_of_range& e) {  // new variable
+    return nameAsKey.at(element);
+  } catch (const out_of_range& e) {  // new variable
     int newIndex = getSize();
     nameAsKey.insert({element, newIndex});
     idxAsKey.push_back(element);
@@ -25,8 +20,7 @@ TableElemIdx Table::insert(string element) {
 string Table::getElement(int index) {
   try {
     return idxAsKey.at(index);
-  }
-  catch (const out_of_range& e) {
+  } catch (const out_of_range& e) {
     return "";
   }
 }
@@ -34,8 +28,7 @@ string Table::getElement(int index) {
 TableElemIdx Table::getIndex(string element) {
   try {
     return nameAsKey.at(element);
-  }
-  catch (const out_of_range& e) {
+  } catch (const out_of_range& e) {
     return -1;
   }
 }
@@ -48,6 +41,4 @@ unordered_set<TableElemIdx> Table::getAllElements() {
   return result;
 }
 
-int Table::getSize() {
-  return idxAsKey.size();
-}
+int Table::getSize() { return idxAsKey.size(); }

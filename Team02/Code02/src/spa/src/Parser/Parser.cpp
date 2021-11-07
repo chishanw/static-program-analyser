@@ -51,7 +51,7 @@ ProgramAST* Parser::program() {
 
 ProcedureAST* Parser::procedure() {
   consumeToken("procedure");
-  NAME procName = name();
+  Name procName = name();
   consumeToken("{");
   vector<StmtAST*> stmtList = stmtLst();
   consumeToken("}");
@@ -96,14 +96,14 @@ StmtAST* Parser::stmt() {
 
 ReadStmtAST* Parser::readStmt() {
   consumeToken("read");
-  NAME varName = name();
+  Name varName = name();
   consumeToken(";");
   return new ReadStmtAST(this->prevStmtNo, varName);
 }
 
 PrintStmtAST* Parser::printStmt() {
   consumeToken("print");
-  NAME varName = name();
+  Name varName = name();
   consumeToken(";");
   return new PrintStmtAST(this->prevStmtNo, varName);
 }
@@ -116,14 +116,14 @@ CallStmtAST* Parser::callStmt() {
   }
 
   consumeToken("call");
-  NAME procName = name();
+  Name procName = name();
   consumeToken(";");
   return new CallStmtAST(this->prevStmtNo, procName);
 }
 
 WhileStmtAST* Parser::whileStmt() {
   // need to rmb curr stmtNo cos calling stmtLst will increase prevStmtNo
-  STMT_NO stmtNo = this->prevStmtNo;
+  StmtNo stmtNo = this->prevStmtNo;
 
   consumeToken("while");
   consumeToken("(");
@@ -138,7 +138,7 @@ WhileStmtAST* Parser::whileStmt() {
 }
 
 IfStmtAST* Parser::ifStmt() {
-  STMT_NO stmtNo = this->prevStmtNo;
+  StmtNo stmtNo = this->prevStmtNo;
 
   consumeToken("if");
   consumeToken("(");
@@ -159,7 +159,7 @@ IfStmtAST* Parser::ifStmt() {
 }
 
 AssignStmtAST* Parser::assignStmt() {
-  NAME varName = name();
+  Name varName = name();
   consumeToken("=");
   ArithAST* exprAST = expr();
   consumeToken(";");
@@ -273,12 +273,12 @@ FactorAST* Parser::relFactor() {
 //  name & number methods
 // =======================================
 
-NAME Parser::name() {
+Name Parser::name() {
   if (!isName()) {
     errorExpected("name");
     return "";
   }
-  NAME ret = token;
+  Name ret = token;
   nextToken();
   return ret;
 }

@@ -91,13 +91,14 @@ TEST_CASE("Duplicate clauses are removed") {
     ConditionClause stModifiesPP1 = TestQueryUtil::BuildSuchThatClause(
         RelationshipType::MODIFIES_P, ParamType::SYNONYM, "p1",
         ParamType::NAME_LITERAL, "x");
-    ConditionClause pattW = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::WHILE, "w"}, ParamType::NAME_LITERAL, "x", {});
+    ConditionClause pattW =
+        TestQueryUtil::BuildPatternClause({DesignEntity::WHILE, "w", false, {}},
+                                          ParamType::NAME_LITERAL, "x", {});
     ConditionClause pattAExact = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::ASSIGN, "a"}, ParamType::NAME_LITERAL, "x",
+        {DesignEntity::ASSIGN, "a", false, {}}, ParamType::NAME_LITERAL, "x",
         {MatchType::EXACT, "[1]"});
     ConditionClause pattAVSub = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::ASSIGN, "a"}, ParamType::SYNONYM, "v",
+        {DesignEntity::ASSIGN, "a", false, {}}, ParamType::SYNONYM, "v",
         {MatchType::SUB_EXPRESSION, "[1]"});
     ConditionClause stAffects = TestQueryUtil::BuildSuchThatClause(
         RelationshipType::AFFECTS, ParamType::SYNONYM, "s2",
@@ -151,10 +152,10 @@ TEST_CASE("Duplicate clauses are removed") {
     ConditionClause withLit = TestQueryUtil::BuildWithClause(
         ParamType::INTEGER_LITERAL, "1", ParamType::INTEGER_LITERAL, "2");
     ConditionClause pattAAny = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::ASSIGN, "a"}, ParamType::WILDCARD, "_",
+        {DesignEntity::ASSIGN, "a", false, {}}, ParamType::WILDCARD, "_",
         {MatchType::ANY, "_"});
     ConditionClause pattIfs = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::IF, "ifs"}, ParamType::WILDCARD, "_", {});
+        {DesignEntity::IF, "ifs", false, {}}, ParamType::WILDCARD, "_", {});
     ConditionClause stParentTIfs = TestQueryUtil::BuildSuchThatClause(
         RelationshipType::PARENT_T, ParamType::SYNONYM, "ifs",
         ParamType::INTEGER_LITERAL, "3");
@@ -247,13 +248,6 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
 
     // expected
     optional<GroupDetails> optLiteralBoolDetails = {{true, {}}};
-    ConditionClause clause1 = withInt;
-    // clauses 2 3 4 may be either stFollows, stModifiesP or stParentT,
-    // in any order, as they have the same weight
-    unordered_set<ConditionClause, CLAUSE_HASH> clauses234 = {
-        stFollows, stModifiesP, stParentT};
-    unordered_set<ConditionClause, CLAUSE_HASH> clauses56 = {stAffects,
-                                                             stNextT};
 
     // actual + test
     QueryOptimizer optimizer(pkb);
@@ -295,8 +289,8 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
         {"s5", DesignEntity::STATEMENT}, {"s6", DesignEntity::STATEMENT},
     };
     vector<Synonym> selectSynonyms = {
-        {DesignEntity::STATEMENT, "s1"},
-        {DesignEntity::STATEMENT, "s4"},
+        {DesignEntity::STATEMENT, "s1", false, {}},
+        {DesignEntity::STATEMENT, "s4", false, {}},
     };
     ConditionClause withInt =
         TestQueryUtil::BuildWithClause(ParamType::ATTRIBUTE_STMT_NUM, "s1",
@@ -313,28 +307,25 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
 
     // expected
     optional<GroupDetails> optGroupDetails1 = {
-        {false, {{DesignEntity::STATEMENT, "s1"}}}};
+        {false, {{DesignEntity::STATEMENT, "s1", false, {}}}}};
     optional<GroupDetails> optGroupDetails2 = {
-        {false, {{DesignEntity::STATEMENT, "s4"}}}};
+        {false, {{DesignEntity::STATEMENT, "s4", false, {}}}}};
     optional<GroupDetails> optGroupDetails3 = {{true, {}}};
-    ConditionClause clause1 = withInt;
-    ConditionClause clause2 = stFollows;
-    ConditionClause clause3 = stAffects;
 
     // actual + test
     QueryOptimizer optimizer(pkb);
     optimizer.PreprocessClauses(synonymMap, givenSelectClause);
     // group 1
     REQUIRE(optimizer.GetNextGroupDetails() == optGroupDetails1);
-    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == clause1);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == withInt);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 2
     REQUIRE(optimizer.GetNextGroupDetails() == optGroupDetails2);
-    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == clause2);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stFollows);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // group 3
     REQUIRE(optimizer.GetNextGroupDetails() == optGroupDetails3);
-    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == clause3);
+    REQUIRE(optimizer.GetNextClause(emptyCountTable).value() == stAffects);
     REQUIRE_FALSE(optimizer.GetNextClause(emptyCountTable).has_value());
     // optional empty group
     REQUIRE_FALSE(optimizer.GetNextGroupDetails().has_value());
@@ -351,7 +342,7 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
     };
     Synonym s1StmtNum = {DesignEntity::STATEMENT, "s1", true,
                          Attribute::STMT_NUM};
-    Synonym s3 = {DesignEntity::STATEMENT, "s3"};
+    Synonym s3 = {DesignEntity::STATEMENT, "s3", false, {}};
     Synonym v1VarName = {DesignEntity::VARIABLE, "v1", true,
                          Attribute::VAR_NAME};
     vector<Synonym> selectSynonyms = {s1StmtNum, s3, v1VarName};
@@ -370,8 +361,9 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
         ParamType::INTEGER_LITERAL, "5");
     ConditionClause withIfs = TestQueryUtil::BuildWithClause(
         ParamType::INTEGER_LITERAL, "5", ParamType::ATTRIBUTE_STMT_NUM, "ifs");
-    ConditionClause patAssignIfsV1 = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::IF, "ifs"}, ParamType::SYNONYM, "v1", {});  // 10
+    ConditionClause patAssignIfsV1 =
+        TestQueryUtil::BuildPatternClause({DesignEntity::IF, "ifs", false, {}},
+                                          ParamType::SYNONYM, "v1", {});  // 10
     vector<ConditionClause> givenClauses = {stFollowsIfs, stFollowsS1S3,
                                             withIfs,      patAssignIfsV1,
                                             withS1S2,     stModifiesS4V1};
@@ -520,7 +512,7 @@ TEST_CASE("Groups are grouped and sorted in the correct order") {
         RelationshipType::FOLLOWS, ParamType::INTEGER_LITERAL, "5",
         ParamType::INTEGER_LITERAL, "6");
     ConditionClause pattIfs = TestQueryUtil::BuildPatternClause(
-        {DesignEntity::IF, "ifs"}, ParamType::NAME_LITERAL, "x", {});
+        {DesignEntity::IF, "ifs", false, {}}, ParamType::NAME_LITERAL, "x", {});
     ConditionClause stFollowsIfsS1 = TestQueryUtil::BuildSuchThatClause(
         RelationshipType::FOLLOWS, ParamType::SYNONYM, "ifs",
         ParamType::SYNONYM, "s1");

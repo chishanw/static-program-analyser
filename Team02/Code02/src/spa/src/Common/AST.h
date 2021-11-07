@@ -6,10 +6,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Common/Common.h"
 #include "Common/Global.h"
-
-typedef int STMT_NO;
-typedef std::string NAME;
 
 class ArithAST {
  public:
@@ -20,21 +18,21 @@ class ArithAST {
   ArithAST() : hasOnlyOneNode(false) {}  // default constructor for child class
 
   explicit ArithAST(ArithAST* leftNode)
-      : hasOnlyOneNode(true),
-        Sign(""),
+      : Sign(""),
         LeftNode(leftNode),
-        RightNode(nullptr) {}
+        RightNode(nullptr),
+        hasOnlyOneNode(true) {}
 
   ArithAST(std::string sign, ArithAST* leftNode, ArithAST* rightNode)
-      : hasOnlyOneNode(false),
-        Sign(sign),
+      : Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode) {}
+        RightNode(rightNode),
+        hasOnlyOneNode(false) {}
 
   virtual ~ArithAST() {}
 
   bool HasOnlyOneNode() const { return this->hasOnlyOneNode; }
-  virtual std::unordered_set<NAME> GetAllVarNames() const;
+  virtual std::unordered_set<Name> GetAllVarNames() const;
   virtual std::unordered_set<std::string> GetAllConsts() const;
   virtual std::unordered_set<std::string> GetSubExprPatternStrs() const;
   virtual std::string GetFullExprPatternStr() const;
@@ -46,33 +44,33 @@ class ArithAST {
 
 class FactorAST : public ArithAST {
  public:
-  const NAME VarName;
+  const Name VarName;
   const std::string ConstValue;
   const ArithAST* Expr;
 
-  explicit FactorAST(NAME varName)
-      : isVarName(true),
-        isConstValue(false),
-        isExpr(false),
-        VarName(varName),
+  explicit FactorAST(Name varName)
+      : VarName(varName),
         ConstValue(""),
-        Expr(nullptr) {}
+        Expr(nullptr),
+        isVarName(true),
+        isConstValue(false),
+        isExpr(false) {}
 
   explicit FactorAST(std::string constValue, bool isConstant)
-      : isVarName(false),
-        isConstValue(true),
-        isExpr(false),
-        VarName(""),
+      : VarName(""),
         ConstValue(constValue),
-        Expr(nullptr) {}
+        Expr(nullptr),
+        isVarName(false),
+        isConstValue(isConstant),
+        isExpr(false) {}
 
   explicit FactorAST(ArithAST* expr)
-      : isVarName(false),
-        isConstValue(false),
-        isExpr(true),
-        VarName(""),
+      : VarName(""),
         ConstValue(""),
-        Expr(expr) {}
+        Expr(expr),
+        isVarName(false),
+        isConstValue(false),
+        isExpr(true) {}
 
   bool IsVarName() const { return this->isVarName; }
   bool IsConstValue() const { return this->isConstValue; }
@@ -98,7 +96,7 @@ class RelExprAST {
   RelExprAST(std::string sign, FactorAST* leftNode, FactorAST* rightNode)
       : Sign(sign), LeftNode{leftNode}, RightNode{rightNode} {}
 
-  std::unordered_set<NAME> GetAllVarNames() const;
+  std::unordered_set<Name> GetAllVarNames() const;
   std::unordered_set<std::string> GetAllConsts() const;
 };
 
@@ -110,31 +108,31 @@ class CondExprAST {
   const CondExprAST* RightNode;
 
   explicit CondExprAST(RelExprAST* relExpr)
-      : hasOnlyOneRelExpr(true),
-        hasOnlyOneCondExpr(false),
-        Sign(""),
+      : Sign(""),
         RelExpr(relExpr),
         LeftNode(nullptr),
-        RightNode(nullptr) {}
+        RightNode(nullptr),
+        hasOnlyOneRelExpr(true),
+        hasOnlyOneCondExpr(false) {}
 
   CondExprAST(std::string sign, CondExprAST* condExpr)
-      : hasOnlyOneRelExpr(false),
-        hasOnlyOneCondExpr(true),
-        Sign(sign),
+      : Sign(sign),
         RelExpr(nullptr),
         LeftNode(condExpr),
-        RightNode(nullptr) {}
+        RightNode(nullptr),
+        hasOnlyOneRelExpr(false),
+        hasOnlyOneCondExpr(true) {}
 
   CondExprAST(std::string sign, CondExprAST* leftNode, CondExprAST* rightNode)
-      : hasOnlyOneRelExpr(false),
-        hasOnlyOneCondExpr(false),
-        Sign(sign),
+      : Sign(sign),
         LeftNode(leftNode),
-        RightNode(rightNode) {}
+        RightNode(rightNode),
+        hasOnlyOneRelExpr(false),
+        hasOnlyOneCondExpr(false) {}
 
   bool HasOnlyOneRelExpr() const { return this->hasOnlyOneRelExpr; }
   bool HasOnlyOneCondExpr() const { return this->hasOnlyOneCondExpr; }
-  std::unordered_set<NAME> GetAllVarNames() const;
+  std::unordered_set<Name> GetAllVarNames() const;
   std::unordered_set<std::string> GetAllConsts() const;
 
  private:
@@ -144,31 +142,31 @@ class CondExprAST {
 
 class StmtAST {
  public:
-  const STMT_NO StmtNo;
+  const StmtNo StmtNo;
   virtual ~StmtAST() {}
 
  protected:
-  explicit StmtAST(STMT_NO stmtNo) : StmtNo(stmtNo) {}
+  explicit StmtAST(::StmtNo stmtNo) : StmtNo(stmtNo) {}
 };
 
 class ReadStmtAST : public StmtAST {
  public:
-  const NAME VarName;
-  ReadStmtAST(STMT_NO stmtNo, NAME varName)
+  const Name VarName;
+  ReadStmtAST(::StmtNo stmtNo, Name varName)
       : StmtAST(stmtNo), VarName(varName) {}
 };
 
 class PrintStmtAST : public StmtAST {
  public:
-  const NAME VarName;
-  PrintStmtAST(STMT_NO stmtNo, NAME varName)
+  const Name VarName;
+  PrintStmtAST(::StmtNo stmtNo, Name varName)
       : StmtAST(stmtNo), VarName(varName) {}
 };
 
 class CallStmtAST : public StmtAST {
  public:
-  const NAME ProcName;
-  CallStmtAST(STMT_NO stmtNo, NAME procName)
+  const Name ProcName;
+  CallStmtAST(::StmtNo stmtNo, Name procName)
       : StmtAST(stmtNo), ProcName(procName) {}
 };
 
@@ -176,7 +174,7 @@ class WhileStmtAST : public StmtAST {
  public:
   const CondExprAST* CondExpr;
   const std::vector<StmtAST*> StmtList;
-  WhileStmtAST(STMT_NO stmtNo, CondExprAST* condExpr,
+  WhileStmtAST(::StmtNo stmtNo, CondExprAST* condExpr,
                std::vector<StmtAST*> stmtList)
       : StmtAST(stmtNo), CondExpr(condExpr), StmtList(stmtList) {}
 };
@@ -186,7 +184,7 @@ class IfStmtAST : public StmtAST {
   const CondExprAST* CondExpr;
   const std::vector<StmtAST*> ThenBlock;
   const std::vector<StmtAST*> ElseBlock;
-  IfStmtAST(STMT_NO stmtNo, CondExprAST* condExpr,
+  IfStmtAST(::StmtNo stmtNo, CondExprAST* condExpr,
             std::vector<StmtAST*> thenBlock, std::vector<StmtAST*> elseBlock)
       : StmtAST(stmtNo),
         CondExpr(condExpr),
@@ -196,17 +194,17 @@ class IfStmtAST : public StmtAST {
 
 class AssignStmtAST : public StmtAST {
  public:
-  const NAME VarName;
+  const Name VarName;
   const ArithAST* Expr;
-  AssignStmtAST(STMT_NO stmtNo, NAME varName, ArithAST* expr)
+  AssignStmtAST(::StmtNo stmtNo, Name varName, ArithAST* expr)
       : StmtAST(stmtNo), VarName(varName), Expr(expr) {}
 };
 
 class ProcedureAST {
  public:
-  const NAME ProcName;
+  const Name ProcName;
   const std::vector<StmtAST*> StmtList;
-  ProcedureAST(NAME procName, std::vector<StmtAST*> stmtList)
+  ProcedureAST(Name procName, std::vector<StmtAST*> stmtList)
       : ProcName(procName), StmtList(stmtList) {}
 };
 

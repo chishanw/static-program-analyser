@@ -36,6 +36,7 @@ int PKB::getNumEntity(DesignEntity de) {
     case DesignEntity::PROCEDURE:
       return tables.at(TableType::PROC_TABLE).getSize();
   }
+  return 0;
 }
 
 void insertToTableRs(TablesRs* tablesRs, RelationshipType rs, int left,
@@ -131,7 +132,6 @@ SetOfStmtLists PKB::getMappings(RelationshipType rs, ParamPosition param) {
   return mappingsRs[rs][param];
 }
 
-// New Pattern API
 void PKB::addPatternRs(RelationshipType rs, StmtNo stmtNo, string varName) {
   int varIndex = insertAt(TableType::VAR_TABLE, varName);
   insertToTableRs(&tablesRs, rs, varIndex, stmtNo);
@@ -190,7 +190,7 @@ void PKB::addNextStmtForIfStmt(StmtNo ifStmt, StmtNo nextStmtForIfStmt) {
 void PKB::addFirstStmtOfProc(string procName, StmtNo firstStmtOfProc) {
   affectsInfoKB.addFirstStmtOfProc(procName, firstStmtOfProc);
 }
-void PKB::addProcCallEdge(PROC_NAME callerProcName, PROC_NAME calleeProcName) {
+void PKB::addProcCallEdge(ProcName callerProcName, ProcName calleeProcName) {
   affectsInfoKB.addProcCallEdge(callerProcName, calleeProcName);
 }
 
@@ -200,7 +200,7 @@ StmtNo PKB::getNextStmtForIfStmt(StmtNo ifStmt) {
 vector<StmtNo> PKB::getFirstStmtOfAllProcs() {
   return affectsInfoKB.getFirstStmtOfAllProcs();
 }
-unordered_map<PROC_IDX, unordered_set<PROC_IDX>> PKB::getCallGraph() {
+unordered_map<ProcIdx, unordered_set<ProcIdx>> PKB::getCallGraph() {
   return affectsInfoKB.getCallGraph();
 }
 

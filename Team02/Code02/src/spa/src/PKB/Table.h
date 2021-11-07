@@ -21,4 +21,5 @@ class Table {
  protected:
   std::unordered_map<std::string, TableElemIdx> nameAsKey;
   std::vector<std::string> idxAsKey;
+  std::unordered_set<TableElemIdx> allElemIdx;
 };

@@ -15,17 +15,15 @@
 #include <utility>
 #include <vector>
 
-typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
-
 class QueryEvaluator {
  public:
   explicit QueryEvaluator(PKB* pkb, QueryOptimizer* optimizer);
-  query::FinalQueryResults evaluateQuery(SynonymMap synonymMap,
+  query::FinalQueryResults evaluateQuery(query::SynonymMap synonymMap,
                                          query::SelectClause select);
   query::SynonymCountsTable getSynonymCounts();
 
  private:
-  SynonymMap synonymMap;
+  query::SynonymMap synonymMap;
   PKB* pkb;
   QueryOptimizer* optimizer;
   NextOnDemandEvaluator nextOnDemandEvaluator;
@@ -58,6 +56,7 @@ class QueryEvaluator {
                  std::vector<std::string> incomingResultsSynonyms);
   void crossProduct(query::ClauseIncomingResults incomingResults,
                     std::vector<std::string> incomingResultsSynonyms);
+
   // helpers for above main algos
   void filterValidQueryResults(
       std::vector<query::IntermediateQueryResult>* newQueryResults,

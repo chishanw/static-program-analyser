@@ -8,7 +8,7 @@
 
 // Type def, PascalCase
 typedef int StmtNo, VarIdx, ProcIdx, ConstIdx, ExprIdx, TableElemIdx;
-typedef std::string VarName, ProcName;
+typedef std::string Name, VarName, ProcName;
 typedef std::unordered_set<int> SetOfStmts, SetOfInts;
 typedef std::vector<int> ListOfInts, ListOfStmtNos;
 
@@ -89,3 +89,6 @@ struct EnumClassHash {
 // Define Set of Stmt Lists
 typedef std::unordered_set<std::vector<int>, VectorHash> SetOfStmtLists,
     SetOfIntLists;
+// Define Tables for Relationships
+typedef std::unordered_map<RelationshipType, std::unordered_map<int, SetOfInts>>
+    TablesRs;

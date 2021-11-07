@@ -121,6 +121,7 @@ void QueryEvaluator::evaluateSuchThatClause(SuchThatClause clause) {
   }
 }
 
+// normal such that clauses, not on demand
 void QueryEvaluator::evaluateSuchThatClauseHelper(SuchThatClause clause) {
   auto left = clause.leftParam;
   auto right = clause.rightParam;
@@ -277,7 +278,7 @@ bool QueryEvaluator::callOnDemandEvaluatorBool(
 
 ClauseIncomingResults QueryEvaluator::callOnDemandEvaluatorRef(
     RelationshipType relationshipType, const Param& left, const Param& right) {
-  unordered_set<STMT_NO> refResults = {};
+  unordered_set<StmtNo> refResults = {};
   switch (relationshipType) {
     case RelationshipType::NEXT_T:
     case RelationshipType::NEXT_BIP_T:
@@ -420,7 +421,7 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
 
   if (synonymTypes.find(left.type) != synonymTypes.end()) {
     isLeftParamSynonym = true;
-    unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(left.value);
+    unordered_set<StmtNo> allValues = getAllValuesOfSynonym(left.value);
     for (auto value : allValues) {
       leftSynoynmValues.insert({value});
     }
@@ -428,7 +429,7 @@ void QueryEvaluator::evaluateWithClause(WithClause clause) {
 
   if (synonymTypes.find(right.type) != synonymTypes.end()) {
     isRightParamSynonym = true;
-    unordered_set<STMT_NO> allValues = getAllValuesOfSynonym(right.value);
+    unordered_set<StmtNo> allValues = getAllValuesOfSynonym(right.value);
     for (auto value : allValues) {
       rightSynoynmValues.insert({value});
     }
@@ -875,31 +876,20 @@ unordered_set<int> QueryEvaluator::resolveLeftParam(SuchThatClause clause) {
       break;
 
     case ParamType::SYNONYM:
+      // if synonym is alr in the existing results, get from there
       if (queryResultsSynonyms.find(left.value) != queryResultsSynonyms.end()) {
-        // get from groupQueryResults
         for (auto entry : groupQueryResults) {
           leftValues.insert(entry[left.value]);
         }
         break;
       }
 
-      // get from pkb
-      // fall throught to WILDCARD case
+      // get from pkb, fall through to WILDCARD case
 
     case ParamType::WILDCARD:
-      // there's no ambiguity what syn type the wildcard would be if it were a
-      // syn, can store this info in a map that has r/s type as key and syn type
-      // as value
-      if (rsType == RelationshipType::MODIFIES_P ||
-          rsType == RelationshipType::USES_P ||
-          rsType == RelationshipType::CALLS ||
-          rsType == RelationshipType::CALLS_T) {
-        leftValues.merge(pkb->getAllElementsAt(TableType::PROC_TABLE));
-      } else {
-        // get left results of synonym's DesignEntity for rs type
-        for (auto valueList : pkb->getMappings(rsType, ParamPosition::LEFT)) {
-          leftValues.insert(valueList.front());
-        }
+      // get results of left param for rs type
+      for (auto valueList : pkb->getMappings(rsType, ParamPosition::LEFT)) {
+        leftValues.insert(valueList.front());
       }
       break;
 
@@ -921,11 +911,8 @@ ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
   ClauseIncomingResults leftRightValuePairs;
 
   switch (right.type) {
-    case ParamType::INTEGER_LITERAL:
-
-      int rightValue;
-
-      rightValue = stoi(right.value);
+    case ParamType::INTEGER_LITERAL: {
+      int rightValue = stoi(right.value);
 
       for (int leftValue : leftValues) {
         if (pkb->isRs(rsType, leftValue, rightValue)) {
@@ -933,10 +920,10 @@ ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
         }
       }
       break;
+    }
 
-    case ParamType::NAME_LITERAL:
-
-      rightValue = convertRightNameLiteralToInt(rsType, right.value);
+    case ParamType::NAME_LITERAL: {
+      int rightValue = convertRightNameLiteralToInt(rsType, right.value);
 
       for (int leftValue : leftValues) {
         if (pkb->isRs(rsType, leftValue, rightValue)) {
@@ -944,9 +931,10 @@ ClauseIncomingResults QueryEvaluator::resolveRightParamFromLeftValues(
         }
       }
       break;
+    }
 
     case ParamType::SYNONYM:
-      // if synonym is alr in the groupQueryResults
+      // if synonym is alr in the existing results, get from there
       if (queryResultsSynonyms.find(right.value) !=
           queryResultsSynonyms.end()) {
         unordered_set<int> rightValues;
@@ -1047,7 +1035,7 @@ ClauseIncomingResults QueryEvaluator::resolveSynonymParamFromVarValues(
 
   ClauseIncomingResults leftRightValuePairs;
 
-  // if synonym is alr in the groupQueryResults
+  // if synonym is alr in the existing results, get from there
   if (queryResultsSynonyms.find(synonym.name) != queryResultsSynonyms.end()) {
     unordered_set<int> synValues;
     for (auto entry : groupQueryResults) {

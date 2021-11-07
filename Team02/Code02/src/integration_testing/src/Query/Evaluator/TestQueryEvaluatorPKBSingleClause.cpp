@@ -28,8 +28,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
       {"s1", DesignEntity::STATEMENT},
       {"s2", DesignEntity::STATEMENT},
       {"r", DesignEntity::READ}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Follows(1, 2)") {
@@ -159,7 +159,7 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Truthy Values") {
   }
 
   SECTION("Select r such that FollowsT(_, r)") {
-    Synonym r = {DesignEntity::READ, "r"};
+    Synonym r = {DesignEntity::READ, "r", false, {}};
     SuchThatClause suchThatClause = {RelationshipType::FOLLOWS_T,
                                      {ParamType::WILDCARD, "_"},
                                      {ParamType::SYNONYM, "r"}};
@@ -181,8 +181,8 @@ TEST_CASE("QueryEvaluator: Follows (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Follows(3, 4)") {
@@ -280,8 +280,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that FollowsT(1, 2)") {
@@ -382,8 +382,8 @@ TEST_CASE("QueryEvaluator: FollowsT (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that FollowsT(3, 4)") {
@@ -471,8 +471,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Parent(1, 2)") {
@@ -587,8 +587,8 @@ TEST_CASE("QueryEvaluator: Parent (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Parent(2, 3)") {
@@ -689,8 +689,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that ParentT(1, 2)") {
@@ -791,8 +791,8 @@ TEST_CASE("QueryEvaluator: ParentT (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that ParentT(2, 3)") {
@@ -886,8 +886,8 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
-  Synonym s = {DesignEntity::STATEMENT, "s"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym s = {DesignEntity::STATEMENT, "s", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s such that UsesS(1, 'x')") {
@@ -1028,8 +1028,8 @@ TEST_CASE("QueryEvaluator: UsesS (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
-  Synonym s = {DesignEntity::STATEMENT, "s"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym s = {DesignEntity::STATEMENT, "s", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s such that UsesS(3, 'x')") {
@@ -1191,8 +1191,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p", DesignEntity::PROCEDURE}, {"v", DesignEntity::VARIABLE}};
-  Synonym p = {DesignEntity::PROCEDURE, "p"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym p = {DesignEntity::PROCEDURE, "p", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p such that UsesP('proc1', 'x')") {
@@ -1359,8 +1359,8 @@ TEST_CASE("QueryEvaluator: UsesP (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p", DesignEntity::PROCEDURE}, {"v", DesignEntity::VARIABLE}};
-  Synonym p = {DesignEntity::PROCEDURE, "p"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym p = {DesignEntity::PROCEDURE, "p", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p such that UsesP('proc2', 'x')") {
@@ -1553,8 +1553,8 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
-  Synonym s = {DesignEntity::STATEMENT, "s"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym s = {DesignEntity::STATEMENT, "s", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s such that ModifiesS(1, 'x')") {
@@ -1647,8 +1647,8 @@ TEST_CASE("QueryEvaluator: ModifiesS (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s", DesignEntity::STATEMENT}, {"v", DesignEntity::VARIABLE}};
-  Synonym s = {DesignEntity::STATEMENT, "s"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym s = {DesignEntity::STATEMENT, "s", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s such that ModifiesS(3, 'x')") {
@@ -1810,8 +1810,8 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p", DesignEntity::PROCEDURE}, {"v", DesignEntity::VARIABLE}};
-  Synonym p = {DesignEntity::PROCEDURE, "p"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym p = {DesignEntity::PROCEDURE, "p", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p such that ModifiesP('proc1', 'x')") {
@@ -1981,8 +1981,8 @@ TEST_CASE("QueryEvaluator: ModifiesP (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p", DesignEntity::PROCEDURE}, {"v", DesignEntity::VARIABLE}};
-  Synonym p = {DesignEntity::PROCEDURE, "p"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym p = {DesignEntity::PROCEDURE, "p", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p such that ModifiesP('proc3', 'x')") {
@@ -2183,8 +2183,8 @@ TEST_CASE("QueryEvaluator: Calls - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p1 such that Calls('proc1', 'proc2')") {
@@ -2313,8 +2313,8 @@ TEST_CASE("QueryEvaluator: Calls - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p1 such that Calls('proc1', 'proc2')") {
@@ -2479,8 +2479,8 @@ TEST_CASE("QueryEvaluator: CallsT - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p1 such that CallsT('proc1', 'proc3')") {
@@ -2622,8 +2622,8 @@ TEST_CASE("QueryEvaluator: CallsT - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"p1", DesignEntity::PROCEDURE}, {"p2", DesignEntity::PROCEDURE}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p1 such that CallsT('proc1', 'proc2')") {
@@ -2780,8 +2780,8 @@ TEST_CASE("QueryEvaluator: Next - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Next(1, 2)") {
@@ -2923,11 +2923,11 @@ TEST_CASE("QueryEvaluator: Next - Falsy Values") {
       {"a", DesignEntity::ASSIGN},
       {"w", DesignEntity::WHILE},
       {"ifs", DesignEntity::IF}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym a = {DesignEntity::ASSIGN, "a"};
-  Synonym w = {DesignEntity::WHILE, "w"};
-  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym a = {DesignEntity::ASSIGN, "a", false, {}};
+  Synonym w = {DesignEntity::WHILE, "w", false, {}};
+  Synonym ifs = {DesignEntity::IF, "ifs", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that Next(_, _)") {
@@ -3077,11 +3077,11 @@ TEST_CASE("QueryEvaluator: NextT - Truthy Values") {
       {"pr", DesignEntity::PRINT},
       {"w", DesignEntity::WHILE},
       {"ifs", DesignEntity::IF}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym pr = {DesignEntity::PRINT, "pr"};
-  Synonym w = {DesignEntity::WHILE, "w"};
-  Synonym ifs = {DesignEntity::IF, "ifs"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym pr = {DesignEntity::PRINT, "pr", false, {}};
+  Synonym w = {DesignEntity::WHILE, "w", false, {}};
+  Synonym ifs = {DesignEntity::IF, "ifs", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that NextT(1, 3)") {
@@ -3270,10 +3270,10 @@ TEST_CASE("QueryEvaluator: NextT - Falsy Values") {
       {"s2", DesignEntity::STATEMENT},
       {"w", DesignEntity::WHILE},
       {"pr", DesignEntity::PRINT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym w = {DesignEntity::WHILE, "w"};
-  Synonym pr = {DesignEntity::PRINT, "pr"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym w = {DesignEntity::WHILE, "w", false, {}};
+  Synonym pr = {DesignEntity::PRINT, "pr", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select s1 such that NextT(1, 10)") {
@@ -3408,8 +3408,8 @@ TEST_CASE("QueryEvaluator: NextBip & NextBipT") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   /* NextBip ------------------------------------------------------ */
@@ -3724,10 +3724,10 @@ TEST_CASE("QueryEvaluator: Affects - Truthy Values") {
       {"s2", DesignEntity::STATEMENT},
       {"a1", DesignEntity::ASSIGN},
       {"a2", DesignEntity::ASSIGN}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym a1 = {DesignEntity::ASSIGN, "a1"};
-  Synonym a2 = {DesignEntity::ASSIGN, "a2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym a1 = {DesignEntity::ASSIGN, "a1", false, {}};
+  Synonym a2 = {DesignEntity::ASSIGN, "a2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   /* Affects Bool -------------------------------------------- */
@@ -3984,10 +3984,10 @@ TEST_CASE("QueryEvaluator: Affects") {
       {"s2", DesignEntity::STATEMENT},
       {"a1", DesignEntity::ASSIGN},
       {"a2", DesignEntity::ASSIGN}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym a1 = {DesignEntity::ASSIGN, "a1"};
-  Synonym a2 = {DesignEntity::ASSIGN, "a2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym a1 = {DesignEntity::ASSIGN, "a1", false, {}};
+  Synonym a2 = {DesignEntity::ASSIGN, "a2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   /* Affects Bool -------------------------------------------- */
@@ -4079,8 +4079,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"a", DesignEntity::ASSIGN}, {"v", DesignEntity::VARIABLE}};
-  Synonym a = {DesignEntity::ASSIGN, "a"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym a = {DesignEntity::ASSIGN, "a", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select a pattern a ('x', 'w')") {
@@ -4226,8 +4226,8 @@ TEST_CASE("QueryEvaluator: Assignment Pattern (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"a", DesignEntity::ASSIGN}, {"v", DesignEntity::VARIABLE}};
-  Synonym a = {DesignEntity::ASSIGN, "a"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym a = {DesignEntity::ASSIGN, "a", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select a pattern a ('x', 'w')") {
@@ -4411,8 +4411,8 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"ifs", DesignEntity::IF}, {"v", DesignEntity::VARIABLE}};
-  Synonym ifs = {DesignEntity::IF, "ifs"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym ifs = {DesignEntity::IF, "ifs", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select ifs pattern ifs ('x', _, _)") {
@@ -4465,8 +4465,8 @@ TEST_CASE("QueryEvaluator: If Pattern (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"ifs", DesignEntity::IF}, {"v", DesignEntity::VARIABLE}};
-  Synonym ifs = {DesignEntity::IF, "ifs"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym ifs = {DesignEntity::IF, "ifs", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select ifs pattern ifs ('x', _, _)") {
@@ -4536,8 +4536,8 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Truthy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"w", DesignEntity::WHILE}, {"v", DesignEntity::VARIABLE}};
-  Synonym w = {DesignEntity::WHILE, "w"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym w = {DesignEntity::WHILE, "w", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select w pattern w ('x', _)") {
@@ -4590,8 +4590,8 @@ TEST_CASE("QueryEvaluator: While Pattern (1 Clause) - Falsy Values") {
 
   unordered_map<string, DesignEntity> synonyms = {
       {"w", DesignEntity::WHILE}, {"v", DesignEntity::VARIABLE}};
-  Synonym w = {DesignEntity::WHILE, "w"};
-  Synonym v = {DesignEntity::VARIABLE, "v"};
+  Synonym w = {DesignEntity::WHILE, "w", false, {}};
+  Synonym v = {DesignEntity::VARIABLE, "v", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select w pattern w ('x', _, _)") {
@@ -4655,10 +4655,10 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Truthy Values") {
       {"p2", DesignEntity::PROCEDURE},
       {"v1", DesignEntity::VARIABLE},
       {"v2", DesignEntity::VARIABLE}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
-  Synonym v1 = {DesignEntity::VARIABLE, "v1"};
-  Synonym v2 = {DesignEntity::VARIABLE, "v2"};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
+  Synonym v1 = {DesignEntity::VARIABLE, "v1", false, {}};
+  Synonym v2 = {DesignEntity::VARIABLE, "v2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p1 with p1.procName = p2.procName") {
@@ -4747,10 +4747,10 @@ TEST_CASE("QueryEvaluator: With (Name Attributes) - Falsy Values") {
       {"p2", DesignEntity::PROCEDURE},
       {"v1", DesignEntity::VARIABLE},
       {"v2", DesignEntity::VARIABLE}};
-  Synonym p1 = {DesignEntity::PROCEDURE, "p1"};
-  Synonym p2 = {DesignEntity::PROCEDURE, "p2"};
-  Synonym v1 = {DesignEntity::VARIABLE, "v1"};
-  Synonym v2 = {DesignEntity::VARIABLE, "v2"};
+  Synonym p1 = {DesignEntity::PROCEDURE, "p1", false, {}};
+  Synonym p2 = {DesignEntity::PROCEDURE, "p2", false, {}};
+  Synonym v1 = {DesignEntity::VARIABLE, "v1", false, {}};
+  Synonym v2 = {DesignEntity::VARIABLE, "v2", false, {}};
   vector<ConditionClause> conditionClauses = {};
 
   SECTION("Select p1 with p1.procName = p2.procName") {
@@ -4839,12 +4839,12 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Truthy Values") {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT},
       {"n1", DesignEntity::PROG_LINE}, {"n2", DesignEntity::PROG_LINE},
       {"c1", DesignEntity::CONSTANT},  {"c2", DesignEntity::CONSTANT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym n1 = {DesignEntity::PROG_LINE, "n1"};
-  Synonym n2 = {DesignEntity::PROG_LINE, "n2"};
-  Synonym c1 = {DesignEntity::CONSTANT, "c1"};
-  Synonym c2 = {DesignEntity::CONSTANT, "c2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym n1 = {DesignEntity::PROG_LINE, "n1", false, {}};
+  Synonym n2 = {DesignEntity::PROG_LINE, "n2", false, {}};
+  Synonym c1 = {DesignEntity::CONSTANT, "c1", false, {}};
+  Synonym c2 = {DesignEntity::CONSTANT, "c2", false, {}};
 
   vector<ConditionClause> conditionClauses = {};
 
@@ -4980,12 +4980,12 @@ TEST_CASE("QueryEvaluator: With (Integer Attributes) - Falsy Values") {
       {"s1", DesignEntity::STATEMENT}, {"s2", DesignEntity::STATEMENT},
       {"n1", DesignEntity::PROG_LINE}, {"n2", DesignEntity::PROG_LINE},
       {"c1", DesignEntity::CONSTANT},  {"c2", DesignEntity::CONSTANT}};
-  Synonym s1 = {DesignEntity::STATEMENT, "s1"};
-  Synonym s2 = {DesignEntity::STATEMENT, "s2"};
-  Synonym n1 = {DesignEntity::PROG_LINE, "n1"};
-  Synonym n2 = {DesignEntity::PROG_LINE, "n2"};
-  Synonym c1 = {DesignEntity::CONSTANT, "c1"};
-  Synonym c2 = {DesignEntity::CONSTANT, "c2"};
+  Synonym s1 = {DesignEntity::STATEMENT, "s1", false, {}};
+  Synonym s2 = {DesignEntity::STATEMENT, "s2", false, {}};
+  Synonym n1 = {DesignEntity::PROG_LINE, "n1", false, {}};
+  Synonym n2 = {DesignEntity::PROG_LINE, "n2", false, {}};
+  Synonym c1 = {DesignEntity::CONSTANT, "c1", false, {}};
+  Synonym c2 = {DesignEntity::CONSTANT, "c2", false, {}};
 
   vector<ConditionClause> conditionClauses = {};
 

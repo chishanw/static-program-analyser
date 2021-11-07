@@ -12,12 +12,10 @@
 #include "Query/Common.h"
 #include "QueryLexer.h"
 
-typedef std::unordered_map<std::string, DesignEntity> SynonymMap;
-
 class QueryParser {
  public:
   QueryParser();
-  std::tuple<SynonymMap, query::SelectClause> Parse(const std::string&);
+  std::tuple<query::SynonymMap, query::SelectClause> Parse(const std::string&);
 
   // Error messages for invalid queries
   inline static const std::string INVALID_INSUFFICIENT_TOKENS_MSG =
@@ -96,7 +94,7 @@ class QueryParser {
  private:
   std::vector<qpp::QueryToken>::iterator it;
   std::vector<qpp::QueryToken>::iterator endIt;
-  SynonymMap synonymMap;
+  query::SynonymMap synonymMap;
 
   // used to return FALSE for semantically invalid Select BOOLEAN clause
   bool isSemanticallyValid;
@@ -119,7 +117,7 @@ class QueryParser {
   DesignEntity getEntityFromSynonymName(const std::string&);
   query::Param getRefParam();
 
-  SynonymMap parseSynonymDeclarations();
+  query::SynonymMap parseSynonymDeclarations();
   query::SelectClause parseSelectClause();
   std::tuple<std::vector<query::Synonym>, query::SelectType>
   parseResultClause();

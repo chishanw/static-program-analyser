@@ -8,7 +8,7 @@
 #include "PKB/PKB.h"
 
 typedef std::unordered_map<ProcName, std::unordered_set<ProcName>> CallGraph;
-typedef std::pair<StmtNo, NAME> StmtNoNamePair;
+typedef std::pair<StmtNo, Name> StmtNoNamePair;
 
 struct StmtNoNamePairHash;
 
@@ -21,16 +21,16 @@ class DesignExtractor {
  private:
   PKB* pkb;
 
-  std::unordered_set<NAME> ExtractProcAndStmt(const ProgramAST*);
+  std::unordered_set<Name> ExtractProcAndStmt(const ProgramAST*);
   void ExtractProcAndStmtHelper(const std::vector<StmtAST*>);
 
   void ExtractUses(const ProgramAST*);
   std::unordered_set<StmtNoNamePair, StmtNoNamePairHash> ExtractUsesHelper(
-      const std::vector<StmtAST*>, std::unordered_map<NAME, ProcedureAST*>);
+      const std::vector<StmtAST*>, std::unordered_map<Name, ProcedureAST*>);
 
   void ExtractModifies(const ProgramAST*);
   std::unordered_set<StmtNoNamePair, StmtNoNamePairHash> ExtractModifiesHelper(
-      const std::vector<StmtAST*>, std::unordered_map<NAME, ProcedureAST*>);
+      const std::vector<StmtAST*>, std::unordered_map<Name, ProcedureAST*>);
 
   void ExtractParent(const ProgramAST*);
   std::vector<std::pair<StmtNo, StmtNo>> ExtractParentHelper(
@@ -55,9 +55,9 @@ class DesignExtractor {
       const std::vector<StmtAST*>);
 
   std::pair<CallGraph, CallGraph> ExtractCalls(const ProgramAST*,
-                                               std::unordered_set<NAME>);
+                                               std::unordered_set<Name>);
   std::unordered_map<StmtNo, ProcName> ExtractCallsHelper(
-      const std::vector<StmtAST*>, std::unordered_set<NAME>);
+      const std::vector<StmtAST*>, std::unordered_set<Name>);
   void ExtractCallsTrans(CallGraph, std::vector<ProcName>,
                          std::unordered_set<ProcName>);
   std::vector<ProcName> GetTopoSortedProcs(CallGraph, CallGraph,
@@ -69,6 +69,6 @@ class DesignExtractor {
   void ExtractNextBip(const ProgramAST*, std::vector<ProcName>);
   void ExtractNextBipHelper(
       const std::vector<StmtAST*>, StmtNo, StmtNo, ProcName,
-      const std::unordered_map<NAME, StmtNo>&,
+      const std::unordered_map<Name, StmtNo>&,
       std::unordered_map<ProcName, std::unordered_set<StmtNo>>*, bool);
 };

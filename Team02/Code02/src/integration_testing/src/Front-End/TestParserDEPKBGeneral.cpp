@@ -79,17 +79,11 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(pkb->getLeft(RelationshipType::CALLS, TableType::PROC_TABLE, "A") ==
             SetOfStmts({}));
 
-    vector<PROC_IDX> calledByA({1});
-    pair<PROC_IDX, vector<PROC_IDX>> aRes(0, calledByA);
-    vector<PROC_IDX> calledByB({2});
-    pair<PROC_IDX, vector<PROC_IDX>> bRes(1, calledByB);
-    vector<pair<PROC_IDX, vector<PROC_IDX>>> result({aRes, bRes});
-    // vector<pair<PROC_IDX, vector<PROC_IDX>>> output =
-    //     pkb->getMappings(RelationshipType::CALLS, ParamPosition::BOTH);
-    // REQUIRE(
-    //     set<pair<PROC_IDX, vector<PROC_IDX>>>(output.begin(), output.end())
-    //     == set<pair<PROC_IDX, vector<PROC_IDX>>>(result.begin(),
-    //     result.end()));
+    vector<ProcIdx> calledByA({1});
+    pair<ProcIdx, vector<ProcIdx>> aRes(0, calledByA);
+    vector<ProcIdx> calledByB({2});
+    pair<ProcIdx, vector<ProcIdx>> bRes(1, calledByB);
+    vector<pair<ProcIdx, vector<ProcIdx>>> result({aRes, bRes});
 
     REQUIRE(pkb->isRs(RelationshipType::CALLS_T, TableType::PROC_TABLE, "a",
                       TableType::PROC_TABLE, "b"));
@@ -123,15 +117,9 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(pkb->getLeft(RelationshipType::CALLS_T, TableType::PROC_TABLE,
                          "A") == SetOfStmts({}));
 
-    vector<PROC_IDX> calledTByA({1, 2});
-    pair<PROC_IDX, vector<PROC_IDX>> aTRes(0, calledTByA);
-    vector<pair<PROC_IDX, vector<PROC_IDX>>> resultT({aTRes, bRes});
-    // vector<pair<PROC_IDX, vector<PROC_IDX>>> outputT =
-    //     pkb->getMappings(RelationshipType::CALLS_T, ParamPosition::BOTH);
-    // REQUIRE(
-    //     set<pair<PROC_IDX, vector<PROC_IDX>>>(outputT.begin(), outputT.end())
-    //     == set<pair<PROC_IDX, vector<PROC_IDX>>>(resultT.begin(),
-    //     resultT.end()));
+    vector<ProcIdx> calledTByA({1, 2});
+    pair<ProcIdx, vector<ProcIdx>> aTRes(0, calledTByA);
+    vector<pair<ProcIdx, vector<ProcIdx>>> resultT({aTRes, bRes});
   }
 
   SECTION("Follows/* extraction") {
@@ -175,8 +163,6 @@ TEST_CASE("Whole frontend simple test") {
     auto answer = unordered_set<vector<int>, VectorHash>(
         {ListOfStmtNos({1, 2}), ListOfStmtNos({3, 4}), ListOfStmtNos({7, 8}),
          ListOfStmtNos({7, 9}), ListOfStmtNos({8, 9})});
-    // REQUIRE(set<LIST_STMT_NO>(output.begin(), output.end()) ==
-    //    set<LIST_STMT_NO>(answer.begin(), answer.end()));
     REQUIRE(output == answer);
 
     auto outputT =
@@ -184,9 +170,6 @@ TEST_CASE("Whole frontend simple test") {
     unordered_set<vector<int>, VectorHash> answerT(
         {ListOfStmtNos({1, 2}), ListOfStmtNos({3, 4}), ListOfStmtNos({7, 8}),
          ListOfStmtNos({7, 9}), ListOfStmtNos({8, 9})});
-    // REQUIRE(set< pair<STMT_NO, LIST_STMT_NO>>(outputT.begin(), outputT.end())
-    // ==
-    //    set<pair<STMT_NO, LIST_STMT_NO>>(answerT.begin(), answerT.end()));
     REQUIRE(outputT == answerT);
   }
 
@@ -242,14 +225,14 @@ TEST_CASE("Whole frontend simple test") {
                           "c") == unordered_set<VarIdx>({}));
 
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
-                         "x") == unordered_set<STMT_NO>({2, 4, 5, 7, 9}));
+                         "x") == unordered_set<StmtNo>({2, 4, 5, 7, 9}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
-                         "y") == unordered_set<STMT_NO>({1}));
+                         "y") == unordered_set<StmtNo>({1}));
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
-                         "cenX") == unordered_set<STMT_NO>({2, 3, 4, 6}));
+                         "cenX") == unordered_set<StmtNo>({2, 3, 4, 6}));
     // invalid query
     REQUIRE(pkb->getLeft(RelationshipType::MODIFIES_S, TableType::VAR_TABLE,
-                         "X") == unordered_set<STMT_NO>({}));
+                         "X") == unordered_set<StmtNo>({}));
 
     auto outputS =
         pkb->getMappings(RelationshipType::MODIFIES_S, ParamPosition::BOTH);
@@ -316,13 +299,13 @@ TEST_CASE("Whole frontend simple test") {
                        TableType::VAR_TABLE, "x"));
 
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE, "x") ==
-            unordered_set<STMT_NO>({2, 3, 4, 5, 9}));
+            unordered_set<StmtNo>({2, 3, 4, 5, 9}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE, "y") ==
-            unordered_set<STMT_NO>({2, 3, 4, 5, 8, 10}));
+            unordered_set<StmtNo>({2, 3, 4, 5, 8, 10}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE,
-                         "cenX") == unordered_set<STMT_NO>({2, 3, 4, 6}));
+                         "cenX") == unordered_set<StmtNo>({2, 3, 4, 6}));
     REQUIRE(pkb->getLeft(RelationshipType::USES_S, TableType::VAR_TABLE, "X") ==
-            unordered_set<STMT_NO>({}));
+            unordered_set<StmtNo>({}));
 
     REQUIRE(pkb->getRight(RelationshipType::USES_S, 2) ==
             unordered_set<VarIdx>({0, 1, 2}));
@@ -351,17 +334,6 @@ TEST_CASE("Whole frontend simple test") {
     REQUIRE(pkb->isRs(RelationshipType::PARENT_T, 2, 6));
     // invalid query
     REQUIRE(!pkb->isRs(RelationshipType::PARENT_T, 2, 7));
-
-    // vector<pair<STMT_NO, LIST_STMT_NO>> output = pkb->
-    //  getAllParentsStmtPairs();
-    // vector<pair<STMT_NO, LIST_STMT_NO>> answer({
-    //    pair(2, LIST_STMT_NO({ 3, 4 })),
-    //    pair(4, LIST_STMT_NO({ 5, 6 })),
-    //  });
-
-    // REQUIRE(set< pair<STMT_NO, LIST_STMT_NO>>(output.begin(), output.end())
-    // ==
-    //  set<pair<STMT_NO, LIST_STMT_NO>>(answer.begin(), answer.end()));
 
     auto output =
         pkb->getMappings(RelationshipType::PARENT, ParamPosition::BOTH);

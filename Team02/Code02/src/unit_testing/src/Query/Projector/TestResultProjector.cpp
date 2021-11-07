@@ -30,7 +30,7 @@ TEST_CASE("Project each design entity correctly") {
 
   SECTION("stmt s; Select s") {
     list<string> result = projector.formatResults(
-        SelectType::SYNONYMS, {{DesignEntity::STATEMENT, "s"}},
+        SelectType::SYNONYMS, {{DesignEntity::STATEMENT, "s", false, {}}},
         {{1}, {2}, {3}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"1", "2", "3"}));
@@ -38,21 +38,23 @@ TEST_CASE("Project each design entity correctly") {
 
   SECTION("assign a; Select a") {
     list<string> result = projector.formatResults(
-        SelectType::SYNONYMS, {{DesignEntity::ASSIGN, "a"}}, {{1}, {2}, {3}});
+        SelectType::SYNONYMS, {{DesignEntity::ASSIGN, "a", false, {}}},
+        {{1}, {2}, {3}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"1", "2", "3"}));
   }
 
   SECTION("variable v; Select v") {
     list<string> result = projector.formatResults(
-        SelectType::SYNONYMS, {{DesignEntity::VARIABLE, "v"}}, {{0}, {1}, {2}});
+        SelectType::SYNONYMS, {{DesignEntity::VARIABLE, "v", false, {}}},
+        {{0}, {1}, {2}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"x", "y", "z"}));
   }
 
   SECTION("procedure p; Select p") {
     list<string> result = projector.formatResults(
-        SelectType::SYNONYMS, {{DesignEntity::PROCEDURE, "p"}},
+        SelectType::SYNONYMS, {{DesignEntity::PROCEDURE, "p", false, {}}},
         {{0}, {1}, {2}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"procA", "procB", "procC"}));
@@ -60,7 +62,8 @@ TEST_CASE("Project each design entity correctly") {
 
   SECTION("constant c; Select c") {
     list<string> result = projector.formatResults(
-        SelectType::SYNONYMS, {{DesignEntity::CONSTANT, "c"}}, {{0}, {1}, {2}});
+        SelectType::SYNONYMS, {{DesignEntity::CONSTANT, "c", false, {}}},
+        {{0}, {1}, {2}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"1", "3", "5"}));
   }
@@ -104,17 +107,18 @@ TEST_CASE("Project tuple results") {
 
   SECTION("Select <s>") {
     list<string> result = projector.formatResults(
-        SelectType::SYNONYMS, {{DesignEntity::STATEMENT, "s"}},
+        SelectType::SYNONYMS, {{DesignEntity::STATEMENT, "s", false, {}}},
         {{1}, {2}, {3}, {4}, {5}, {6}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"1", "2", "3", "4", "5", "6"}));
   }
 
   SECTION("Select <s, a>") {
-    list<string> result = projector.formatResults(
-        SelectType::SYNONYMS,
-        {{DesignEntity::STATEMENT, "s"}, {DesignEntity::ASSIGN, "a"}},
-        {{1, 2}, {3, 4}, {5, 6}});
+    list<string> result =
+        projector.formatResults(SelectType::SYNONYMS,
+                                {{DesignEntity::STATEMENT, "s", false, {}},
+                                 {DesignEntity::ASSIGN, "a", false, {}}},
+                                {{1, 2}, {3, 4}, {5, 6}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"1 2", "3 4", "5 6"}));
   }
@@ -122,9 +126,9 @@ TEST_CASE("Project tuple results") {
   SECTION("Select <a, v, p>") {
     list<string> result = projector.formatResults(
         SelectType::SYNONYMS,
-        {{DesignEntity::ASSIGN, "a"},
-         {DesignEntity::VARIABLE, "v"},
-         {DesignEntity::PROCEDURE, "p"}},
+        {{DesignEntity::ASSIGN, "a", false, {}},
+         {DesignEntity::VARIABLE, "v", false, {}},
+         {DesignEntity::PROCEDURE, "p", false, {}}},
         {{1, xVarIdx, aProcIdx}, {2, yVarIdx, bProcIdx}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
             set<string>({"1 x procA", "2 y procB"}));
@@ -259,9 +263,9 @@ TEST_CASE("Project with attributes") {
   SECTION("Select <p, p.procName, v, s.stmt#>") {
     list<string> result = projector.formatResults(
         SelectType::SYNONYMS,
-        {{DesignEntity::PROCEDURE, "p", false},
+        {{DesignEntity::PROCEDURE, "p", false, {}},
          {DesignEntity::PROCEDURE, "p", true, Attribute::PROC_NAME},
-         {DesignEntity::VARIABLE, "v", false},
+         {DesignEntity::VARIABLE, "v", false, {}},
          {DesignEntity::STATEMENT, "s", true, Attribute::STMT_NUM}},
         {{aProcIdx, aProcIdx, xVarIdx, 4}, {bProcIdx, bProcIdx, yVarIdx, 5}});
     REQUIRE(set<string>(result.begin(), result.end()) ==
